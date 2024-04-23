@@ -1,0 +1,5 @@
+SET( NodeBackendTest_SRC NodeBackendTest.cpp )
+ADD_EXECUTABLE( NodeBackendTest ${NodeBackendTest_SRC} )
+SET( NodeBackendTest_DEPS "nodebackend;GTest::gtest;GTest::gtest_main" )
+TARGET_LINK_LIBRARIES( NodeBackendTest ${NodeBackendTest_DEPS} )
+INSTALL(TARGETS NodeBackendTest RUNTIME DESTINATION bin)
