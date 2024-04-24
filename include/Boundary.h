@@ -10,7 +10,7 @@
 
 namespace nbe
 {
-    class NODEBACKEND_API Boundary final : public Node
+    class NBE_API Boundary final : public Node
     {
     public:
         explicit Boundary(KeyGenerator& keyGen, std::string name, NodeCategory::Category category=NodeCategory::CAT_NONE);

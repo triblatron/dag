@@ -16,7 +16,7 @@ namespace nbe
     class Node;
     class Port;
 
-    class NODEBACKEND_API PortDirection
+    class NBE_API PortDirection
     {
     public:
         enum Direction
@@ -31,7 +31,7 @@ namespace nbe
         static const char* toString(Direction dir);
     };
 
-    class NODEBACKEND_API PortType
+    class NBE_API PortType
     {
     public:
         enum Type

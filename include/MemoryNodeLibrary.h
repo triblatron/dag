@@ -10,7 +10,7 @@
 
 namespace nbe
 {
-	class NODEBACKEND_API MemoryNodeLibrary final : public NodeLibrary, public KeyGenerator
+	class NBE_API MemoryNodeLibrary final : public NodeLibrary, public KeyGenerator
 	{
 	public:
 		MemoryNodeLibrary();

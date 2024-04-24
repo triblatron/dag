@@ -17,7 +17,7 @@ namespace nbe
     class InputStream;
     class OutputStream;
     
-    struct NODEBACKEND_API MetaPort
+    struct NBE_API MetaPort
     {
         std::string name;
         PortType::Type type;

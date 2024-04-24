@@ -17,7 +17,7 @@ namespace nbe
     class NodeLibrary;
     class OutputStream;
 
-    class NODEBACKEND_API SignalPath
+    class NBE_API SignalPath
     {
     public:
         enum

@@ -20,7 +20,7 @@ namespace nbe
     class OutputStream;
     class NodeLibrary;
 
-	class NODEBACKEND_API Node
+	class NBE_API Node
 	{
 	public:
 		enum NodeFlags : std::uint32_t

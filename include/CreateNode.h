@@ -15,7 +15,7 @@ namespace nbe
     class Graph;
     class Node;
 
-    class NODEBACKEND_API CreateNode : public Command
+    class NBE_API CreateNode : public Command
     {
     public:
         CreateNode() = default;

@@ -16,7 +16,7 @@ namespace nbe
     class KeyGenerator;
     class NodeLibrary;
 
-    class NODEBACKEND_API NodePluginScanner
+    class NBE_API NodePluginScanner
     {
     public:
         //! Scan the platform-specific plugins directory, 

@@ -13,7 +13,7 @@
 namespace nbe
 {
     //! Buffer of bytes, based on the Java 8 ByteBuffer API with simplifications
-    class NODEBACKEND_API ByteBuffer
+    class NBE_API ByteBuffer
     {
     public:
         using BufferType = std::vector<std::uint8_t>;

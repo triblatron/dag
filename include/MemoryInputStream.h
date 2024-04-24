@@ -13,7 +13,7 @@ namespace nbe
 {
     class ByteBuffer;
 
-    class NODEBACKEND_API MemoryInputStream : public InputStream
+    class NBE_API MemoryInputStream : public InputStream
     {
     public:
         explicit MemoryInputStream(ByteBuffer* buf);

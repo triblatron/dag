@@ -21,7 +21,7 @@ extern "C" {
 
 namespace nbe
 {
-    class NODEBACKEND_API Function
+    class NBE_API Function
     {
     public:
         //! Push the function onto the stack if it exists.
@@ -53,7 +53,7 @@ namespace nbe
         bool _balance;
     };
 
-    class NODEBACKEND_API TableTraversal
+    class NBE_API TableTraversal
     {
     public:
         explicit TableTraversal( lua_State * lua )
@@ -110,7 +110,7 @@ namespace nbe
         int _oldTop;
     };
 
-    class NODEBACKEND_API Table
+    class NBE_API Table
     {
     public:
         explicit Table(lua_State *L,const char *name, bool cleanup = true);
@@ -376,7 +376,7 @@ namespace nbe
         bool _cleanup;
     };
 
-    //class NODEBACKEND_API LocalTable : public Table
+    //class NBE_API LocalTable : public Table
     //{
     //public:
     //  LocalTable(lua_State * L, const char * name)
@@ -386,7 +386,7 @@ namespace nbe
     //  }
     //};
 
-    class NODEBACKEND_API GlobalTable : public Table
+    class NBE_API GlobalTable : public Table
     {
     public:
         GlobalTable(lua_State* L, const char* name)
@@ -402,7 +402,7 @@ namespace nbe
         }
     };
 
-    class NODEBACKEND_API Lua
+    class NBE_API Lua
     {
     public:
         enum Error
@@ -515,37 +515,5 @@ namespace nbe
         ErrorDescriptor * _errod;
         std::ostringstream _errorStr;
         static ErrorDescriptor _errors[NumErrors+1];
-    };
-
-    class CommandRepository;
-    class ReptolCommand;
-    class ReptolInterface;
-
-    class NODEBACKEND_API Coroutine
-    {
-    public:
-        enum Error
-        {
-            NoError,
-            FailedToCreateThread,
-            FunctionNotFound,
-            FunctionNotSpecified
-        };
-    public:
-        Coroutine(Lua& lua);
-
-        void setCommandRepository(CommandRepository * commands)
-        {
-            _commands = commands;
-        }
-
-        int run(int nargs, const std::string& name, ReptolInterface& reptol);
-        int run(int nargs, int ref, ReptolInterface& reptol);
-    private:
-        Lua& _lua;
-        CommandRepository * _commands;
-        lua_State* _thread;
-        Error _errod;
-        int runImpl(int nargs, ReptolInterface& reptol);
     };
 }

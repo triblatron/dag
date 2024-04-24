@@ -13,11 +13,11 @@
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
     #  if defined( INF_LIBRARY_STATIC )
-    #    define NODEBACKEND_API
+    #    define NBE_API
     #  elif defined( INF_LIBRARY )
-    #    define NODEBACKEND_API   __declspec(dllexport)
+    #    define NBE_API   __declspec(dllexport)
     #  else
-    #    define NODEBACKEND_API   __declspec(dllimport)
+    #    define NBE_API   __declspec(dllimport)
     #  endif
 #if defined( NODEPLUGIN_LIBRARY )
 #define NODEPLUGIN_API __declspec(dllexport)
@@ -32,7 +32,7 @@
 #    define SHELL_API   __declspec(dllimport)
     #  endif
 #else
-    #  define NODEBACKEND_API
+    #  define NBE_API
     #  define SHELL_API
 #define NODEPLUGIN_API
 #endif

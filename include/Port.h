@@ -22,7 +22,7 @@ namespace nbe
     class OutputStream;
 	class Transfer;
 
-    class NODEBACKEND_API ValueVisitor
+    class NBE_API ValueVisitor
     {
     public:
         void setInt(std::int64_t value)
@@ -82,7 +82,7 @@ namespace nbe
         Value _value;
     };
 
-	class NODEBACKEND_API Port
+	class NBE_API Port
     {
     public:
         typedef std::vector<Port*> PortArray;
@@ -348,7 +348,7 @@ namespace nbe
         std::uint32_t _flags{0x0};
 	};
 
-	class NODEBACKEND_API ValuePort final : public Port
+	class NBE_API ValuePort final : public Port
 	{
 	public:
         ValuePort(PortID id, std::string name, PortType::Type type, PortDirection::Direction direction, Value value, Node* parent = nullptr)
@@ -418,7 +418,7 @@ namespace nbe
 		Value _value;
 	};
 
-	class NODEBACKEND_API VariantPort : public Port
+	class NBE_API VariantPort : public Port
 	{
 	public:
 		typedef Value::ValueType ValueType;

@@ -18,7 +18,7 @@ namespace nbe
 {
     class Node;
 
-    class NODEBACKEND_API SelectionInterface
+    class NBE_API SelectionInterface
     {
     public:
         typedef NodeSet Cont;

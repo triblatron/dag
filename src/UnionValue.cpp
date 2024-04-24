@@ -2,8 +2,6 @@
 
 #include "UnionValue.h"
 
-#include <osg/Vec3d>
-
 namespace nbe
 {
     UnionValue::UnionValue(std::int32_t i)
@@ -28,12 +26,6 @@ namespace nbe
     {
         _value.type = TYPE_STRING;
         _value.value.s = s;
-    }
-    
-    UnionValue::UnionValue(osg::Vec3d* v)
-    {
-        _value.type = TYPE_VEC3D;
-        _value.value.v = v;
     }
     
     UnionValue& UnionValue::operator=(std::int32_t i)

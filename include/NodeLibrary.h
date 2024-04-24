@@ -15,7 +15,7 @@ namespace nbe
     class Node;
     class OutputStream;
 
-	class NODEBACKEND_API NodeLibrary
+	class NBE_API NodeLibrary
 	{
 	public:
         NodeLibrary() = default;

@@ -17,7 +17,7 @@ namespace nbe
     class InputStream;
     class OutputStream;
 
-    class NODEBACKEND_API Foo : public Node
+    class NBE_API Foo : public Node
     {
     public:
         Foo(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -96,7 +96,7 @@ namespace nbe
         static constexpr size_t numPorts = ports.size();
     };
 
-    class NODEBACKEND_API Base : public Node
+    class NBE_API Base : public Node
     {
     public:
         Base(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -176,7 +176,7 @@ namespace nbe
         TypedPort<double> _direction;
     };
 
-    class NODEBACKEND_API Derived : public Base
+    class NBE_API Derived : public Base
     {
     public:
         Derived(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -245,7 +245,7 @@ namespace nbe
         TypedPort<bool> _trigger;
     };
 
-    class NODEBACKEND_API Final final : public Derived
+    class NBE_API Final final : public Derived
     {
     public:
         Final(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -345,7 +345,7 @@ namespace nbe
         static constexpr size_t numPorts = 1;
     };
 
-    class NODEBACKEND_API Bar : public Node
+    class NBE_API Bar : public Node
     {
     public:
         Bar(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -429,7 +429,7 @@ namespace nbe
         static constexpr size_t numPorts = 1;
     };
 
-    class NODEBACKEND_API FooTyped : public Node
+    class NBE_API FooTyped : public Node
     {
     public:
         FooTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -517,7 +517,7 @@ namespace nbe
         TypedPort<double>* _in1{nullptr};
     };
 
-    class NODEBACKEND_API BarTyped : public Node
+    class NBE_API BarTyped : public Node
     {
     public:
         BarTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -606,7 +606,7 @@ namespace nbe
         TypedPort<double>* _out1{nullptr};
     };
 
-    class NODEBACKEND_API GroupTyped : public Node
+    class NBE_API GroupTyped : public Node
     {
     public:
         GroupTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)

@@ -11,7 +11,7 @@
 
 namespace nbe
 {
-	struct NODEBACKEND_API NodeDescriptor
+	struct NBE_API NodeDescriptor
 	{
 		std::int64_t id;
 		std::string name;

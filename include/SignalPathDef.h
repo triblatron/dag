@@ -6,13 +6,13 @@
 
 namespace nbe
 {
-    struct NODEBACKEND_API Endpoint
+    struct NBE_API Endpoint
     {
         PortID port;
         NodeID node;
     };
 
-    struct NODEBACKEND_API SignalPathDef
+    struct NBE_API SignalPathDef
     {
         SignalPathID id;
         Endpoint source;

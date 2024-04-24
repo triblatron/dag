@@ -9,7 +9,7 @@ namespace nbe
 {
     namespace fs = std::filesystem;
 
-    class NODEBACKEND_API FileSystemTraverser
+    class NBE_API FileSystemTraverser
     {
     public:
         explicit FileSystemTraverser(fs::path & dir);

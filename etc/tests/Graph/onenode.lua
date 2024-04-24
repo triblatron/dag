@@ -1,0 +1,25 @@
+graph=
+{
+    nodes=
+    {
+        {
+            id=0,
+            name="foo1",
+            class="FooTyped",
+            category="Sink",
+            ports=
+            {
+                {
+                    name="in1",
+                    class="TypedPort<double>",
+                    direction="DIR_IN",
+                    type="TYPE_DOUBLE",
+                    value=2.0
+                }
+            }
+        }
+    },
+    signalpaths=
+    {
+    }
+}

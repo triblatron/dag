@@ -4,7 +4,7 @@
 
 namespace nbe
 {
-    class NODEBACKEND_API Action
+    class NBE_API Action
     {
     public:
         Action() = default;

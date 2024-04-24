@@ -16,7 +16,7 @@ namespace nbe
     class Node;
     class SelectionInterface;
 
-    class NODEBACKEND_API NodeEditorInterface
+    class NBE_API NodeEditorInterface
     {
     public:
         enum SelectionMode

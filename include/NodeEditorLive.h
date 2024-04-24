@@ -14,7 +14,7 @@ namespace nbe
     class MemoryNodeLibrary;
     class SelectionLive;
 
-    class NODEBACKEND_API NodeEditorLive : public NodeEditorInterface
+    class NBE_API NodeEditorLive : public NodeEditorInterface
     {
     public:
     public:

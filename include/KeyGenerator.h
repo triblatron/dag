@@ -10,7 +10,7 @@
 
 namespace nbe
 {
-    class NODEBACKEND_API KeyGenerator
+    class NBE_API KeyGenerator
     {
     public:
         virtual ~KeyGenerator() = default;

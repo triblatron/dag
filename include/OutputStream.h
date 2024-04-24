@@ -13,7 +13,7 @@
 
 namespace nbe
 {
-    class NODEBACKEND_API OutputStream : public Stream
+    class NBE_API OutputStream : public Stream
     {
     public:
         virtual OutputStream& writeBuf(const value_type* buf, std::size_t len) = 0;

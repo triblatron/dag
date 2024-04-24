@@ -28,7 +28,7 @@ namespace nbe
     class Table;
     typedef std::vector<Node*> NodeArray;
 
-	class NODEBACKEND_API Graph : public KeyGenerator
+	class NBE_API Graph : public KeyGenerator
 	{
     public:
 	public:

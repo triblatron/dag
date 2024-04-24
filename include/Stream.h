@@ -10,7 +10,7 @@
 
 namespace nbe
 {
-    class NODEBACKEND_API Stream
+    class NBE_API Stream
     {
     public:
         typedef std::uint8_t value_type;

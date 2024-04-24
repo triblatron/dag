@@ -4,7 +4,7 @@
 
 namespace nbe
 {
-    struct NODEBACKEND_API ErrorDescriptor
+    struct NBE_API ErrorDescriptor
     {
         int code;
         const char * name;

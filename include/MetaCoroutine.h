@@ -8,7 +8,7 @@ namespace nbe
 {
     class Lua;
 
-    class NODEBACKEND_API MetaCoroutine
+    class NBE_API MetaCoroutine
     {
     public:
         enum Error

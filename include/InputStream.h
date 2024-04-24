@@ -13,7 +13,7 @@
 
 namespace nbe
 {
-    class NODEBACKEND_API InputStream : public Stream
+    class NBE_API InputStream : public Stream
     {
     public:
         virtual InputStream& readBuf(value_type* buf, std::size_t len) = 0;

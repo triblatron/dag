@@ -14,7 +14,7 @@
 
 namespace nbe
 {
-/*	class NODEBACKEND_API TypedPortBase : public Port
+/*	class NBE_API TypedPortBase : public Port
 	{
 	public:
 		explicit TypedPortBase(Node* parent, MetaPort* metaPort);

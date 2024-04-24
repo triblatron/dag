@@ -4,7 +4,7 @@
 
 namespace nbe
 {
-	class NODEBACKEND_API NodeCategory
+	class NBE_API NodeCategory
 	{
 	public:
 		enum  Category

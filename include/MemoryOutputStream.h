@@ -12,7 +12,7 @@ namespace nbe
 {
     class ByteBuffer;
 
-    class NODEBACKEND_API MemoryOutputStream : public OutputStream
+    class NBE_API MemoryOutputStream : public OutputStream
     {
     public:
         explicit MemoryOutputStream(ByteBuffer* buf);

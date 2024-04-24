@@ -12,7 +12,7 @@
 
 namespace nbe
 {
-    class NODEBACKEND_API DebugPrinter
+    class NBE_API DebugPrinter
     {
     public:
         void setStr(std::ostream* str)

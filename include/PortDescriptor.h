@@ -11,7 +11,7 @@
 
 namespace nbe
 {
-	struct NODEBACKEND_API PortDescriptor
+	struct NBE_API PortDescriptor
 	{
 		std::int64_t id;
 		std::string name;

@@ -6,7 +6,7 @@
 
 namespace nbe
 {
-    class NODEBACKEND_API Command : public Action
+    class NBE_API Command : public Action
     {
     public:
         virtual ~Command() = default;

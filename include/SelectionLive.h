@@ -9,7 +9,7 @@
 
 namespace nbe
 {
-    class NODEBACKEND_API SelectionLive : public SelectionInterface
+    class NBE_API SelectionLive : public SelectionInterface
     {
     public:
         SelectionLive() = default;
