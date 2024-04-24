@@ -24,6 +24,7 @@ A Graph will provd3 the following operations:
 * Serialise to a binary stream
 * Construct from a binary stream
 * Determine an evaluation order to satisfy dependencies between Nodes
+* Persistence to a Lua based file format
 
 A Port will support:
 * Add an incoming connection
@@ -49,4 +50,7 @@ There will be a customisable value type based on std::variant
 
 * C++ 17
 * Lua >= 5.4
+* possibly a base library that provides   
+  * the Lua interface
+  * stream interface
 
