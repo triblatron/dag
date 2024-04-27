@@ -1,0 +1,23 @@
+graph=
+{
+    nodes=
+    {
+        {
+            id=0,
+            class="NodePlugin.DynamicNode",
+            name="node1",
+            category="Group",
+            numDynamicPortDescriptors=0,
+            flags=0x0,
+            ports=
+            {
+            },
+        },
+    },
+    signalPaths=
+    {
+    },
+    children=
+    {
+    }
+}

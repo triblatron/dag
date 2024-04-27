@@ -2220,7 +2220,7 @@ TEST(NodeLibraryTest, testRegisterNewNodeSucceeds)
 
 }
 
-TEST(NodeLibraryTest, testPersistNodeFromPlugin)
+TEST(GraphTest, testPersistNodeFromPlugin)
 {
     nbe::NodePluginScanner scanner;
     nbe::MemoryNodeLibrary nodeLib;
@@ -2236,6 +2236,19 @@ TEST(NodeLibraryTest, testPersistNodeFromPlugin)
     graph->toLua(str);
     auto graph2 = nbe::Graph::fromString(nodeLib, str.str().c_str());
     EXPECT_EQ(*graph,*graph2);
+    delete graph2;
+    delete graph;
+}
+
+TEST(GraphTest, testLoadGraphWithNodesFromPlugin)
+{
+    nbe::NodePluginScanner scanner;
+    nbe::MemoryNodeLibrary nodeLib;
+
+    scanner.scan(nodeLib, nodeLib);
+    auto graph = nbe::Graph::fromFile(nodeLib, "etc/tests/Graph/nodesFromPlugin.lua");
+    ASSERT_NE(nullptr, graph);
+    delete graph;
 }
 
 class GraphTest_testReadFromLuaThenSerialise : public ::testing::TestWithParam<std::tuple<const char*>>
