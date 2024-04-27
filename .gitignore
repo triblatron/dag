@@ -1,0 +1,5 @@
+*.o.d
+a.out
+*.cookies
+*.cpp.o
+*.o
