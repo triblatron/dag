@@ -12,6 +12,11 @@
 
 #include <string>
 
+#if defined(HAVE_WINDOWS_H)
+#define NOMINMAX
+#include <Windows.h>
+#endif // HAVE_WINDOWS_H
+
 namespace nbe
 {
 
@@ -20,9 +25,13 @@ namespace nbe
     public:
 #if defined(__linux__)
         typedef void* Handle;
+#elif defined(_WIN32)
+        typedef HINSTANCE Handle;
 #endif
     public:
         explicit DynamicLibrary(Handle handle);
+
+        ~DynamicLibrary();
 
         void* getProcAddress(const char* name);
 

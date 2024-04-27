@@ -14,7 +14,7 @@
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
     #  if defined( INF_LIBRARY_STATIC )
     #    define NBE_API
-    #  elif defined( INF_LIBRARY )
+    #  elif defined( NODEBACKEND_LIBRARY )
     #    define NBE_API   __declspec(dllexport)
     #  else
     #    define NBE_API   __declspec(dllimport)

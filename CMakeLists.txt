@@ -64,6 +64,7 @@ SET( nodebackend_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/PrettyPrinter.cpp
         src/SelectionLive.cpp
         src/SignalPath.cpp
+		src/SignalPathDef.cpp
         src/Transfer.cpp
         src/Types.cpp
         src/UnionValue.cpp
@@ -75,11 +76,11 @@ ADD_LIBRARY( nodebackend SHARED ${nodebackend_SRC} )
 
 TARGET_INCLUDE_DIRECTORIES( nodebackend PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR})
 TARGET_LINK_DIRECTORIES( nodebackend PUBLIC ${DEP_ROOT}/lib )
-TARGET_LINK_LIBRARIES( nodebackend GTest::gtest )
+TARGET_LINK_LIBRARIES( nodebackend GTest::gtest ${LUA_LIBRARIES})
 
 set_target_properties( nodebackend PROPERTIES DEFINE_SYMBOL NODEBACKEND_LIBRARY )
 
-REMOVE_DEFINITIONS( -DINF_LIBRARY )
+REMOVE_DEFINITIONS( -DNODEBACKEND_LIBRARY )
 
 
 INCLUDE( CheckIncludeFile )
