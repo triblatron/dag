@@ -7,7 +7,7 @@
 #include "FileSystemTraverser.h"
 #include "NodeLibrary.h"
 
-#include <osgDB/DynamicLibrary>
+#include "DynamicLibrary.h"
 
 namespace nbe
 {
@@ -30,7 +30,7 @@ namespace nbe
                        {
                            if (entry.is_regular_file() && entry.path().extension() == pluginExtension)
                            {
-                               osgDB::DynamicLibrary* lib = osgDB::DynamicLibrary::loadLibrary(entry.path().string());
+                               DynamicLibrary* lib = DynamicLibrary::loadLibrary(entry.path().string());
                                if (lib != nullptr)
                                {
                                    InitFunc initFunc = reinterpret_cast<InitFunc>(lib->getProcAddress("init"));

@@ -8,9 +8,9 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 FIND_PACKAGE(GTest)
 FIND_PACKAGE(benchmark REQUIRED)
 FIND_PACKAGE(Lua 5.4.6 EXACT)
-FIND_PACKAGE(OpenSceneGraph REQUIRED OpenThreads osg osgDB osgGA osgUtil osgText osgViewer)
 
-SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h include/ByteBuffer.h include/Class.h include/Command.h include/CreateNode.h include/DebugPrinter.h include/FileSystemTraverser.h include/Graph.h include/InputStream.h include/MemoryInputStream.h include/MemoryNodeLibrary.h include/MemoryOutputStream.h include/MetaCoroutine.h include/MetaOperation.h include/MetaPort.h include/NodeCategory.h include/NodeDescriptor.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodeLibrary.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h include/OutputStream.h include/Port.h include/PortDescriptor.h include/SelectionInterface.h include/SelectionLive.h include/SignalPath.h include/SignalPathDef.h include/Stream.h include/Transfer.h include/TypedPort.h include/Types.h include/TypeTraits.h include/Value.h )
+SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h include/ByteBuffer.h include/Class.h include/Command.h include/CreateNode.h include/DebugPrinter.h include/FileSystemTraverser.h include/Graph.h include/InputStream.h include/MemoryInputStream.h include/MemoryNodeLibrary.h include/MemoryOutputStream.h include/MetaCoroutine.h include/MetaOperation.h include/MetaPort.h include/NodeCategory.h include/NodeDescriptor.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodeLibrary.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h include/OutputStream.h include/Port.h include/PortDescriptor.h include/SelectionInterface.h include/SelectionLive.h include/SignalPath.h include/SignalPathDef.h include/Stream.h include/Transfer.h include/TypedPort.h include/Types.h include/TypeTraits.h include/Value.h
+        include/DynamicLibrary.h)
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
 
@@ -36,6 +36,7 @@ SET( nodebackend_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/Command.cpp
         src/CreateNode.cpp
         src/DebugPrinter.cpp
+        src/DynamicLibrary.cpp
         src/FileSystemTraverser.cpp
         src/Graph.cpp
         src/InputStream.cpp
@@ -66,12 +67,13 @@ SET( nodebackend_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/Transfer.cpp
         src/Types.cpp
         src/UnionValue.cpp
-        src/MetaClass.cpp)
+        src/MetaClass.cpp
+)
 
 
 ADD_LIBRARY( nodebackend SHARED ${nodebackend_SRC} )
 
-TARGET_INCLUDE_DIRECTORIES( nodebackend PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${OSGDB_INCLUDE_DIR} ${LUA_INCLUDE_DIR})
+TARGET_INCLUDE_DIRECTORIES( nodebackend PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR})
 TARGET_LINK_DIRECTORIES( nodebackend PUBLIC ${DEP_ROOT}/lib )
 TARGET_LINK_LIBRARIES( nodebackend GTest::gtest )
 
@@ -85,7 +87,7 @@ INCLUDE( CheckIncludeFileCXX )
 
 
 #ADD_EXECUTABLE( benchmarkRepton src/benchmarkRepton.cpp include/Node.h include/Transfer.h include/SignalPathDef.h)
-#TARGET_INCLUDE_DIRECTORIES( benchmarkRepton PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR} ${OSGDB_INCLUDE_DIR} ${ANTLR_Reptol_OUTPUT_DIR})
+#TARGET_INCLUDE_DIRECTORIES( benchmarkRepton PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR} ${ANTLR_Reptol_OUTPUT_DIR})
 
 #SET(BENCHMARK_LIBS ${benchmark_LIBRARY})
 #IF (WIN32)

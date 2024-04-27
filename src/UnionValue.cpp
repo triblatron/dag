@@ -36,10 +36,6 @@ namespace nbe
             delete _value.value.s;
             _value.value.s = nullptr;
             break;
-        case TYPE_VEC3D:
-            delete _value.value.v;
-            _value.value.v = nullptr;
-            break;
         default:
             break;
         }
@@ -57,10 +53,6 @@ namespace nbe
         case TYPE_STRING:
             delete _value.value.s;
             _value.value.s = nullptr;
-            break;
-        case TYPE_VEC3D:
-            delete _value.value.v;
-            _value.value.v = nullptr;
             break;
         default:
             break;
@@ -80,10 +72,6 @@ namespace nbe
             delete _value.value.s;
             _value.value.s = nullptr;
             break;
-        case TYPE_VEC3D:
-            delete _value.value.v;
-            _value.value.v = nullptr;
-            break;
         default:
             break;
         }
@@ -102,10 +90,6 @@ namespace nbe
             delete _value.value.s;
             _value.value.s = nullptr;
             break;
-        case TYPE_VEC3D:
-            delete _value.value.v;
-            _value.value.v = nullptr;
-            break;
         default:
             break;
         }
@@ -115,29 +99,7 @@ namespace nbe
         
         return *this;
     }
-    
-    UnionValue& UnionValue::operator=(osg::Vec3d* v)
-    {
-        switch (_value.type)
-        {
-        case TYPE_STRING:
-            delete _value.value.s;
-            _value.value.s = nullptr;
-            break;
-        case TYPE_VEC3D:
-            delete _value.value.v;
-            _value.value.v = nullptr;
-            break;
-        default:
-            break;
-        }
-        
-        _value.type = TYPE_VEC3D;
-        _value.value.v = v;
-        
-        return *this;
-    }
-    
+
     UnionValue& UnionValue::operator ++()
     {
         switch ( _value.type)

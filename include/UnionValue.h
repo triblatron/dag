@@ -4,11 +4,6 @@
 #include <cstdint>
 #include <variant>
 
-namespace osg
-{
-    class Vec3d;
-}
-
 namespace nbe
 {    
     class NBE_API UnionValue
@@ -20,21 +15,18 @@ namespace nbe
             TYPE_DOUBLE,
             TYPE_BOOL,
             TYPE_STRING,
-            TYPE_VEC3D
         };
     public:
         explicit UnionValue(std::int32_t i);
         explicit UnionValue(double d);
         explicit UnionValue(bool b);
         explicit UnionValue(std::string* s);
-        explicit UnionValue(osg::Vec3d* v);
-        
+
         UnionValue& operator=(std::int32_t i);
         UnionValue& operator=(double d);
         UnionValue& operator=(bool b);
         UnionValue& operator=(std::string* s);
-        UnionValue& operator=(osg::Vec3d* v);
-        
+
         UnionValue& operator++();
         
         Type index() const
@@ -50,7 +42,6 @@ namespace nbe
                 double d;
                 bool b;
                 std::string* s;
-                osg::Vec3d* v;
             } value;
             Type type;
         };
