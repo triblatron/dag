@@ -10,6 +10,7 @@
 #include "InputStream.h"
 #include "OutputStream.h"
 #include "NodePlugin.h"
+#include "MetaPort.h"
 
 #include <vector>
 
@@ -91,6 +92,18 @@ public:
         return nullptr;
     }
 
+    void addDynamicPort(nbe::Port* port) override
+    {
+        if (port != nullptr)
+        {
+            _dynamicPorts.push_back(port);
+            nbe::MetaPort desc;
+            desc.name = port->name();
+            desc.type = port->type();
+            desc.direction = port->dir();
+            _dynamicMetaPorts.push_back(desc);
+        }
+    }
     nbe::Port* dynamicPort(size_t index) override
     {
         if (index<_dynamicPorts.size())

@@ -2248,6 +2248,11 @@ TEST(GraphTest, testLoadGraphWithNodesFromPlugin)
     scanner.scan(nodeLib, nodeLib);
     auto graph = nbe::Graph::fromFile(nodeLib, "etc/tests/Graph/nodesFromPlugin.lua");
     ASSERT_NE(nullptr, graph);
+    auto node = graph->node(0);
+    ASSERT_NE(nullptr, node);
+    nbe::TypedPort<double>* port = dynamic_cast<nbe::TypedPort<double>*>(node->dynamicPort(0));
+    ASSERT_NE(nullptr, port);
+    EXPECT_EQ(1.0, port->value());
     delete graph;
 }
 
