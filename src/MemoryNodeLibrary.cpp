@@ -38,7 +38,7 @@ namespace nbe
 	
     Node* MemoryNodeLibrary::instantiateNode(NodeID id, const std::string& className, const std::string& name)
     {
-	    if (auto const it = _classes.find(className); it != _classes.end())
+	    if (auto const it = _classes.find(className); it != _classes.end() )
         {
 	        const auto copy = it->second->clone();
             copy->setId(id);

@@ -2220,6 +2220,24 @@ TEST(NodeLibraryTest, testRegisterNewNodeSucceeds)
 
 }
 
+TEST(NodeLibraryTest, testPersistNodeFromPlugin)
+{
+    nbe::NodePluginScanner scanner;
+    nbe::MemoryNodeLibrary nodeLib;
+
+    scanner.scan(nodeLib, nodeLib);
+    auto node = nodeLib.instantiateNode(nodeLib.nextNodeID(), "NodePlugin.DynamicNode", "node1");
+    ASSERT_NE(nullptr, node);
+    nbe::Graph* graph = new nbe::Graph();
+    graph->setNodeLibrary(&nodeLib);
+    graph->addNode(node);
+    ASSERT_EQ(size_t{1}, graph->numNodes());
+    std::ostringstream  str;
+    graph->toLua(str);
+    auto graph2 = nbe::Graph::fromString(nodeLib, str.str().c_str());
+    EXPECT_EQ(*graph,*graph2);
+}
+
 class GraphTest_testReadFromLuaThenSerialise : public ::testing::TestWithParam<std::tuple<const char*>>
 {
 

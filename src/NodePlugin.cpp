@@ -70,7 +70,7 @@ public:
 
     [[nodiscard]] const char* className() const override
     {
-        return "DynamicNode";
+        return "NodePlugin.DynamicNode";
     }
 
     void describe(nbe::NodeDescriptor& descriptor) const override
