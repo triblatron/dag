@@ -80,7 +80,6 @@ namespace nbe
         //! \note A deep copy of Ports is required.
         virtual Node* clone() = 0;
 
-
         void setId(NodeID id)
         {
             _id = id;

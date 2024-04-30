@@ -14,7 +14,7 @@ graph=
                     class="TypedPort<double>",
                     direction="DIR_IN",
                     type="TYPE_DOUBLE",
-                    value=2.0,
+                    value=1.0,
                 }
             }
         },

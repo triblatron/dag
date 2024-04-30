@@ -2018,7 +2018,7 @@ TEST_P(GraphTest_fromLuaFile, testFromFile)
 
 INSTANTIATE_TEST_SUITE_P(GraphTest, GraphTest_fromLuaFile, ::testing::Values(
     std::make_tuple("etc/tests/Graph/onenode.lua", std::size_t{ 1 }, std::size_t{ 0 }, nbe::NodeID{ 0 }, std::size_t{ 0 }, nbe::Value{2.0}, std::size_t{0}, std::size_t{0}, std::size_t{0} ),
-    std::make_tuple("etc/tests/Graph/connectednodes.lua", std::size_t{ 2 }, std::size_t{ 1 }, nbe::NodeID{ 0 }, std::size_t{ 0 }, nbe::Value{2.0}, std::size_t{1}, std::size_t{0}, std::size_t{ 0 }),
+    std::make_tuple("etc/tests/Graph/connectednodes.lua", std::size_t{ 2 }, std::size_t{ 1 }, nbe::NodeID{ 0 }, std::size_t{ 0 }, nbe::Value{1.0}, std::size_t{1}, std::size_t{0}, std::size_t{ 0 }),
     std::make_tuple("etc/tests/Graph/withchildgraph.lua", std::size_t{ 1 }, std::size_t{ 0 }, nbe::NodeID{ 0 }, std::size_t{ 0 }, nbe::Value{2.0}, std::size_t{0}, std::size_t{0}, std::size_t{ 1 }),
     std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua", std::size_t{ 1 }, std::size_t{ 0 }, nbe::NodeID{ 0 }, std::size_t{ 0 }, nbe::Value{2.0}, std::size_t{0}, std::size_t{0}, std::size_t{ 2 })
 ));
@@ -2301,3 +2301,28 @@ INSTANTIATE_TEST_SUITE_P(Graph, GraphTest_testReadFromLuaThenSerialise, ::testin
         std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua"),
         std::make_tuple("etc/tests/Graph/withmultiplechildren.lua")
         ));
+
+TEST(GraphTest, testEvaluate)
+{
+    nbe::MemoryNodeLibrary nodeLib;
+    nbe::Graph* sut = nbe::Graph::fromFile(nodeLib, "etc/tests/Graph/connectednodes.lua");
+    ASSERT_NE(nullptr, sut);
+    nbe::NodeArray order;
+    sut->topologicalSort(&order);
+    for (auto n : order)
+    {
+        for (size_t i=0; i<n->totalPorts(); ++i)
+        {
+            nbe::ValueVisitor visitor;
+            n->dynamicPort(i)->accept(visitor);
+            nbe::SetValueVisitor setVisitor(visitor.value());
+            for (auto o : n->dynamicPort(i)->outgoingConnections())
+            {
+                o->accept(setVisitor);
+            }
+            nbe::ValueVisitor testVisitor;
+            n->dynamicPort(i)->accept(testVisitor);
+            EXPECT_EQ(2.0, double(testVisitor.value()));
+        }
+    }
+}

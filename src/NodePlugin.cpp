@@ -104,6 +104,7 @@ public:
             _dynamicMetaPorts.push_back(desc);
         }
     }
+    
     nbe::Port* dynamicPort(size_t index) override
     {
         if (index<_dynamicPorts.size())
