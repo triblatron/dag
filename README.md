@@ -46,6 +46,11 @@ There is a Lua based persistent format that supports all components of a Graph i
 
 There will be a customisable value type based on std::variant
 
+## Constraints on port values
+The Port has a MetaPort to describe its type.  One possible type for a Port is an enum.  This will typically be mapped to a combo box in the UI.  It can take on a range of values each with an associated string to describe it.  Examples would be units for a maths node or times of day in a scenario specification.
+
+The Lua persistent format and serialisation will both need to carry the constraints, preferably only once.  This is easy to achieve for serialisation but it is unclear how it will map to Lua.  We would have to announce Node types once with their MetaPorts but that does not cover DynamicNodes or Boundary Nodes which have a variable number of Ports.  We will need to announce unique MetaPorts the first time they are encountered and reference them subsequently like in serialisation.
+
 ## Dependencies
 
 * C++ 17
