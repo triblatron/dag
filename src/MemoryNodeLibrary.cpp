@@ -10,6 +10,7 @@
 #include "OutputStream.h"
 #include "Nodes.h"
 #include "Boundary.h"
+#include "MathNode.h"
 
 namespace nbe
 {
@@ -26,6 +27,7 @@ namespace nbe
         _classes["Derived"] = new Derived(*this, "derived1", nbe::NodeCategory::CAT_CONDITION);
         _classes["Final"] = new Final(*this, "final1", nbe::NodeCategory::CAT_GROUP);
         _classes["Boundary"] = new Boundary(*this, "b1", nbe::NodeCategory::CAT_GROUP);
+        _classes["MathsNode"] = new MathsNode(*this, "maths1", nbe::NodeCategory::CAT_ACTION);
     }
 
     MemoryNodeLibrary::~MemoryNodeLibrary()
@@ -48,7 +50,7 @@ namespace nbe
         }
         else
         {
-            throw std::runtime_error("Unknown class");
+            throw std::runtime_error("Unknown class \"" + className + "\"");
         }
         return nullptr;
     }

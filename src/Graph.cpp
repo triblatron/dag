@@ -623,4 +623,23 @@ namespace nbe
             }
         }
     }
+
+    void Graph::evaluate(const NodeArray& order)
+    {
+        for (auto n : order)
+        {
+            for (size_t i=0; i<n->totalPorts(); ++i)
+            {
+                n->update();
+                nbe::ValueVisitor visitor;
+                n->dynamicPort(i)->accept(visitor);
+                nbe::SetValueVisitor setVisitor(visitor.value());
+                for (auto o : n->dynamicPort(i)->outgoingConnections())
+                {
+                    o->accept(setVisitor);
+                }
+            }
+        }
+
+    }
 }

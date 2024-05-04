@@ -72,6 +72,16 @@ namespace nbe
         //! \param[in] str The stream
         virtual OutputStream& write(OutputStream& str) const = 0;
 
+        [[nodiscard]]virtual size_t totalPorts() const
+        {
+            return size_t{ 0 };
+        }
+
+        virtual void update()
+        {
+            // Do nothing.
+        }
+
         //! Base class implementation of operator==().
         //! \note Typically called by a concrete implementation of equals().
         bool operator==(const Node& other) const;
@@ -79,6 +89,7 @@ namespace nbe
         //! Clone ourself to support the Prototype pattern
         //! \note A deep copy of Ports is required.
         virtual Node* clone() = 0;
+
 
         void setId(NodeID id)
         {
@@ -109,11 +120,6 @@ namespace nbe
 		virtual void addDynamicPort(Port* port)
 		{
 			throw std::runtime_error("addDynamicPort():Not implemented for " + std::string(className()));
-		}
-
-		[[nodiscard]]virtual size_t totalPorts() const
-		{
-			return size_t{ 0 };
 		}
 
         [[nodiscard]]size_t indexOfPort(Port* port)

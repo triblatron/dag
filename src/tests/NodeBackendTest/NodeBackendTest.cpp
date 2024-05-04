@@ -2302,27 +2302,40 @@ INSTANTIATE_TEST_SUITE_P(Graph, GraphTest_testReadFromLuaThenSerialise, ::testin
         std::make_tuple("etc/tests/Graph/withmultiplechildren.lua")
         ));
 
-TEST(GraphTest, testEvaluate)
+class GraphTest_testEvaluate : public ::testing::TestWithParam<std::tuple<const char*, nbe::NodeID, std::size_t, double>>
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    nbe::Graph* sut = nbe::Graph::fromFile(nodeLib, "etc/tests/Graph/connectednodes.lua");
-    ASSERT_NE(nullptr, sut);
-    nbe::NodeArray order;
-    sut->topologicalSort(&order);
-    for (auto n : order)
+public:
+    void TearDown()
     {
-        for (size_t i=0; i<n->totalPorts(); ++i)
-        {
-            nbe::ValueVisitor visitor;
-            n->dynamicPort(i)->accept(visitor);
-            nbe::SetValueVisitor setVisitor(visitor.value());
-            for (auto o : n->dynamicPort(i)->outgoingConnections())
-            {
-                o->accept(setVisitor);
-            }
-            nbe::ValueVisitor testVisitor;
-            n->dynamicPort(i)->accept(testVisitor);
-            EXPECT_EQ(2.0, double(testVisitor.value()));
-        }
+        delete _sut;
     }
+protected:
+    nbe::MemoryNodeLibrary _nodeLib;
+    nbe::Graph* _sut;
+};
+
+TEST_P(GraphTest_testEvaluate, testEvaluate)
+{
+    const char* graphFilename = std::get<0>(GetParam());
+    nbe::NodeID nodeId = std::get<1>(GetParam());
+    std::size_t portIndex = std::get<2>(GetParam());
+    double value = std::get<3>(GetParam());
+
+    _sut = nbe::Graph::fromFile(_nodeLib, graphFilename);
+    ASSERT_NE(nullptr, _sut);
+    nbe::NodeArray order;
+    _sut->topologicalSort(&order);
+    _sut->evaluate(order);
+    nbe::Node* actualNode = _sut->node(nodeId);
+    ASSERT_NE(nullptr, actualNode);
+    nbe::Port* actualPort = actualNode->dynamicPort(portIndex);
+    ASSERT_NE(nullptr, actualPort);
+    nbe::ValueVisitor visitor;
+    ASSERT_EQ(nbe::PortType::TYPE_DOUBLE, actualPort->type());
+    actualPort->accept(visitor);
+    EXPECT_EQ(value, visitor.value().operator double());
 }
+
+INSTANTIATE_TEST_SUITE_P(Graph, GraphTest_testEvaluate, ::testing::Values(
+        std::make_tuple("etc/tests/Graph/constraints.lua", 0, 2, 1.0)
+        ));

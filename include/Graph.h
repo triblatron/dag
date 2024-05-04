@@ -142,6 +142,8 @@ namespace nbe
 
         TopoSortResult topologicalSort(NodeArray* order);
 
+        void evaluate(const NodeArray& order);
+
         bool hasEdges() const;
 
         void findAllNodes(NodeArray* nodes);
