@@ -94,23 +94,57 @@ namespace nbe
             Node(str, nodeLib)
 
     {
-        _angle = dynamic_cast<TypedPort<double>*>(str.readPort(nodeLib));
-        _unit = dynamic_cast<TypedPort<int64_t>*>(str.readPort(nodeLib));
-        _output = dynamic_cast<TypedPort<double>*>(str.readPort(nodeLib));
-//        Stream::ObjId in1Id = 0;
-//        Stream::Ref in1Ref = str.readRef(&in1Id);
-//
-//        if (in1Id != 0)
-//        {
-//            if (in1Ref != nullptr)
-//            {
-//                _angle = static_cast<TypedPort<double>*>(in1Ref);
-//            }
-//            else
-//            {
-//                _angle = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str));
-//            }
-//        }
+//        _angle = dynamic_cast<TypedPort<double>*>(str.readPort(nodeLib));
+//        _unit = dynamic_cast<TypedPort<int64_t>*>(str.readPort(nodeLib));
+//        _output = dynamic_cast<TypedPort<double>*>(str.readPort(nodeLib));
+        {
+            Stream::ObjId in1Id = 0;
+            Stream::Ref in1Ref = str.readRef(&in1Id);
+
+            if (in1Id != 0)
+            {
+                if (in1Ref != nullptr)
+                {
+                    _angle = static_cast<TypedPort<double>*>(in1Ref);
+                }
+                else
+                {
+                    _angle = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str));
+                }
+            }
+        }
+        {
+            Stream::ObjId in1Id = 0;
+            Stream::Ref in1Ref = str.readRef(&in1Id);
+
+            if (in1Id != 0)
+            {
+                if (in1Ref != nullptr)
+                {
+                    _unit = static_cast<TypedPort<std::int64_t>*>(in1Ref);
+                }
+                else
+                {
+                    _unit = dynamic_cast<TypedPort<std::int64_t>*>(nodeLib.instantiatePort(str));
+                }
+            }
+        }
+        {
+            Stream::ObjId in1Id = 0;
+            Stream::Ref in1Ref = str.readRef(&in1Id);
+
+            if (in1Id != 0)
+            {
+                if (in1Ref != nullptr)
+                {
+                    _output = static_cast<TypedPort<double>*>(in1Ref);
+                }
+                else
+                {
+                    _output = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str));
+                }
+            }
+        }
     }
 
     MathsNode::MathsNode(const MathsNode &other)

@@ -2299,7 +2299,8 @@ INSTANTIATE_TEST_SUITE_P(Graph, GraphTest_testReadFromLuaThenSerialise, ::testin
         std::make_tuple("etc/tests/Graph/typedport.lua"),
         std::make_tuple("etc/tests/Graph/withchildgraph.lua"),
         std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua"),
-        std::make_tuple("etc/tests/Graph/withmultiplechildren.lua")
+        std::make_tuple("etc/tests/Graph/withmultiplechildren.lua"),
+        std::make_tuple("etc/tests/Graph/constraints.lua")
         ));
 
 class GraphTest_testEvaluate : public ::testing::TestWithParam<std::tuple<const char*, nbe::NodeID, std::size_t, double>>

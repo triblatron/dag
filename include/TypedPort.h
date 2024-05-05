@@ -66,7 +66,7 @@ namespace nbe
             switch(type())
             {
                 case PortType::TYPE_INT:
-                    className = "TypedPort<double>";
+                    className = "TypedPort<int64_t>";
                     break;
                 case PortType::TYPE_DOUBLE:
                     className = "TypedPort<double>";
