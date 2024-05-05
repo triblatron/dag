@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-PROJECT(reptoninfinity)
+PROJECT(nodebackend)
 cmake_policy(SET CMP0114 NEW)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
