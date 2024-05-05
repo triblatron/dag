@@ -344,7 +344,7 @@ namespace nbe
         MetaPort* _metaPort{nullptr};
         Node* _parent{nullptr};
         bool _removed{false};
-        Value _value{0.0};
+//        Value _value{0.0};
         std::uint32_t _flags{0x0};
 	};
 

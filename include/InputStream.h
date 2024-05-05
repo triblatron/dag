@@ -100,8 +100,7 @@ namespace nbe
             Ref ref = readRef(&id);
             if (id != 0)
             {
-                _lastReadId = id;
-                if (_lastReadId-1<_ptrLookup.size())
+                if (ref!=nullptr)
                 {
                     return static_cast<Port*>(ref);
                 }
