@@ -11,7 +11,9 @@ FIND_PACKAGE(Lua 5.4.6 EXACT)
 
 SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h include/ByteBuffer.h include/Class.h include/Command.h include/CreateNode.h include/DebugPrinter.h include/FileSystemTraverser.h include/Graph.h include/InputStream.h include/MemoryInputStream.h include/MemoryNodeLibrary.h include/MemoryOutputStream.h include/MetaCoroutine.h include/MetaOperation.h include/MetaPort.h include/NodeCategory.h include/NodeDescriptor.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodeLibrary.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h include/OutputStream.h include/Port.h include/PortDescriptor.h include/SelectionInterface.h include/SelectionLive.h include/SignalPath.h include/SignalPathDef.h include/Stream.h include/Transfer.h include/TypedPort.h include/Types.h include/TypeTraits.h include/Value.h
         include/DynamicLibrary.h
-		include/MathNode.h)
+		include/MathNode.h
+		include/NodeEditorFrontEnd.h
+)
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
 
@@ -71,6 +73,7 @@ SET( nodebackend_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/UnionValue.cpp
         src/MetaClass.cpp
 		src/MathsNode.cpp
+		src/NodeEditorFrontEnd.cpp
 )
 
 
