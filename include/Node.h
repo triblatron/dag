@@ -55,7 +55,7 @@ namespace nbe
         virtual void describe(NodeDescriptor& descriptor) const = 0;
 
         //! \return A MetaPort corresponding to a given index.
-        //! \param[in] The index of the port, zero-based.
+        //! \param[in] index The index of the port, zero-based.
         [[nodiscard]]virtual const MetaPort * dynamicMetaPort(size_t index) const = 0;
 
         //! \return A Port corresponding to a given index
@@ -66,17 +66,22 @@ namespace nbe
         //! Create a Node of the same type as this from a stream.
         //! \param[in] str The stream from which to read the data required to create the Node.
         //! \param[in] nodeLib The NodeLibrary to create Ports
+        //! \note Making this virtual means we know the exact type of the node and not not have to resort to
+        //! dynamic_cast<>() or similar.
         virtual Node* create(InputStream& str, NodeLibrary& nodeLib) = 0;
 
-        //! Write ourself to a stream
+        //! Write ourself to a binary output stream
         //! \param[in] str The stream
         virtual OutputStream& write(OutputStream& str) const = 0;
 
+        //! \return The total number of Ports in this Node, including intrinsic and dynamic Ports.
         [[nodiscard]]virtual size_t totalPorts() const
         {
             return size_t{ 0 };
         }
 
+        //! Perform our computation based on inputs and settings.
+        //! \note This has an empty default implementation.
         virtual void update()
         {
             // Do nothing.
@@ -88,8 +93,9 @@ namespace nbe
 
         //! Clone ourself to support the Prototype pattern
         //! \note A deep copy of Ports is required.
+        //! \note Since this method is virtual, we know the exact type
+        //! and can just call the copy constructor on *this.
         virtual Node* clone() = 0;
-
 
         void setId(NodeID id)
         {
@@ -100,7 +106,6 @@ namespace nbe
         {
             return _id;
         }
-
 
 		void setName(const std::string& name)
 		{
@@ -117,11 +122,16 @@ namespace nbe
 			return _category;
 		}
 
+        //! Add a non-null dynamic port
+        //! This is in addition to the intrinsic ports described by MetaPorts.
+        //! \note The default implementation throws an exception
 		virtual void addDynamicPort(Port* port)
 		{
 			throw std::runtime_error("addDynamicPort():Not implemented for " + std::string(className()));
 		}
 
+        //! Find the index of a given Port.
+        //! \retval ~0ULL if the Port cannot be found.
         [[nodiscard]]size_t indexOfPort(Port* port)
         {
             for (auto i=0; i<totalPorts(); ++i)
@@ -192,13 +202,10 @@ namespace nbe
             return false;
         }
 
-        static void reset()
-        {
-            // Do nothing.
-        }
-
+        //! Pretty-print this node for debugging purposes.
         virtual void debug(DebugPrinter& printer) const;
 
+        //! Convert this Node to a Lua representation.
         virtual std::ostream& toLua(std::ostream& str);
 	private:
         NodeID _id{-1};

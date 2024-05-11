@@ -98,7 +98,9 @@ namespace nbe
 
         Port(Port &&port) = default;
 
-        explicit Port(InputStream& str, NodeLibrary& nodeLib);
+        //! Construct from a stream and a node library.
+        //! \note Requires the NodeLibrary to read the parent.
+        Port(InputStream& str, NodeLibrary& nodeLib);
 
         virtual ~Port();
 
@@ -191,11 +193,6 @@ namespace nbe
                 }
             }
         }
-
-		static void reset()
-		{
-			// Do nothing.
-		}
 
         [[nodiscard]] bool hasNoDependencies() const
         {

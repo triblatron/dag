@@ -3,3 +3,4 @@ a.out
 *.cookies
 *.cpp.o
 *.o
+docs/api

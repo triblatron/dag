@@ -59,5 +59,17 @@ namespace nbe
         }
 
         std::uint32_t _availableOperations{OP_ALL_BITS};
+
+        void setInProgress(std::uint32_t mask)
+        {
+            _inProgressOperation = mask;
+        }
+
+        bool isInProgres(std::uint32_t mask) const
+        {
+            return _inProgressOperation == mask;
+        }
+
+        std::uint32_t _inProgressOperation{0x0};
     };
 }

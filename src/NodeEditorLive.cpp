@@ -67,7 +67,7 @@ namespace nbe
 
     Status NodeEditorLive::selectNone()
     {
-        Status status;
+        Status status{Status::STATUS_OK};
         SelectionInterface::Cont s;
 
         _selection->set(s.begin(), s.end());
@@ -108,6 +108,7 @@ namespace nbe
         {
             _graph->removeNode(node);
             delete node;
+            status.status = Status::STATUS_OK;
             status.resultType = Status::RESULT_NODE;
             status.result.node = node;
         }
@@ -192,6 +193,7 @@ namespace nbe
         {
             path->source()->disconnect(*path->dest());
             _graph->removeSignalPath(path);
+            status.status = Status::STATUS_OK;
         }
         else
         {
@@ -281,6 +283,7 @@ namespace nbe
 
             _graph->addChild(child);
 
+            status.status = Status::STATUS_OK;
             status.resultType = Status::RESULT_GRAPH;
             status.result.graph = child;
         }

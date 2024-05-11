@@ -16,18 +16,26 @@ namespace nbe
     class Node;
     class Port;
 
+    //! The direction of a port.
     class NBE_API PortDirection
     {
     public:
         enum Direction
         {
+            //! Initial or invalid port direction.
             DIR_UNKNOWN,
+            //! Input port.
             DIR_IN,
+            //! Output port.
             DIR_OUT,
+            //! Internal port, cannot be connected.
             DIR_INTERNAL
         };
 
+        //! Parse a string representation of a port direction.
         static Direction parseFromString(const char* str);
+
+        //! Convert a port direction to a string.
         static const char* toString(Direction dir);
     };
 
@@ -36,17 +44,28 @@ namespace nbe
     public:
         enum Type
         {
+            //! A std::int64_t
             TYPE_INT,
+            //! A double-precision floating point number.
             TYPE_DOUBLE,
+            //! A std::string
             TYPE_STRING,
+            //! A bool
             TYPE_BOOL,
+            //! An osg::Vec3d
             TYPE_VEC3D,
+            //! An opaque pointer (void*).
             TYPE_OPAQUE,
+            //! A std::vector of values.
             TYPE_VECTOR,
+            //! Initial or invalid type.
             TYPE_UNKNOWN
         };
 
-        static Type parseFromString(const char*);
+        //! Parse a string representation of a port type.
+        static Type parseFromString(const char* str);
+
+        //! Convert a port type to a string.
         static const char* toString(Type type);
     };
 
@@ -109,18 +128,26 @@ namespace nbe
     INF_ID_DECLARE(TemplateID);
     INF_ID_DECLARE(SignalPathID);
 
+    //! A return value from an RPC.
     struct Status
     {
         enum StatusCode
         {
+            //! Success
             STATUS_OK,
+            //! A file could not be located.
             STATUS_FILE_NOT_FOUND,
+            //! An object could not be located.
             STATUS_OBJECT_NOT_FOUND,
+            //! An invalid port was specified.
             STATUS_INVALID_PORT,
-            STATUS_INVALID_SELECTION
+            //! An invalid selection was specified.
+            STATUS_INVALID_SELECTION,
+            //! An initial invalid status.
+            STATUS_UNKNOWN
         };
 
-        StatusCode status{STATUS_OK};
+        StatusCode status{STATUS_UNKNOWN};
         enum ResultType
         {
             RESULT_NONE,
@@ -152,11 +179,16 @@ namespace nbe
         Result result;
         
         Status()
-        :
-        status(STATUS_OK)
         {
-			resultType = RESULT_NONE;
+            // Do nothing.
 		}
+
+        explicit Status(StatusCode code)
+        :
+        status(code)
+        {
+            // Do nothing.
+        }
     };
 
     typedef std::unordered_set<Node*> NodeSet;

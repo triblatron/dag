@@ -34,7 +34,6 @@ class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const c
 
 TEST_P(MemoryNodeLibraryTest, checkInstantiate)
 {
-    nbe::Node::reset();
     nbe::MemoryNodeLibrary sut;
     const char* className = std::get<0>(GetParam());
     const char* name = std::get<1>(GetParam());
@@ -62,7 +61,6 @@ INSTANTIATE_TEST_SUITE_P(MemoryNodeLibraryInstantiateTest, MemoryNodeLibraryTest
 
 TEST(MemoryNodeLibraryTest_testClassNotFound, checkClassNotFound)
 {
-    nbe::Node::reset();
     nbe::MemoryNodeLibrary sut;
     ASSERT_THROW(sut.instantiateNode(0,"NotFound", "notFound1"), std::runtime_error);
 }
@@ -84,7 +82,6 @@ TEST_P(NodeCategoryTest, checkCategory)
     std::string className = std::get<0>(GetParam());
     std::string name = std::get<1>(GetParam());
     nbe::NodeCategory::Category category = std::get<2>(GetParam());
-    nbe::Node::reset();
     nbe::MemoryNodeLibrary nodeLib;
     nbe::Node* actual = nodeLib.instantiateNode(0, className, name);
     ASSERT_NE(nullptr, actual);
@@ -356,8 +353,6 @@ TEST(TypedPortTransfer, testConnectToMatchingType)
 
 TEST(NodeTest, testDescribe)
 {
-    nbe::Node::reset();
-    nbe::Port::reset();
     nbe::MemoryNodeLibrary nodeLib;
     nbe::Foo* foo = dynamic_cast<nbe::Foo*>(nodeLib.instantiateNode(0, "Foo", "foo1"));
     ASSERT_NE(nullptr, foo);

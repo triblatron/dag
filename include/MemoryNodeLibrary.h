@@ -36,6 +36,7 @@ namespace nbe
 
         OutputStream& write(OutputStream& str, Node* node) const override;
 
+        //! \note Delegates to Node::create() to get the exact type of the node.
         Node* instantiateNode(InputStream& str) override;
 
         Port* instantiatePort(const std::string& className, const std::string& name, PortType::Type type, PortDirection::Direction, Value value) override;

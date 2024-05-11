@@ -16,6 +16,7 @@ namespace nbe
     class NBE_API MemoryInputStream : public InputStream
     {
     public:
+        //! Construct from a buffer than has typically been filled by a MemoryOutputStream.
         explicit MemoryInputStream(ByteBuffer* buf);
 
         InputStream& readBuf(value_type* buf, std::size_t len) override;

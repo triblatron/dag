@@ -15,6 +15,7 @@ namespace nbe
     class NBE_API MemoryOutputStream : public OutputStream
     {
     public:
+        //! Construct from a byffer that is typically empty.
         explicit MemoryOutputStream(ByteBuffer* buf);
 
         OutputStream& writeBuf(const value_type* buf, std::size_t len) override;

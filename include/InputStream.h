@@ -13,6 +13,8 @@
 
 namespace nbe
 {
+    //! Input stream that supports reading arbitrary objects encoded as integer identifiers
+    //! Explicitly supports reading Nodes and Ports
     class NBE_API InputStream : public Stream
     {
     public:

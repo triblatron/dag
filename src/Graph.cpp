@@ -574,6 +574,7 @@ namespace nbe
         }
     }
 
+    //! Find a node by its path from the root of the form foo.child[n].child[m]...
     Node *Graph::findNode(const std::string& path)
     {
         // Simple case:The path is the name of a node in this Graph.
@@ -609,6 +610,7 @@ namespace nbe
         return nullptr;
     }
 
+    //! Find all SignalPaths recursively including child Graphs.
     void Graph::findAllSignalPaths(std::vector<SignalPath *> *allSignalPaths)
     {
         if (allSignalPaths!=nullptr)

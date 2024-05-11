@@ -46,6 +46,8 @@ namespace nbe
         // Do nothing.
     }
 
+    //! Reconnect to nodes of our output connections that are in the selection by adding new Ports
+    //! on the new destination Node.
     void Port::reconnectTo(NodeSet const &selection, Node *newDest)
     {
         //   if the destination input port has a parent of oldDest then
@@ -75,6 +77,8 @@ namespace nbe
 
     }
 
+    //! Reconnect from nodes of our incoming connections that are in the selection by  adding Ports on the new source
+    //! \note newSource is typically a Boundary node used during an AddChild operation.
     void Port::reconnectFrom(NodeSet const &selection, Node *newSource)
     {
         for (auto &oldOutput: _incomingConnections)
@@ -191,47 +195,17 @@ namespace nbe
         str.read(&numOutgoingConnections);
         for (auto i=0; i<numOutgoingConnections; ++i)
         {
-            Stream::ObjId portId = 0;
-            auto portRef = str.readRef(&portId);
-            Port* port = nullptr;
-            if (portId != 0)
-            {
-                if (portRef != nullptr)
-                {
-                    port = static_cast<Port*>(portRef);
-                }
-                else
-                {
-                    port = nodeLib.instantiatePort(str);
-                }
-            }
+            Port* port = str.readPort(nodeLib);
             if (port!=nullptr)
             {
                 addOutgoingConnection(port);
-            }
-            else
-            {
-                assert(false);
             }
         }
         std::size_t numIncomingConnections = 0;
         str.read(&numIncomingConnections);
         for (auto i=0; i<numIncomingConnections; ++i)
         {
-            Stream::ObjId portId = 0;
-            auto portRef = str.readRef(&portId);
-            Port* port = nullptr;
-            if (portId != 0)
-            {
-                if (portRef != nullptr)
-                {
-                    port = static_cast<Port*>(portRef);
-                }
-                else
-                {
-                    port = nodeLib.instantiatePort(str);
-                }
-            }
+            Port* port = str.readPort(nodeLib);
             if (port != nullptr)
             {
                 addIncomingConnection(port);

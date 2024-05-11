@@ -6,6 +6,13 @@
 
 namespace nbe
 {
+    //! A base class for commands using the Command pattern
+    //! This is effectively a kind of node but does not inherit Node
+    //! An implementation must be default-constructible for a
+    //! common interface.  It must also support setting arguments
+    //! via a generic interface.  This does not have to be
+    //! as efficient as for a Node, so setting arguments by
+    //! name is desirable.
     class NBE_API Command : public Action
     {
     public:

@@ -28,6 +28,7 @@ namespace nbe
         // Do nothing.        
     }
 
+    //! Include ID, name and category.
     void Node::describe(NodeDescriptor& descriptor) const
     {
         descriptor.id = _id;
@@ -35,6 +36,7 @@ namespace nbe
         descriptor.category = _category;
     }
 
+    //! Reconnect from newSource to each input Port whose parent is in selection by adding new Ports.
     void Node::reconnectInputs(NodeSet const& selection, Node *newSource)
     {
         // for each output port do
@@ -49,6 +51,7 @@ namespace nbe
         }
     }
 
+    //! Reconnect from each output Port whose parent is in selection to newDest by adding new Ports.
     void Node::reconnectOutputs(NodeSet const& selection, Node *newDest)
     {
         // for each output port do
