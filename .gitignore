@@ -4,3 +4,5 @@ a.out
 *.cpp.o
 *.o
 docs/api
+/cmake-build-release
+
