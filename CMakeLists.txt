@@ -94,15 +94,16 @@ INCLUDE( CheckIncludeFile )
 INCLUDE( CheckIncludeFileCXX )
 
 
-#ADD_EXECUTABLE( benchmarkRepton src/benchmarkRepton.cpp include/Node.h include/Transfer.h include/SignalPathDef.h)
-#TARGET_INCLUDE_DIRECTORIES( benchmarkRepton PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR} ${ANTLR_Reptol_OUTPUT_DIR})
+ADD_EXECUTABLE( NodeBackendBenchmark src/NodeBackendBenchmark.cpp include/Node.h include/Transfer.h include/SignalPathDef.h)
+TARGET_INCLUDE_DIRECTORIES( NodeBackendBenchmark PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR} ${ANTLR_Reptol_OUTPUT_DIR})
 
-#SET(BENCHMARK_LIBS ${benchmark_LIBRARY})
-#IF (WIN32)
-#	SET(BENCHMARK_LIBS ${BENCHMARK_LIBS} Shlwapi)
-#	target_compile_definitions(benchmarkRepton PUBLIC BENCHMARK_STATIC_DEFINE)
-#ENDIF(WIN32)
-#target_link_libraries(benchmarkRepton ${BENCHMARK_LIBS} inf)
+SET(BENCHMARK_LIBS ${benchmark_LIBRARY})
+#MESSAGE(${benchmark_LIBRARY})
+IF (WIN32)
+	SET(BENCHMARK_LIBS ${BENCHMARK_LIBS} Shlwapi)
+	target_compile_definitions(NodeBackendBenchmark PUBLIC BENCHMARK_STATIC_DEFINE)
+ENDIF(WIN32)
+target_link_libraries(NodeBackendBenchmark benchmark::benchmark nodebackend)
 
 #ADD_EXECUTABLE( demoSerialiseGraph src/demos/demoSerialiseGraph.cpp )
 #target_link_libraries(demoSerialiseGraph inf)
@@ -150,7 +151,7 @@ CONFIGURE_FILE( etc/setup.bat.in ${PROJECT_BINARY_DIR}/etc/setup.bat )
 
 SUBDIRS( src/tests/NodeBackendTest )
 
-INSTALL( TARGETS nodebackend
+INSTALL( TARGETS nodebackend NodeBackendBenchmark
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
