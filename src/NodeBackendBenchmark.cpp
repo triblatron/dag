@@ -917,4 +917,29 @@ static void BM_SelectionLiveToggle(benchmark::State& state)
 
 BENCHMARK(BM_SelectionLiveToggle);
 
+static void BM_DynamicCastPort(benchmark::State& state)
+{
+    nbe::Port* p = new nbe::TypedPort<double>(0, "port1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    for (auto _ : state)
+    {
+        auto typed = dynamic_cast<nbe::TypedPort<double>*>(p);
+        // Avoid optimising out the cast.
+        typed->setValue(1.0);
+    }
+}
+
+BENCHMARK(BM_DynamicCastPort);
+
+static void BM_StaticCastPort(benchmark::State& state)
+{
+    nbe::Port* p = new nbe::TypedPort<double>(0, "port1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    for (auto _ : state)
+    {
+        auto typed = static_cast<nbe::TypedPort<double>*>(p);
+        typed->setValue(1.0);
+    }
+}
+
+BENCHMARK(BM_StaticCastPort);
+
 BENCHMARK_MAIN();
