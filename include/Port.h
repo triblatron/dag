@@ -6,6 +6,7 @@
 
 #include <string>
 #include <type_traits>
+#include <utility>
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -45,9 +46,9 @@ namespace nbe
             _value = value;
         }
 
-        void setValue(Value value)
+        void setValue(const Value& value)
         {
-            _value = std::move(value);
+            _value = (value);
         }
 
         template<typename T>
@@ -249,18 +250,18 @@ namespace nbe
 		template<typename F>
 		void eachOutgoingConnection(F f)
 		{
-			for (auto it=_outgoingConnections.begin(); it!=_outgoingConnections.end(); ++it)
+			for (auto & _outgoingConnection : _outgoingConnections)
 			{
-				std::invoke(f, *it);
+				std::invoke(f, _outgoingConnection);
 			}
 		}
 
 		template<typename F>
 		void eachIncomingConnection(F f)
 		{
-			for (auto it=_incomingConnections.begin(); it!=_incomingConnections.end(); ++it)
+			for (auto & _incomingConnection : _incomingConnections)
 			{
-				std::invoke(f, *it);
+				std::invoke(f, _incomingConnection);
 			}
 		}
 
@@ -350,8 +351,8 @@ namespace nbe
 	public:
         ValuePort(PortID id, std::string name, PortType::Type type, PortDirection::Direction direction, Value value, Node* parent = nullptr)
         :
-        Port(id, parent, new MetaPort(name,type, direction)),
-        _value(value)
+        Port(id, parent, new MetaPort(std::move(name),type, direction)),
+        _value(std::move(value))
         {
             // Do nothing.
         }
@@ -485,7 +486,7 @@ namespace nbe
             }
         }
 
-        void accept(SetValueVisitor& visitor)
+        void accept(SetValueVisitor& visitor) override
         {
             switch (_value.index())
             {
