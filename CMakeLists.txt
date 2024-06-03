@@ -14,6 +14,7 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/MathNode.h
 		include/NodeEditorFrontEnd.h
 		include/NodeEditorFrontEndTUI.h
+		include/NodeEditorBackEnd.h
 )
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
