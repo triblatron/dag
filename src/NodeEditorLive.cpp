@@ -109,8 +109,8 @@ namespace nbe
             _graph->removeNode(node);
             delete node;
             status.status = Status::STATUS_OK;
-            status.resultType = Status::RESULT_NODE;
-            status.result.node = node;
+            status.resultType = Status::RESULT_NODE_ID;
+            status.result.nodeId = id;
         }
         else
         {
