@@ -228,51 +228,7 @@ namespace nbe
 
             _selection->reconnectInputs(inputs, boundaryInput);
             _selection->reconnectOutputs(outputs, boundaryOutput);
-/*
-            for (auto node : inputs)
-            {
-                for (size_t index=0; index<node->totalPorts(); ++index)
-                {
-                    // TODO:Wire up boundary instead of input ports
-                    auto port = node->dynamicPort(index);
-                    auto newInput = port->clone();
-                    Port::PortArray oldInputs = port->incomingConnections();
 
-                    port->eachIncomingConnection([this, newInput](Port* input)
-                                                 {
-                                                    input->connectTo(*newInput);
-                                                    return true;
-                                                 });
-                    for (auto it=oldInputs.begin(); it!=oldInputs.end(); ++it)
-                    {
-                        (*it)->disconnect(*port);
-                    }
-                    boundaryInput->addDynamicPort(newInput);
-                }
-
-            }
-
-            for (auto node : outputs)
-            {
-                for (size_t index=0; index<node->totalPorts(); ++index)
-                {
-                    auto port = node->dynamicPort(index);
-                    auto newOutput = port->create();
-                    Port::PortArray oldOutputs = port->outgoingConnections();
-                    port->eachOutgoingConnection([this, port, newOutput](Port* output)
-                                                 {
-                                                     newOutput->connectTo(*output);
-                                                     return true;
-                                                 });
-                    for (auto oldOutput : oldOutputs )
-                    {
-                        port->disconnect(*oldOutput);
-                    }
-                    boundaryOutput->addDynamicPort(newOutput);
-                }
-            }
-
-*/
             for (auto node : internals)
             {
                 // Avoid double-free of node in both orignal and child Graph.

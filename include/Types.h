@@ -76,9 +76,14 @@ namespace nbe
     class Name              \
     {                        \
     public:                  \
+        enum : int64_t       \
+        {                    \
+            INVALID_ID = -1  \
+        };                   \
+    public:                  \
         Name()               \
         :                    \
-        id(-1)               \
+        id(INVALID_ID)       \
         {                    \
         }                    \
         \

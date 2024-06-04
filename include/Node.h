@@ -74,7 +74,7 @@ namespace nbe
         //! \param[in] str The stream
         virtual OutputStream& write(OutputStream& str) const = 0;
 
-        //! \return The total number of Ports in this Node, including intrinsic and dynamic Ports.
+        //! \return The total number of Ports in this Node, including intrinsic/static and dynamic/extrinsic Ports.
         [[nodiscard]]virtual size_t totalPorts() const
         {
             return size_t{ 0 };
@@ -121,6 +121,17 @@ namespace nbe
 		{
 			return _category;
 		}
+
+        void setPosition(std::int64_t x, std::int64_t y)
+        {
+            _pos[0] = x;
+            _pos[1] = y;
+        }
+
+        [[nodiscard]]const std::int64_t* position() const
+        {
+            return _pos;
+        }
 
         //! Add a non-null dynamic port
         //! This is in addition to the intrinsic ports described by MetaPorts.
@@ -208,7 +219,7 @@ namespace nbe
         //! Convert this Node to a Lua representation.
         virtual std::ostream& toLua(std::ostream& str);
 	private:
-        NodeID _id{-1};
+        NodeID _id{NodeID::INVALID_ID};
 		std::string _name;
 		NodeCategory::Category _category{NodeCategory::CAT_UNKNOWN};
 		typedef std::vector<PortDescriptor> PortDescriptorArray;
@@ -218,5 +229,7 @@ namespace nbe
 			_dynamicPortDescriptors.push_back(descriptor);
 		}
 		NodeFlags _flags{ 0x0 };
+        // Position to allow for manual layout
+        std::int64_t _pos[2]{0,0};
 	};
 }
