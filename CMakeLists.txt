@@ -15,6 +15,8 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/NodeEditorFrontEnd.h
 		include/NodeEditorFrontEndTUI.h
 		include/NodeEditorBackEnd.h
+		include/NodeEditorBackEndNodeEditorInterface.h
+		include/Menu.h
 )
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
@@ -77,6 +79,9 @@ SET( nodebackend_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
 		src/MathsNode.cpp
 		src/NodeEditorFrontEnd.cpp
 		src/NodeEditorFrontEndTUI.cpp
+		include/NodeEditorBackEnd.cpp
+		src/NodeEditorBackEndNodeEditorInterface.cpp
+		src/Menu.cpp
 )
 
 
