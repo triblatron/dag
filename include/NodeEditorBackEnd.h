@@ -16,6 +16,8 @@ namespace nbe
     class NBE_API NodeEditorBackEnd
     {
     public:
+        virtual ~NodeEditorBackEnd() = default;
+
         virtual void createNode(const std::string& className, const std::string& name) = 0;
 
         virtual void deleteNode(const std::string& name) = 0;
