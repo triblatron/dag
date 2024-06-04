@@ -35,6 +35,11 @@ namespace nbe
             _name = name;
         }
 
+        Node* node()
+        {
+            return _node;
+        }
+
         void makeItSo() override;
 
         void undo() override;
