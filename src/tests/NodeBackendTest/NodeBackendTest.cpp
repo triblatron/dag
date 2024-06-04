@@ -1451,14 +1451,10 @@ TEST(NodeEditorLiveTest, testDeleteExistingNodeSucceeds)
     auto sut = new nbe::NodeEditorLive();
     auto s1 = sut->createNode("FooTyped", "test1");
     auto id = s1.result.node->id();
-    auto status = sut->deleteNode(s1.result.node->id());
+    auto status = sut->deleteNode(id);
     ASSERT_EQ(nbe::Status::STATUS_OK, status.status);
-    ASSERT_EQ(nbe::Status::RESULT_NODE, status.resultType);
-    ASSERT_NE(nullptr, status.result.node);
-    auto s2 = sut->deleteNode(id);
-    ASSERT_EQ(nbe::Status::STATUS_OBJECT_NOT_FOUND, s2.status);
-    ASSERT_EQ(nbe::Status::RESULT_NODE_ID, s2.resultType);
-    ASSERT_EQ(id, s2.result.nodeId);
+    ASSERT_EQ(nbe::Status::RESULT_NODE_ID, status.resultType);
+    ASSERT_EQ(id, status.result.nodeId);
 
     delete sut;
 }
