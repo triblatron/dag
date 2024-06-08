@@ -14,31 +14,28 @@ namespace nbe
     class NBE_API Menu
     {
     public:
-        enum : std::uint32_t
-        {
-            MAX_COMMANDS = 32
-        };
-    public:
         void addCommand(Command* cmd)
         {
             if (cmd != nullptr)
             {
                 _commands.push_back(cmd);
+                _enabled.push_back(true);
             }
         }
 
-        void enableCommands(std::uint64_t mask)
+        void enableCommand(size_t index)
         {
-            _enabled |= mask;
+            _enabled[index] = true;
         }
 
-        void disableCommands(std::uint64_t mask)
+        void disableCommand(size_t index)
         {
-            _enabled &= ~mask;
+            _enabled[index] = false;
         }
     private:
         typedef std::vector<Command*> CommandArray;
         CommandArray _commands;
-        std::uint64_t _enabled;
+        typedef std::vector<bool> FlagArray;
+        FlagArray _enabled;
     };
 }
