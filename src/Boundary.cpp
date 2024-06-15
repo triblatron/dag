@@ -19,7 +19,7 @@ namespace nbe
 
     }
 
-    Boundary::Boundary(const Boundary &other)
+    Boundary::Boundary(const Boundary &other, CopyOp copyOp, KeyGenerator* keyGen)
     :
     Node(other)
     {

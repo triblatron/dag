@@ -27,7 +27,7 @@ namespace nbe
         {
         }
 
-        Foo(const Foo& other)
+        Foo(const Foo& other, CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr)
                 :
                 Node(other),
                 in1(other.in1.id(), other.in1.metaPort(), other.in1.value(), this)
@@ -42,9 +42,9 @@ namespace nbe
             return "Foo";
         }
 
-        Foo* clone() override
+        Foo* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
         {
-            return new Foo(*this);
+            return new Foo(*this, copyOp, keyGen);
         }
 
         Foo* create(InputStream& str, NodeLibrary& nodeLib) override;
@@ -108,7 +108,7 @@ namespace nbe
             // Do nothing.
         }
 
-        Base(const Base& other)
+        explicit Base(const Base& other, CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr)
                 :
                 Node(other),
                 int1(other.int1),
@@ -126,9 +126,9 @@ namespace nbe
             return "Base";
         }
 
-        Base* clone() override
+        Base* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
         {
-            return new Base(*this);
+            return new Base(*this, copyOp, keyGen);
         }
 
         Node* create(InputStream& str, NodeLibrary& nodeLib) override;
@@ -187,17 +187,17 @@ namespace nbe
             // Do nothing.
         }
 
-        Derived(const Derived& other)
+        Derived(const Derived& other, CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr)
                 :
-                Base(other),
+                Base(other, copyOp, keyGen),
                 _trigger(other._trigger.id(), this, &ports[0], other._trigger.value())
         {
             // Do nothing.
         }
 
-        Derived* clone() override
+        Derived* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
         {
-            return new Derived(*this);
+            return new Derived(*this, copyOp, keyGen);
         }
 
         [[nodiscard]]static const MetaPort * metaPort(size_t index)
@@ -256,9 +256,9 @@ namespace nbe
             // Do nothing.
         }
 
-        Final(const Final& other)
+        Final(const Final& other, CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr)
                 :
-                Derived(other),
+                Derived(other, copyOp, keyGen),
                 _int1(other._int1.id(), this, &ports[0], other._int1.value())
         {
             // Do nothing.
@@ -272,9 +272,9 @@ namespace nbe
             }
         }
 
-        Final* clone() override
+        Final* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
         {
-            return new Final(*this);
+            return new Final(*this, copyOp, keyGen);
         }
 
         void addDynamicPort(Port* port) override
@@ -355,9 +355,9 @@ namespace nbe
         {
         }
 
-        Bar(const Bar& other)
+        Bar(const Bar& other,CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr)
                 :
-                Node(other),
+                Node(other,copyOp,keyGen),
                 out1(other.out1.id(), other.out1.metaPort(), other.out1.value(), this)
         {
             // Do nothing.
@@ -372,9 +372,9 @@ namespace nbe
             return "Bar";
         }
 
-        Bar* clone() override
+        Bar* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
         {
-            return new Bar(*this);
+            return new Bar(*this,copyOp,keyGen);
         }
 
         Bar* create(InputStream& str, NodeLibrary& nodeLib) override;
@@ -439,9 +439,9 @@ namespace nbe
             _in1 = new TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
         }
 
-        FooTyped(const FooTyped& other)
+        FooTyped(const FooTyped& other,CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr)
                 :
-                Node(other)
+                Node(other,copyOp,keyGen)
         {
             _in1 = new TypedPort<double>(*other._in1);
             _in1->setParent(this);
@@ -456,9 +456,9 @@ namespace nbe
             return "FooTyped";
         }
 
-        FooTyped* clone() override
+        FooTyped* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
         {
-            return new FooTyped(*this);
+            return new FooTyped(*this,copyOp,keyGen);
         }
 
         FooTyped* create(InputStream& str, NodeLibrary& nodeLib) override;
@@ -527,9 +527,9 @@ namespace nbe
             _out1 = new TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
         }
 
-        BarTyped(const BarTyped& other)
+        BarTyped(const BarTyped& other,CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr)
                 :
-                Node(other)
+                Node(other,copyOp,keyGen)
         {
             _out1 = new TypedPort<double>(*other._out1);
             _out1->setParent(this);
@@ -544,9 +544,9 @@ namespace nbe
             return "BarTyped";
         }
 
-        BarTyped* clone() override
+        BarTyped* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
         {
-            return new BarTyped(*this);
+            return new BarTyped(*this,copyOp,keyGen);
         }
 
         BarTyped* create(InputStream& str, NodeLibrary& nodeLib) override;
@@ -618,9 +618,9 @@ namespace nbe
             // Do nothing.
         }
 
-        GroupTyped(const GroupTyped& other)
+        GroupTyped(const GroupTyped& other,CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr)
                 :
-                Node(other),
+                Node(other,copyOp,keyGen),
                 _out1(other._out1),
                 _in1(other._in1)
         {
@@ -635,9 +635,9 @@ namespace nbe
             return "GroupTyped";
         }
 
-        GroupTyped* clone() override
+        GroupTyped* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
         {
-            return new GroupTyped(*this);
+            return new GroupTyped(*this,copyOp,keyGen);
         }
 
         GroupTyped* create(InputStream& str, NodeLibrary& nodeLib) override;

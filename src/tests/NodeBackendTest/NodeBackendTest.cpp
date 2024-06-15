@@ -2331,3 +2331,27 @@ TEST_P(GraphTest_testEvaluate, testEvaluate)
 INSTANTIATE_TEST_SUITE_P(Graph, GraphTest_testEvaluate, ::testing::Values(
         std::make_tuple("etc/tests/Graph/constraints.lua", 0, 2, 1.0)
         ));
+
+class Graph_copy : public ::testing::TestWithParam<std::tuple<const char*, nbe::CopyOp, bool>>
+{
+
+};
+
+TEST_P(Graph_copy, testCopy)
+{
+    const char* filename = std::get<0>(GetParam());
+    nbe::CopyOp copyOp = std::get<1>(GetParam());
+    bool equal = std::get<2>(GetParam());
+    nbe::MemoryNodeLibrary nodeLib;
+    auto sut = nbe::Graph::fromFile(nodeLib, filename);
+    ASSERT_NE(nullptr, sut);
+    auto copy = sut->clone(copyOp, &nodeLib);
+    ASSERT_NE(nullptr, copy);
+    EXPECT_EQ(equal, *copy == *sut);
+}
+
+INSTANTIATE_TEST_SUITE_P(Graph, Graph_copy, ::testing::Values(
+        std::make_tuple("etc/tests/Graph/empty.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, true),
+        std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp{0}, true),
+        std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, false)
+        ));

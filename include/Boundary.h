@@ -15,9 +15,9 @@ namespace nbe
     public:
         explicit Boundary(KeyGenerator& keyGen, std::string name, NodeCategory::Category category=NodeCategory::CAT_NONE);
 
-        Boundary(const Boundary& other);
+        Boundary(const Boundary& other,CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr);
 
-        Boundary(Boundary&& other) = default;
+        Boundary(Boundary&& other);
 
         explicit Boundary(InputStream& str, NodeLibrary& nodeLib);
 
@@ -54,9 +54,9 @@ namespace nbe
             return nullptr;
         }
 
-        Boundary* clone() override
+        Boundary* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
         {
-            return new Boundary(*this);
+            return new Boundary(*this,copyOp,keyGen);
         }
 
         Boundary* create(InputStream& str, NodeLibrary& nodeLib) override;

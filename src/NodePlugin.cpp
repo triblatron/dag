@@ -44,6 +44,8 @@ public:
         }
     }
 
+    DynamicNode(const DynamicNode& other,nbe::CopyOp copyOp=nbe::CopyOp{0}, nbe::KeyGenerator* keyGen=nullptr);
+
     [[nodiscard]]bool equals(const Node& other) const override
     {
         if (!Node::operator==(other))
@@ -146,9 +148,9 @@ public:
         return str;
     }
 
-    DynamicNode* clone() override
+    DynamicNode* clone(nbe::CopyOp copyOp=nbe::CopyOp{0}, nbe::KeyGenerator* keyGen=nullptr) override
     {
-        return new DynamicNode(*this);
+        return new DynamicNode(*this,copyOp,keyGen);
     }
 private:
     typedef std::vector<nbe::MetaPort> MetaPortArray;
@@ -156,6 +158,25 @@ private:
     typedef std::vector<nbe::Port*> PortArray;
     PortArray _dynamicPorts;
 };
+
+DynamicNode::DynamicNode(const DynamicNode &other, nbe::CopyOp copyOp, nbe::KeyGenerator *keyGen)
+:
+Node(other, copyOp, keyGen)
+{
+    for (auto it=other._dynamicPorts.begin(); it!=other._dynamicPorts.end(); ++it)
+    {
+        auto port = (*it)->clone();
+
+        _dynamicPorts.push_back(port);
+    }
+
+    for (auto it=other._dynamicMetaPorts.begin(); it!=other._dynamicMetaPorts.end(); ++it)
+    {
+        const auto& metaPort(*it);
+
+        _dynamicMetaPorts.push_back(metaPort);
+    }
+}
 
 void init(nbe::KeyGenerator& keyGen, nbe::NodeLibrary& nodeLib)
 {

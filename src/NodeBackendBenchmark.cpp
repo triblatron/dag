@@ -550,6 +550,8 @@ public:
         // Do nothing.
     }
 
+    explicit SpooVariant(const SpooVariant& other, nbe::CopyOp copyOp, nbe::KeyGenerator* keyGen);
+
     void setFoo(const nbe::VariantPort::ValueType& value)
     {
         _foo.setValue(value);
@@ -580,9 +582,9 @@ public:
         return "_p_SpooVariant";
     }
 
-    SpooVariant* clone() override
+    SpooVariant* clone(nbe::CopyOp copyOp, nbe::KeyGenerator* keyGen) override
     {
-        return new SpooVariant(*this);
+        return new SpooVariant(*this, copyOp, keyGen);
     }
 
     SpooVariant* create(nbe::InputStream& str, nbe::NodeLibrary& nodeLib) override
@@ -666,6 +668,15 @@ const std::array<nbe::MetaPort, 2> SpooVariant::ports =
     nbe::MetaPort("foo1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_OUT),
     nbe::MetaPort("bar1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_IN)
 };
+
+SpooVariant::SpooVariant(const SpooVariant &other, nbe::CopyOp copyOp, nbe::KeyGenerator *keyGen)
+:
+Node(other,copyOp,keyGen),
+_foo(other._foo),
+_bar(other._bar)
+{
+    // Do nothing.
+}
 
 static void BM_SetVariantPort(benchmark::State& state)
 {

@@ -197,4 +197,9 @@ namespace nbe
     };
 
     typedef std::unordered_set<Node*> NodeSet;
-}
+
+    enum CopyOp : std::uint32_t
+    {
+        GENERATE_UNIQUE_ID_BIT = 1<<0
+    };
+};

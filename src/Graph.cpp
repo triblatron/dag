@@ -362,7 +362,7 @@ namespace nbe
         for (auto it=_nodes.begin(); it!=_nodes.end(); ++it)
         {
             auto it2 = other._nodes.find(it->first);
-            if (!it->second->equals(*(it2->second)))
+            if (it2 == other._nodes.end() || !it->second->equals(*(it2->second)))
             {
                 return false;
             }
@@ -643,5 +643,23 @@ namespace nbe
             }
         }
 
+    }
+
+    Graph *Graph::clone(CopyOp copyOp, KeyGenerator* keyGen)
+    {
+        return new Graph(*this, copyOp, keyGen);
+    }
+
+    Graph::Graph(const Graph & other, CopyOp copyOp, KeyGenerator* keyGen)
+    {
+        for (auto it=other._nodes.begin(); it!=other._nodes.end(); ++it)
+        {
+            Node* copy = it->second->clone(copyOp, keyGen);
+
+            if (copy!=nullptr)
+            {
+                _nodes.insert(NodeMap::value_type (copy->id(), copy));
+            }
+        }
     }
 }

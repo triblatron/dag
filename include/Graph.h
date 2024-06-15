@@ -36,7 +36,7 @@ namespace nbe
 
         Graph(InputStream& str, NodeLibrary& nodeLib);
 
-		Graph(const Graph&) = default;
+		Graph(const Graph&, CopyOp copyOp, KeyGenerator* keyGen);
 
 		Graph(Graph&&) = default;
 
@@ -47,6 +47,8 @@ namespace nbe
 		Graph& operator=(Graph&&) = default;
 
         bool operator==(const Graph& other) const;
+
+        Graph* clone(CopyOp copyOp, KeyGenerator* keyGen);
 
         [[nodiscard]]Graph* parent()
         {

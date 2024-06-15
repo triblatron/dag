@@ -19,13 +19,16 @@ namespace nbe
         // Do nothing.
     }
 
-    Node::Node(const Node& other)
+    Node::Node(const Node& other,CopyOp copyOp, KeyGenerator* keyGen)
     :
     _id(other._id),
     _name(other._name),
     _category(other._category)
     {
-        // Do nothing.        
+        if ((copyOp & CopyOp::GENERATE_UNIQUE_ID_BIT)!=0x0 && keyGen!=nullptr)
+        {
+            _id = keyGen->nextNodeID();
+        }
     }
 
     //! Include ID, name and category.

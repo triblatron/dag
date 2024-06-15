@@ -101,7 +101,7 @@ namespace nbe
         _output = static_cast<TypedPort<double>*>(str.readPort(nodeLib));
     }
 
-    MathsNode::MathsNode(const MathsNode &other)
+    MathsNode::MathsNode(const MathsNode &other, CopyOp copyOp, KeyGenerator* keyGen)
     :
     Node(other)
     {
