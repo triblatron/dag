@@ -25,12 +25,18 @@ namespace nbe
 
         void enableCommand(size_t index)
         {
-            _enabled[index] = true;
+            if (index<_enabled.size())
+            {
+                _enabled[index] = true;
+            }
         }
 
         void disableCommand(size_t index)
         {
-            _enabled[index] = false;
+            if (index<_enabled.size())
+            {
+                _enabled[index] = false;
+            }
         }
     private:
         typedef std::vector<Command*> CommandArray;
