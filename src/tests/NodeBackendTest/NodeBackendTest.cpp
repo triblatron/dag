@@ -2361,7 +2361,10 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_copy, ::testing::Values(
         std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp{0}, true),
         std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, false),
         std::make_tuple("etc/tests/Graph/connectednodes.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true),
-        std::make_tuple("etc/tests/Graph/connectednodes.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT|nbe::CopyOp::GENERATE_UNIQUE_ID_BIT}, false)
+        std::make_tuple("etc/tests/Graph/connectednodes.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT|nbe::CopyOp::GENERATE_UNIQUE_ID_BIT}, false),
+        std::make_tuple("etc/tests/Graph/withchildgraph.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true),
+        std::make_tuple("etc/tests/Graph/withmultiplechildren.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true),
+        std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true)
         ));
 
 TEST(CloningFacility, testPutNull)

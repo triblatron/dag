@@ -661,5 +661,15 @@ namespace nbe
                 _nodes.insert(NodeMap::value_type (copy->id(), copy));
             }
         }
+
+        for (auto it=other._children.begin(); it!=other._children.end(); ++it)
+        {
+            Graph* copy = (*it)->clone(facility, copyOp, keyGen);
+
+            if (copy != nullptr)
+            {
+                _children.push_back(copy);
+            }
+        }
     }
 }
