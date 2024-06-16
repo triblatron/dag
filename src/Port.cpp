@@ -43,7 +43,19 @@ namespace nbe
             _parent(other._parent),
             _flags(other._flags|OWN_META_PORT_BIT)
     {
-        // Do nothing.
+//        for (auto it=other._incomingConnections.begin(); it!=other._incomingConnections.end(); ++it)
+//        {
+//            auto connection = (*it)->clone();
+//
+//            _incomingConnections.push_back(connection);
+//        }
+//
+//        for (auto it=other._outgoingConnections.begin(); it!=other._outgoingConnections.end(); ++it)
+//        {
+//            auto connection = (*it)->clone();
+//
+//            _outgoingConnections.push_back(connection);
+//        }
     }
 
     //! Reconnect to nodes of our output connections that are in the selection by adding new Ports

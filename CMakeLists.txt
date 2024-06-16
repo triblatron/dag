@@ -17,6 +17,7 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/NodeEditorBackEnd.h
 		include/NodeEditorBackEndNodeEditorInterface.h
 		include/Menu.h
+		include/CloningFacility.h
 )
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
@@ -82,6 +83,7 @@ SET( nodebackend_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
 		include/NodeEditorBackEnd.cpp
 		src/NodeEditorBackEndNodeEditorInterface.cpp
 		src/Menu.cpp
+		src/CloningFacility.cpp
 )
 
 

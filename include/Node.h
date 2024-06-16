@@ -13,6 +13,7 @@
 
 namespace nbe
 {
+    class CloningFacility;
     class DebugPrinter;
     class InputStream;
     class KeyGenerator;
@@ -34,7 +35,7 @@ namespace nbe
 
         explicit Node(InputStream& str, NodeLibrary& nodeLib);
 
-		Node(const Node& other,CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr);
+		Node(const Node& other, CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr);
 
 		Node(Node&&) = default;
 

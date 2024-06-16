@@ -22,6 +22,7 @@
 #include "MemoryInputStream.h"
 #include "FileSystemTraverser.h"
 #include "NodePluginScanner.h"
+#include "CloningFacility.h"
 
 #include <iostream>
 #include <fstream>
@@ -2348,10 +2349,94 @@ TEST_P(Graph_copy, testCopy)
     auto copy = sut->clone(copyOp, &nodeLib);
     ASSERT_NE(nullptr, copy);
     EXPECT_EQ(equal, *copy == *sut);
+    delete copy;
+    delete sut;
 }
 
 INSTANTIATE_TEST_SUITE_P(Graph, Graph_copy, ::testing::Values(
         std::make_tuple("etc/tests/Graph/empty.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, true),
         std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp{0}, true),
-        std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, false)
+        std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, false),
+        std::make_tuple("etc/tests/Graph/connectednodes.lua", nbe::CopyOp{0}, true)
         ));
+
+TEST(CloningFacility, testPutNull)
+{
+    nbe::CloningFacility sut;
+    std::uint64_t id = std::uint64_t {~0U};
+    sut.putOrig(nullptr, &id);
+    EXPECT_EQ(std::uint64_t {0}, id);
+    EXPECT_EQ(std::size_t{0}, sut.numClones());
+}
+
+TEST(CloningFacility, testPutValid)
+{
+    nbe::CloningFacility sut;
+
+    int data;
+    std::uint64_t id = std::uint64_t {~0U};
+    bool shouldClone = sut.putOrig(&data, &id);
+
+    EXPECT_TRUE(shouldClone);
+    EXPECT_EQ(std::uint64_t {1}, id);
+}
+
+struct TestLink
+{
+    TestLink* prev{nullptr};
+    TestLink* next{nullptr};
+    int data{0};
+
+    TestLink(const TestLink& other) = delete;
+    TestLink()
+    {
+        // Do nothing.
+    }
+    TestLink(const TestLink& other, nbe::CloningFacility& facility);
+};
+
+TestLink::TestLink(const TestLink &other, nbe::CloningFacility &facility)
+{
+    std::uint64_t otherId = 0;
+    bool shouldClone = facility.putOrig(const_cast<TestLink*>(&other), &otherId);
+    facility.addClone(otherId, this);
+    std::uint64_t prevId = 0;
+    if (facility.putOrig(other.prev, &prevId))
+    {
+        prev = new TestLink(*other.prev, facility);
+    }
+    else
+    {
+        prev = static_cast<TestLink*>(facility.getClone(prevId));
+    }
+
+    std::uint64_t nextId = 0;
+    if (facility.putOrig(other.next, &nextId))
+    {
+        next = new TestLink(*other.next, facility);
+    }
+    else
+    {
+        next = static_cast<TestLink*>(facility.getClone(nextId));
+    }
+}
+
+TEST(CloningFacility, testLinkedList)
+{
+    nbe::CloningFacility sut;
+    TestLink* head = new TestLink();
+    head->next = new TestLink();
+    head->next->prev = head;
+    std::uint64_t id = std::uint64_t {~0U};
+
+    {
+        TestLink* headClone = new TestLink(*head, sut);
+        ASSERT_NE(nullptr, headClone->next);
+        EXPECT_EQ(headClone, headClone->next->prev);
+
+        delete headClone;
+    }
+
+    delete head->next;
+    delete head;
+}
