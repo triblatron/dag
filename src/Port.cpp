@@ -7,6 +7,7 @@
 #include "InputStream.h"
 #include "NodeLibrary.h"
 #include "DebugPrinter.h"
+#include "CloningFacility.h"
 
 namespace nbe
 {
@@ -36,26 +37,54 @@ namespace nbe
         }
     }
 
-    Port::Port(const Port &other)
+    Port::Port(const Port &other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
             :
             _id(other._id),
             _metaPort(new MetaPort(*other._metaPort)),
             _parent(other._parent),
             _flags(other._flags|OWN_META_PORT_BIT)
     {
-//        for (auto it=other._incomingConnections.begin(); it!=other._incomingConnections.end(); ++it)
-//        {
-//            auto connection = (*it)->clone();
-//
-//            _incomingConnections.push_back(connection);
-//        }
-//
-//        for (auto it=other._outgoingConnections.begin(); it!=other._outgoingConnections.end(); ++it)
-//        {
-//            auto connection = (*it)->clone();
-//
-//            _outgoingConnections.push_back(connection);
-//        }
+        std::uint64_t otherId = 0;
+        bool shouldClone = facility.putOrig(const_cast<Port*>(&other), &otherId);
+        facility.addClone(otherId, this);
+        if (copyOp & CopyOp::DEEP_COPY_INPUTS_BIT)
+        {
+            for (auto it=other._incomingConnections.begin(); it!=other._incomingConnections.end(); ++it)
+            {
+                std::uint64_t connectionId = 0;
+                Port* connection = nullptr;
+
+                if (facility.putOrig(*it, &connectionId))
+                {
+                    connection = (*it)->clone(facility, copyOp, keyGen);
+
+                }
+                else
+                {
+                    connection = static_cast<Port*>(facility.getClone(connectionId));
+                }
+                _incomingConnections.push_back(connection);
+            }
+        }
+
+        if (copyOp & CopyOp::DEEP_COPY_OUTPUTS_BIT)
+        {
+            for (auto it=other._outgoingConnections.begin(); it!=other._outgoingConnections.end(); ++it)
+            {
+                std::uint64_t connectionId = 0;
+                Port* connection = nullptr;
+
+                if (facility.putOrig(*it, &connectionId))
+                {
+                    connection = (*it)->clone(facility, copyOp, keyGen);
+                }
+                else
+                {
+                    connection = static_cast<Port*>(facility.getClone(connectionId));
+                }
+                _outgoingConnections.push_back(connection);
+            }
+        }
     }
 
     //! Reconnect to nodes of our output connections that are in the selection by adding new Ports
@@ -63,18 +92,20 @@ namespace nbe
     void Port::reconnectTo(NodeSet const &selection, Node *newDest)
     {
         //   if the destination input port has a parent of oldDest then
+        CloningFacility facility;
 
         for (auto &oldInput: _outgoingConnections)
         {
             if (auto it = selection.find(oldInput->parent()); it == selection.end())
             {
-                //     create a new input port in newDest
-                Port *newInput = oldInput->clone();
-                //     connect the output port to the new input port
-                //     disconnect the old input port
+                // Create a new input port in newDest, without deep copying inputs and outputs.
+                Port *newInput = oldInput->clone(facility, CopyOp{0}, nullptr);
+                // Connect the output port to the new input port
+                // Disconnect the old input port
                 newDest->addDynamicPort(newInput);
 
-                Port *newOutput = this->clone();
+                // Create a new output from this, without deep copying inputs and outputs.
+                Port *newOutput = this->clone(facility, CopyOp{0}, nullptr);
                 newDest->addDynamicPort(newOutput);
                 newOutput->_outgoingConnections.push_back(oldInput);
                 auto itOld = oldInput->findIncomingConnection(*this);
@@ -93,14 +124,15 @@ namespace nbe
     //! \note newSource is typically a Boundary node used during an AddChild operation.
     void Port::reconnectFrom(NodeSet const &selection, Node *newSource)
     {
+        CloningFacility facility;
         for (auto &oldOutput: _incomingConnections)
         {
             if (auto it = selection.find(oldOutput->parent()); it == selection.end())
             {
-                Port *newOutput = oldOutput->clone();
+                Port *newOutput = oldOutput->clone(facility, CopyOp{0}, nullptr);
                 newSource->addDynamicPort(newOutput);
 
-                Port *newInput = this->clone();
+                Port *newInput = this->clone(facility, CopyOp{0}, nullptr);
                 newSource->addDynamicPort(newInput);
                 newInput->_incomingConnections.push_back(oldOutput);
                 if (auto itOld = oldOutput->findOutgoingConnection(*this); itOld != _outgoingConnections.end())

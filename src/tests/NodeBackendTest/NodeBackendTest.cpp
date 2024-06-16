@@ -170,7 +170,8 @@ TEST_P(NodeTest_testClone, checkClone)
     size_t index = std::get<2>(GetParam());
     nbe::MemoryNodeLibrary nodeLib;
     nbe::Node* node = nodeLib.instantiateNode(0, className, nodeName);
-    nbe::Node* sut = node->clone();
+    nbe::CloningFacility facility;
+    nbe::Node* sut = node->clone(facility, nbe::CopyOp{0}, nullptr);
     ASSERT_EQ(node->totalPorts(), sut->totalPorts());
     ASSERT_NE(node->dynamicPort(index), sut->dynamicPort(index));
     ASSERT_NE(node->dynamicPort(index)->parent(), sut->dynamicPort(index)->parent());
@@ -1263,7 +1264,8 @@ TEST(BoundaryNode, testClone)
     auto metaPort = new nbe::MetaPort("input1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_IN);
     auto input = new nbe::TypedPort<double>(0, nullptr, metaPort, 1.0, nbe::Port::OWN_META_PORT_BIT);
     ASSERT_NO_THROW(sut->addDynamicPort(input));
-    auto clone = sut->clone();
+    nbe::CloningFacility facility;
+    auto clone = sut->clone(facility, nbe::CopyOp{0}, nullptr);
     ASSERT_EQ(size_t{1},sut->totalPorts());
     ASSERT_EQ(sut->totalPorts(), clone->totalPorts());
     ASSERT_NE(sut->dynamicPort(0), clone->dynamicPort(0));
@@ -2346,7 +2348,8 @@ TEST_P(Graph_copy, testCopy)
     nbe::MemoryNodeLibrary nodeLib;
     auto sut = nbe::Graph::fromFile(nodeLib, filename);
     ASSERT_NE(nullptr, sut);
-    auto copy = sut->clone(copyOp, &nodeLib);
+    nbe::CloningFacility facility;
+    auto copy = sut->clone(facility, copyOp, &nodeLib);
     ASSERT_NE(nullptr, copy);
     EXPECT_EQ(equal, *copy == *sut);
     delete copy;
@@ -2357,7 +2360,7 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_copy, ::testing::Values(
         std::make_tuple("etc/tests/Graph/empty.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, true),
         std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp{0}, true),
         std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, false),
-        std::make_tuple("etc/tests/Graph/connectednodes.lua", nbe::CopyOp{0}, true)
+        std::make_tuple("etc/tests/Graph/connectednodes.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true)
         ));
 
 TEST(CloningFacility, testPutNull)

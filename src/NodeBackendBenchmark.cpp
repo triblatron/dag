@@ -550,7 +550,7 @@ public:
         // Do nothing.
     }
 
-    explicit SpooVariant(const SpooVariant& other, nbe::CopyOp copyOp, nbe::KeyGenerator* keyGen);
+    explicit SpooVariant(const SpooVariant& other, nbe::CloningFacility& facility, nbe::CopyOp copyOp, nbe::KeyGenerator* keyGen);
 
     void setFoo(const nbe::VariantPort::ValueType& value)
     {
@@ -582,9 +582,9 @@ public:
         return "_p_SpooVariant";
     }
 
-    SpooVariant* clone(nbe::CopyOp copyOp, nbe::KeyGenerator* keyGen) override
+    SpooVariant* clone(nbe::CloningFacility& facility, nbe::CopyOp copyOp, nbe::KeyGenerator* keyGen) override
     {
-        return new SpooVariant(*this, copyOp, keyGen);
+        return new SpooVariant(*this, facility, copyOp, keyGen);
     }
 
     SpooVariant* create(nbe::InputStream& str, nbe::NodeLibrary& nodeLib) override
@@ -598,7 +598,7 @@ public:
         {
             return false;
         }
-        auto spoo = dynamic_cast<const SpooVariant&>(other);
+        const auto& spoo = dynamic_cast<const SpooVariant&>(other);
 
         if (!(_foo == spoo._foo))
         {
@@ -669,11 +669,11 @@ const std::array<nbe::MetaPort, 2> SpooVariant::ports =
     nbe::MetaPort("bar1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_IN)
 };
 
-SpooVariant::SpooVariant(const SpooVariant &other, nbe::CopyOp copyOp, nbe::KeyGenerator *keyGen)
+SpooVariant::SpooVariant(const SpooVariant &other, nbe::CloningFacility& facility, nbe::CopyOp copyOp, nbe::KeyGenerator *keyGen)
 :
-Node(other,copyOp,keyGen),
-_foo(other._foo),
-_bar(other._bar)
+Node(other,facility,copyOp,keyGen),
+_foo(other._foo, facility, copyOp, keyGen),
+_bar(other._bar, facility, copyOp, keyGen)
 {
     // Do nothing.
 }

@@ -17,8 +17,10 @@
 
 namespace nbe
 {
+    class CloningFacility;
     class DebugPrinter;
     class InputStream;
+    class KeyGenerator;
     class Node;
     class OutputStream;
 	class Transfer;
@@ -95,7 +97,7 @@ namespace nbe
     public:
         explicit Port(PortID id, Node* parent, MetaPort *metaPort, std::uint32_t flags=0x0);
 
-        Port(const Port &port);
+        Port(const Port &port, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
 
         Port(Port &&port) = default;
 
@@ -304,7 +306,7 @@ namespace nbe
                    std::find(_outgoingConnections.begin(), _outgoingConnections.end(), other) != _outgoingConnections.end());
         }
 
-        virtual Port* clone() = 0;
+        virtual Port* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) = 0;
 
         virtual OutputStream& write(OutputStream& str) const;
 
@@ -367,9 +369,9 @@ namespace nbe
 
         explicit ValuePort(InputStream& str, NodeLibrary& nodeLib);
 
-        ValuePort(const ValuePort& other)
+        ValuePort(const ValuePort& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
         :
-        Port(other)
+        Port(other, facility, copyOp, keyGen)
         {
             _value = other._value;
         }
@@ -403,9 +405,9 @@ namespace nbe
             _value = visitor.value();
         }
 
-        ValuePort* clone() override
+        ValuePort* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
         {
-            return new ValuePort(*this);
+            return new ValuePort(*this, facility, copyOp, keyGen);
         }
 
         [[nodiscard]]const char* className() const override
@@ -439,18 +441,18 @@ namespace nbe
 			// Do nothing.
 		}
 
-        VariantPort(const VariantPort& other)
+        VariantPort(const VariantPort& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
         :
-        Port(other)
+        Port(other, facility, copyOp, keyGen)
         {
             _value = other._value;
         }
 
         explicit VariantPort(InputStream& str, NodeLibrary& nodeLib);
 
-        VariantPort* clone() override
+        VariantPort* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
         {
-            return new VariantPort(*this);
+            return new VariantPort(*this, facility, copyOp, keyGen);
         }
 
 		void setValue(const ValueType & value)

@@ -101,15 +101,15 @@ namespace nbe
         _output = static_cast<TypedPort<double>*>(str.readPort(nodeLib));
     }
 
-    MathsNode::MathsNode(const MathsNode &other, CopyOp copyOp, KeyGenerator* keyGen)
+    MathsNode::MathsNode(const MathsNode &other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
     :
-    Node(other)
+    Node(other, facility, copyOp, keyGen)
     {
-        _angle = new TypedPort<double>(*other._angle);
+        _angle = new TypedPort<double>(*other._angle, facility, copyOp, keyGen);
         _angle->setParent(this);
-        _unit = new TypedPort<int64_t>(*other._unit);
+        _unit = new TypedPort<int64_t>(*other._unit, facility, copyOp, keyGen);
         _unit->setParent(this);
-        _output = new TypedPort<double>(*other._output);
+        _output = new TypedPort<double>(*other._output, facility, copyOp, keyGen);
         _output->setParent(this);
     }
 

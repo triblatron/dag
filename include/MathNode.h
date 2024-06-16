@@ -26,7 +26,7 @@ namespace nbe
 
         MathsNode(InputStream& str, NodeLibrary& nodeLib);
 
-        MathsNode(const MathsNode& other, CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr);
+        MathsNode(const MathsNode& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
 
         //! Compare for equality with another Node.
         //! \note Typically downcasts to a concrete type to determine a result.
@@ -58,9 +58,9 @@ namespace nbe
 
         //! Clone ourself to support the Prototype pattern
         //! \note A deep copy of Ports is required.
-        Node* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) override
+        Node* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
         {
-            return new MathsNode(*this);
+            return new MathsNode(*this, facility, copyOp, keyGen);
         }
 
         [[nodiscard]]size_t totalPorts() const override

@@ -6,6 +6,7 @@
 #include "NodeLibrary.h"
 #include "InputStream.h"
 #include "OutputStream.h"
+#include "CloningFacility.h"
 
 namespace nbe
 {
@@ -19,13 +20,13 @@ namespace nbe
 
     }
 
-    Boundary::Boundary(const Boundary &other, CopyOp copyOp, KeyGenerator* keyGen)
+    Boundary::Boundary(const Boundary &other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
     :
-    Node(other)
+    Node(other, facility, copyOp, keyGen)
     {
         for (auto p : other._dynamicPorts)
         {
-            auto portClone = p->clone();
+            auto portClone = p->clone(facility, copyOp, keyGen);
 
             Boundary::addDynamicPort(portClone);
         }
@@ -35,11 +36,12 @@ namespace nbe
     {
         if (this != &other)
         {
+            CloningFacility facility;
             Node::operator=(other);
 
             for (auto p : other._dynamicPorts)
             {
-                addDynamicPort(p->clone());
+                addDynamicPort(p->clone(facility, CopyOp{0}, nullptr));
             }
         }
 

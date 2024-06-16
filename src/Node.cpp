@@ -7,6 +7,7 @@
 #include "DebugPrinter.h"
 #include "NodeLibrary.h"
 #include "KeyGenerator.h"
+#include "CloningFacility.h"
 
 namespace nbe
 {
@@ -19,12 +20,15 @@ namespace nbe
         // Do nothing.
     }
 
-    Node::Node(const Node& other,CopyOp copyOp, KeyGenerator* keyGen)
+    Node::Node(const Node& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
     :
     _id(other._id),
     _name(other._name),
     _category(other._category)
     {
+        std::uint64_t otherId = 0;
+        bool shouldClone = facility.putOrig(const_cast<Node*>(&other), &otherId);
+        facility.addClone(otherId, this);
         if ((copyOp & CopyOp::GENERATE_UNIQUE_ID_BIT)!=0x0 && keyGen!=nullptr)
         {
             _id = keyGen->nextNodeID();

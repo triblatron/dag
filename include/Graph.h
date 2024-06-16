@@ -17,6 +17,7 @@
 namespace nbe
 {
     class ByteBuffer;
+    class CloningFacility;
     class InputStream;
     class Lua;
 	class Node;
@@ -36,7 +37,7 @@ namespace nbe
 
         Graph(InputStream& str, NodeLibrary& nodeLib);
 
-		Graph(const Graph&, CopyOp copyOp, KeyGenerator* keyGen);
+		Graph(const Graph& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
 
 		Graph(Graph&&) = default;
 
@@ -48,7 +49,7 @@ namespace nbe
 
         bool operator==(const Graph& other) const;
 
-        Graph* clone(CopyOp copyOp, KeyGenerator* keyGen);
+        Graph* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
 
         [[nodiscard]]Graph* parent()
         {

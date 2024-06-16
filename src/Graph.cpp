@@ -645,16 +645,16 @@ namespace nbe
 
     }
 
-    Graph *Graph::clone(CopyOp copyOp, KeyGenerator* keyGen)
+    Graph *Graph::clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
     {
-        return new Graph(*this, copyOp, keyGen);
+        return new Graph(*this, facility, copyOp, keyGen);
     }
 
-    Graph::Graph(const Graph & other, CopyOp copyOp, KeyGenerator* keyGen)
+    Graph::Graph(const Graph & other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
     {
         for (auto it=other._nodes.begin(); it!=other._nodes.end(); ++it)
         {
-            Node* copy = it->second->clone(copyOp, keyGen);
+            Node* copy = it->second->clone(facility, copyOp, keyGen);
 
             if (copy!=nullptr)
             {

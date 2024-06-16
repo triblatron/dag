@@ -45,9 +45,9 @@ namespace nbe
 			// Do nothing.
 		}
 
-        TypedPort(const TypedPort& other)
+        TypedPort(const TypedPort& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
         :
-        Port(other)
+        Port(other, facility, copyOp, keyGen)
         {
             _value = other._value;
         }
@@ -88,9 +88,9 @@ namespace nbe
             return str;
         }
 
-        TypedPort* clone() override
+        TypedPort* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
         {
-            return new TypedPort(*this);
+            return new TypedPort(*this, facility, copyOp, keyGen);
         }
 
 		void setValue(T value)

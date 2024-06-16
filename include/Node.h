@@ -35,7 +35,7 @@ namespace nbe
 
         explicit Node(InputStream& str, NodeLibrary& nodeLib);
 
-		Node(const Node& other, CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr);
+		Node(const Node& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
 
 		Node(Node&&) = default;
 
@@ -96,7 +96,7 @@ namespace nbe
         //! \note A deep copy of Ports is required.
         //! \note Since this method is virtual, we know the exact type
         //! and can just call the copy constructor on *this.
-        virtual Node* clone(CopyOp copyOp=CopyOp{0}, KeyGenerator* keyGen=nullptr) = 0;
+        virtual Node* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) = 0;
 
         void setId(NodeID id)
         {

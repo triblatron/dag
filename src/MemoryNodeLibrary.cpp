@@ -11,6 +11,7 @@
 #include "Nodes.h"
 #include "Boundary.h"
 #include "MathNode.h"
+#include "CloningFacility.h"
 
 namespace nbe
 {
@@ -40,9 +41,11 @@ namespace nbe
 	
     Node* MemoryNodeLibrary::instantiateNode(NodeID id, const std::string& className, const std::string& name)
     {
+        CloningFacility facility;
+
 	    if (auto const it = _classes.find(className); it != _classes.end() )
         {
-	        const auto copy = it->second->clone();
+	        const auto copy = it->second->clone(facility, CopyOp{0}, nullptr);
             copy->setId(id);
             copy->setName(name);
 
