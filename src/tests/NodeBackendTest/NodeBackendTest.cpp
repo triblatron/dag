@@ -2360,7 +2360,8 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_copy, ::testing::Values(
         std::make_tuple("etc/tests/Graph/empty.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, true),
         std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp{0}, true),
         std::make_tuple("etc/tests/Graph/onenode.lua", nbe::CopyOp::GENERATE_UNIQUE_ID_BIT, false),
-        std::make_tuple("etc/tests/Graph/connectednodes.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true)
+        std::make_tuple("etc/tests/Graph/connectednodes.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true),
+        std::make_tuple("etc/tests/Graph/connectednodes.lua", nbe::CopyOp{nbe::CopyOp::DEEP_COPY_INPUTS_BIT|nbe::CopyOp::DEEP_COPY_OUTPUTS_BIT|nbe::CopyOp::GENERATE_UNIQUE_ID_BIT}, false)
         ));
 
 TEST(CloningFacility, testPutNull)
