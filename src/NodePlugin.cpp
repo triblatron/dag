@@ -46,6 +46,8 @@ public:
 
     DynamicNode(const DynamicNode& other, nbe::CloningFacility& facility,  nbe::CopyOp copyOp, nbe::KeyGenerator* keyGen);
 
+    ~DynamicNode() override;
+
     [[nodiscard]]bool equals(const Node& other) const override
     {
         if (!Node::operator==(other))
@@ -175,6 +177,14 @@ Node(other, facility, copyOp, keyGen)
         const auto& metaPort(*it);
 
         _dynamicMetaPorts.push_back(metaPort);
+    }
+}
+
+DynamicNode::~DynamicNode()
+{
+    for (auto port : _dynamicPorts)
+    {
+        delete port;
     }
 }
 

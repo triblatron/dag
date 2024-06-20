@@ -11,6 +11,7 @@
 #include "Boundary.h"
 #include "SelectionInterface.h"
 #include "SignalPath.h"
+#include "Transfer.h"
 
 namespace nbe
 {
@@ -27,6 +28,10 @@ namespace nbe
         delete _nodeLib;
         delete _graph;
         delete _selection;
+        for (auto transfer : _transfers)
+        {
+            delete transfer;
+        }
     }
 
     Status NodeEditorLive::select(NodeEditorInterface::SelectionMode mode, NodeSet &a)
@@ -130,7 +135,7 @@ namespace nbe
         {
             if (fromPort->dir() == PortDirection::DIR_OUT && toPort->dir() == PortDirection::DIR_IN && fromPort->isCompatibleWith(*toPort))
             {
-                fromPort->connectTo(*toPort);
+                auto transfer = fromPort->connectTo(*toPort);
                 auto signalPath = new SignalPath(fromPort, toPort);
 
                 _graph->addSignalPath(signalPath);
@@ -140,6 +145,8 @@ namespace nbe
                 status.status = Status::STATUS_OK;
                 status.resultType = Status::RESULT_SIGNAL_PATH_ID;
                 status.result.signalPathId = signalPath->id();
+
+                _transfers.push_back(transfer);
                 return status;
             }
             else

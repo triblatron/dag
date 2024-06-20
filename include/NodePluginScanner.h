@@ -8,17 +8,21 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <vector>
 
 namespace fs = std::filesystem;
 
 namespace nbe
 {
+    class DynamicLibrary;
     class KeyGenerator;
     class NodeLibrary;
 
     class NBE_API NodePluginScanner
     {
     public:
+        ~NodePluginScanner();
+
         //! Scan the platform-specific plugins directory, 
         //! loading and initialising any plugins found
         //! by registering new Node types with the NodeLibrary.
@@ -36,5 +40,7 @@ namespace nbe
 
         static fs::path pathToPlugins;
         static fs::path pluginExtension;
+        typedef std::vector<DynamicLibrary*> LibraryArray;
+        LibraryArray _libs;
     };
 }

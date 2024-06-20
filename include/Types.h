@@ -200,9 +200,10 @@ namespace nbe
 
     enum CopyOp : std::uint32_t
     {
-        DEEP_COPY_NODES_BIT = 1<<0,
-        DEEP_COPY_INPUTS_BIT = 1<<1,
-        DEEP_COPY_OUTPUTS_BIT = 1<<2,
-        GENERATE_UNIQUE_ID_BIT = 1<<3
+        DEEP_COPY_NODES_BIT     = 1<<0,
+        DEEP_COPY_INPUTS_BIT    = 1<<1,
+        DEEP_COPY_OUTPUTS_BIT   = 1<<2,
+        GENERATE_UNIQUE_ID_BIT  = 1<<3,
+        DEEP_COPY_PARENT_BIT    = 1<<4
     };
 };

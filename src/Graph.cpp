@@ -11,6 +11,7 @@
 #include "LuaInterface.h"
 #include "TypedPort.h"
 #include "Types.h"
+#include "CloningFacility.h"
 
 #include <queue>
 
@@ -204,6 +205,7 @@ namespace nbe
                 _signalPaths.erase(it);
             }
         }
+        delete signalPath;
     }
 
     void Graph::removeNode(Node *node)
@@ -654,7 +656,18 @@ namespace nbe
     {
         for (auto it=other._nodes.begin(); it!=other._nodes.end(); ++it)
         {
-            Node* copy = it->second->clone(facility, copyOp, keyGen);
+            std::uint64_t nodeId = 0;
+
+            Node* copy = nullptr;
+
+            if (facility.putOrig(it->second,&nodeId))
+            {
+                copy = it->second->clone(facility, copyOp, keyGen);
+            }
+            else
+            {
+                copy = static_cast<Node*>(facility.getClone(nodeId));
+            }
 
             if (copy!=nullptr)
             {

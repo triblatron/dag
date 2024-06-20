@@ -11,6 +11,7 @@
 #include <string>
 #include <array>
 #include "KeyGenerator.h"
+#include "CloningFacility.h"
 
 namespace nbe
 {
@@ -443,7 +444,15 @@ namespace nbe
                 :
                 Node(other, facility, copyOp, keyGen)
         {
-            _in1 = new TypedPort<double>(*other._in1, facility, copyOp, keyGen);
+            std::uint64_t in1Id = 0;
+            if (facility.putOrig(other._in1, &in1Id))
+            {
+                _in1 = new TypedPort<double>(*other._in1, facility, copyOp, keyGen);
+            }
+            else
+            {
+                _in1 = static_cast<TypedPort<double>*>(facility.getClone(in1Id));
+            }
             _in1->setParent(this);
         }
 
@@ -531,7 +540,15 @@ namespace nbe
                 :
                 Node(other,facility,copyOp,keyGen)
         {
-            _out1 = new TypedPort<double>(*other._out1, facility, copyOp, keyGen);
+            std::uint64_t out1Id = 0;
+            if (facility.putOrig(other._out1, &out1Id))
+            {
+                _out1 = new TypedPort<double>(*other._out1, facility, copyOp, keyGen);
+            }
+            else
+            {
+                _out1 = static_cast<TypedPort<double>*>(facility.getClone(out1Id));
+            }
             _out1->setParent(this);
         }
 

@@ -8,11 +8,14 @@
 
 #include "NodeEditorInterface.h"
 
+#include <vector>
+
 namespace nbe
 {
     class Graph;
     class MemoryNodeLibrary;
     class SelectionLive;
+    class Transfer;
 
     class NBE_API NodeEditorLive : public NodeEditorInterface
     {
@@ -57,5 +60,7 @@ namespace nbe
         MemoryNodeLibrary *_nodeLib{nullptr};
         Graph* _graph{nullptr};
         SelectionLive* _selection{nullptr};
+        typedef std::vector<Transfer*> TransferArray;
+        TransferArray _transfers;
     };
 }

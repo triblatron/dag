@@ -35,6 +35,22 @@ namespace nbe
         {
             delete _metaPort;
         }
+
+//        if (_flags & OWN_INPUTS_BIT)
+//        {
+//            for (auto input : _incomingConnections)
+//            {
+//                delete input;
+//            }
+//        }
+//
+//        if (_flags & OWN_OUTPUTS_BIT)
+//        {
+//            for (auto output : _outgoingConnections)
+//            {
+//                delete output;
+//            }
+//        }
     }
 
     Port::Port(const Port &other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
@@ -49,6 +65,7 @@ namespace nbe
         facility.addClone(otherId, this);
         if (copyOp & CopyOp::DEEP_COPY_INPUTS_BIT)
         {
+            setFlag(OWN_INPUTS_BIT);
             for (auto it=other._incomingConnections.begin(); it!=other._incomingConnections.end(); ++it)
             {
                 std::uint64_t connectionId = 0;
@@ -57,7 +74,6 @@ namespace nbe
                 if (facility.putOrig(*it, &connectionId))
                 {
                     connection = (*it)->clone(facility, copyOp, keyGen);
-
                 }
                 else
                 {
@@ -69,6 +85,7 @@ namespace nbe
 
         if (copyOp & CopyOp::DEEP_COPY_OUTPUTS_BIT)
         {
+            setFlag(OWN_OUTPUTS_BIT);
             for (auto it=other._outgoingConnections.begin(); it!=other._outgoingConnections.end(); ++it)
             {
                 std::uint64_t connectionId = 0;
@@ -85,6 +102,19 @@ namespace nbe
                 _outgoingConnections.push_back(connection);
             }
         }
+
+        if (copyOp & CopyOp::DEEP_COPY_PARENT_BIT)
+        {
+            std::uint64_t parentId = 0;
+            if (facility.putOrig(other._parent,&parentId))
+            {
+                _parent = other._parent->clone(facility,copyOp,keyGen);
+            }
+            else
+            {
+                _parent = static_cast<Node*>(facility.getClone(parentId));
+            }
+        }
     }
 
     //! Reconnect to nodes of our output connections that are in the selection by adding new Ports
@@ -99,13 +129,18 @@ namespace nbe
             if (auto it = selection.find(oldInput->parent()); it == selection.end())
             {
                 // Create a new input port in newDest, without deep copying inputs and outputs.
-                Port *newInput = oldInput->clone(facility, CopyOp{0}, nullptr);
+                Port *newInput = nullptr;
+                std::uint64_t newInputId = 0;
+                newInput = oldInput->clone(facility, CopyOp{0}, nullptr);
                 // Connect the output port to the new input port
                 // Disconnect the old input port
                 newDest->addDynamicPort(newInput);
 
                 // Create a new output from this, without deep copying inputs and outputs.
-                Port *newOutput = this->clone(facility, CopyOp{0}, nullptr);
+                Port *newOutput = nullptr;
+                std::uint64_t newOutputId = 0;
+
+                newOutput = this->clone(facility, CopyOp{0}, nullptr);
                 newDest->addDynamicPort(newOutput);
                 newOutput->_outgoingConnections.push_back(oldInput);
                 auto itOld = oldInput->findIncomingConnection(*this);

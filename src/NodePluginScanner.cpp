@@ -41,8 +41,17 @@ namespace nbe
                                        (*initFunc)(keyGen, nodeLib);
                                        _totalNodes += nodeLib.numNodes() - numNodesBefore;
                                    }
+                                   _libs.push_back(lib);
                                }
                            }
                        });
+    }
+
+    NodePluginScanner::~NodePluginScanner()
+    {
+        for (auto it=_libs.begin(); it!=_libs.end(); ++it)
+        {
+            delete *it;
+        }
     }
 }

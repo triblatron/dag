@@ -139,4 +139,11 @@ namespace nbe
     {
         _output->setValue(std::sin(_angle->value()));
     }
+
+    MathsNode::~MathsNode()
+    {
+        delete _angle;
+        delete _unit;
+        delete _output;
+    }
 }

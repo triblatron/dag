@@ -31,6 +31,8 @@ namespace nbe
         {
 #if defined(_WIN32)
             FreeLibrary(_handle);
+#else
+            dlclose(_handle);
 #endif
         }
     }

@@ -92,7 +92,9 @@ namespace nbe
 
         enum
         {
-            OWN_META_PORT_BIT = (1<<0)
+            OWN_META_PORT_BIT   = (1<<0),
+            OWN_INPUTS_BIT      = (1<<1),
+            OWN_OUTPUTS_BIT     = (1<<2)
         };
     public:
         explicit Port(PortID id, Node* parent, MetaPort *metaPort, std::uint32_t flags=0x0);
@@ -323,6 +325,12 @@ namespace nbe
     protected:
 		PortArray _outgoingConnections;
 		PortArray _incomingConnections;
+
+        void setFlag(std::uint32_t mask)
+        {
+            _flags |= mask;
+        }
+
         void setOwnMetaPort(bool own)
         {
             if (own)
