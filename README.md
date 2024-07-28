@@ -12,9 +12,11 @@ There will be the following concepts:
 * SignalPath a connection between Ports
 * OytputStream to serialise a Graph
 * InputStream to read previously serialised objects
+
 There will be an EditorInterface that defines operations on these elements.
 Typically, implementations will use the Command pattern and rollback using serialisation.
-A Graph will provd3 the following operations:
+
+A Graph will provde the following operations:
 * Create a Node
 * Delete a Node 
 * Create a SignalPath 
