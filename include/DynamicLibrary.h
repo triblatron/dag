@@ -25,6 +25,8 @@ namespace nbe
     public:
 #if defined(__linux__)
         typedef void* Handle;
+#elif defined(__APPLE__)
+		typedef void* Handle;
 #elif defined(_WIN32)
         typedef HINSTANCE Handle;
 #endif

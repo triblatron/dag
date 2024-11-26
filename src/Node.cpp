@@ -9,6 +9,8 @@
 #include "KeyGenerator.h"
 #include "CloningFacility.h"
 
+#include <iostream>
+
 namespace nbe
 {
     Node::Node(KeyGenerator& keyGen, std::string name, NodeCategory::Category category)

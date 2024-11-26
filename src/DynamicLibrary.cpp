@@ -10,7 +10,7 @@ namespace nbe
 {
     DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& path)
     {
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
         auto handle = dlopen(path.c_str(), RTLD_NOW|RTLD_LOCAL);
 #elif defined(_WIN32)
         auto handle = LoadLibrary(path.c_str());
@@ -39,7 +39,7 @@ namespace nbe
 
     void *DynamicLibrary::getProcAddress(const char *name)
     {
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
         return dlsym(_handle, name);
 #elif defined(_WIN32)
         return GetProcAddress(_handle, name);

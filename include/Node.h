@@ -9,7 +9,6 @@
 
 #include <string>
 #include <vector>
-#include <google/protobuf/extension_set.h>
 
 namespace nbe
 {

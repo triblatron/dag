@@ -7,8 +7,6 @@
 #include "InputStream.h"
 #include "OutputStream.h"
 
-#include <google/protobuf/extension_set.h>
-
 namespace nbe
 {
     std::array<MetaPort,1> Base::ports =
