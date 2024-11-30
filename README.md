@@ -61,3 +61,26 @@ The Lua persistent format and serialisation will both need to carry the constrai
   * the Lua interface
   * stream interface
 
+## Building
+
+### MacOS Apple Silicon
+
+* Install brew
+* Install Apple clang(using gcc as the name for some reason) and cmake
+```bash
+brew install gcc cmake
+```
+* Clone the repo
+```bash
+git clone https://github.com/triblatron/nodebackend
+```
+* Configure and generate the build system
+```bash
+mkdir nodebackend_build && cd nodebackend_build
+
+cmake -C ../nodebackend/Automation/Build/InitialCacheLinuxGitHub.txt -B . -S ../nodebackend
+```
+* Build
+```bash
+make -j <number_of_cores>
+```
