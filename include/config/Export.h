@@ -19,18 +19,13 @@
     #  else
     #    define NBE_API   __declspec(dllimport)
     #  endif
-#if defined( NODEPLUGIN_LIBRARY )
-#define NODEPLUGIN_API __declspec(dllexport)
-#else
-#define NODEPLUGIN_API __declspec(dllimport)
-#endif
 #  if defined( SHELL_LIBRARY_STATIC )
 #    define SHELL_API
 #  elif defined( SHELL_LIBRARY )
 #    define SHELL_API   __declspec(dllexport)
 #  else
 #    define SHELL_API   __declspec(dllimport)
-    #  endif
+#  endif
 #else
     #  define NBE_API
     #  define SHELL_API

@@ -15,7 +15,6 @@ namespace nbe
     class KeyGenerator;
     class NodeLibrary;
 }
-    void NODEPLUGIN_API init(nbe::KeyGenerator& keyGen, nbe::NodeLibrary& nodeLib);
 #ifdef __cplusplus
 }
 #endif
