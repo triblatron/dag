@@ -10,7 +10,7 @@ There will be the following concepts:
 * Node a unit of behaviour
 * Port a connection point for wiring up Node inputs and outputs
 * SignalPath a connection between Ports
-* OytputStream to serialise a Graph
+* OutputStream to serialise a Graph
 * InputStream to read previously serialised objects
 
 There will be an EditorInterface that defines operations on these elements.
