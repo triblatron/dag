@@ -165,10 +165,10 @@ namespace nbe
             return _lua;
         }
 
-        int length() const
+        lua_Integer length() const
         {
             lua_len(_lua, -1);
-            int len = lua_tointeger(_lua, -1);
+            lua_Integer len = lua_tointeger(_lua, -1);
             lua_pop(_lua, 1);
 
             return len;
@@ -232,13 +232,13 @@ namespace nbe
             }
         }
 
-        int integer(int i, int defaultValue)
+        lua_Integer integer(int i, lua_Integer defaultValue)
         {
             lua_pushinteger(_lua, i);
             lua_rawget(_lua, -2);
             if (lua_isinteger(_lua, -1))
             {
-                int val = lua_tointeger(_lua, -1);
+                lua_Integer val = lua_tointeger(_lua, -1);
                 lua_pop(_lua, 1);
                 return val;
             }
@@ -249,13 +249,13 @@ namespace nbe
             }
         }
 
-        int integer(const char * key, int defaultValue)
+        lua_Integer integer(const char * key, lua_Integer defaultValue)
         {
             lua_pushstring(_lua, key);
             lua_rawget(_lua, -2);
             if ( lua_isinteger(_lua, -1))
             {
-                int val = lua_tointeger(_lua, -1);
+                lua_Integer val = lua_tointeger(_lua, -1);
 
                 lua_pop(_lua, 1);
                 return val;

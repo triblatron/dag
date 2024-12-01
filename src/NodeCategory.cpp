@@ -9,6 +9,8 @@ namespace nbe
 	{
 		switch (category)
 		{
+        case CAT_UNKNOWN:
+            return "Unknown";
 		case CAT_NONE:
 			return "None";
 		case CAT_SOURCE:

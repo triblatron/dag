@@ -38,7 +38,7 @@ namespace nbe
                 }
                 else
                 {
-                    std::uint32_t id = _idLookup.size() + 1;
+                    std::size_t id = _idLookup.size() + 1;
                     _idLookup.insert(PtrToIdMap::value_type(ptr, id));
                     write(id);
                     return true;

@@ -470,6 +470,22 @@ namespace nbe
                 str.read(&value);
                 _value = value;
             }
+            case PortType::TYPE_VEC3D: {
+                
+                break;
+            }
+            case PortType::TYPE_OPAQUE: {
+                
+                break;
+            }
+            case PortType::TYPE_VECTOR: {
+                
+                break;
+            }
+            case PortType::TYPE_UNKNOWN: {
+                
+                break;
+            }
         }
     }
 

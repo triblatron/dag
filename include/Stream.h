@@ -7,6 +7,7 @@
 #include "config/Export.h"
 
 #include <cstdint>
+#include <cstdlib>
 
 namespace nbe
 {
@@ -14,7 +15,7 @@ namespace nbe
     {
     public:
         typedef std::uint8_t value_type;
-        typedef std::uint32_t ObjId;
+        typedef std::size_t ObjId;
         typedef void* Ref;
     public:
         virtual ~Stream() = default;

@@ -10,6 +10,7 @@
 #include <variant>
 #include <type_traits>
 #include <atomic>
+#include <cstdint>
 
 namespace nbe
 {
@@ -18,7 +19,7 @@ namespace nbe
     public:
         virtual ~FieldNode() = default;
 
-        void setInput(int port, const std::any& value)
+        void setInput(std::int64_t port, const std::any& value)
         {
             _inputs[port] = value;
         }
@@ -28,7 +29,7 @@ namespace nbe
             return _inputs[port];
         }
 
-        std::any output(int port) const
+        std::any output(std::int64_t port) const
         {
             return _outputs[port];
         }
@@ -85,9 +86,9 @@ namespace nbe
     public:
         virtual ~AbstractAnyNode() = default;
 
-        virtual void setInput(int port, std::any value) = 0;
+        virtual void setInput(std::int64_t port, std::any value) = 0;
 
-        virtual std::any output(int port) const = 0;
+        virtual std::any output(std::int64_t port) const = 0;
     };
 
     class FooAbstractAny : public AbstractAnyNode
@@ -100,7 +101,7 @@ namespace nbe
             // Do nothing.
         }
 
-        void setInput(int port, std::any value) override
+        void setInput(std::int64_t port, std::any value) override
         {
             switch (port)
             {
@@ -110,7 +111,7 @@ namespace nbe
             }
         }
 
-        std::any output(int port) const override
+        std::any output(std::int64_t port) const override
         {
             switch (port)
             {
@@ -134,9 +135,9 @@ namespace nbe
     public:
         virtual ~TypedSwitchNode() = default;
 
-        virtual void setIntInput(int port, int value) = 0;
+        virtual void setIntInput(std::int64_t port, int value) = 0;
 
-        virtual int intOutput(int port) const = 0;
+        virtual int intOutput(std::int64_t port) const = 0;
     private:
     };
 
@@ -150,7 +151,7 @@ namespace nbe
             // Do nothing.
         }
 
-        void setIntInput(int port, int value) override
+        void setIntInput(std::int64_t port, int value) override
         {
             switch (port)
             {
@@ -160,7 +161,7 @@ namespace nbe
             }
         }
 
-        int intOutput(int port) const override
+        int intOutput(std::int64_t port) const override
         {
             switch (port)
             {
