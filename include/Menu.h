@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <cstdint>
+#include <cstdlib>
 
 namespace nbe
 {

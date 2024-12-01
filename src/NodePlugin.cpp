@@ -188,8 +188,15 @@ DynamicNode::~DynamicNode()
     }
 }
 
-void init(nbe::KeyGenerator& keyGen, nbe::NodeLibrary& nodeLib)
+#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
+#define NODEPLUGIN_API __declspec(dllexport)
+#endif
+
+extern "C"
 {
-    auto node = new DynamicNode(keyGen, "dyn1");
-    nodeLib.registerNode(node);
+    NODEPLUGIN_API void  init(nbe::KeyGenerator& keyGen, nbe::NodeLibrary& nodeLib)
+    {
+        auto node = new DynamicNode(keyGen, "dyn1");
+        nodeLib.registerNode(node);
+    }
 }
