@@ -86,6 +86,6 @@ cmake --build . --target install -j <number_of_cores> --config Release
 ```
 * Test
 ```bash
-NodeFrontendTest
+NodeBackendTest
 ```
-* Note that the repo used to be called nodefrontend and the code has not yet been updated to use dag
+* Note that the repo used to be called nodebackend and the code has not yet been updated to use dag
