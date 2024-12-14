@@ -63,7 +63,7 @@ The Lua persistent format and serialisation will both need to carry the constrai
 
 ## Building
 
-### MacOS Apple Silicon
+### MacOS 15.1 Sequoia Apple Silicon
 
 * Install brew
 * Install Apple clang(using gcc as the name for some reason) and cmake
@@ -82,5 +82,10 @@ cmake -C ../nodebackend/Automation/Build/InitialCacheLinuxGitHub.txt -B . -S ../
 ```
 * Build
 ```bash
-make -j <number_of_cores>
+cmake --build . --target install -j <number_of_cores> --config Release
 ```
+* Test
+```bash
+NodeFrontendTest
+```
+* Note that the repo used to be called nodefrontend and the code has not yet been updated to use dag
