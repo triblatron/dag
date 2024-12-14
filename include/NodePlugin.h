@@ -10,7 +10,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-namespace nbe
+namespace dag
 {
     class KeyGenerator;
     class NodeLibrary;

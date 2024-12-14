@@ -8,11 +8,11 @@
 
 #include "OutputStream.h"
 
-namespace nbe
+namespace dag
 {
     class ByteBuffer;
 
-    class NBE_API MemoryOutputStream : public OutputStream
+    class DAG_API MemoryOutputStream : public OutputStream
     {
     public:
         //! Construct from a byffer that is typically empty.

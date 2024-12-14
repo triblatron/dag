@@ -4,9 +4,9 @@
 
 #include <iostream>
 
-namespace nbe
+namespace dag
 {
-    nbe::PrettyPrinter & PrettyPrinter::println(const std::string & line)
+    dag::PrettyPrinter & PrettyPrinter::println(const std::string & line)
     {
         printIndent();
         _str << line << '\n';
@@ -14,7 +14,7 @@ namespace nbe
         return *this;
     }
 
-    nbe::PrettyPrinter & PrettyPrinter::printIndent()
+    dag::PrettyPrinter & PrettyPrinter::printIndent()
     {
         for (int i=0; i<_indent; ++i)
         {

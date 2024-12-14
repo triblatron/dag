@@ -9,7 +9,7 @@
 #include "DebugPrinter.h"
 #include "CloningFacility.h"
 
-namespace nbe
+namespace dag
 {
     Port::Port(PortID id, Node *parent, MetaPort *metaPort, std::uint32_t flags)
             :
@@ -367,7 +367,7 @@ namespace nbe
         return nullptr;
     }
 
-    Transfer* VariantPort::setDestination(nbe::Transfer *transfer)
+    Transfer* VariantPort::setDestination(dag::Transfer *transfer)
     {
         if (auto typedTransfer = dynamic_cast<VariantPortTransfer*>(transfer); typedTransfer!=nullptr)
         {

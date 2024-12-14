@@ -13,22 +13,22 @@
 #include "MathNode.h"
 #include "CloningFacility.h"
 
-namespace nbe
+namespace dag
 {
     MemoryNodeLibrary::MemoryNodeLibrary()
 	    :
     NodeLibrary()
     {
-        _classes["Foo"] = new Foo(*this, "foo1", nbe::NodeCategory::CAT_SINK);
-        _classes["Bar"] = new Bar(*this, "bar1", nbe::NodeCategory::CAT_SOURCE);
-        _classes["FooTyped"] = new FooTyped(*this, "footyped1", nbe::NodeCategory::CAT_SINK);
-        _classes["BarTyped"] = new BarTyped(*this, "bartyped1", nbe::NodeCategory::CAT_SOURCE);
-        _classes["GroupTyped"] = new GroupTyped(*this, "grouptyped1", nbe::NodeCategory::CAT_GROUP);
-        _classes["Base"] = new Base(*this, "base1", nbe::NodeCategory::CAT_SOURCE);
-        _classes["Derived"] = new Derived(*this, "derived1", nbe::NodeCategory::CAT_CONDITION);
-        _classes["Final"] = new Final(*this, "final1", nbe::NodeCategory::CAT_GROUP);
-        _classes["Boundary"] = new Boundary(*this, "b1", nbe::NodeCategory::CAT_GROUP);
-        _classes["MathsNode"] = new MathsNode(*this, "maths1", nbe::NodeCategory::CAT_ACTION);
+        _classes["Foo"] = new Foo(*this, "foo1", dag::NodeCategory::CAT_SINK);
+        _classes["Bar"] = new Bar(*this, "bar1", dag::NodeCategory::CAT_SOURCE);
+        _classes["FooTyped"] = new FooTyped(*this, "footyped1", dag::NodeCategory::CAT_SINK);
+        _classes["BarTyped"] = new BarTyped(*this, "bartyped1", dag::NodeCategory::CAT_SOURCE);
+        _classes["GroupTyped"] = new GroupTyped(*this, "grouptyped1", dag::NodeCategory::CAT_GROUP);
+        _classes["Base"] = new Base(*this, "base1", dag::NodeCategory::CAT_SOURCE);
+        _classes["Derived"] = new Derived(*this, "derived1", dag::NodeCategory::CAT_CONDITION);
+        _classes["Final"] = new Final(*this, "final1", dag::NodeCategory::CAT_GROUP);
+        _classes["Boundary"] = new Boundary(*this, "b1", dag::NodeCategory::CAT_GROUP);
+        _classes["MathsNode"] = new MathsNode(*this, "maths1", dag::NodeCategory::CAT_ACTION);
     }
 
     MemoryNodeLibrary::~MemoryNodeLibrary()

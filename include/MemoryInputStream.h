@@ -9,11 +9,11 @@
 
 #include <limits>
 
-namespace nbe
+namespace dag
 {
     class ByteBuffer;
 
-    class NBE_API MemoryInputStream : public InputStream
+    class DAG_API MemoryInputStream : public InputStream
     {
     public:
         //! Construct from a buffer than has typically been filled by a MemoryOutputStream.

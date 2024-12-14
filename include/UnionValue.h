@@ -4,9 +4,9 @@
 #include <cstdint>
 #include <variant>
 
-namespace nbe
+namespace dag
 {    
-    class NBE_API UnionValue
+    class DAG_API UnionValue
     {
     public:
         enum Type

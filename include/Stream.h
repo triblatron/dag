@@ -9,9 +9,9 @@
 #include <cstdint>
 #include <cstdlib>
 
-namespace nbe
+namespace dag
 {
-    class NBE_API Stream
+    class DAG_API Stream
     {
     public:
         typedef std::uint8_t value_type;

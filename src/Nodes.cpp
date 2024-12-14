@@ -7,7 +7,7 @@
 #include "InputStream.h"
 #include "OutputStream.h"
 
-namespace nbe
+namespace dag
 {
     std::array<MetaPort,1> Base::ports =
             {

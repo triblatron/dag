@@ -5,13 +5,13 @@
 #include <vector>
 #include <cstdlib>
 
-namespace nbe
+namespace dag
 {
     class MetaCoroutine;
     class MetaField;
     class MetaOperation;
 
-    class NBE_API MetaClass
+    class DAG_API MetaClass
     {
     public:
         typedef std::vector<MetaField *> MetaFieldArray;

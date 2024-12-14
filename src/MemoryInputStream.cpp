@@ -6,7 +6,7 @@
 #include "MemoryInputStream.h"
 #include "ByteBuffer.h"
 
-namespace nbe
+namespace dag
 {
     MemoryInputStream::MemoryInputStream(ByteBuffer *buf)
     :

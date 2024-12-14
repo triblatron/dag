@@ -2,9 +2,9 @@
 
 #include "config/Export.h"
 
-namespace nbe
+namespace dag
 {
-    class NBE_API Action
+    class DAG_API Action
     {
     public:
         Action() = default;

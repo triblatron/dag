@@ -12,9 +12,9 @@
 #include <cassert>
 #include <iostream>
 
-namespace nbe
+namespace dag
 {
-/*	class NBE_API TypedPortBase : public Port
+/*	class DAG_API TypedPortBase : public Port
 	{
 	public:
 		explicit TypedPortBase(Node* parent, MetaPort* metaPort);

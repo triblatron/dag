@@ -3,7 +3,7 @@
 #include "Types.h"
 #include <cstring>
 
-namespace nbe
+namespace dag
 {
 	PortType::Type PortType::parseFromString(const char* str)
 	{

@@ -2,7 +2,7 @@
 
 #include "Command.h"
 
-namespace nbe
+namespace dag
 {
     void Command::redo()
     {

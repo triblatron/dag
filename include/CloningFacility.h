@@ -10,9 +10,9 @@
 #include <vector>
 #include <cstdint>
 
-namespace nbe
+namespace dag
 {
-    class NBE_API CloningFacility
+    class DAG_API CloningFacility
     {
     public:
         bool putOrig(void* ptr, std::uint64_t* id);

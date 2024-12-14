@@ -5,14 +5,14 @@
 
 #include "NodeEditorFrontEndTUI.h"
 
-namespace nbe
+namespace dag
 {
-    void NodeEditorFrontEndTUI::getNextCommand(nbe::NodeEditorInterface &backEnd)
+    void NodeEditorFrontEndTUI::getNextCommand(dag::NodeEditorInterface &backEnd)
     {
 
     }
 
-    void NodeEditorFrontEndTUI::onCommandCompleted(const nbe::NodeEditorResult &result)
+    void NodeEditorFrontEndTUI::onCommandCompleted(const dag::NodeEditorResult &result)
     {
 
     }

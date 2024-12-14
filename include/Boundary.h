@@ -8,9 +8,9 @@
 
 #include "Node.h"
 
-namespace nbe
+namespace dag
 {
-    class NBE_API Boundary final : public Node
+    class DAG_API Boundary final : public Node
     {
     public:
         explicit Boundary(KeyGenerator& keyGen, std::string name, NodeCategory::Category category=NodeCategory::CAT_NONE);

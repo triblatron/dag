@@ -12,7 +12,7 @@
 #include <atomic>
 #include <cstdint>
 
-namespace nbe
+namespace dag
 {
     class FieldNode
     {
@@ -183,7 +183,7 @@ namespace nbe
     class VariantNode
     {
     public:
-        typedef nbe::Value Field;
+        typedef dag::Value Field;
     public:
         void setInput(std::int64_t port, const Field& value)
         {
@@ -218,7 +218,7 @@ namespace nbe
     public:
         Baz(std::int64_t i)
         {
-            addOutput(nbe::Value(i));
+            addOutput(dag::Value(i));
         }
     private:
     };
@@ -228,7 +228,7 @@ namespace nbe
     public:
         Qux()
         {
-            addInput(nbe::Value(std::int64_t{ 0 }));
+            addInput(dag::Value(std::int64_t{ 0 }));
         }
     private:
     };
@@ -417,7 +417,7 @@ namespace nbe
     class VariantPortTransfer : public Transfer
     {
     public:
-        VariantPortTransfer(const nbe::VariantPort* source, nbe::VariantPort* dest)
+        VariantPortTransfer(const dag::VariantPort* source, dag::VariantPort* dest)
         :
         _source(source),
         _dest(dest)
@@ -425,14 +425,14 @@ namespace nbe
             // Do nothing.
         }
 
-        explicit VariantPortTransfer(const nbe::VariantPort* source)
+        explicit VariantPortTransfer(const dag::VariantPort* source)
         :
         _source(source)
         {
             // Do nothing.
         }
 
-        void setDest(nbe::VariantPort* dest)
+        void setDest(dag::VariantPort* dest)
         {
             _dest = dest;
         }
@@ -447,14 +447,14 @@ namespace nbe
             _dest->setValue(_source->value());
         }
     private:
-        const nbe::VariantPort* _source;
-        nbe::VariantPort* _dest;
+        const dag::VariantPort* _source;
+        dag::VariantPort* _dest;
     };
     
     class PortTransfer : public Transfer
     {
     public:
-        PortTransfer(const nbe::ValuePort* src, nbe::ValuePort* dst)
+        PortTransfer(const dag::ValuePort* src, dag::ValuePort* dst)
             :
             _src(src),
             _dst(dst)
@@ -462,7 +462,7 @@ namespace nbe
             // Do nothing.
         }
 
-        explicit PortTransfer(const nbe::ValuePort* src)
+        explicit PortTransfer(const dag::ValuePort* src)
         :
         _src(src),
         _dst(nullptr)
@@ -470,7 +470,7 @@ namespace nbe
             // Do nothing.
         }
 
-        void setDest(nbe::ValuePort* dst)
+        void setDest(dag::ValuePort* dst)
         {
             _dst = dst;
         }
@@ -485,8 +485,8 @@ namespace nbe
             _dst->setValue(_src->value());
         }
     private:
-        const nbe::ValuePort* _src;
-        nbe::ValuePort* _dst;
+        const dag::ValuePort* _src;
+        dag::ValuePort* _dst;
     };
 
     template<typename T>
@@ -499,7 +499,7 @@ namespace nbe
     class TypedPortTransfer : public Transfer
     {
     public:
-        TypedPortTransfer(const nbe::TypedPort<T>* src, nbe::TypedPort<T>* dst)
+        TypedPortTransfer(const dag::TypedPort<T>* src, dag::TypedPort<T>* dst)
             :
             _src(src),
             _dst(dst)
@@ -517,8 +517,8 @@ namespace nbe
             _dst->setValue(_src->value());
         }
     private:
-        const nbe::TypedPort<T>* _src;
-        nbe::TypedPort<T>* _dst;
+        const dag::TypedPort<T>* _src;
+        dag::TypedPort<T>* _dst;
     };
     
     template<typename T, typename = Value::EnableIfSupported<T>>
@@ -564,7 +564,7 @@ namespace nbe
     
 #define TRANSFER_DEFINE(Name, Source, Dest, Setter, Getter) \
     template<typename Source, typename Dest> \
-    class Name : public nbe::Transfer \
+    class Name : public dag::Transfer \
     {\
     public:\
         Name(const Source& source, Dest& dest)\

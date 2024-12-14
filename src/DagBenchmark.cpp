@@ -54,7 +54,7 @@ static void BM_TypedAccessor(benchmark::State& state)
 {
 	const DataSource* source = new DataSource(1);
     auto* sink = new DataSink();
-    auto* sut = new nbe::TypedTransferMemFun<DataSource, DataSink, int>(source, sink, &DataSource::foo, &DataSink::setFoo);
+    auto* sut = new dag::TypedTransferMemFun<DataSource, DataSink, int>(source, sink, &DataSource::foo, &DataSink::setFoo);
     for (auto _ : state)
     {
         sut->makeItSo();
@@ -68,9 +68,9 @@ BENCHMARK(BM_TypedAccessor);
 
 static void BM_TypedTransferMemFun(benchmark::State& state) {
 //    state.PauseTiming();
-    auto* foo = new nbe::Output(1);
-    auto* bar = new nbe::Input();
-    auto* sut = new nbe::TypedTransferMemFun<nbe::Output, nbe::Input, int>(foo, bar, &nbe::Output::foo, &nbe::Input::setFoo);
+    auto* foo = new dag::Output(1);
+    auto* bar = new dag::Input();
+    auto* sut = new dag::TypedTransferMemFun<dag::Output, dag::Input, int>(foo, bar, &dag::Output::foo, &dag::Input::setFoo);
 //    state.ResumeTiming();
     for (auto _ : state)
         sut->makeItSo();
@@ -93,14 +93,14 @@ BENCHMARK(BM_StringCopy);
 
 static void BM_AnyTransfer(benchmark::State& state)
 {
-    auto* foo = new nbe::Output(1);
-    auto* bar = new nbe::Input();
-    nbe::SignalPathDef path;
-    path.source.node = nbe::NodeID(1);
-    path.source.port = nbe::PortID(0);
-    path.dest.node = nbe::NodeID(2);
-    path.dest.port = nbe::PortID(0);
-    auto* sut = new nbe::AnyTransfer(path, *foo, *bar);
+    auto* foo = new dag::Output(1);
+    auto* bar = new dag::Input();
+    dag::SignalPathDef path;
+    path.source.node = dag::NodeID(1);
+    path.source.port = dag::PortID(0);
+    path.dest.node = dag::NodeID(2);
+    path.dest.port = dag::PortID(0);
+    auto* sut = new dag::AnyTransfer(path, *foo, *bar);
     for ( auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -112,14 +112,14 @@ BENCHMARK(BM_AnyTransfer);
 
 static void BM_AbstractAnyTransfer(benchmark::State& state)
 {
-    auto foo = new nbe::FooAbstractAny(1);
-    auto bar = new nbe::FooAbstractAny(0);
-    nbe::SignalPathDef path;
+    auto foo = new dag::FooAbstractAny(1);
+    auto bar = new dag::FooAbstractAny(0);
+    dag::SignalPathDef path;
     path.source.node = 1;
     path.source.port = 0;
     path.dest.node = 2;
     path.dest.port = 0;
-    auto sut = new nbe::AbstractAnyTransfer(path, *foo, *bar);
+    auto sut = new dag::AbstractAnyTransfer(path, *foo, *bar);
     for (auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -131,14 +131,14 @@ BENCHMARK(BM_AbstractAnyTransfer);
 
 static void BM_TypedSwitchTransfer(benchmark::State& state)
 {
-    auto foo = new nbe::FooTypedSwitch(1);
-    auto bar = new nbe::FooTypedSwitch(0);
-    nbe::SignalPathDef path;
+    auto foo = new dag::FooTypedSwitch(1);
+    auto bar = new dag::FooTypedSwitch(0);
+    dag::SignalPathDef path;
     path.source.node = 1;
     path.source.port = 0;
     path.dest.node = 2;
     path.dest.port = 0;
-    auto sut = new nbe::TypedSwitchTransfer(path, *foo, *bar);
+    auto sut = new dag::TypedSwitchTransfer(path, *foo, *bar);
     for (auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -150,9 +150,9 @@ BENCHMARK(BM_TypedSwitchTransfer);
 
 static void BM_TypedPointerTransfer(benchmark::State& state)
 {
-    auto node = new nbe::Output(1);
-    auto node2 = new nbe::Input();
-    auto sut = new nbe::TypedPointerTransfer(&node->_foo, &node2->_foo);
+    auto node = new dag::Output(1);
+    auto node2 = new dag::Input();
+    auto sut = new dag::TypedPointerTransfer(&node->_foo, &node2->_foo);
     for (auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -164,14 +164,14 @@ BENCHMARK(BM_TypedPointerTransfer);
 
 static void BM_VariantTransfer(benchmark::State& state)
 {
-    auto* foo = new nbe::Baz(1);
-    auto* bar = new nbe::Qux();
-    nbe::SignalPathDef path;
+    auto* foo = new dag::Baz(1);
+    auto* bar = new dag::Qux();
+    dag::SignalPathDef path;
     path.source.node = 1;
     path.source.port = 0;
     path.dest.node = 2;
     path.dest.port = 0;
-    auto* sut = new nbe::VariantTransfer(&path, foo, bar);
+    auto* sut = new dag::VariantTransfer(&path, foo, bar);
     for (auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -181,7 +181,7 @@ static void BM_VariantTransfer(benchmark::State& state)
 
 BENCHMARK(BM_VariantTransfer);
 
-typedef nbe::Value VariantValue;
+typedef dag::Value VariantValue;
 
 static void BM_VariantSetPrimitive(benchmark::State& state)
 {
@@ -217,7 +217,7 @@ static void BM_VariantSetVector(benchmark::State& state)
 
     for (auto _ : state)
     {
-        v = std::vector<VariantValue>{nbe::Value(std::int64_t(1)),nbe::Value(std::int64_t(2)),nbe::Value(std::int64_t(3))};
+        v = std::vector<VariantValue>{dag::Value(std::int64_t(1)),dag::Value(std::int64_t(2)),dag::Value(std::int64_t(3))};
     }
 }
 
@@ -318,7 +318,7 @@ static void BM_UnionValueModifyInt(benchmark::State& state)
 {        
     for ( auto _ : state )
     {
-        nbe::UnionValue v{1};
+        dag::UnionValue v{1};
         ++v;
     }
 }
@@ -329,9 +329,9 @@ static void BM_UnionValueModifyIntByGet(benchmark::State& state)
 {
     for ( auto _ : state )
     {
-        nbe::UnionValue v{1};
+        dag::UnionValue v{1};
         
-        ++nbe::get<std::int32_t>(v);
+        ++dag::get<std::int32_t>(v);
     }
 }
 
@@ -341,9 +341,9 @@ static void BM_UnionValueModifyString(benchmark::State& state)
 {
     for ( auto _ : state )
     {
-        nbe::UnionValue v{new std::string("Hello")};
+        dag::UnionValue v{new std::string("Hello")};
         
-        nbe::get<std::string>(v) += " World";
+        dag::get<std::string>(v) += " World";
     }
 }
 
@@ -399,8 +399,8 @@ BENCHMARK(BM_ModifyArrayChangeTypeFromNumeric);
 
 static void BM_GetTypedPortValueStatic(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    nbe::TypedPort<double> port(nodeLib.nextPortID(), nullptr, new nbe::MetaPort("port1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_IN), 1.0);
+    dag::MemoryNodeLibrary nodeLib;
+    dag::TypedPort<double> port(nodeLib.nextPortID(), nullptr, new dag::MetaPort("port1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN), 1.0);
 
     for (auto _ : state)
     {
@@ -416,12 +416,12 @@ BENCHMARK(BM_GetTypedPortValueStatic);
 
 static void BM_GetPortValueStatic(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    auto* port = new nbe::ValuePort(nodeLib.nextPortID(), new nbe::MetaPort("port1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_IN), nbe::Value(1.0));
+    dag::MemoryNodeLibrary nodeLib;
+    auto* port = new dag::ValuePort(nodeLib.nextPortID(), new dag::MetaPort("port1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN), dag::Value(1.0));
 
     for (auto _ : state)
     {
-        nbe::Value value = port->value();
+        dag::Value value = port->value();
 
         value += 1.0;
 
@@ -470,12 +470,12 @@ BENCHMARK(BM_SetValueDoublePort);
 
 static void BM_ValuePortTransfer(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    auto g = new nbe::Graph();
+    dag::MemoryNodeLibrary nodeLib;
+    auto g = new dag::Graph();
     g->setNodeLibrary(&nodeLib);
-    auto foo = dynamic_cast<nbe::Foo*>(g->createNode("Foo", "foo1"));
-    auto bar = dynamic_cast<nbe::Bar*>(g->createNode("Bar", "bar1"));
-    nbe::PortTransfer transfer(dynamic_cast<nbe::ValuePort*>(bar->dynamicPort(0)), dynamic_cast<nbe::ValuePort*>(foo->dynamicPort(0)));
+    auto foo = dynamic_cast<dag::Foo*>(g->createNode("Foo", "foo1"));
+    auto bar = dynamic_cast<dag::Bar*>(g->createNode("Bar", "bar1"));
+    dag::PortTransfer transfer(dynamic_cast<dag::ValuePort*>(bar->dynamicPort(0)), dynamic_cast<dag::ValuePort*>(foo->dynamicPort(0)));
 
     for (auto _ : state)
     {
@@ -490,34 +490,34 @@ BENCHMARK(BM_ValuePortTransfer);
 class InputNode
 {
 public:
-    InputNode(nbe::NodeLibrary& nodeLib)
+    InputNode(dag::NodeLibrary& nodeLib)
         :
-        in1(nodeLib.nextPortID(), nullptr, new nbe::MetaPort("in1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_IN), 1.0)
+        in1(nodeLib.nextPortID(), nullptr, new dag::MetaPort("in1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN), 1.0)
     {
         // Do nothing.
     }
-    nbe::TypedPort<double> in1;
+    dag::TypedPort<double> in1;
 };
 
 class OutputNode
 {
 public:
-    OutputNode(nbe::NodeLibrary& nodeLib)
+    OutputNode(dag::NodeLibrary& nodeLib)
         :
-        out1(nodeLib.nextPortID(), nullptr, new nbe::MetaPort("_out1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_OUT), 1.0)
+        out1(nodeLib.nextPortID(), nullptr, new dag::MetaPort("_out1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0)
     {
         // Do nothing.
     }
 
-    nbe::TypedPort<double> out1;
+    dag::TypedPort<double> out1;
 };
 
 static void BM_TypedPortTransfer(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
+    dag::MemoryNodeLibrary nodeLib;
     InputNode foo(nodeLib);
     OutputNode bar(nodeLib);
-    nbe::Transfer* transfer = bar.out1.connectTo(foo.in1);
+    dag::Transfer* transfer = bar.out1.connectTo(foo.in1);
 
     for (auto _ : state)
     {
@@ -529,19 +529,19 @@ static void BM_TypedPortTransfer(benchmark::State& state)
 
 BENCHMARK(BM_TypedPortTransfer);
 
-class SpooVariant : public nbe::Node
+class SpooVariant : public dag::Node
 {
 public:
-    SpooVariant(nbe::KeyGenerator& nodeLib, const std::string& name)
+    SpooVariant(dag::KeyGenerator& nodeLib, const std::string& name)
         :
-        Node(nodeLib, name, nbe::NodeCategory::CAT_SOURCE),
-        _foo(nodeLib.nextPortID(), new nbe::MetaPort("foo1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_OUT), 1.0),
-        _bar(nodeLib.nextPortID(), new nbe::MetaPort("bar1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_IN), 0.0)
+        Node(nodeLib, name, dag::NodeCategory::CAT_SOURCE),
+        _foo(nodeLib.nextPortID(), new dag::MetaPort("foo1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0),
+        _bar(nodeLib.nextPortID(), new dag::MetaPort("bar1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN), 0.0)
     {
         // Do nothing.
     }
 
-    explicit SpooVariant(nbe::InputStream& str, nbe::NodeLibrary& nodeLib)
+    explicit SpooVariant(dag::InputStream& str, dag::NodeLibrary& nodeLib)
     :
     Node(str, nodeLib),
     _foo(str, nodeLib),
@@ -550,9 +550,9 @@ public:
         // Do nothing.
     }
 
-    explicit SpooVariant(const SpooVariant& other, nbe::CloningFacility& facility, nbe::CopyOp copyOp, nbe::KeyGenerator* keyGen);
+    explicit SpooVariant(const SpooVariant& other, dag::CloningFacility& facility, dag::CopyOp copyOp, dag::KeyGenerator* keyGen);
 
-    void setFoo(const nbe::VariantPort::ValueType& value)
+    void setFoo(const dag::VariantPort::ValueType& value)
     {
         _foo.setValue(value);
     }
@@ -562,7 +562,7 @@ public:
         return std::get<double>(_foo.value());
     }
 
-    nbe::VariantPort* foo()
+    dag::VariantPort* foo()
     {
         return &_foo;
     }
@@ -572,7 +572,7 @@ public:
         _foo.setValue(value);
     }
 
-    nbe::VariantPort* bar()
+    dag::VariantPort* bar()
     {
         return &_bar;
     }
@@ -582,17 +582,17 @@ public:
         return "_p_SpooVariant";
     }
 
-    SpooVariant* clone(nbe::CloningFacility& facility, nbe::CopyOp copyOp, nbe::KeyGenerator* keyGen) override
+    SpooVariant* clone(dag::CloningFacility& facility, dag::CopyOp copyOp, dag::KeyGenerator* keyGen) override
     {
         return new SpooVariant(*this, facility, copyOp, keyGen);
     }
 
-    SpooVariant* create(nbe::InputStream& str, nbe::NodeLibrary& nodeLib) override
+    SpooVariant* create(dag::InputStream& str, dag::NodeLibrary& nodeLib) override
     {
         return new SpooVariant(str, nodeLib);
     }
 
-    bool equals(const nbe::Node& other) const override
+    bool equals(const dag::Node& other) const override
     {
         if (!Node::operator==(other))
         {
@@ -610,7 +610,7 @@ public:
         }
         return true;
     }
-    nbe::OutputStream& write(nbe::OutputStream& str) const override
+    dag::OutputStream& write(dag::OutputStream& str) const override
     {
         Node::write(str);
         _foo.write(str);
@@ -619,14 +619,14 @@ public:
         return str;
     }
 
-    void describe(nbe::NodeDescriptor& descriptor) const override
+    void describe(dag::NodeDescriptor& descriptor) const override
     {
         Node::describe(descriptor);
         descriptor.ports.emplace_back(_foo.id(), _foo.name(), _foo.type(), _foo.dir());
         descriptor.ports.emplace_back(_bar.id(), _bar.name(), _bar.type(), _bar.dir());
     }
 
-    nbe::Port* dynamicPort(size_t index) override
+    dag::Port* dynamicPort(size_t index) override
     {
 	    if (index == 0)
 	    {
@@ -640,7 +640,7 @@ public:
         return nullptr;
     }
     
-    static nbe::MetaPort const* metaPort(size_t index)
+    static dag::MetaPort const* metaPort(size_t index)
     {
         if (index < firstPort + numPorts)
         {
@@ -650,26 +650,26 @@ public:
         return nullptr;
     }
     
-    const nbe::MetaPort * dynamicMetaPort(size_t index) const override
+    const dag::MetaPort * dynamicMetaPort(size_t index) const override
     {
         return metaPort(index);
     }
 protected:
-    static const std::array<nbe::MetaPort, 2> ports;
+    static const std::array<dag::MetaPort, 2> ports;
     static constexpr size_t firstPort = 0;
     static constexpr size_t numPorts = 2;
 private:
-    nbe::VariantPort _foo;
-    nbe::VariantPort _bar;
+    dag::VariantPort _foo;
+    dag::VariantPort _bar;
 };
 
-const std::array<nbe::MetaPort, 2> SpooVariant::ports =
+const std::array<dag::MetaPort, 2> SpooVariant::ports =
 {
-    nbe::MetaPort("foo1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_OUT),
-    nbe::MetaPort("bar1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_IN)
+    dag::MetaPort("foo1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT),
+    dag::MetaPort("bar1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN)
 };
 
-SpooVariant::SpooVariant(const SpooVariant &other, nbe::CloningFacility& facility, nbe::CopyOp copyOp, nbe::KeyGenerator *keyGen)
+SpooVariant::SpooVariant(const SpooVariant &other, dag::CloningFacility& facility, dag::CopyOp copyOp, dag::KeyGenerator *keyGen)
 :
 Node(other,facility,copyOp,keyGen),
 _foo(other._foo, facility, copyOp, keyGen),
@@ -680,8 +680,8 @@ _bar(other._bar, facility, copyOp, keyGen)
 
 static void BM_SetVariantPort(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    nbe::VariantPort port(nodeLib.nextPortID(), new nbe::MetaPort("_out1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_OUT), 1.0);
+    dag::MemoryNodeLibrary nodeLib;
+    dag::VariantPort port(nodeLib.nextPortID(), new dag::MetaPort("_out1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0);
 
     for (auto _ : state)
     {
@@ -693,11 +693,11 @@ BENCHMARK(BM_SetVariantPort);
 
 static void BM_VariantPortTransfer(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
+    dag::MemoryNodeLibrary nodeLib;
     SpooVariant * source = new SpooVariant(nodeLib, "source");
     SpooVariant * dest = new SpooVariant(nodeLib, "dest");
     source->foo()->setValue(1.0);
-    nbe::Transfer * sut = new nbe::VariantPortTransfer(source->foo(), dest->bar());
+    dag::Transfer * sut = new dag::VariantPortTransfer(source->foo(), dest->bar());
     
     for (auto _ : state)
     {
@@ -713,7 +713,7 @@ BENCHMARK(BM_VariantPortTransfer);
 
 static void BM_VariantNodeSetPortValue(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
+    dag::MemoryNodeLibrary nodeLib;
     SpooVariant foo(nodeLib, "foo1");
 
     for ( auto _: state)
@@ -764,7 +764,7 @@ static void BM_PropertyTransfer(benchmark::State& state)
 {
     auto source = new FooSource(1);
     auto sink = new FooSink();
-    nbe::Transfer* transfer = new FooTransfer(*source,*sink);
+    dag::Transfer* transfer = new FooTransfer(*source,*sink);
     
     for (auto _ : state)
     {
@@ -780,12 +780,12 @@ BENCHMARK(BM_PropertyTransfer);
 
 static void BM_NodeDescribe(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    nbe::FooTyped const* foo = new nbe::FooTyped(nodeLib, "foo1", nbe::NodeCategory::CAT_SINK);
+    dag::MemoryNodeLibrary nodeLib;
+    dag::FooTyped const* foo = new dag::FooTyped(nodeLib, "foo1", dag::NodeCategory::CAT_SINK);
 
     for (auto _ : state)
     {
-        nbe::NodeDescriptor d;
+        dag::NodeDescriptor d;
 
         foo->describe(d);
     }
@@ -796,15 +796,15 @@ BENCHMARK(BM_NodeDescribe);
 
 static void BM_VirtualPortArray(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    auto g = new nbe::Graph();
+    dag::MemoryNodeLibrary nodeLib;
+    auto g = new dag::Graph();
     g->setNodeLibrary(&nodeLib);
-    auto sut = dynamic_cast<nbe::Final*>(g->createNode("Final", "final1"));
-    sut->addDynamicPort(new nbe::TypedPort<double>(nodeLib.nextPortID(), nullptr, new nbe::MetaPort("test1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_OUT), 1.0));
+    auto sut = dynamic_cast<dag::Final*>(g->createNode("Final", "final1"));
+    sut->addDynamicPort(new dag::TypedPort<double>(nodeLib.nextPortID(), nullptr, new dag::MetaPort("test1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0));
 
     for (auto _ : state)
     {
-        auto port = static_cast<nbe::TypedPort<double>*>(sut->dynamicPort(0));
+        auto port = static_cast<dag::TypedPort<double>*>(sut->dynamicPort(0));
 
         port->setValue(2.0);
     }
@@ -815,11 +815,11 @@ BENCHMARK(BM_VirtualPortArray);
 
 static void BM_VirtualMetaPortArray(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    auto g = new nbe::Graph();
+    dag::MemoryNodeLibrary nodeLib;
+    auto g = new dag::Graph();
     g->setNodeLibrary(&nodeLib);
-    auto sut = dynamic_cast<nbe::Final*>(g->createNode("Final", "final1"));
-    sut->addDynamicPort(new nbe::TypedPort<double>(nodeLib.nextPortID(), nullptr, new nbe::MetaPort("test1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_OUT), 1.0));
+    auto sut = dynamic_cast<dag::Final*>(g->createNode("Final", "final1"));
+    sut->addDynamicPort(new dag::TypedPort<double>(nodeLib.nextPortID(), nullptr, new dag::MetaPort("test1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0));
     std::int64_t i = 0;
 
     for (auto _ : state)
@@ -835,17 +835,17 @@ BENCHMARK(BM_VirtualMetaPortArray);
 
 static void BM_SelectionLiveAdd(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    auto g = new nbe::Graph();
+    dag::MemoryNodeLibrary nodeLib;
+    auto g = new dag::Graph();
     g->setNodeLibrary(&nodeLib);
-    auto node1 = dynamic_cast<nbe::FooTyped*>(g->createNode("FooTyped", "foo1"));
-    auto node2 = dynamic_cast<nbe::BarTyped*>(g->createNode("BarTyped", "bar1"));
-    nbe::SelectionInterface::Cont a;
+    auto node1 = dynamic_cast<dag::FooTyped*>(g->createNode("FooTyped", "foo1"));
+    auto node2 = dynamic_cast<dag::BarTyped*>(g->createNode("BarTyped", "bar1"));
+    dag::SelectionInterface::Cont a;
     a.insert(node1);
     a.insert(node2);
     for (auto _ : state)
     {
-        nbe::SelectionLive sut;
+        dag::SelectionLive sut;
         sut.add(a.begin(), a.end());
     }
 
@@ -858,19 +858,19 @@ BENCHMARK(BM_SelectionLiveAdd);
 
 static void BM_SelectionLiveSubtract(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    auto g = new nbe::Graph();
+    dag::MemoryNodeLibrary nodeLib;
+    auto g = new dag::Graph();
     g->setNodeLibrary(&nodeLib);
-    auto node1 = dynamic_cast<nbe::FooTyped*>(g->createNode("FooTyped", "foo1"));
-    auto node2 = dynamic_cast<nbe::BarTyped*>(g->createNode("BarTyped", "bar1"));
-    nbe::SelectionInterface::Cont a;
+    auto node1 = dynamic_cast<dag::FooTyped*>(g->createNode("FooTyped", "foo1"));
+    auto node2 = dynamic_cast<dag::BarTyped*>(g->createNode("BarTyped", "bar1"));
+    dag::SelectionInterface::Cont a;
     a.insert(node1);
     a.insert(node2);
     auto it = a.begin();
     std::advance(it, 1);
     for (auto _ : state)
     {
-        nbe::SelectionLive sut;
+        dag::SelectionLive sut;
         sut.subtract(a.begin(), it);
     }
 
@@ -883,17 +883,17 @@ BENCHMARK(BM_SelectionLiveSubtract);
 
 static void BM_SelectionLiveSet(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    auto g = new nbe::Graph();
+    dag::MemoryNodeLibrary nodeLib;
+    auto g = new dag::Graph();
     g->setNodeLibrary(&nodeLib);
-    auto node1 = dynamic_cast<nbe::FooTyped*>(g->createNode("FooTyped", "foo1"));
-    auto node2 = dynamic_cast<nbe::BarTyped*>(g->createNode("BarTyped", "bar1"));
-    nbe::SelectionInterface::Cont a;
+    auto node1 = dynamic_cast<dag::FooTyped*>(g->createNode("FooTyped", "foo1"));
+    auto node2 = dynamic_cast<dag::BarTyped*>(g->createNode("BarTyped", "bar1"));
+    dag::SelectionInterface::Cont a;
     a.insert(node1);
     a.insert(node2);
     for (auto _ : state)
     {
-        nbe::SelectionLive sut;
+        dag::SelectionLive sut;
         sut.set(a.begin(), a.end());
     }
 
@@ -906,16 +906,16 @@ BENCHMARK(BM_SelectionLiveSet);
 
 static void BM_SelectionLiveToggle(benchmark::State& state)
 {
-    nbe::MemoryNodeLibrary nodeLib;
-    auto g = new nbe::Graph();
-    auto node1 = dynamic_cast<nbe::FooTyped*>(g->createNode("FooTyped", "foo1"));
-    auto node2 = dynamic_cast<nbe::BarTyped*>(g->createNode("BarTyped", "bar1"));
-    nbe::SelectionInterface::Cont a;
+    dag::MemoryNodeLibrary nodeLib;
+    auto g = new dag::Graph();
+    auto node1 = dynamic_cast<dag::FooTyped*>(g->createNode("FooTyped", "foo1"));
+    auto node2 = dynamic_cast<dag::BarTyped*>(g->createNode("BarTyped", "bar1"));
+    dag::SelectionInterface::Cont a;
     a.insert(node1);
     a.insert(node2);
     auto it = a.begin();
     std::advance(it, 1);
-    nbe::SelectionLive sut;
+    dag::SelectionLive sut;
     for (auto _ : state)
     {
         sut.toggle(a.begin(), it);
@@ -930,10 +930,10 @@ BENCHMARK(BM_SelectionLiveToggle);
 
 static void BM_DynamicCastPort(benchmark::State& state)
 {
-    nbe::Port* p = new nbe::TypedPort<double>(0, "port1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    dag::Port* p = new dag::TypedPort<double>(0, "port1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_INTERNAL, 0.0, nullptr);
     for (auto _ : state)
     {
-        auto typed = dynamic_cast<nbe::TypedPort<double>*>(p);
+        auto typed = dynamic_cast<dag::TypedPort<double>*>(p);
         // Avoid optimising out the cast.
         typed->setValue(1.0);
     }
@@ -943,10 +943,10 @@ BENCHMARK(BM_DynamicCastPort);
 
 static void BM_StaticCastPort(benchmark::State& state)
 {
-    nbe::Port* p = new nbe::TypedPort<double>(0, "port1", nbe::PortType::TYPE_DOUBLE, nbe::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    dag::Port* p = new dag::TypedPort<double>(0, "port1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_INTERNAL, 0.0, nullptr);
     for (auto _ : state)
     {
-        auto typed = static_cast<nbe::TypedPort<double>*>(p);
+        auto typed = static_cast<dag::TypedPort<double>*>(p);
         typed->setValue(1.0);
     }
 }

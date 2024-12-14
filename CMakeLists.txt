@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-PROJECT(nodebackend)
+PROJECT(dag)
 cmake_policy(SET CMP0114 NEW)
 
 SET( CMAKE_CXX_STANDARD 17 )
@@ -32,6 +32,14 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/NodeEditorBackEndNodeEditorInterface.h
 		include/Menu.h
 		include/CloningFacility.h
+		include/errod.h 
+		include/Fields.h 
+		include/KeyGenerator.h 
+		include/LuaInterface.h
+		include/MetaClass.h
+		include/MetaField.h
+		include/PrettyPrinter.h
+		include/UnionValue.h
 )
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
@@ -50,7 +58,7 @@ SOURCE_GROUP(
 )
 
 # Build the main inf library
-SET( nodebackend_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
+SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/Action.cpp
         src/Boundary.cpp
         src/ByteBuffer.cpp
@@ -94,38 +102,37 @@ SET( nodebackend_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
 		src/MathsNode.cpp
 		src/NodeEditorFrontEnd.cpp
 		src/NodeEditorFrontEndTUI.cpp
-		include/NodeEditorBackEnd.cpp
 		src/NodeEditorBackEndNodeEditorInterface.cpp
 		src/Menu.cpp
 		src/CloningFacility.cpp
 )
 
 
-ADD_LIBRARY( nodebackend SHARED ${nodebackend_SRC} )
+ADD_LIBRARY( dag SHARED ${dag_SRC} )
 
-TARGET_INCLUDE_DIRECTORIES( nodebackend PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR})
-TARGET_LINK_DIRECTORIES( nodebackend PUBLIC ${DEP_ROOT}/lib )
-TARGET_LINK_LIBRARIES( nodebackend GTest::gtest ${LUA_LIBRARIES})
+TARGET_INCLUDE_DIRECTORIES( dag PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR})
+TARGET_LINK_DIRECTORIES( dag PUBLIC ${DEP_ROOT}/lib )
+TARGET_LINK_LIBRARIES( dag GTest::gtest ${LUA_LIBRARIES})
 
-set_target_properties( nodebackend PROPERTIES DEFINE_SYMBOL NODEBACKEND_LIBRARY )
+set_target_properties( dag PROPERTIES DEFINE_SYMBOL DAG_LIBRARY )
 
-REMOVE_DEFINITIONS( -DNODEBACKEND_LIBRARY )
+REMOVE_DEFINITIONS( -DDAG_LIBRARY )
 
 
 INCLUDE( CheckIncludeFile )
 INCLUDE( CheckIncludeFileCXX )
 
 
-ADD_EXECUTABLE( NodeBackendBenchmark src/NodeBackendBenchmark.cpp include/Node.h include/Transfer.h include/SignalPathDef.h)
-TARGET_INCLUDE_DIRECTORIES( NodeBackendBenchmark PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR} ${ANTLR_Reptol_OUTPUT_DIR})
+ADD_EXECUTABLE( DagBenchmark src/DagBenchmark.cpp include/Node.h include/Transfer.h include/SignalPathDef.h)
+TARGET_INCLUDE_DIRECTORIES( DagBenchmark PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR} ${ANTLR_Reptol_OUTPUT_DIR})
 
 SET(BENCHMARK_LIBS ${benchmark_LIBRARY})
 #MESSAGE(${benchmark_LIBRARY})
 IF (WIN32)
 	SET(BENCHMARK_LIBS ${BENCHMARK_LIBS} Shlwapi)
-	target_compile_definitions(NodeBackendBenchmark PUBLIC BENCHMARK_STATIC_DEFINE)
+	target_compile_definitions(DagBenchmark PUBLIC BENCHMARK_STATIC_DEFINE)
 ENDIF(WIN32)
-target_link_libraries(NodeBackendBenchmark benchmark::benchmark nodebackend)
+target_link_libraries(DagBenchmark benchmark::benchmark dag)
 
 #ADD_EXECUTABLE( demoSerialiseGraph src/demos/demoSerialiseGraph.cpp )
 #target_link_libraries(demoSerialiseGraph inf)
@@ -171,9 +178,9 @@ CONFIGURE_FILE( etc/setup.bat.in ${PROJECT_BINARY_DIR}/etc/setup.bat )
 ENDIF ( UNIX AND NOT APPLE )
 CONFIGURE_FILE( etc/setup.bat.in ${PROJECT_BINARY_DIR}/etc/setup.bat )
 
-SUBDIRS( src/tests/NodeBackendTest )
+SUBDIRS( src/tests/DagTest )
 
-INSTALL( TARGETS nodebackend NodeBackendBenchmark
+INSTALL( TARGETS dag DagBenchmark
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
@@ -187,6 +194,6 @@ ENDIF( UNIX )
 add_library(NodePlugin SHARED include/NodePlugin.h
         src/NodePlugin.cpp)
 set_target_properties( NodePlugin PROPERTIES DEFINE_SYMBOL NODEPLUGIN_LIBRARY )
-TARGET_LINK_LIBRARIES(NodePlugin nodebackend)
+TARGET_LINK_LIBRARIES(NodePlugin dag)
 
 INSTALL( TARGETS NodePlugin LIBRARY DESTINATION lib/NodePlugins RUNTIME DESTINATION bin/NodePlugins )

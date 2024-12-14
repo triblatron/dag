@@ -2,9 +2,9 @@
 
 #include "config/Export.h"
 
-namespace nbe
+namespace dag
 {
-	class NBE_API NodeCategory
+	class DAG_API NodeCategory
 	{
 	public:
 		enum  Category

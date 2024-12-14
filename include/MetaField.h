@@ -4,11 +4,11 @@
 
 #include <string>
 
-namespace nbe
+namespace dag
 {
     class Lua;
 
-    class NBE_API MetaField
+    class DAG_API MetaField
     {
     public:
         enum DataType

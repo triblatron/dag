@@ -10,9 +10,9 @@
 #include "DebugPrinter.h"
 #include <iostream>
 
-namespace nbe
+namespace dag
 {
-    nbe::MetaPort::MetaPort(nbe::InputStream &str)
+    dag::MetaPort::MetaPort(dag::InputStream &str)
     :
     type(PortType::TYPE_UNKNOWN),
     direction(PortDirection::DIR_UNKNOWN)

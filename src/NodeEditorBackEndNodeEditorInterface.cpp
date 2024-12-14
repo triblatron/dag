@@ -5,10 +5,10 @@
 
 #include "NodeEditorBackEndNodeEditorInterface.h"
 
-namespace nbe
+namespace dag
 {
-    NodeEditorBackEndNodeEditorInterface::NodeEditorBackEndNodeEditorInterface(nbe::NodeEditorInterface *nodeEditor,
-                                                                               nbe::NodeEditorFrontEnd *frontEnd)
+    NodeEditorBackEndNodeEditorInterface::NodeEditorBackEndNodeEditorInterface(dag::NodeEditorInterface *nodeEditor,
+                                                                               dag::NodeEditorFrontEnd *frontEnd)
        :
        _nodeEditor(nodeEditor),
        _frontEnd(frontEnd)

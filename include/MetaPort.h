@@ -11,13 +11,13 @@
 
 #include <string>
 
-namespace nbe
+namespace dag
 {
     class DebugPrinter;
     class InputStream;
     class OutputStream;
     
-    struct NBE_API MetaPort
+    struct DAG_API MetaPort
     {
         std::string name;
         PortType::Type type;
@@ -27,7 +27,7 @@ namespace nbe
         :
         name("<unnamed>"),
         type(PortType::TYPE_UNKNOWN),
-        direction(nbe::PortDirection::DIR_UNKNOWN)
+        direction(dag::PortDirection::DIR_UNKNOWN)
         {
             // Do nothing.
         }

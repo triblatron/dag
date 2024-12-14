@@ -7,7 +7,7 @@
 #include "NodeDescriptor.h"
 #include <cmath>
 
-namespace nbe
+namespace dag
 {
     std::array<MetaPort,3> MathsNode::ports =
             {

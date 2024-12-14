@@ -10,10 +10,10 @@
 #include <cstdint>
 #include <iterator>
 
-namespace nbe
+namespace dag
 {
     //! Buffer of bytes, based on the Java 8 ByteBuffer API with simplifications
-    class NBE_API ByteBuffer
+    class DAG_API ByteBuffer
     {
     public:
         using BufferType = std::vector<std::uint8_t>;

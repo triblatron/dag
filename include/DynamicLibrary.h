@@ -17,7 +17,7 @@
 #include <Windows.h>
 #endif // HAVE_WINDOWS_H
 
-namespace nbe
+namespace dag
 {
 
     class DynamicLibrary

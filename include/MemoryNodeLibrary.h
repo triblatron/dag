@@ -8,9 +8,9 @@
 #include <unordered_map>
 #include "KeyGenerator.h"
 
-namespace nbe
+namespace dag
 {
-	class NBE_API MemoryNodeLibrary final : public NodeLibrary, public KeyGenerator
+	class DAG_API MemoryNodeLibrary final : public NodeLibrary, public KeyGenerator
 	{
 	public:
 		MemoryNodeLibrary();

@@ -10,7 +10,7 @@
 #include "OutputStream.h"
 #include "Node.h"
 
-namespace nbe
+namespace dag
 {
     SignalPathID SignalPath::_nextID = 0;
 

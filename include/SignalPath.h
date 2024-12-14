@@ -11,13 +11,13 @@
 
 #include <cstdint>
 
-namespace nbe
+namespace dag
 {
     class InputStream;
     class NodeLibrary;
     class OutputStream;
 
-    class NBE_API SignalPath
+    class DAG_API SignalPath
     {
     public:
         enum

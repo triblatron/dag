@@ -2,9 +2,9 @@
 
 #include "config/Export.h"
 
-namespace nbe
+namespace dag
 {
-    struct NBE_API ErrorDescriptor
+    struct DAG_API ErrorDescriptor
     {
         int code;
         const char * name;

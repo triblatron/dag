@@ -2,7 +2,7 @@
 
 #include "FileSystemTraverser.h"
 
-namespace nbe
+namespace dag
 {
     FileSystemTraverser::FileSystemTraverser(fs::path &dir)
     :

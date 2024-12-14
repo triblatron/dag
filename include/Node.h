@@ -11,7 +11,7 @@
 #include <vector>
 #include <stdexcept>
 
-namespace nbe
+namespace dag
 {
     class CloningFacility;
     class DebugPrinter;
@@ -21,7 +21,7 @@ namespace nbe
     class OutputStream;
     class NodeLibrary;
 
-	class NBE_API Node
+	class DAG_API Node
 	{
 	public:
 		enum NodeFlags : std::uint32_t

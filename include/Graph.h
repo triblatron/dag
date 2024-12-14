@@ -14,7 +14,7 @@
 #include <string>
 #include <iterator>
 
-namespace nbe
+namespace dag
 {
     class ByteBuffer;
     class CloningFacility;
@@ -30,7 +30,7 @@ namespace nbe
     typedef std::vector<Node*> NodeArray;
 
     //! A collection of Nodes, SignalPaths and child Graphs.
-	class NBE_API Graph : public KeyGenerator
+	class DAG_API Graph : public KeyGenerator
 	{
 	public:
 		Graph() = default;

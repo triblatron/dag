@@ -10,7 +10,7 @@
 
 #include <algorithm>
 
-namespace nbe
+namespace dag
 {
     std::size_t SelectionLive::count()
     {

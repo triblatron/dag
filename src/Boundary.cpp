@@ -8,9 +8,9 @@
 #include "OutputStream.h"
 #include "CloningFacility.h"
 
-namespace nbe
+namespace dag
 {
-    nbe::Boundary::Boundary(KeyGenerator& keyGen, std::string name, NodeCategory::Category category) : Node(keyGen, std::move(name), category)
+    dag::Boundary::Boundary(KeyGenerator& keyGen, std::string name, NodeCategory::Category category) : Node(keyGen, std::move(name), category)
     {
         // Do nothing.
     }

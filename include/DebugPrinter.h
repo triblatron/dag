@@ -10,9 +10,9 @@
 #include <cstdint>
 #include <string>
 
-namespace nbe
+namespace dag
 {
-    class NBE_API DebugPrinter
+    class DAG_API DebugPrinter
     {
     public:
         void setStr(std::ostream* str)

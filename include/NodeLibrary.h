@@ -9,7 +9,7 @@
 #include <string>
 #include <array>
 
-namespace nbe
+namespace dag
 {
     class InputStream;
     class Node;
@@ -18,7 +18,7 @@ namespace nbe
     //! |class NodeLibrary
     //! A set of Nodes that can be instantiated by class name
     //! \note Uses the Prototype pattern.
-	class NBE_API NodeLibrary
+	class DAG_API NodeLibrary
 	{
 	public:
         NodeLibrary() = default;

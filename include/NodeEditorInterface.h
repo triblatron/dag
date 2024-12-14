@@ -11,12 +11,12 @@
 #include <vector>
 #include <string>
 
-namespace nbe
+namespace dag
 {
     class Node;
     class SelectionInterface;
 
-    class NBE_API NodeEditorInterface
+    class DAG_API NodeEditorInterface
     {
     public:
         enum SelectionMode

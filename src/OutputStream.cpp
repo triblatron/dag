@@ -5,7 +5,7 @@
 
 #include "OutputStream.h"
 
-namespace nbe
+namespace dag
 {
     OutputStream &OutputStream::write(const std::string & value)
     {

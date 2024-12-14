@@ -3,7 +3,7 @@
 #include "NodeCategory.h"
 #include <cstring>
 
-namespace nbe
+namespace dag
 {
 	const char* NodeCategory::toString(Category category)
 	{

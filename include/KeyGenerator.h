@@ -8,9 +8,9 @@
 
 #include "Types.h"
 
-namespace nbe
+namespace dag
 {
-    class NBE_API KeyGenerator
+    class DAG_API KeyGenerator
     {
     public:
         virtual ~KeyGenerator() = default;

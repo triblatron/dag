@@ -12,13 +12,13 @@
 
 namespace fs = std::filesystem;
 
-namespace nbe
+namespace dag
 {
     class DynamicLibrary;
     class KeyGenerator;
     class NodeLibrary;
 
-    class NBE_API NodePluginScanner
+    class DAG_API NodePluginScanner
     {
     public:
         ~NodePluginScanner();

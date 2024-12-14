@@ -3,7 +3,7 @@
 #include "Class.h"
 #include "Fields.h"
 
-namespace nbe
+namespace dag
 {
     Class::Class(MetaClass * metaClass, Lua & lua)
     :

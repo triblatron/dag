@@ -13,12 +13,12 @@
 #include "KeyGenerator.h"
 #include "CloningFacility.h"
 
-namespace nbe
+namespace dag
 {
     class InputStream;
     class OutputStream;
 
-    class NBE_API Foo : public Node
+    class DAG_API Foo : public Node
     {
     public:
         Foo(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -97,7 +97,7 @@ namespace nbe
         static constexpr size_t numPorts = ports.size();
     };
 
-    class NBE_API Base : public Node
+    class DAG_API Base : public Node
     {
     public:
         Base(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -177,7 +177,7 @@ namespace nbe
         TypedPort<double> _direction;
     };
 
-    class NBE_API Derived : public Base
+    class DAG_API Derived : public Base
     {
     public:
         Derived(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -246,7 +246,7 @@ namespace nbe
         TypedPort<bool> _trigger;
     };
 
-    class NBE_API Final final : public Derived
+    class DAG_API Final final : public Derived
     {
     public:
         Final(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -346,7 +346,7 @@ namespace nbe
         static constexpr size_t numPorts = 1;
     };
 
-    class NBE_API Bar : public Node
+    class DAG_API Bar : public Node
     {
     public:
         Bar(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -430,7 +430,7 @@ namespace nbe
         static constexpr size_t numPorts = 1;
     };
 
-    class NBE_API FooTyped : public Node
+    class DAG_API FooTyped : public Node
     {
     public:
         FooTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -526,7 +526,7 @@ namespace nbe
         TypedPort<double>* _in1{nullptr};
     };
 
-    class NBE_API BarTyped : public Node
+    class DAG_API BarTyped : public Node
     {
     public:
         BarTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
@@ -623,7 +623,7 @@ namespace nbe
         TypedPort<double>* _out1{nullptr};
     };
 
-    class NBE_API GroupTyped : public Node
+    class DAG_API GroupTyped : public Node
     {
     public:
         GroupTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)

@@ -4,15 +4,15 @@
 #include <cstdint>
 #include "Types.h"
 
-namespace nbe
+namespace dag
 {
-    struct NBE_API Endpoint
+    struct DAG_API Endpoint
     {
         PortID port;
         NodeID node;
     };
 
-    struct NBE_API SignalPathDef
+    struct DAG_API SignalPathDef
     {
         SignalPathID id;
         Endpoint source;

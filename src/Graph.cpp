@@ -15,7 +15,7 @@
 
 #include <queue>
 
-namespace nbe
+namespace dag
 {
 	Graph::~Graph()
 	{
@@ -461,7 +461,7 @@ namespace nbe
         output->setNodeLibrary(&nodeLib);
 
         {
-            nbe::Table graphTable = lua.tableForName("graph");
+            dag::Table graphTable = lua.tableForName("graph");
 
             output = fromLuaGraphTable(graphTable, nodeLib, output);
         }
@@ -635,9 +635,9 @@ namespace nbe
             for (size_t i=0; i<n->totalPorts(); ++i)
             {
                 n->update();
-                nbe::ValueVisitor visitor;
+                dag::ValueVisitor visitor;
                 n->dynamicPort(i)->accept(visitor);
-                nbe::SetValueVisitor setVisitor(visitor.value());
+                dag::SetValueVisitor setVisitor(visitor.value());
                 for (auto o : n->dynamicPort(i)->outgoingConnections())
                 {
                     o->accept(setVisitor);

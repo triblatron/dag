@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-namespace nbe
+namespace dag
 {
     Node::Node(KeyGenerator& keyGen, std::string name, NodeCategory::Category category)
     :

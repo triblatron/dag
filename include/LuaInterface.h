@@ -19,9 +19,9 @@ extern "C" {
 #include <type_traits>
 #include <functional>
 
-namespace nbe
+namespace dag
 {
-    class NBE_API Function
+    class DAG_API Function
     {
     public:
         //! Push the function onto the stack if it exists.
@@ -53,7 +53,7 @@ namespace nbe
         bool _balance;
     };
 
-    class NBE_API TableTraversal
+    class DAG_API TableTraversal
     {
     public:
         explicit TableTraversal( lua_State * lua )
@@ -110,7 +110,7 @@ namespace nbe
         int _oldTop;
     };
 
-    class NBE_API Table
+    class DAG_API Table
     {
     public:
         explicit Table(lua_State *L,const char *name, bool cleanup = true);
@@ -376,7 +376,7 @@ namespace nbe
         bool _cleanup;
     };
 
-    //class NBE_API LocalTable : public Table
+    //class DAG_API LocalTable : public Table
     //{
     //public:
     //  LocalTable(lua_State * L, const char * name)
@@ -386,7 +386,7 @@ namespace nbe
     //  }
     //};
 
-    class NBE_API GlobalTable : public Table
+    class DAG_API GlobalTable : public Table
     {
     public:
         GlobalTable(lua_State* L, const char* name)
@@ -402,7 +402,7 @@ namespace nbe
         }
     };
 
-    class NBE_API Lua
+    class DAG_API Lua
     {
     public:
         enum Error

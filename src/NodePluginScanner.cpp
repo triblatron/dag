@@ -9,7 +9,7 @@
 
 #include "DynamicLibrary.h"
 
-namespace nbe
+namespace dag
 {
 #if defined(__linux__)
     fs::path NodePluginScanner::pathToPlugins = "lib/NodePlugins";

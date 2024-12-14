@@ -6,7 +6,7 @@
 
 #include "DynamicLibrary.h"
 
-namespace nbe
+namespace dag
 {
     DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& path)
     {

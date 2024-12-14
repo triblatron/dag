@@ -9,11 +9,11 @@
 
 #include <string>
 
-namespace nbe
+namespace dag
 {
     class NodeEditorFrontEnd;
 
-    class NBE_API NodeEditorBackEnd
+    class DAG_API NodeEditorBackEnd
     {
     public:
         virtual ~NodeEditorBackEnd() = default;
