@@ -1,0 +1,5 @@
+SET( DagTest_SRC DagTest.cpp )
+ADD_EXECUTABLE( DagTest ${DagTest_SRC} )
+SET( NodeBackendTest_DEPS "dag;GTest::gtest;GTest::gtest_main" )
+TARGET_LINK_LIBRARIES( DagTest PRIVATE dag;GTest::gtest;GTest::gtest_main;${LUA_LIBRARIES})
+INSTALL(TARGETS DagTest RUNTIME DESTINATION bin)

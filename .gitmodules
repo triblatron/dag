@@ -1,0 +1,3 @@
+[submodule "thirdparty/dagbase"]
+	path = thirdparty/dagbase
+	url = https://github.com/triblatron/dagbase
