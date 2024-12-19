@@ -3,12 +3,14 @@
 #include "NodeCategory.h"
 #include <cstring>
 
-namespace nbe
+namespace dag
 {
 	const char* NodeCategory::toString(Category category)
 	{
 		switch (category)
 		{
+        case CAT_UNKNOWN:
+            return "Unknown";
 		case CAT_NONE:
 			return "None";
 		case CAT_SOURCE:

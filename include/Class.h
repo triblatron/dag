@@ -9,14 +9,14 @@
 #include <map>
 #include <typeinfo>
 
-namespace nbe
+namespace dag
 {
     class Field;
     class MetaClass;
     class Operation;
 
     //! Base class for classes that have fields and operations.
-    class NBE_API Class
+    class DAG_API Class
     {
     public:
         enum Error

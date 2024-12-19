@@ -4,7 +4,7 @@
 
 #include "LuaInterface.h"
 
-namespace nbe
+namespace dag
 {
     MetaCoroutine::MetaCoroutine(Lua & lua)
     :

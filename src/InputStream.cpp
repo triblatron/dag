@@ -5,7 +5,7 @@
 
 #include "InputStream.h"
 
-namespace nbe
+namespace dag
 {
 
     InputStream &InputStream::read(std::string *value)

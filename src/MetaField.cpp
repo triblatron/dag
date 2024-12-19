@@ -2,7 +2,7 @@
 
 #include "MetaField.h"
 
-namespace nbe
+namespace dag
 {
     MetaField::MetaField( Lua & lua, const std::string & name, DataType type )
     :

@@ -10,14 +10,14 @@
 #include <optional>
 #include <unordered_set>
 
-namespace nbe
+namespace dag
 {
     class Graph;
     class Node;
     class Port;
 
     //! The direction of a port.
-    class NBE_API PortDirection
+    class DAG_API PortDirection
     {
     public:
         enum Direction
@@ -39,7 +39,7 @@ namespace nbe
         static const char* toString(Direction dir);
     };
 
-    class NBE_API PortType
+    class DAG_API PortType
     {
     public:
         enum Type

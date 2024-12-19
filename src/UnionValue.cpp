@@ -2,7 +2,7 @@
 
 #include "UnionValue.h"
 
-namespace nbe
+namespace dag
 {
     UnionValue::UnionValue(std::int32_t i)
     {

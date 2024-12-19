@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-namespace nbe
+namespace dag
 {
     DebugPrinter &DebugPrinter::println(std::string line)
     {

@@ -2,10 +2,14 @@ cmake_minimum_required(VERSION 3.22)
 PROJECT(dag)
 cmake_policy(SET CMP0114 NEW)
 
+SET( CMAKE_CXX_STANDARD 17 )
+SET( CMAKE_CXX_EXTENSIONS OFF )
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-
-FIND_PACKAGE(Lua 5.4.6 EXACT)
+#FIND_PACKAGE(GTest)
+#FIND_PACKAGE(benchmark REQUIRED)
+FIND_PACKAGE(Lua 5.4)
 
 SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h include/ByteBuffer.h include/Class.h include/Command.h include/CreateNode.h include/DebugPrinter.h include/FileSystemTraverser.h include/Graph.h include/InputStream.h include/MemoryInputStream.h include/MemoryNodeLibrary.h include/MemoryOutputStream.h include/MetaCoroutine.h include/MetaOperation.h include/MetaPort.h include/NodeCategory.h include/NodeDescriptor.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodeLibrary.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h include/OutputStream.h include/Port.h include/PortDescriptor.h include/SelectionInterface.h include/SelectionLive.h include/SignalPath.h include/SignalPathDef.h include/Stream.h include/Transfer.h include/TypedPort.h include/Types.h include/TypeTraits.h include/Value.h
         include/DynamicLibrary.h
@@ -16,6 +20,14 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/NodeEditorBackEndNodeEditorInterface.h
 		include/Menu.h
 		include/CloningFacility.h
+		include/errod.h 
+		include/Fields.h 
+		include/KeyGenerator.h 
+		include/LuaInterface.h
+		include/MetaClass.h
+		include/MetaField.h
+		include/PrettyPrinter.h
+		include/UnionValue.h
 )
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
@@ -78,7 +90,6 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
 		src/MathsNode.cpp
 		src/NodeEditorFrontEnd.cpp
 		src/NodeEditorFrontEndTUI.cpp
-		include/NodeEditorBackEnd.cpp
 		src/NodeEditorBackEndNodeEditorInterface.cpp
 		src/Menu.cpp
 		src/CloningFacility.cpp
@@ -98,8 +109,6 @@ REMOVE_DEFINITIONS( -DDAG_LIBRARY )
 
 INCLUDE( CheckIncludeFile )
 INCLUDE( CheckIncludeFileCXX )
-
-
 
 #ADD_EXECUTABLE( demoSerialiseGraph src/demos/demoSerialiseGraph.cpp )
 #target_link_libraries(demoSerialiseGraph inf)
@@ -127,7 +136,7 @@ CHECK_INCLUDE_FILE( stdint.h HAVE_STDINT_H  DOC "")
 CHECK_INCLUDE_FILE( sys/timerfd.h HAVE_SYS_TIMERFD_H DOC "Whether we have the sys/timerfd header - only present on modern Linux distros, not on Control")
 CHECK_INCLUDE_FILE( dirent.h HAVE_DIRENT_H DOC "Whether we have the dirent header, Linux and hopefully macOS X")
 CHECK_INCLUDE_FILE( dlfcn.h HAVE_DLFCN_H DOC "Whether we have the dlfcn header for dynnamic libraries, Linux and hopefully macOS X")
-
+CHECK_INCLUDE_FILE( TargetConditionals.h DOC "Whether we have the TargetConditionals header to detect which Apple platform we are on")
 CHECK_INCLUDE_FILE_CXX( iostream HAVE_STD_IOSTREAM DOC "")
 CHECK_INCLUDE_FILE_CXX( fstream HAVE_STD_FSTREAM DOC "")
 CHECK_INCLUDE_FILE_CXX( iosfwd HAVE_STD_IOSFWD DOC "")

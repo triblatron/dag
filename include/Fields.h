@@ -7,12 +7,12 @@
 #include <lua.h>
 #include <vector>
 
-namespace nbe
+namespace dag
 {
     class MetaField;
     class Route;
 
-    class NBE_API Field
+    class DAG_API Field
     {
     public:
         //! Assumes that a value is on the top of the Lus stack.

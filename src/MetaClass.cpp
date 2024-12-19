@@ -2,6 +2,6 @@
 
 #include "MetaClass.h"
 
-namespace nbe
+namespace dag
 {
 }

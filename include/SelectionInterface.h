@@ -14,11 +14,11 @@
 #include <vector>
 #include <algorithm>
 
-namespace nbe
+namespace dag
 {
     class Node;
 
-    class NBE_API SelectionInterface
+    class DAG_API SelectionInterface
     {
     public:
         typedef NodeSet Cont;

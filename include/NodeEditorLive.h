@@ -10,14 +10,14 @@
 
 #include <vector>
 
-namespace nbe
+namespace dag
 {
     class Graph;
     class MemoryNodeLibrary;
     class SelectionLive;
     class Transfer;
 
-    class NBE_API NodeEditorLive : public NodeEditorInterface
+    class DAG_API NodeEditorLive : public NodeEditorInterface
     {
     public:
     public:

@@ -7,7 +7,7 @@
 #include "Graph.h"
 #include "Node.h"
 
-namespace nbe
+namespace dag
 {
     void CreateNode::makeItSo()
     {

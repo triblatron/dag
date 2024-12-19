@@ -6,12 +6,13 @@
 
 #include <vector>
 #include <cstdint>
+#include <cstdlib>
 
-namespace nbe
+namespace dag
 {
     class Command;
 
-    class NBE_API Menu
+    class DAG_API Menu
     {
     public:
         void addCommand(Command* cmd)

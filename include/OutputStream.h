@@ -11,12 +11,12 @@
 #include <map>
 #include <string>
 
-namespace nbe
+namespace dag
 {
     //! \class OutputStream
     //! Supports writing primitive types, strings and pointers.
     //! \note Pointers are encoded as integer identifiers allocated in an LUT as they are encountered.
-    class NBE_API OutputStream : public Stream
+    class DAG_API OutputStream : public Stream
     {
     public:
         //! Write a buffer of bytes to the stream.
@@ -38,7 +38,7 @@ namespace nbe
                 }
                 else
                 {
-                    std::uint32_t id = _idLookup.size() + 1;
+                    std::size_t id = _idLookup.size() + 1;
                     _idLookup.insert(PtrToIdMap::value_type(ptr, id));
                     write(id);
                     return true;

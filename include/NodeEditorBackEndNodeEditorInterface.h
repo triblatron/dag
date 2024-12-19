@@ -8,12 +8,12 @@
 
 #include "NodeEditorBackEnd.h"
 
-namespace nbe
+namespace dag
 {
     class NodeEditorFrontEnd;
     class NodeEditorInterface;
 
-    class NBE_API NodeEditorBackEndNodeEditorInterface : public NodeEditorBackEnd
+    class DAG_API NodeEditorBackEndNodeEditorInterface : public NodeEditorBackEnd
     {
     public:
         NodeEditorBackEndNodeEditorInterface(NodeEditorInterface* nodeEditor, NodeEditorFrontEnd* frontEnd);

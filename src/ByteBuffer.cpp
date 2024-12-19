@@ -5,7 +5,7 @@
 
 #include "ByteBuffer.h"
 
-namespace nbe
+namespace dag
 {
     ByteBuffer &ByteBuffer::clear()
     {

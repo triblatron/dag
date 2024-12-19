@@ -5,12 +5,12 @@
 #include <iosfwd>
 #include <string>
 
-namespace nbe
+namespace dag
 {
     //! \class PrettyPrinter
     //! An aid to debugging node graphs
     //! Supports indentation and printing lines.
-    class NBE_API PrettyPrinter
+    class DAG_API PrettyPrinter
     {
     public:
         PrettyPrinter(std::ostream & str, int tabSize)
@@ -23,7 +23,7 @@ namespace nbe
         }
 
         //! Increase indentation by one.
-        nbe::PrettyPrinter & indent()
+        dag::PrettyPrinter & indent()
         {
             _indent++;
 
@@ -31,7 +31,7 @@ namespace nbe
         }
 
         //! Decrease indentation by one.
-        nbe::PrettyPrinter & outdent()
+        dag::PrettyPrinter & outdent()
         {
             _indent--;
 
@@ -51,9 +51,9 @@ namespace nbe
         }
 
         //! Print a line indented by the indentation level * tabSize spaces.
-        nbe::PrettyPrinter & println(const std::string & line);
+        dag::PrettyPrinter & println(const std::string & line);
 
-        nbe::PrettyPrinter & printIndent();
+        dag::PrettyPrinter & printIndent();
 
         std::ostream & str()
         {

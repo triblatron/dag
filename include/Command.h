@@ -4,7 +4,7 @@
 
 #include "Action.h"
 
-namespace nbe
+namespace dag
 {
     //! A base class for commands using the Command pattern
     //! This is effectively a kind of node but does not inherit Node
@@ -13,7 +13,7 @@ namespace nbe
     //! via a generic interface.  This does not have to be
     //! as efficient as for a Node, so setting arguments by
     //! name is desirable.
-    class NBE_API Command : public Action
+    class DAG_API Command : public Action
     {
     public:
         virtual ~Command() = default;

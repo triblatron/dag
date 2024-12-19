@@ -15,7 +15,7 @@
 #include "MetaPort.h"
 #include "NodeLibrary.h"
 
-namespace nbe
+namespace dag
 {
     class CloningFacility;
     class DebugPrinter;
@@ -25,7 +25,7 @@ namespace nbe
     class OutputStream;
 	class Transfer;
 
-    class NBE_API ValueVisitor
+    class DAG_API ValueVisitor
     {
     public:
         void setInt(std::int64_t value)
@@ -85,7 +85,7 @@ namespace nbe
         Value _value;
     };
 
-	class NBE_API Port
+	class DAG_API Port
     {
     public:
         typedef std::vector<Port*> PortArray;
@@ -356,7 +356,7 @@ namespace nbe
         std::uint32_t _flags{0x0};
 	};
 
-	class NBE_API ValuePort final : public Port
+	class DAG_API ValuePort final : public Port
 	{
 	public:
         ValuePort(PortID id, std::string name, PortType::Type type, PortDirection::Direction direction, Value value, Node* parent = nullptr)
@@ -426,7 +426,7 @@ namespace nbe
 		Value _value;
 	};
 
-	class NBE_API VariantPort : public Port
+	class DAG_API VariantPort : public Port
 	{
 	public:
 		typedef Value::ValueType ValueType;
@@ -507,7 +507,7 @@ namespace nbe
                     _value = double(visitor.value());
                     break;
                 case 2:
-                    _value =visitor.value().operator nbe::Value::ValueType();
+                    _value =visitor.value().operator dag::Value::ValueType();
                     break;
                 case 3:
                     _value = bool(visitor.value());

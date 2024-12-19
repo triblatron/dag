@@ -9,7 +9,9 @@
 #include "KeyGenerator.h"
 #include "CloningFacility.h"
 
-namespace nbe
+#include <iostream>
+
+namespace dag
 {
     Node::Node(KeyGenerator& keyGen, std::string name, NodeCategory::Category category)
     :

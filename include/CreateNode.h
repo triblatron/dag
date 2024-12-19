@@ -10,12 +10,12 @@
 
 #include <string>
 
-namespace nbe
+namespace dag
 {
     class Graph;
     class Node;
 
-    class NBE_API CreateNode : public Command
+    class DAG_API CreateNode : public Command
     {
     public:
         CreateNode() = default;

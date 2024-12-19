@@ -5,7 +5,7 @@
 
 #include "NodeEditorFrontEnd.h"
 
-namespace nbe
+namespace dag
 {
 
 }

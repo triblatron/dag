@@ -10,7 +10,7 @@ There will be the following concepts:
 * Node a unit of behaviour
 * Port a connection point for wiring up Node inputs and outputs
 * SignalPath a connection between Ports
-* OytputStream to serialise a Graph
+* OutputStream to serialise a Graph
 * InputStream to read previously serialised objects
 
 There will be an EditorInterface that defines operations on these elements.
@@ -61,3 +61,31 @@ The Lua persistent format and serialisation will both need to carry the constrai
   * the Lua interface
   * stream interface
 
+## Building
+
+### MacOS 15.1 Sequoia Apple Silicon
+
+* Install brew
+* Install Apple clang(using gcc as the name for some reason) and cmake
+```bash
+brew install gcc cmake
+```
+* Clone the repo
+```bash
+git clone https://github.com/triblatron/nodebackend
+```
+* Configure and generate the build system
+```bash
+mkdir nodebackend_build && cd nodebackend_build
+
+cmake -C ../nodebackend/Automation/Build/InitialCacheLinuxGitHub.txt -B . -S ../nodebackend
+```
+* Build
+```bash
+cmake --build . --target install -j <number_of_cores> --config Release
+```
+* Test
+```bash
+NodeBackendTest
+```
+* Note that the repo used to be called nodebackend and the code has not yet been updated to use dag

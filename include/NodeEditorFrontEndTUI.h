@@ -11,9 +11,9 @@
 #include <iosfwd>
 #include <cstdint>
 
-namespace nbe
+namespace dag
 {
-    class NBE_API NodeEditorFrontEndTUI : public NodeEditorFrontEnd
+    class DAG_API NodeEditorFrontEndTUI : public NodeEditorFrontEnd
     {
     public:
         //! The menu we are on

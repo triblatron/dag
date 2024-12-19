@@ -13,7 +13,7 @@
 #include "SignalPath.h"
 #include "Transfer.h"
 
-namespace nbe
+namespace dag
 {
     NodeEditorLive::NodeEditorLive()
     {

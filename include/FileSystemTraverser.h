@@ -5,11 +5,11 @@
 #include <filesystem>
 #include <functional>
 
-namespace nbe
+namespace dag
 {
     namespace fs = std::filesystem;
 
-    class NBE_API FileSystemTraverser
+    class DAG_API FileSystemTraverser
     {
     public:
         explicit FileSystemTraverser(fs::path & dir);

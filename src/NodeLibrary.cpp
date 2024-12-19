@@ -2,6 +2,6 @@
 
 #include "NodeLibrary.h"
 
-namespace nbe
+namespace dag
 {
 }

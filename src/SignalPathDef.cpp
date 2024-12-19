@@ -2,7 +2,7 @@
 
 #include "SignalPathDef.h"
 
-namespace nbe
+namespace dag
 {
 	std::int64_t SignalPathDef::_nextID = 0;
 }

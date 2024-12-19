@@ -8,7 +8,7 @@
 #include <vector>
 #include <utility>
 
-namespace nbe
+namespace dag
 {
     //! A value type to be used throughout the software, uses std::variant.
     //! Provides useful conversions and constructors.

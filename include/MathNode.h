@@ -10,9 +10,9 @@
 #include "TypedPort.h"
 #include "KeyGenerator.h"
 
-namespace nbe
+namespace dag
 {
-    class NBE_API MathsNode : public Node
+    class DAG_API MathsNode : public Node
     {
     public:
         MathsNode(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)

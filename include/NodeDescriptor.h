@@ -9,9 +9,9 @@
 #include <string>
 #include <vector>
 
-namespace nbe
+namespace dag
 {
-	struct NBE_API NodeDescriptor
+	struct DAG_API NodeDescriptor
 	{
 		std::int64_t id;
 		std::string name;

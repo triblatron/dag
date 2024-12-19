@@ -19,9 +19,9 @@ extern "C" {
 #include <type_traits>
 #include <functional>
 
-namespace nbe
+namespace dag
 {
-    class NBE_API Function
+    class DAG_API Function
     {
     public:
         //! Push the function onto the stack if it exists.
@@ -53,7 +53,7 @@ namespace nbe
         bool _balance;
     };
 
-    class NBE_API TableTraversal
+    class DAG_API TableTraversal
     {
     public:
         explicit TableTraversal( lua_State * lua )
@@ -110,7 +110,7 @@ namespace nbe
         int _oldTop;
     };
 
-    class NBE_API Table
+    class DAG_API Table
     {
     public:
         explicit Table(lua_State *L,const char *name, bool cleanup = true);
@@ -165,10 +165,10 @@ namespace nbe
             return _lua;
         }
 
-        int length() const
+        lua_Integer length() const
         {
             lua_len(_lua, -1);
-            int len = lua_tointeger(_lua, -1);
+            lua_Integer len = lua_tointeger(_lua, -1);
             lua_pop(_lua, 1);
 
             return len;
@@ -232,13 +232,13 @@ namespace nbe
             }
         }
 
-        int integer(int i, int defaultValue)
+        lua_Integer integer(int i, lua_Integer defaultValue)
         {
             lua_pushinteger(_lua, i);
             lua_rawget(_lua, -2);
             if (lua_isinteger(_lua, -1))
             {
-                int val = lua_tointeger(_lua, -1);
+                lua_Integer val = lua_tointeger(_lua, -1);
                 lua_pop(_lua, 1);
                 return val;
             }
@@ -249,13 +249,13 @@ namespace nbe
             }
         }
 
-        int integer(const char * key, int defaultValue)
+        lua_Integer integer(const char * key, lua_Integer defaultValue)
         {
             lua_pushstring(_lua, key);
             lua_rawget(_lua, -2);
             if ( lua_isinteger(_lua, -1))
             {
-                int val = lua_tointeger(_lua, -1);
+                lua_Integer val = lua_tointeger(_lua, -1);
 
                 lua_pop(_lua, 1);
                 return val;
@@ -376,7 +376,7 @@ namespace nbe
         bool _cleanup;
     };
 
-    //class NBE_API LocalTable : public Table
+    //class DAG_API LocalTable : public Table
     //{
     //public:
     //  LocalTable(lua_State * L, const char * name)
@@ -386,7 +386,7 @@ namespace nbe
     //  }
     //};
 
-    class NBE_API GlobalTable : public Table
+    class DAG_API GlobalTable : public Table
     {
     public:
         GlobalTable(lua_State* L, const char* name)
@@ -402,7 +402,7 @@ namespace nbe
         }
     };
 
-    class NBE_API Lua
+    class DAG_API Lua
     {
     public:
         enum Error

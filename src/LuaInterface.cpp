@@ -2,7 +2,7 @@
 
 #include "LuaInterface.h"
 
-namespace nbe
+namespace dag
 {
     ErrorDescriptor Lua::_errors[Lua::NumErrors+1]=
     {

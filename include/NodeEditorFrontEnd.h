@@ -6,11 +6,11 @@
 
 #include "config/Export.h"
 
-namespace nbe
+namespace dag
 {
     class NodeEditorInterface;
 
-    struct NBE_API NodeEditorResult
+    struct DAG_API NodeEditorResult
     {
         enum Result
         {
@@ -22,7 +22,7 @@ namespace nbe
         Result result{RESULT_UNKNOWN};
     };
 
-    class NBE_API NodeEditorFrontEnd
+    class DAG_API NodeEditorFrontEnd
     {
     public:
         virtual ~NodeEditorFrontEnd() = default;

@@ -7,9 +7,9 @@
 #include "config/Export.h"
 #include "SelectionInterface.h"
 
-namespace nbe
+namespace dag
 {
-    class NBE_API SelectionLive : public SelectionInterface
+    class DAG_API SelectionLive : public SelectionInterface
     {
     public:
         SelectionLive() = default;

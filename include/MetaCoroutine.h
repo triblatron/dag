@@ -4,11 +4,11 @@
 
 struct lua_State;
 
-namespace nbe
+namespace dag
 {
     class Lua;
 
-    class NBE_API MetaCoroutine
+    class DAG_API MetaCoroutine
     {
     public:
         enum Error

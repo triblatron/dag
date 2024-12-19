@@ -9,9 +9,9 @@
 #include <string>
 #include <utility>
 
-namespace nbe
+namespace dag
 {
-	struct NBE_API PortDescriptor
+	struct DAG_API PortDescriptor
 	{
 		std::int64_t id;
 		std::string name;

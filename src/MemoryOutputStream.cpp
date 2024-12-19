@@ -6,7 +6,7 @@
 #include "MemoryOutputStream.h"
 #include "ByteBuffer.h"
 
-namespace nbe
+namespace dag
 {
     MemoryOutputStream::MemoryOutputStream(ByteBuffer *buf)
             :
@@ -15,7 +15,7 @@ namespace nbe
         // Do nothing.
     }
 
-    OutputStream& MemoryOutputStream::writeBuf(const nbe::OutputStream::value_type *buf, std::size_t len)
+    OutputStream& MemoryOutputStream::writeBuf(const dag::OutputStream::value_type *buf, std::size_t len)
     {
         if (_buf!=nullptr)
         {

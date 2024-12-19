@@ -7,7 +7,7 @@
 #define STD_MIN std::min
 #define STD_MAX std::max
 
-namespace nbe
+namespace dag
 {
 // 20140805 AMT: Define some standard types for different integer sizes under 32 and 64 bit instances of the build
 #if defined(__x86_64__)
