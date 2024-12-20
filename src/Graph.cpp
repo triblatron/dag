@@ -96,7 +96,7 @@ namespace dag
         }
         else if (portClass == "TypedPort<int64_t>")
         {
-            readTypedPort<std::int64_t>(*_nodeLib, portTable, node, existingPort, portTable.integer("value", 0));
+            readTypedPort<std::int64_t>(*_nodeLib, portTable, node, existingPort, portTable.integerForNameOrDefault("value", 0));
         }
         else if (portClass == "TypedPort<string>")
         {
@@ -479,7 +479,7 @@ namespace dag
             {
                 dagbase::Table nodeTable = nodesTable.tableForIndex(i);
 
-                NodeID id = nodeTable.integer("id", -1);
+                NodeID id = nodeTable.integerForNameOrDefault("id", -1);
                 std::string className = nodeTable.stringForNameOrDefault("class", "NotFound");
                 std::string name = nodeTable.stringForNameOrDefault("name", "<unnamed>");
                 Node* node = nodeLib.instantiateNode(id, className, name);
@@ -534,9 +534,9 @@ namespace dag
                 Port* sourcePort = nullptr;
                 Port* destPort = nullptr;
                 std::string sourceNodeID = signalPathTable.stringForNameOrDefault("sourceNode", "");
-                size_t sourcePortIndex = signalPathTable.integer("sourcePort", 0);
+                size_t sourcePortIndex = signalPathTable.integerForNameOrDefault("sourcePort", 0);
                 std::string destNodeID = signalPathTable.stringForNameOrDefault("destNode", "");
-                size_t destPortIndex = signalPathTable.integer("destPort", 0);
+                size_t destPortIndex = signalPathTable.integerForNameOrDefault("destPort", 0);
                 // Look up sourceNode and destNode
                 auto sourceNode = output->findNode(sourceNodeID);
                 if (sourceNode != nullptr)
