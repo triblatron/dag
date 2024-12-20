@@ -17,7 +17,7 @@ namespace dag
 
     Class::~Class()
     {
-        // TODO:Delete fields and operations.
+        delete _errorStr;
     }
 
     std::ostringstream & Class::raiseError( int code )
