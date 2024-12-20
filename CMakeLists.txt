@@ -24,7 +24,6 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/KeyGenerator.h 
 		include/MetaClass.h
 		include/MetaField.h
-		include/PrettyPrinter.h
 		include/UnionValue.h
 )
 
@@ -76,7 +75,6 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/OutputStream.cpp
         src/Port.cpp
         src/PortDescriptor.cpp
-        src/PrettyPrinter.cpp
         src/SelectionLive.cpp
         src/SignalPath.cpp
 		src/SignalPathDef.cpp
