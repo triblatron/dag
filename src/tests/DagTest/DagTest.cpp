@@ -29,6 +29,9 @@
 #include <algorithm>
 #include <filesystem>
 
+#include "Class.h"
+#include "MetaClass.h"
+
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dag::PortDirection::Direction, double>>
 {
 };
@@ -2457,4 +2460,23 @@ TEST(CloningFacility, testLinkedList)
 
     delete head->next;
     delete head;
+}
+
+class TestClass : public dag::Class
+{
+public:
+    explicit TestClass(dag::MetaClass* metaClass)
+        :
+    Class(metaClass)
+    {
+        // Do nothing.
+    }
+};
+
+TEST(Class, testRaiseError)
+{
+    auto metaClass = std::make_unique<dag::MetaClass>();
+    auto sut = std::make_unique<TestClass>(metaClass.get());
+    auto& str = sut->raiseError(dag::Class::TypeNotFound) << "Test";
+    EXPECT_EQ("TypeNotFound:Test",sut->errorMessage());
 }

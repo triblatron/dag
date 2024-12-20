@@ -4,10 +4,8 @@
 
 #include "core/LuaInterface.h"
 
-#include <vector>
-#include <sstream>
-#include <map>
-#include <typeinfo>
+#include <iosfwd>
+#include <string>
 
 namespace dagbase
 {
@@ -30,26 +28,16 @@ namespace dag
             TypeNotFound
         };
     public:
-        Class(MetaClass * metaClass, dagbase::Lua & lua);
+        explicit Class(MetaClass * metaClass);
 
         virtual ~Class();
 
         std::ostringstream & raiseError(int code);
 
-        void setField( size_t index, lua_Integer value );
-        void setField( size_t index, lua_Number value );
-
-        void getField( size_t index, lua_Integer * value );
-        void getField( size_t index, lua_Number * value );
-
-    protected:
-
+        std::string errorMessage() const;
     private:
         Error _errod;
-        std::ostringstream _errorStr;
-        MetaClass * _metaClass;
-        dagbase::Lua & _lua;
-        typedef std::vector<Field*> FieldArray;
-        FieldArray _fields;
+        std::ostringstream* _errorStr{ nullptr };
+        MetaClass * _metaClass{ nullptr };
     };
 }
