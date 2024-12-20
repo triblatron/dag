@@ -8,7 +8,7 @@
 #include "SelectionInterface.h"
 #include "OutputStream.h"
 #include "DebugPrinter.h"
-#include "LuaInterface.h"
+#include "core/LuaInterface.h"
 #include "TypedPort.h"
 #include "Types.h"
 #include "CloningFacility.h"
@@ -61,7 +61,7 @@ namespace dag
 	}
 
     template<typename PortClass>
-    void readTypedPort(NodeLibrary& nodeLib, Table& portTable, Node* node, Port* existingPort, PortClass value)
+    void readTypedPort(NodeLibrary& nodeLib, dagbase::Table& portTable, Node* node, Port* existingPort, PortClass value)
     {
         auto* port = dynamic_cast<TypedPort<PortClass>*>(existingPort);
 
@@ -71,10 +71,10 @@ namespace dag
         }
         else if (existingPort == nullptr)
         {
-            std::string portName = portTable.string("name", "<unnamed>");
-            std::string portTypeStr = portTable.string("type", "TYPE_UNKNOWN");
+            std::string portName = portTable.stringForNameOrDefault("name", "<unnamed>");
+            std::string portTypeStr = portTable.stringForNameOrDefault("type", "TYPE_UNKNOWN");
             PortType::Type portType = PortType::parseFromString(portTypeStr.c_str());
-            std::string dirStr = portTable.string("direction", "DIR_UNKNOWN");
+            std::string dirStr = portTable.stringForNameOrDefault("direction", "DIR_UNKNOWN");
             PortDirection::Direction portDir = PortDirection::parseFromString(dirStr.c_str());
             port = new TypedPort<PortClass>(nodeLib.nextPortID(), node, new MetaPort(portName, portType, portDir),value,Port::OWN_META_PORT_BIT);
             node->addDynamicPort(port);
@@ -86,13 +86,13 @@ namespace dag
         }
     }
 
-    void Graph::readPort(Table &portTable, Node* node, Port* existingPort)
+    void Graph::readPort(dagbase::Table &portTable, Node* node, Port* existingPort)
     {
-        std::string portClass = portTable.string("class", "<unknown>");
+        std::string portClass = portTable.stringForNameOrDefault("class", "<unknown>");
 
         if (portClass == "TypedPort<double>")
         {
-            readTypedPort<double>(*_nodeLib, portTable, node, existingPort, portTable.number("value", 0.0));
+            readTypedPort<double>(*_nodeLib, portTable, node, existingPort, portTable.numberForNameOrDefault("value", 0.0));
         }
         else if (portClass == "TypedPort<int64_t>")
         {
@@ -100,17 +100,17 @@ namespace dag
         }
         else if (portClass == "TypedPort<string>")
         {
-            readTypedPort<std::string>(*_nodeLib, portTable, node, existingPort, portTable.string("value", ""));
+            readTypedPort<std::string>(*_nodeLib, portTable, node, existingPort, portTable.stringForNameOrDefault("value", ""));
         }
         else if (portClass == "TypedPort<bool>")
         {
-            readTypedPort<bool>(*_nodeLib, portTable, node, existingPort, portTable.boolean("value", false));
+            readTypedPort<bool>(*_nodeLib, portTable, node, existingPort, portTable.booleanForNameOrDefault("value", false));
         }
     }
 
     Graph* Graph::fromString(NodeLibrary& nodeLib, const char* str)
     {
-        Lua lua;
+        dagbase::Lua lua;
 
         lua.eval(str);
 
@@ -443,7 +443,7 @@ namespace dag
 
     Graph *Graph::fromFile(NodeLibrary &nodeLib, const char *filename)
     {
-        Lua lua;
+        dagbase::Lua lua;
 
         lua.execute(filename);
 
@@ -455,33 +455,33 @@ namespace dag
         return fromLua(lua, nodeLib);
     }
 
-    Graph *Graph::fromLua(Lua &lua, NodeLibrary& nodeLib)
+    Graph *Graph::fromLua(dagbase::Lua &lua, NodeLibrary& nodeLib)
     {
         auto output = new Graph();
         output->setNodeLibrary(&nodeLib);
 
         {
-            dag::Table graphTable = lua.tableForName("graph");
+            dagbase::Table graphTable = lua.tableForName("graph");
 
             output = fromLuaGraphTable(graphTable, nodeLib, output);
         }
         return output;
     }
 
-    Graph* Graph::fromLuaGraphTable(Table& graphTable, NodeLibrary& nodeLib, Graph* output)
+    Graph* Graph::fromLuaGraphTable(dagbase::Table& graphTable, NodeLibrary& nodeLib, Graph* output)
     {
         std::map<std::string, Node*> nodes;
         if (auto hasNodes = graphTable.isTable("nodes"); hasNodes)
         {
-            Table nodesTable = graphTable.tableForName("nodes");
+            dagbase::Table nodesTable = graphTable.tableForName("nodes");
 
             for (int i = 1; i <= nodesTable.length(); ++i)
             {
-                Table nodeTable = nodesTable.tableForIndex(i);
+                dagbase::Table nodeTable = nodesTable.tableForIndex(i);
 
                 NodeID id = nodeTable.integer("id", -1);
-                std::string className = nodeTable.string("class", "NotFound");
-                std::string name = nodeTable.string("name", "<unnamed>");
+                std::string className = nodeTable.stringForNameOrDefault("class", "NotFound");
+                std::string name = nodeTable.stringForNameOrDefault("name", "<unnamed>");
                 Node* node = nodeLib.instantiateNode(id, className, name);
 
                 if (node != nullptr)
@@ -496,11 +496,11 @@ namespace dag
                     }
                     nodes.insert(std::map<std::string, Node*>::value_type(name, node));
                     {
-                        Table portsTable = nodeTable.tableForName("ports");
+                        dagbase::Table portsTable = nodeTable.tableForName("ports");
 
                         for (int portIndex = 1; portIndex <= portsTable.length(); ++portIndex)
                         {
-                            Table portTable = portsTable.tableForIndex(portIndex);
+                            dagbase::Table portTable = portsTable.tableForIndex(portIndex);
 
                             output->readPort(portTable, node, node->dynamicPort(portIndex - 1));
                         }
@@ -510,11 +510,11 @@ namespace dag
         }
         if (auto hasChildren = graphTable.isTable("children"); hasChildren)
         {
-            Table childrenTable = graphTable.tableForName("children");
+            dagbase::Table childrenTable = graphTable.tableForName("children");
 
             for (auto i = 1; i <= childrenTable.length(); ++i)
             {
-                Table childTable = childrenTable.tableForIndex(i);
+                dagbase::Table childTable = childrenTable.tableForIndex(i);
 
                 auto* childGraph = new Graph();
                 childGraph->setNodeLibrary(&nodeLib);
@@ -525,17 +525,17 @@ namespace dag
         }
         if (auto hasSignalPaths = graphTable.isTable("signalpaths"); hasSignalPaths)
         {
-            Table signalPathsTable = graphTable.tableForName("signalpaths");
+            dagbase::Table signalPathsTable = graphTable.tableForName("signalpaths");
 
             for (int i = 1; i <= signalPathsTable.length(); ++i)
             {
-                Table signalPathTable = signalPathsTable.tableForIndex(i);
+                dagbase::Table signalPathTable = signalPathsTable.tableForIndex(i);
 
                 Port* sourcePort = nullptr;
                 Port* destPort = nullptr;
-                std::string sourceNodeID = signalPathTable.string("sourceNode", "");
+                std::string sourceNodeID = signalPathTable.stringForNameOrDefault("sourceNode", "");
                 size_t sourcePortIndex = signalPathTable.integer("sourcePort", 0);
-                std::string destNodeID = signalPathTable.string("destNode", "");
+                std::string destNodeID = signalPathTable.stringForNameOrDefault("destNode", "");
                 size_t destPortIndex = signalPathTable.integer("destPort", 0);
                 // Look up sourceNode and destNode
                 auto sourceNode = output->findNode(sourceNodeID);

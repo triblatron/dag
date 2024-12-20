@@ -2,7 +2,7 @@
 
 #include "config/Export.h"
 
-#include "LuaInterface.h"
+#include "core/LuaInterface.h"
 
 #include <lua.h>
 #include <vector>
@@ -16,7 +16,7 @@ namespace dag
     {
     public:
         //! Assumes that a value is on the top of the Lus stack.
-        Field( MetaField * metaField, Lua & lua )
+        Field( MetaField * metaField, dagbase::Lua & lua )
         :
         _metaField(metaField),
         _lua(lua)
@@ -66,7 +66,7 @@ namespace dag
     private:
         //! Meta-data.
         MetaField * _metaField;
-        Lua & _lua;
+        dagbase::Lua & _lua;
         //! Lua reference to value.
         int _ref;
         typedef std::vector<Route *> RouteArray;

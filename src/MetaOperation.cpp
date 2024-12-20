@@ -2,11 +2,11 @@
 
 #include "MetaOperation.h"
 
-#include "LuaInterface.h"
+#include "core/LuaInterface.h"
 
 namespace dag
 {
-    MetaOperation::MetaOperation(Lua & lua, int numArgs, int numResults)
+    MetaOperation::MetaOperation(dagbase::Lua & lua, int numArgs, int numResults)
     :
     _errod(NoError),
     _lua(lua),

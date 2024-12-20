@@ -2,11 +2,11 @@
 
 #include "MetaCoroutine.h"
 
-#include "LuaInterface.h"
+#include "core/LuaInterface.h"
 
 namespace dag
 {
-    MetaCoroutine::MetaCoroutine(Lua & lua)
+    MetaCoroutine::MetaCoroutine(dagbase::Lua & lua)
     :
     _errod(NoError),
     _lua(lua)

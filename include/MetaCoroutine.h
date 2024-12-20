@@ -4,10 +4,13 @@
 
 struct lua_State;
 
-namespace dag
+namespace dagbase
 {
     class Lua;
+}
 
+namespace dag
+{
     class DAG_API MetaCoroutine
     {
     public:
@@ -19,7 +22,7 @@ namespace dag
         };
     public:
         //! Expects the function on the top of the stack.
-        MetaCoroutine(Lua & lua);
+        MetaCoroutine(dagbase::Lua & lua);
 
         bool ok() const
         {
@@ -39,7 +42,7 @@ namespace dag
         int resume(int* nres);
     private:
         Error _errod;
-        Lua & _lua;
+        dagbase::Lua & _lua;
         lua_State * _thread;
     };
 }

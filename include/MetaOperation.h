@@ -4,10 +4,13 @@
 
 struct lua_State;
 
-namespace dag
+namespace dagbase
 {
     class Lua;
+}
 
+namespace dag
+{
     class DAG_API MetaOperation
     {
     public:
@@ -19,7 +22,7 @@ namespace dag
     public:
         //! Assumes that the function is at the top of the stack.
         //! Creates a reference to the function in the registry.
-        MetaOperation(Lua & lua, int numArgs, int numResults);
+        MetaOperation(dagbase::Lua & lua, int numArgs, int numResults);
 
         ~MetaOperation();
 
@@ -43,7 +46,7 @@ namespace dag
         int resume();
     private:
         Error _errod;
-        Lua & _lua;
+        dagbase::Lua & _lua;
         //! Lua reference to the function.
         int _ref;
         int _numArgs;

@@ -23,7 +23,6 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/errod.h 
 		include/Fields.h 
 		include/KeyGenerator.h 
-		include/LuaInterface.h
 		include/MetaClass.h
 		include/MetaField.h
 		include/PrettyPrinter.h
@@ -59,7 +58,6 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/Graph.cpp
         src/InputStream.cpp
         src/KeyGenerator.cpp
-        src/LuaInterface.cpp
         src/MemoryInputStream.cpp
         src/MemoryNodeLibrary.cpp
         src/MemoryOutputStream.cpp
@@ -100,7 +98,7 @@ ADD_LIBRARY( dag SHARED ${dag_SRC} )
 
 TARGET_INCLUDE_DIRECTORIES( dag PUBLIC ${CMAKE_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR})
 TARGET_LINK_DIRECTORIES( dag PUBLIC ${DEP_ROOT}/lib )
-TARGET_LINK_LIBRARIES( dag GTest::gtest ${LUA_LIBRARIES})
+TARGET_LINK_LIBRARIES( dag PRIVATE dagbase GTest::gtest ${LUA_LIBRARIES})
 
 set_target_properties( dag PROPERTIES DEFINE_SYMBOL DAG_LIBRARY )
 

@@ -1,7 +1,7 @@
 #include "config/config.h"
 
 #include "gtest/gtest.h"
-#include "LuaInterface.h"
+#include "core/LuaInterface.h"
 #include "MetaOperation.h"
 #include "MetaCoroutine.h"
 #include "Node.h"
@@ -210,17 +210,17 @@ TEST(TypedTransferTest, checkMakeItSo)
 
 TEST(CreateTableTest, checkCreateTable)
 {
-    dag::Lua lua;
+    dagbase::Lua lua;
 
     lua.eval("t={foo=true}");
-    dag::Table sut = lua.tableForName("t");
-    const bool actual = sut.boolean("foo", false);
+    dagbase::Table sut = lua.tableForName("t");
+    const bool actual = sut.booleanForNameOrDefault("foo", false);
     ASSERT_EQ(true, actual);
 }
 
 TEST(LuaTest, checkExecuteNonExistentFile)
 {
-    dag::Lua sut;
+    dagbase::Lua sut;
     
     sut.execute("NonExistent.lua");
     
@@ -229,7 +229,7 @@ TEST(LuaTest, checkExecuteNonExistentFile)
 
 TEST(LuaTest, testNonExistentTable)
 {
-    dag::Lua sut;
+    dagbase::Lua sut;
 
     sut.eval("t={}");
     ASSERT_FALSE(sut.tableExists("foo"));
@@ -237,7 +237,7 @@ TEST(LuaTest, testNonExistentTable)
 
 TEST(LuaTest, testExistingTable)
 {
-    dag::Lua sut;
+    dagbase::Lua sut;
 
     sut.eval("t={}");
     ASSERT_TRUE(sut.tableExists("t"));
@@ -245,12 +245,12 @@ TEST(LuaTest, testExistingTable)
 
 TEST(TableTraversalTest, testSimple)
 {
-    dag::Lua lua;
+    dagbase::Lua lua;
     lua.eval("t={foo=true}");
-    dag::Table t = lua.tableForName("t");
-    dag::TableTraversal trav(lua.get());
+    dagbase::Table t = lua.tableForName("t");
+    dagbase::TableTraversal trav(lua.get());
     bool foo = false;
-    trav([&foo](lua_State* L)
+    trav([&foo](lua_State* L, size_t level)
         {
             if (lua_isboolean(L, -1))
             {
@@ -264,13 +264,13 @@ TEST(TableTraversalTest, testSimple)
 
 TEST(TableTraversalTest, testNested)
 {
-    dag::Lua lua;
+    dagbase::Lua lua;
     lua.eval("t={spoo={foo=true}}");
     ASSERT_TRUE(lua.ok());
-    dag::Table t = lua.tableForName("t");
-    dag::TableTraversal trav(lua.get());
+    dagbase::Table t = lua.tableForName("t");
+    dagbase::TableTraversal trav(lua.get());
     bool foo = false;
-    int result = trav([&foo](lua_State* L)
+    int result = trav([&foo](lua_State* L, size_t level)
         {
             if (lua_isboolean(L, -1))
             {
@@ -285,13 +285,13 @@ TEST(TableTraversalTest, testNested)
 
 TEST(TableTraversalTest, testErrorInCallback)
 {
-    dag::Lua lua;
+    dagbase::Lua lua;
     lua.eval("t={spoo={foo=true}}");
     ASSERT_TRUE(lua.ok());
-    dag::Table t = lua.tableForName("t");
-    dag::TableTraversal trav(lua.get());
+    dagbase::Table t = lua.tableForName("t");
+    dagbase::TableTraversal trav(lua.get());
     bool foo = false;
-    int result = trav([&foo](lua_State* L)
+    int result = trav([&foo](lua_State* L, size_t level)
         {
             if (lua_isboolean(L, -1))
             {

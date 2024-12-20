@@ -5,7 +5,7 @@
 
 namespace dag
 {
-    Class::Class(MetaClass * metaClass, Lua & lua)
+    Class::Class(MetaClass * metaClass, dagbase::Lua & lua)
     :
     _errod(NoError),
     _metaClass(metaClass),

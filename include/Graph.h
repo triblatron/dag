@@ -14,19 +14,23 @@
 #include <string>
 #include <iterator>
 
+namespace dagbase
+{
+	class Lua;
+	class Table;
+}
+
 namespace dag
 {
     class ByteBuffer;
     class CloningFacility;
     class InputStream;
-    class Lua;
 	class Node;
     class NodeLibrary;
     class OutputStream;
     class Port;
     class SelectionInterface;
 	class SignalPath;
-    class Table;
     typedef std::vector<Node*> NodeArray;
 
     //! A collection of Nodes, SignalPaths and child Graphs.
@@ -257,9 +261,9 @@ namespace dag
         NodeID _nextNodeID{0};
         PortID _nextPortID{0};
 
-        void readPort(Table &portTable, Node *node, Port *existingPort);
+        void readPort(dagbase::Table &portTable, Node *node, Port *existingPort);
         std::ostream& toLuaHelper(std::ostream & str);
-        static Graph* fromLua(Lua& lua, NodeLibrary& nodeLib);
-        static Graph* fromLuaGraphTable(Table& graphTable, NodeLibrary& nodeLib, Graph* output);
+        static Graph* fromLua(dagbase::Lua& lua, NodeLibrary& nodeLib);
+        static Graph* fromLuaGraphTable(dagbase::Table& graphTable, NodeLibrary& nodeLib, Graph* output);
     };
 }

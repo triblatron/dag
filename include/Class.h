@@ -2,12 +2,17 @@
 
 #include "config/Export.h"
 
-#include "LuaInterface.h"
+#include "core/LuaInterface.h"
 
 #include <vector>
 #include <sstream>
 #include <map>
 #include <typeinfo>
+
+namespace dagbase
+{
+    class Lua;
+}
 
 namespace dag
 {
@@ -25,7 +30,7 @@ namespace dag
             TypeNotFound
         };
     public:
-        Class(MetaClass * metaClass, Lua & lua);
+        Class(MetaClass * metaClass, dagbase::Lua & lua);
 
         virtual ~Class();
 
@@ -43,7 +48,7 @@ namespace dag
         Error _errod;
         std::ostringstream _errorStr;
         MetaClass * _metaClass;
-        Lua & _lua;
+        dagbase::Lua & _lua;
         typedef std::vector<Field*> FieldArray;
         FieldArray _fields;
     };
