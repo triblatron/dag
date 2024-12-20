@@ -90,6 +90,7 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
 		src/CloningFacility.cpp
 )
 
+set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "-o linker-signed")
 
 ADD_LIBRARY( dag SHARED ${dag_SRC} )
 
