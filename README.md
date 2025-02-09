@@ -1,5 +1,51 @@
-# nodebackend
-Backend for Node based behaviours
+# Dag
+
+## Supported Platforms
+
+* Windows 10,11
+* Ubuntu Linux 22.04,24.04
+* macOS 10.15 Intel
+* macOS 15.1+ Apple Silicon
+* Raspberry Pi OS 12 on Pi4, Pi5
+
+## Dependencies
+
+* C++ 17
+* Lua >= 5.4
+* possibly a base library that provides   
+  * the Lua interface
+  * stream interface
+
+## Building
+
+### MacOS 15.1 Sequoia Apple Silicon
+
+* Install brew
+* Install Apple clang(using gcc as the name for some reason) and cmake
+```bash
+brew install gcc cmake
+```
+* Clone the repo
+```bash
+git clone https://github.com/triblatron/nodebackend
+```
+* Configure and generate the build system
+```bash
+mkdir nodebackend_build && cd nodebackend_build
+
+cmake -C ../nodebackend/Automation/Build/InitialCacheLinuxGitHub.txt -B . -S ../nodebackend
+```
+* Build
+```bash
+cmake --build . --target install -j <number_of_cores> --config Release
+```
+* Test
+```bash
+NodeBackendTest
+```
+* Note that the repo used to be called nodebackend and the code has not yet been updated to use dag
+
+# Synopsis
 
 Intended to be used by multiple projects so it will not restrict the types of behaviour that are created.
 
@@ -53,39 +99,18 @@ The Port has a MetaPort to describe its type.  One possible type for a Port is a
 
 The Lua persistent format and serialisation will both need to carry the constraints, preferably only once.  This is easy to achieve for serialisation but it is unclear how it will map to Lua.  We would have to announce Node types once with their MetaPorts but that does not cover DynamicNodes or Boundary Nodes which have a variable number of Ports.  We will need to announce unique MetaPorts the first time they are encountered and reference them subsequently like in serialisation.
 
-## Dependencies
+## Progress
+* ~~Node base class~~
+* ~~Port~~
+* ~~Boundary node with variable number of ports~~
+* ~~Graph~~
+* ~~Solving of dependencies using Kaaaaaaaaahn's algorithm~~
+* ~~Serialisation of graphs~~
+* ~~Lua-based persistent format~~
+* ~~Plugins to support nodes not known at compile time~~
 
-* C++ 17
-* Lua >= 5.4
-* possibly a base library that provides   
-  * the Lua interface
-  * stream interface
+## Release Schedule
+When I deem it feature complete, there will be an 0.1 release that will eventually lead to a 1.0 milestone.
+It looks like that will happen this year.
+This is a side project along with [dagbase](https://github.com/triblatron/dagbase), [dagui](https://github.com/triblatron/dagui) and [Repton Infinity](https://github.com/triblatron/reptoninfinity)
 
-## Building
-
-### MacOS 15.1 Sequoia Apple Silicon
-
-* Install brew
-* Install Apple clang(using gcc as the name for some reason) and cmake
-```bash
-brew install gcc cmake
-```
-* Clone the repo
-```bash
-git clone https://github.com/triblatron/nodebackend
-```
-* Configure and generate the build system
-```bash
-mkdir nodebackend_build && cd nodebackend_build
-
-cmake -C ../nodebackend/Automation/Build/InitialCacheLinuxGitHub.txt -B . -S ../nodebackend
-```
-* Build
-```bash
-cmake --build . --target install -j <number_of_cores> --config Release
-```
-* Test
-```bash
-NodeBackendTest
-```
-* Note that the repo used to be called nodebackend and the code has not yet been updated to use dag
