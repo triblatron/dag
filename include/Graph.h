@@ -16,18 +16,18 @@
 
 namespace dagbase
 {
+    class ByteBuffer;
+    class InputStream;
 	class Lua;
+    class OutputStream;
 	class Table;
 }
 
 namespace dag
 {
-    class ByteBuffer;
     class CloningFacility;
-    class InputStream;
 	class Node;
     class NodeLibrary;
-    class OutputStream;
     class Port;
     class SelectionInterface;
 	class SignalPath;
@@ -39,7 +39,7 @@ namespace dag
 	public:
 		Graph() = default;
 
-        Graph(InputStream& str, NodeLibrary& nodeLib);
+        Graph(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
 		Graph(const Graph& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
 
@@ -220,13 +220,13 @@ namespace dag
         std::size_t numChildrenRecursive() const;
 
         //! Save this Graph to a buffer.
-        ByteBuffer* save() const;
+        dagbase::ByteBuffer* save() const;
 
         //! Rstore this Graph from a buffer.
-        void restore(ByteBuffer* memento);
+        void restore(dagbase::ByteBuffer* memento);
 
         //! Write this Graph to a stream.
-        OutputStream& write(OutputStream& str) const;
+        dagbase::OutputStream& write(dagbase::OutputStream& str) const;
 
         //! Pretty-print this Graph for debugging purposes.
         void debug() const;

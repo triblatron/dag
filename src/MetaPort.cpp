@@ -5,14 +5,14 @@
 #include "config/config.h"
 
 #include "MetaPort.h"
-#include "InputStream.h"
-#include "OutputStream.h"
+#include "io/InputStream.h"
+#include "io/OutputStream.h"
 #include "DebugPrinter.h"
 #include <iostream>
 
 namespace dag
 {
-    dag::MetaPort::MetaPort(dag::InputStream &str)
+    dag::MetaPort::MetaPort(dagbase::InputStream &str)
     :
     type(PortType::TYPE_UNKNOWN),
     direction(PortDirection::DIR_UNKNOWN)
@@ -23,7 +23,7 @@ namespace dag
         str.read(&direction);
     }
 
-    OutputStream& MetaPort::write(OutputStream& str) const
+    dagbase::OutputStream& MetaPort::write(dagbase::OutputStream& str) const
     {
         str.write(name);
         str.write(type);
@@ -32,7 +32,7 @@ namespace dag
         return str;
     }
 
-    InputStream &MetaPort::read(InputStream &str)
+    dagbase::InputStream &MetaPort::read(dagbase::InputStream &str)
     {
         str.read(&name);
         str.read(&type);

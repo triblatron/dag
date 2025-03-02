@@ -7,8 +7,8 @@
 #include "NodeLibrary.h"
 #include "Node.h"
 #include "NodeDescriptor.h"
-#include "InputStream.h"
-#include "OutputStream.h"
+#include "io/InputStream.h"
+#include "io/OutputStream.h"
 #include "NodePlugin.h"
 #include "MetaPort.h"
 
@@ -24,7 +24,7 @@ public:
         // Do nothing.
     }
 
-    DynamicNode(dag::InputStream& str, dag::NodeLibrary& nodeLib)
+    DynamicNode(dagbase::InputStream& str, dag::NodeLibrary& nodeLib)
     :
     Node(str, nodeLib)
     {
@@ -129,12 +129,12 @@ public:
         return nullptr;
     }
 
-    Node* create(dag::InputStream& str, dag::NodeLibrary& nodeLib) override
+    Node* create(dagbase::InputStream& str, dag::NodeLibrary& nodeLib) override
     {
         return new DynamicNode(str, nodeLib);
     }
 
-    dag::OutputStream& write(dag::OutputStream& str) const override
+    dagbase::OutputStream& write(dagbase::OutputStream& str) const override
     {
         str.write(_dynamicMetaPorts.size());
         for (auto const & p : _dynamicMetaPorts)

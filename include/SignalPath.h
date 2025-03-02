@@ -11,11 +11,15 @@
 
 #include <cstdint>
 
-namespace dag
+namespace dagbase
 {
     class InputStream;
-    class NodeLibrary;
     class OutputStream;
+}
+
+namespace dag
+{
+    class NodeLibrary;
 
     class DAG_API SignalPath
     {
@@ -35,7 +39,7 @@ namespace dag
             // Do nothing.
         }
 
-        SignalPath(InputStream& str, NodeLibrary& nodeLib);
+        SignalPath(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
         [[nodiscard]]SignalPathID id() const
         {
@@ -99,7 +103,7 @@ namespace dag
 
         std::ostream& toLua(std::ostream& str);
 
-        OutputStream& write(OutputStream& str) const;
+        dagbase::OutputStream& write(dagbase::OutputStream& str) const;
     private:
         SignalPathID _id;
         Port* _source;

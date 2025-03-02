@@ -17,9 +17,9 @@
 #include "Boundary.h"
 #include "SignalPath.h"
 #include "CreateNode.h"
-#include "ByteBuffer.h"
-#include "MemoryOutputStream.h"
-#include "MemoryInputStream.h"
+#include "core/ByteBuffer.h"
+#include "io/MemoryOutputStream.h"
+#include "io/MemoryInputStream.h"
 #include "FileSystemTraverser.h"
 #include "NodePluginScanner.h"
 #include "CloningFacility.h"
@@ -29,8 +29,8 @@
 #include <algorithm>
 #include <filesystem>
 
-#include "Class.h"
-#include "MetaClass.h"
+#include "core/Class.h"
+#include "core/MetaClass.h"
 
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dag::PortDirection::Direction, double>>
 {
@@ -1517,7 +1517,7 @@ TEST(GraphTest, testSaveToMemento)
 
 TEST(ByteBufferTest, testRelativeFloat)
 {
-    dag::ByteBuffer sut;
+    dagbase::ByteBuffer sut;
 
     sut.put(101.234f);
     float f = 0.0f;
@@ -1527,7 +1527,7 @@ TEST(ByteBufferTest, testRelativeFloat)
 
 TEST(ByteBufferTest, testRelativeInt)
 {
-    dag::ByteBuffer sut;
+    dagbase::ByteBuffer sut;
 
     sut.put(101);
     std::int32_t f = 0;
@@ -1537,7 +1537,7 @@ TEST(ByteBufferTest, testRelativeInt)
 
 TEST(ByteBufferTest, testRelativeDouble)
 {
-    dag::ByteBuffer sut;
+    dagbase::ByteBuffer sut;
 
     sut.put(101.234);
     double f = 0;
@@ -1558,7 +1558,7 @@ struct TestStruct
 
 TEST(ByteBufferTest, testRelativeStruct)
 {
-    dag::ByteBuffer sut;
+    dagbase::ByteBuffer sut;
 
     TestStruct value;
     value.i=100;
@@ -1572,10 +1572,10 @@ TEST(ByteBufferTest, testRelativeStruct)
 
 TEST(MemoryOutputStreamTest, testWriteBuf)
 {
-    dag::ByteBuffer buf;
-    dag::MemoryOutputStream sut(&buf);
+    dagbase::ByteBuffer buf;
+    dagbase::MemoryOutputStream sut(&buf);
     float f = 123.456f;
-    sut.writeBuf(reinterpret_cast<dag::MemoryOutputStream::value_type*>(&f), sizeof(float));
+    sut.writeBuf(reinterpret_cast<dagbase::MemoryOutputStream::value_type*>(&f), sizeof(float));
     float actual = 0.0f;
     buf.get(&actual);
     ASSERT_EQ(f, actual);
@@ -1591,7 +1591,7 @@ public:
         // Do nothing.
     }
 
-    explicit TestObj(dag::InputStream& str)
+    explicit TestObj(dagbase::InputStream& str)
     {
         str.addObj(this);
 
@@ -1603,7 +1603,7 @@ public:
         return _i;
     }
 
-    dag::OutputStream& write(dag::OutputStream& str) const
+    dagbase::OutputStream& write(dagbase::OutputStream& str) const
     {
         str.write(_i);
 
@@ -1615,8 +1615,8 @@ private:
 
 TEST(MemoryOutputStreamTest, testWriteRef)
 {
-    dag::ByteBuffer buf;
-    dag::MemoryOutputStream sut(&buf);
+    dagbase::ByteBuffer buf;
+    dagbase::MemoryOutputStream sut(&buf);
     TestObj obj(1);
     sut.writeRef(&obj);
     std::uint32_t id;
@@ -1626,35 +1626,35 @@ TEST(MemoryOutputStreamTest, testWriteRef)
 
 TEST(MemoryOutputStreamTest, testWrite)
 {
-    dag::ByteBuffer buf;
-    dag::MemoryOutputStream sut(&buf);
+    dagbase::ByteBuffer buf;
+    dagbase::MemoryOutputStream sut(&buf);
     double d = 123.456;
     sut.write(d);
     double actual = 0.0;
-    dag::MemoryInputStream str(&buf);
+    dagbase::MemoryInputStream str(&buf);
     str.read(&actual);
     ASSERT_EQ(d,actual);
 }
 
 TEST(ByteBufferTest, testBulkGet)
 {
-    dag::ByteBuffer sut;
+    dagbase::ByteBuffer sut;
     int i=100;
     sut.put(i);
     int actual=0;
-    sut.get(reinterpret_cast<dag::ByteBuffer::BufferType::value_type*>(&actual), sizeof(int));
+    sut.get(reinterpret_cast<dagbase::ByteBuffer::BufferType::value_type*>(&actual), sizeof(int));
     ASSERT_EQ(i,actual);
 }
 
 TEST(MemoryInputStreamTest, testReadRef)
 {
-    dag::ByteBuffer buf;
-    dag::MemoryOutputStream str(&buf);
+    dagbase::ByteBuffer buf;
+    dagbase::MemoryOutputStream str(&buf);
     auto s = new TestObj(1);
     str.writeRef(&s);
     s->write(str);
-    dag::MemoryInputStream sut(&buf);
-    dag::InputStream::ObjId id = -1;
+    dagbase::MemoryInputStream sut(&buf);
+    dagbase::InputStream::ObjId id = -1;
     TestObj* actual = sut.readRef<TestObj>(&id);
 //    if (id!=0)
 //    {
@@ -1684,12 +1684,12 @@ public:
 
     }
 
-    explicit TestNode(dag::InputStream& str)
+    explicit TestNode(dagbase::InputStream& str)
     :
     _parent(nullptr)
     {
         str.addObj(this);
-        dag::Stream::ObjId parentId{0};
+        dagbase::Stream::ObjId parentId{0};
         auto parentRef = str.readRef<TestObj>(&parentId);
 
         str.read(&_value);
@@ -1699,7 +1699,7 @@ public:
 
         for (auto i=0; i<numChildren; ++i)
         {
-            dag::Stream::ObjId childId = 0;
+            dagbase::Stream::ObjId childId = 0;
             auto child = str.readRef<TestNode>(&childId);
 
             addChild(child);
@@ -1714,7 +1714,7 @@ public:
         }
     }
 
-    dag::OutputStream& write(dag::OutputStream& str) const
+    dagbase::OutputStream& write(dagbase::OutputStream& str) const
     {
         if (str.writeRef(_parent))
         {
@@ -1776,8 +1776,8 @@ private:
 
 TEST(MemoryInputStreamTest, testReadLinked)
 {
-    dag::ByteBuffer buf;
-    dag::MemoryOutputStream str(&buf);
+    dagbase::ByteBuffer buf;
+    dagbase::MemoryOutputStream str(&buf);
     auto parent = new TestNode(nullptr);
     auto obj = new TestNode(parent);
     parent->addChild(obj);
@@ -1790,9 +1790,9 @@ TEST(MemoryInputStreamTest, testReadLinked)
         parent->write(str);
     }
 
-    dag::MemoryInputStream sut(&buf);
+    dagbase::MemoryInputStream sut(&buf);
 
-    dag::Stream::ObjId rootId = 0;
+    dagbase::Stream::ObjId rootId = 0;
     auto* actual = sut.readRef<TestNode>(&rootId);
     ASSERT_EQ(parent->value(), actual->value());
     ASSERT_EQ(std::size_t{2}, actual->numChildren());
@@ -1806,16 +1806,16 @@ TEST(GraphTest, testSerialisationEmptyGraph)
     dag::MemoryNodeLibrary nodeLib;
     auto g1 = new dag::Graph();
     g1->setNodeLibrary(&nodeLib);
-    auto buf = new dag::ByteBuffer();
-    auto out = new dag::MemoryOutputStream(buf);
+    auto buf = new dagbase::ByteBuffer();
+    auto out = new dagbase::MemoryOutputStream(buf);
     if (out->writeRef(g1))
     {
         g1->write(*out);
     }
-    auto in = new dag::MemoryInputStream(buf);
-    dag::Stream::ObjId id = 0;
+    auto in = new dagbase::MemoryInputStream(buf);
+    dagbase::Stream::ObjId id = 0;
     dag::Graph* g2 = nullptr;
-    dag::Stream::Ref ref = in->readRef(&id);
+    dagbase::Stream::Ref ref = in->readRef(&id);
     if (id != 0)
     {
         if (ref != nullptr)
@@ -1843,17 +1843,17 @@ TEST(GraphTest, testSerialisationOneNode)
     g1->setNodeLibrary(&nodeLib);
     auto n1 = g1->createNode("FooTyped", "foo1");
     g1->addNode(n1);
-    auto buf = new dag::ByteBuffer();
-    auto out = new dag::MemoryOutputStream(buf);
+    auto buf = new dagbase::ByteBuffer();
+    auto out = new dagbase::MemoryOutputStream(buf);
     if (out->writeRef(g1))
     {
         g1->write(*out);
     }
     g1->debug();
-    auto in = new dag::MemoryInputStream(buf);
-    dag::Stream::ObjId id = 0;
+    auto in = new dagbase::MemoryInputStream(buf);
+    dagbase::Stream::ObjId id = 0;
     dag::Graph* g2 = nullptr;
-    dag::Stream::Ref ref = in->readRef(&id);
+    dagbase::Stream::Ref ref = in->readRef(&id);
     if (id != 0)
     {
         if (ref != nullptr)
@@ -1884,17 +1884,17 @@ TEST(GraphTest, testSerialisationTwoConnectedNodes)
     auto n2 = g1->createNode("BarTyped", "bar1");
     g1->addNode(n2);
     auto t1 = n2->dynamicPort(0)->connectTo(*n1->dynamicPort(0));
-    auto buf = new dag::ByteBuffer();
-    auto out = new dag::MemoryOutputStream(buf);
+    auto buf = new dagbase::ByteBuffer();
+    auto out = new dagbase::MemoryOutputStream(buf);
     if (out->writeRef(g1))
     {
         g1->write(*out);
     }
     g1->debug();
-    auto in = new dag::MemoryInputStream(buf);
-    dag::Stream::ObjId id = 0;
+    auto in = new dagbase::MemoryInputStream(buf);
+    dagbase::Stream::ObjId id = 0;
     dag::Graph* g2 = nullptr;
-    dag::Stream::Ref ref = in->readRef(&id);
+    dagbase::Stream::Ref ref = in->readRef(&id);
     if (id != 0)
     {
         if (ref != nullptr)
@@ -1917,11 +1917,11 @@ TEST(GraphTest, testSerialisationTwoConnectedNodes)
 
 TEST(MemoryOutputStreamTest, testWriteString)
 {
-    dag::ByteBuffer buf;
-    auto str = new dag::MemoryOutputStream(&buf);
+    dagbase::ByteBuffer buf;
+    auto str = new dagbase::MemoryOutputStream(&buf);
     std::string expected="test";
     str->write(expected);
-    auto sut = new dag::MemoryInputStream(&buf);
+    auto sut = new dagbase::MemoryInputStream(&buf);
     std::string actual;
     sut->read(&actual);
     ASSERT_EQ(expected, actual);
@@ -2270,16 +2270,16 @@ TEST_P(GraphTest_testReadFromLuaThenSerialise, testSerialise)
     dag::MemoryNodeLibrary nodeLib;
     auto sut = dag::Graph::fromFile(nodeLib, graphFilename);
     ASSERT_NE(nullptr, sut);
-    auto* buf = new dag::ByteBuffer();
-    dag::MemoryOutputStream ostr(buf);
+    auto* buf = new dagbase::ByteBuffer();
+    dagbase::MemoryOutputStream ostr(buf);
     if (ostr.writeRef(sut))
     {
         sut->write(ostr);
     }
-    dag::MemoryInputStream istr(buf);
-    dag::Stream::ObjId id{~0U};
+    dagbase::MemoryInputStream istr(buf);
+    dagbase::Stream::ObjId id{~0U};
     dag::Graph* actual = nullptr;
-    dag::Stream::Ref ref = istr.readRef(&id);
+    dagbase::Stream::Ref ref = istr.readRef(&id);
     if (id != 0)
     {
         if (ref != nullptr)
@@ -2462,12 +2462,12 @@ TEST(CloningFacility, testLinkedList)
     delete head;
 }
 
-class TestClass : public dag::Class
+class TestClass : public dagbase::Class
 {
 public:
-    explicit TestClass(dag::MetaClass* metaClass)
+    explicit TestClass(dagbase::MetaClass* metaClass)
         :
-    Class(metaClass)
+    dagbase::Class(metaClass)
     {
         // Do nothing.
     }
@@ -2475,8 +2475,8 @@ public:
 
 TEST(Class, testRaiseError)
 {
-    auto metaClass = std::make_unique<dag::MetaClass>();
+    auto metaClass = std::make_unique<dagbase::MetaClass>();
     auto sut = std::make_unique<TestClass>(metaClass.get());
-    auto& str = sut->raiseError(dag::Class::TypeNotFound) << "Test";
+    auto& str = sut->raiseError(dagbase::Class::TypeNotFound) << "Test";
     EXPECT_EQ("TypeNotFound:Test",sut->errorMessage());
 }

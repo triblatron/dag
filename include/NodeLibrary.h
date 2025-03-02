@@ -9,11 +9,16 @@
 #include <string>
 #include <array>
 
+namespace dagbase
+{
+	class Class;
+	class InputStream;
+	class OutputStream;
+}
+
 namespace dag
 {
-    class InputStream;
     class Node;
-    class OutputStream;
 
     //! |class NodeLibrary
     //! A set of Nodes that can be instantiated by class name
@@ -43,14 +48,16 @@ namespace dag
 		virtual Node* instantiateNode(NodeID id, const std::string& className, const std::string& name) = 0;
 
         //! Write the given node to the stream.
-        virtual OutputStream& write(OutputStream& str, Node* node) const = 0;
+        virtual dagbase::OutputStream& write(dagbase::OutputStream& str, Node* node) const = 0;
+
+		virtual dagbase::Class* instantiate(const char* className, dagbase::InputStream& str) = 0;
 
         //! Create a node from a stream.
-        virtual Node* instantiateNode(InputStream& str) = 0;
+        virtual Node* instantiateNode(dagbase::InputStream& str) = 0;
 
         virtual Port* instantiatePort(const std::string& className, const std::string& name, PortType::Type type, PortDirection::Direction, Value value) = 0;
 
-        virtual Port* instantiatePort(InputStream& str) = 0;
+        virtual Port* instantiatePort(dagbase::InputStream& str) = 0;
 
 //        virtual NodeID nextNodeID() = 0;
 

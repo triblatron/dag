@@ -11,17 +11,21 @@
 #include <vector>
 #include <stdexcept>
 
+namespace dagbase
+{
+    class InputStream;
+    class OutputStream;
+}
+
 namespace dag
 {
     class CloningFacility;
     class DebugPrinter;
-    class InputStream;
     class KeyGenerator;
 	struct NodeDescriptor;
-    class OutputStream;
     class NodeLibrary;
 
-	class DAG_API Node
+	class DAG_API Node : public dagbase::Class
 	{
 	public:
 		enum NodeFlags : std::uint32_t
@@ -33,7 +37,7 @@ namespace dag
 	public:
 		explicit Node(KeyGenerator& keyGen, std::string name, NodeCategory::Category category=NodeCategory::CAT_NONE);
 
-        explicit Node(InputStream& str, NodeLibrary& nodeLib);
+        explicit Node(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
 		Node(const Node& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
 
@@ -69,11 +73,11 @@ namespace dag
         //! \param[in] nodeLib The NodeLibrary to create Ports
         //! \note Making this virtual means we know the exact type of the node and not not have to resort to
         //! dynamic_cast<>() or similar.
-        virtual Node* create(InputStream& str, NodeLibrary& nodeLib) = 0;
+        virtual Node* create(dagbase::InputStream& str, NodeLibrary& nodeLib) = 0;
 
         //! Write ourself to a binary output stream
         //! \param[in] str The stream
-        virtual OutputStream& write(OutputStream& str) const = 0;
+        virtual dagbase::OutputStream& write(dagbase::OutputStream& str) const = 0;
 
         //! \return The total number of Ports in this Node, including intrinsic/static and dynamic/extrinsic Ports.
         [[nodiscard]]virtual size_t totalPorts() const

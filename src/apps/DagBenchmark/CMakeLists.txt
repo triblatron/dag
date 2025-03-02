@@ -7,7 +7,7 @@ IF (WIN32)
 	SET(BENCHMARK_LIBS ${BENCHMARK_LIBS} Shlwapi)
 	target_compile_definitions(DagBenchmark PUBLIC BENCHMARK_STATIC_DEFINE)
 ENDIF(WIN32)
-target_link_libraries(DagBenchmark PRIVATE benchmark::benchmark dag)
+target_link_libraries(DagBenchmark PRIVATE benchmark::benchmark dag dagbase)
 
 INSTALL( TARGETS DagBenchmark
         RUNTIME DESTINATION bin

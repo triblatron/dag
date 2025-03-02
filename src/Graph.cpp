@@ -2,11 +2,11 @@
 
 #include "Graph.h"
 #include "NodeLibrary.h"
-#include "InputStream.h"
+#include "io/InputStream.h"
 #include "Node.h"
 #include "SignalPath.h"
 #include "SelectionInterface.h"
-#include "OutputStream.h"
+#include "io/OutputStream.h"
 #include "DebugPrinter.h"
 #include "core/LuaInterface.h"
 #include "TypedPort.h"
@@ -244,17 +244,17 @@ namespace dag
         return total;
     }
 
-    ByteBuffer *Graph::save() const
+    dagbase::ByteBuffer *Graph::save() const
     {
         return nullptr;
     }
 
-    void Graph::restore(ByteBuffer *memento)
+    void Graph::restore(dagbase::ByteBuffer *memento)
     {
         // Do nothing.
     }
 
-    OutputStream& Graph::write(OutputStream& str) const
+    dagbase::OutputStream& Graph::write(dagbase::OutputStream& str) const
     {
         str.write(_nodes.size());
         for (auto p : _nodes)
@@ -286,7 +286,7 @@ namespace dag
         return str;
     }
 
-    Graph::Graph(InputStream &str, NodeLibrary& nodeLib)
+    Graph::Graph(dagbase::InputStream &str, NodeLibrary& nodeLib)
     :
     _nodeLib(&nodeLib)
     {
@@ -297,8 +297,7 @@ namespace dag
         {
             for (auto i=0; i<numNodes; ++i)
             {
-                Stream::ObjId id = 0;
-                auto node = str.readRef<Node>(&id, *_nodeLib);
+                auto node = str.readRef<Node>("Node", *_nodeLib);
                 //auto node = _nodeLib->instantiateNode(str);
 
                 if (node!=nullptr)
@@ -311,7 +310,7 @@ namespace dag
         str.read(&numSignalPaths);
         for (auto i=0; i<numSignalPaths; ++i)
         {
-            Stream::ObjId id = 0;
+            dagbase::Stream::ObjId id = 0;
             SignalPath* p = nullptr;
             auto ref = str.readRef(&id);
             if (id != 0)
@@ -334,7 +333,7 @@ namespace dag
         str.read(&numChildren);
         for (auto i=0; i<numChildren; ++i)
         {
-            Stream::ObjId id = 0;
+            dagbase::Stream::ObjId id = 0;
             Graph* child = nullptr;
             auto ref = str.readRef(&id);
             if (id != 0)

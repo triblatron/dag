@@ -11,7 +11,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 #FIND_PACKAGE(benchmark REQUIRED)
 FIND_PACKAGE(Lua 5.4)
 
-SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h include/ByteBuffer.h include/Class.h include/Command.h include/CreateNode.h include/DebugPrinter.h include/FileSystemTraverser.h include/Graph.h include/InputStream.h include/MemoryInputStream.h include/MemoryNodeLibrary.h include/MemoryOutputStream.h include/MetaCoroutine.h include/MetaOperation.h include/MetaPort.h include/NodeCategory.h include/NodeDescriptor.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodeLibrary.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h include/OutputStream.h include/Port.h include/PortDescriptor.h include/SelectionInterface.h include/SelectionLive.h include/SignalPath.h include/SignalPathDef.h include/Stream.h include/Transfer.h include/TypedPort.h include/Types.h include/TypeTraits.h include/Value.h
+SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h include/Command.h include/CreateNode.h include/DebugPrinter.h include/FileSystemTraverser.h include/Graph.h include/MemoryNodeLibrary.h include/MetaCoroutine.h include/MetaOperation.h include/MetaPort.h include/NodeCategory.h include/NodeDescriptor.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodeLibrary.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h include/Port.h include/PortDescriptor.h include/SelectionInterface.h include/SelectionLive.h include/SignalPath.h include/SignalPathDef.h include/Transfer.h include/TypedPort.h include/Types.h include/TypeTraits.h include/Value.h
         include/DynamicLibrary.h
 		include/MathNode.h
 		include/NodeEditorFrontEnd.h
@@ -22,7 +22,6 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/CloningFacility.h
 		include/Fields.h
 		include/KeyGenerator.h 
-		include/MetaClass.h
 		include/MetaField.h
 		include/UnionValue.h
 )
@@ -46,20 +45,14 @@ SOURCE_GROUP(
 SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/Action.cpp
         src/Boundary.cpp
-        src/ByteBuffer.cpp
-        src/Class.cpp
         src/Command.cpp
         src/CreateNode.cpp
         src/DebugPrinter.cpp
         src/DynamicLibrary.cpp
         src/FileSystemTraverser.cpp
         src/Graph.cpp
-        src/InputStream.cpp
         src/KeyGenerator.cpp
-        src/MemoryInputStream.cpp
         src/MemoryNodeLibrary.cpp
-        src/MemoryOutputStream.cpp
-        src/MetaClass.cpp
         src/MetaCoroutine.cpp
         src/MetaField.cpp
         src/MetaOperation.cpp
@@ -72,7 +65,6 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/NodePlugin.cpp
         src/NodePluginScanner.cpp
         src/Nodes.cpp
-        src/OutputStream.cpp
         src/Port.cpp
         src/PortDescriptor.cpp
         src/SelectionLive.cpp
@@ -81,8 +73,7 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/Transfer.cpp
         src/Types.cpp
         src/UnionValue.cpp
-        src/MetaClass.cpp
-		src/MathsNode.cpp
+ 		src/MathsNode.cpp
 		src/NodeEditorFrontEnd.cpp
 		src/NodeEditorFrontEndTUI.cpp
 		src/NodeEditorBackEndNodeEditorInterface.cpp
@@ -166,6 +157,7 @@ ENDIF( UNIX )
 add_library(NodePlugin SHARED include/NodePlugin.h
         src/NodePlugin.cpp)
 set_target_properties( NodePlugin PROPERTIES DEFINE_SYMBOL NODEPLUGIN_LIBRARY )
-TARGET_LINK_LIBRARIES(NodePlugin dag)
+
+TARGET_LINK_LIBRARIES(NodePlugin PRIVATE dag dagbase)
 
 INSTALL( TARGETS NodePlugin LIBRARY DESTINATION lib/NodePlugins RUNTIME DESTINATION bin/NodePlugins )

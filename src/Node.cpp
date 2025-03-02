@@ -2,8 +2,8 @@
 
 #include "Node.h"
 #include "NodeDescriptor.h"
-#include "OutputStream.h"
-#include "InputStream.h"
+#include "io/OutputStream.h"
+#include "io/InputStream.h"
 #include "DebugPrinter.h"
 #include "NodeLibrary.h"
 #include "KeyGenerator.h"
@@ -76,7 +76,7 @@ namespace dag
 
     }
 
-    OutputStream &Node::write(OutputStream &str) const
+    dagbase::OutputStream &Node::write(dagbase::OutputStream &str) const
     {
         str.write(_id);
         str.write(_name);
@@ -93,7 +93,7 @@ namespace dag
         return str;
     }
 
-    Node::Node(InputStream &str, NodeLibrary& nodeLib)
+    Node::Node(dagbase::InputStream &str, NodeLibrary& nodeLib)
     {
         str.addObj(this);
         str.read(&_id);

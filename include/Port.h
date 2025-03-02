@@ -2,6 +2,8 @@
 
 #include "config/Export.h"
 
+#include "core/Class.h"
+
 #include "Value.h"
 
 #include <string>
@@ -15,14 +17,18 @@
 #include "MetaPort.h"
 #include "NodeLibrary.h"
 
+namespace dagbase
+{
+    class InputStream;
+    class OutputStream;
+}
+
 namespace dag
 {
     class CloningFacility;
     class DebugPrinter;
-    class InputStream;
     class KeyGenerator;
     class Node;
-    class OutputStream;
 	class Transfer;
 
     class DAG_API ValueVisitor
@@ -85,7 +91,7 @@ namespace dag
         Value _value;
     };
 
-	class DAG_API Port
+	class DAG_API Port : public dagbase::Class
     {
     public:
         typedef std::vector<Port*> PortArray;
@@ -105,7 +111,7 @@ namespace dag
 
         //! Construct from a stream and a node library.
         //! \note Requires the NodeLibrary to read the parent.
-        Port(InputStream& str, NodeLibrary& nodeLib);
+        Port(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
         virtual ~Port();
 
@@ -310,7 +316,7 @@ namespace dag
 
         virtual Port* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) = 0;
 
-        virtual OutputStream& write(OutputStream& str) const;
+        virtual dagbase::OutputStream& write(dagbase::OutputStream& str) const;
 
         [[nodiscard]]virtual bool equals(const Port& other) const
         {
@@ -375,7 +381,7 @@ namespace dag
 			// Do nothing.
 		}
 
-        explicit ValuePort(InputStream& str, NodeLibrary& nodeLib);
+        explicit ValuePort(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
         ValuePort(const ValuePort& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
         :
@@ -456,7 +462,7 @@ namespace dag
             _value = other._value;
         }
 
-        explicit VariantPort(InputStream& str, NodeLibrary& nodeLib);
+        explicit VariantPort(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
         VariantPort* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
         {

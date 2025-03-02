@@ -11,12 +11,16 @@
 
 #include <string>
 
+namespace dagbase
+{
+    class InputStream;
+    class OutputStream;
+}
+
 namespace dag
 {
     class DebugPrinter;
-    class InputStream;
-    class OutputStream;
-    
+
     struct DAG_API MetaPort
     {
         std::string name;
@@ -48,13 +52,13 @@ namespace dag
             direction = other.direction;
         }
 
-        explicit MetaPort(InputStream& str);
+        explicit MetaPort(dagbase::InputStream& str);
 
         bool operator==(const MetaPort& other) const;
 
-        InputStream& read(InputStream& str);
+        dagbase::InputStream& read(dagbase::InputStream& str);
 
-        OutputStream& write(OutputStream& str) const;
+        dagbase::OutputStream& write(dagbase::OutputStream& str) const;
 
         void debug(DebugPrinter& printer) const;
 

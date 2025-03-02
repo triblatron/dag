@@ -3,8 +3,8 @@
 #include "config/Export.h"
 
 #include "NodeLibrary.h"
-#include "InputStream.h"
-#include "OutputStream.h"
+#include "io/InputStream.h"
+#include "io/OutputStream.h"
 #include "Transfer.h"
 #include "TypeTraits.h"
 #include "Types.h"
@@ -52,14 +52,14 @@ namespace dag
             _value = other._value;
         }
 
-        explicit TypedPort(InputStream& str, NodeLibrary& nodeLib)
+        explicit TypedPort(dagbase::InputStream& str, NodeLibrary& nodeLib)
         :
         Port(str, nodeLib)
         {
             str.read(&_value);
         }
 
-        OutputStream& write(OutputStream& str) const override
+        dagbase::OutputStream& write(dagbase::OutputStream& str) const override
         {
             std::string className;
 

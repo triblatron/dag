@@ -4,8 +4,8 @@
 
 #include "Boundary.h"
 #include "NodeLibrary.h"
-#include "InputStream.h"
-#include "OutputStream.h"
+#include "io/InputStream.h"
+#include "io/OutputStream.h"
 #include "CloningFacility.h"
 
 namespace dag
@@ -48,7 +48,7 @@ namespace dag
         return *this;
     }
 
-    Boundary::Boundary(InputStream &str, NodeLibrary &nodeLib)
+    Boundary::Boundary(dagbase::InputStream &str, NodeLibrary &nodeLib)
     :
     Node(str, nodeLib)
     {
@@ -68,12 +68,12 @@ namespace dag
         }
     }
 
-    Boundary *Boundary::create(InputStream &str, NodeLibrary &nodeLib)
+    Boundary *Boundary::create(dagbase::InputStream &str, NodeLibrary &nodeLib)
     {
         return new Boundary(str, nodeLib);
     }
 
-    OutputStream &Boundary::write(OutputStream &str) const
+    dagbase::OutputStream &Boundary::write(dagbase::OutputStream &str) const
     {
         Node::write(str);
         str.write(_dynamicMetaPorts.size());

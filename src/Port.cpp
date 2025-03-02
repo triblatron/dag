@@ -3,8 +3,8 @@
 #include "Port.h"
 #include "TypedPort.h"
 #include "Node.h"
-#include "OutputStream.h"
-#include "InputStream.h"
+#include "io/OutputStream.h"
+#include "io/InputStream.h"
 #include "NodeLibrary.h"
 #include "DebugPrinter.h"
 #include "CloningFacility.h"
@@ -179,7 +179,7 @@ namespace dag
         }
     }
 
-    OutputStream &Port::write(OutputStream &str) const
+    dagbase::OutputStream &Port::write(dagbase::OutputStream &str) const
     {
         str.write(_id);
 
@@ -258,23 +258,23 @@ namespace dag
         //printer.print(_value);
     }
 
-    Port::Port(InputStream &str, NodeLibrary& nodeLib)
+    Port::Port(dagbase::InputStream &str, NodeLibrary& nodeLib)
     :
     _metaPort(nullptr),
     _parent(nullptr)
     {
         str.addObj(this);
         str.read(&_id);
-        Stream::ObjId metaPortId = 0;
+        dagbase::Stream::ObjId metaPortId = 0;
         _metaPort = str.readRef<MetaPort>(&metaPortId);
         setOwnMetaPort(true);
-        Stream::ObjId parentId = 0;
-        _parent = str.readRef<Node>(&parentId, nodeLib);
+//        dagbase::Stream::ObjId parentId = 0;
+        _parent = str.readRef<Node>("Node", nodeLib);
         size_t numOutgoingConnections = 0;
         str.read(&numOutgoingConnections);
         for (auto i=0; i<numOutgoingConnections; ++i)
         {
-            Port* port = str.readPort(nodeLib);
+            Port* port = str.readRef<Port>("Port",nodeLib);
             if (port!=nullptr)
             {
                 addOutgoingConnection(port);
@@ -284,7 +284,7 @@ namespace dag
         str.read(&numIncomingConnections);
         for (auto i=0; i<numIncomingConnections; ++i)
         {
-            Port* port = str.readPort(nodeLib);
+            Port* port = str.readRef<Port>("Port",nodeLib);
             if (port != nullptr)
             {
                 addIncomingConnection(port);
@@ -379,7 +379,7 @@ namespace dag
         return nullptr;
     }
 
-    VariantPort::VariantPort(InputStream &str, NodeLibrary &nodeLib)
+    VariantPort::VariantPort(dagbase::InputStream &str, NodeLibrary &nodeLib)
     :
     Port(str, nodeLib)
     {
@@ -440,7 +440,7 @@ namespace dag
         return transfer;
     }
 
-    ValuePort::ValuePort(InputStream &str, NodeLibrary &nodeLib)
+    ValuePort::ValuePort(dagbase::InputStream &str, NodeLibrary &nodeLib)
     :
     Port(str, nodeLib)
     {

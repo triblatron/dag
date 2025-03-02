@@ -541,7 +541,7 @@ public:
         // Do nothing.
     }
 
-    explicit SpooVariant(dag::InputStream& str, dag::NodeLibrary& nodeLib)
+    explicit SpooVariant(dagbase::InputStream& str, dag::NodeLibrary& nodeLib)
     :
     Node(str, nodeLib),
     _foo(str, nodeLib),
@@ -587,7 +587,7 @@ public:
         return new SpooVariant(*this, facility, copyOp, keyGen);
     }
 
-    SpooVariant* create(dag::InputStream& str, dag::NodeLibrary& nodeLib) override
+    SpooVariant* create(dagbase::InputStream& str, dag::NodeLibrary& nodeLib) override
     {
         return new SpooVariant(str, nodeLib);
     }
@@ -610,7 +610,7 @@ public:
         }
         return true;
     }
-    dag::OutputStream& write(dag::OutputStream& str) const override
+    dagbase::OutputStream& write(dagbase::OutputStream& str) const override
     {
         Node::write(str);
         _foo.write(str);

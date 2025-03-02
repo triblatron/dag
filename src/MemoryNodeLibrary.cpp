@@ -6,8 +6,8 @@
 
 #include <stdexcept>
 
-#include "InputStream.h"
-#include "OutputStream.h"
+#include "io/InputStream.h"
+#include "io/OutputStream.h"
 #include "Nodes.h"
 #include "Boundary.h"
 #include "MathNode.h"
@@ -72,7 +72,7 @@ namespace dag
 //        return str;
 //    }
 
-    Node *MemoryNodeLibrary::instantiateNode(InputStream &str)
+    Node *MemoryNodeLibrary::instantiateNode(dagbase::InputStream &str)
     {
         std::string className;
         str.read(&className);
@@ -111,7 +111,7 @@ namespace dag
         return nullptr;
     }
 
-    Port *MemoryNodeLibrary::instantiatePort(InputStream &str)
+    Port *MemoryNodeLibrary::instantiatePort(dagbase::InputStream &str)
     {
         std::string className;
         str.read(&className);
@@ -148,7 +148,19 @@ namespace dag
 //        return instantaatePort(className, name, type, dir, value);
     }
 
-    OutputStream &MemoryNodeLibrary::write(OutputStream& str,  Node *node) const
+    dagbase::Class* MemoryNodeLibrary::instantiate(const char* baseClassName, dagbase::InputStream& str)
+    {
+        if (std::strcmp(baseClassName, "Node") == 0)
+        {
+            return instantiateNode(str);
+        }
+        else if (std::strcmp(baseClassName, "Port") == 0)
+        {
+            return instantiatePort(str);
+        }
+    }
+
+    dagbase::OutputStream &MemoryNodeLibrary::write(dagbase::OutputStream& str,  Node *node) const
     {
         std::string className = node->className();
         str.write(className);

@@ -24,7 +24,7 @@ namespace dag
             _output = new TypedPort<double>(keyGen.nextPortID(), this, &ports[2], 0.0);
         }
 
-        MathsNode(InputStream& str, NodeLibrary& nodeLib);
+        MathsNode(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
         MathsNode(const MathsNode& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
 
@@ -52,11 +52,11 @@ namespace dag
         //! Create a Node of the same type as this from a stream.
         //! \param[in] str The stream from which to read the data required to create the Node.
         //! \param[in] nodeLib The NodeLibrary to create Ports
-        Node* create(InputStream& str, NodeLibrary& nodeLib) override;
+        Node* create(dagbase::InputStream& str, NodeLibrary& nodeLib) override;
 
         //! Write ourself to a stream
         //! \param[in] str The stream
-        OutputStream& write(OutputStream& str) const override;
+        dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
 
         //! Clone ourself to support the Prototype pattern
         //! \note A deep copy of Ports is required.
