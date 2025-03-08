@@ -13,6 +13,8 @@
 #include "MathNode.h"
 #include "CloningFacility.h"
 
+#include <cstring>
+
 namespace dag
 {
     MemoryNodeLibrary::MemoryNodeLibrary()
@@ -158,6 +160,7 @@ namespace dag
         {
             return instantiatePort(str);
         }
+
         return nullptr;
     }
 
