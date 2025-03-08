@@ -25,7 +25,7 @@ namespace dag
         {
             _dest->write(str);
         }
-        str.write(_flags);
+        str.writeUInt32(_flags);
 
         return str;
     }

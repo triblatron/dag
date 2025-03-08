@@ -1575,7 +1575,7 @@ TEST(MemoryOutputStreamTest, testWriteBuf)
     dagbase::ByteBuffer buf;
     dagbase::MemoryOutputStream sut(&buf);
     float f = 123.456f;
-    sut.writeBuf(reinterpret_cast<dagbase::MemoryOutputStream::value_type*>(&f), sizeof(float));
+    sut.write(f);//reinterpret_cast<dagbase::MemoryOutputStream::value_type*>(&f), sizeof(float));
     float actual = 0.0f;
     buf.get(&actual);
     ASSERT_EQ(f, actual);
