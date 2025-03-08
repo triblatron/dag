@@ -158,6 +158,7 @@ namespace dag
         {
             return instantiatePort(str);
         }
+        return nullptr;
     }
 
     dagbase::OutputStream &MemoryNodeLibrary::write(dagbase::OutputStream& str,  Node *node) const
