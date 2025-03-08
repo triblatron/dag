@@ -4,7 +4,7 @@
 #include "NodeDescriptor.h"
 #include "io/OutputStream.h"
 #include "io/InputStream.h"
-#include "DebugPrinter.h"
+#include "util/DebugPrinter.h"
 #include "NodeLibrary.h"
 #include "KeyGenerator.h"
 #include "CloningFacility.h"
@@ -147,7 +147,7 @@ namespace dag
         return true;
     }
 
-    void Node::debug(DebugPrinter &printer) const
+    void Node::debug(dagbase::DebugPrinter& printer) const
     {
         printer.println("id: " + std::to_string(_id));
         printer.println("name: " + _name);

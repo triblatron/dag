@@ -7,7 +7,7 @@
 #include "SignalPath.h"
 #include "SelectionInterface.h"
 #include "io/OutputStream.h"
-#include "DebugPrinter.h"
+#include "util/DebugPrinter.h"
 #include "core/LuaInterface.h"
 #include "TypedPort.h"
 #include "Types.h"
@@ -389,7 +389,7 @@ namespace dag
 
     void Graph::debug() const
     {
-        DebugPrinter printer;
+        dagbase::DebugPrinter printer;
         printer.setStr(&std::cout);
         printer.println("{");
         printer.indent();

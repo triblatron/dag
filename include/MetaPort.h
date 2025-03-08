@@ -11,6 +11,8 @@
 
 #include <string>
 
+#include "util/DebugPrinter.h"
+
 namespace dagbase
 {
     class InputStream;
@@ -60,7 +62,7 @@ namespace dag
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const;
 
-        void debug(DebugPrinter& printer) const;
+        void debug(dagbase::DebugPrinter& printer) const;
 
         std::ostream& toLua(std::ostream& str);
     };

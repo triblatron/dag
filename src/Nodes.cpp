@@ -127,7 +127,7 @@ namespace dag
         return true;
     }
 
-    void FooTyped::debug(DebugPrinter &printer) const
+    void FooTyped::debug(dagbase::DebugPrinter& printer) const
     {
         Node::debug(printer);
         _in1->debug(printer);

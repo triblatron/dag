@@ -323,7 +323,7 @@ namespace dag
             return false;
         }
 
-        virtual void debug(DebugPrinter& printer) const;
+        virtual void debug(dagbase::DebugPrinter& printer) const;
 
         virtual std::ostream& toLua(std::ostream& str);
 

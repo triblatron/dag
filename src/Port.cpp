@@ -6,7 +6,7 @@
 #include "io/OutputStream.h"
 #include "io/InputStream.h"
 #include "NodeLibrary.h"
-#include "DebugPrinter.h"
+#include "util/DebugPrinter.h"
 #include "CloningFacility.h"
 
 namespace dag
@@ -233,7 +233,7 @@ namespace dag
         return str;
     }
 
-    void Port::debug(DebugPrinter &printer) const
+    void Port::debug(dagbase::DebugPrinter& printer) const
     {
         printer.println("id: " + std::to_string(_id));
         printer.println("metaPort:");

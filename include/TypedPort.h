@@ -158,7 +158,7 @@ namespace dag
             return true;
         }
 
-        void debug(DebugPrinter& printer) const override;
+        void debug(dagbase::DebugPrinter& printer) const override;
 
         [[nodiscard]]const char* className() const override
         {
@@ -194,7 +194,7 @@ namespace dag
             };
 
     template<typename T>
-    void TypedPort<T>::debug(DebugPrinter &printer) const
+    void TypedPort<T>::debug(dagbase::DebugPrinter& printer) const
     {
         Port::debug(printer);
     }

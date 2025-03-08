@@ -7,7 +7,7 @@
 #include "MetaPort.h"
 #include "io/InputStream.h"
 #include "io/OutputStream.h"
-#include "DebugPrinter.h"
+#include "util/DebugPrinter.h"
 #include <iostream>
 
 namespace dag
@@ -61,7 +61,7 @@ namespace dag
         return true;
     }
 
-    void MetaPort::debug(DebugPrinter &printer) const
+    void MetaPort::debug(dagbase::DebugPrinter& printer) const
     {
         printer.println("name: " + name);
         printer.println("type: " + std::to_string(type));

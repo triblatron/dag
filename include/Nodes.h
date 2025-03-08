@@ -520,7 +520,7 @@ namespace dag
             return metaPort(index);
         }
 
-        void debug(DebugPrinter& printer) const override;
+        void debug(dagbase::DebugPrinter& printer) const override;
     protected:
         static std::array<MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
