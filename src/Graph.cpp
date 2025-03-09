@@ -256,7 +256,9 @@ namespace dag
 
     dagbase::OutputStream& Graph::write(dagbase::OutputStream& str) const
     {
-        str.write(_nodes.size());
+	    str.writeHeader("Graph");
+	    str.writeField("numNodes");
+        str.writeUInt32(_nodes.size());
         for (auto p : _nodes)
         {
             if (str.writeRef(p.second))
@@ -267,7 +269,8 @@ namespace dag
             }
         }
 
-        str.write(_signalPaths.size());
+	    str.writeField("numSignalPaths");
+        str.writeUInt32(_signalPaths.size());
         for (auto p : _signalPaths)
         {
             if (str.writeRef(p.second))
@@ -275,7 +278,8 @@ namespace dag
                 p.second->write(str);
             }
         }
-        str.write(_children.size());
+	    str.writeField("numChildren");
+        str.writeUInt32(_children.size());
         for (auto child : _children)
         {
             if (str.writeRef(child))
@@ -283,6 +287,7 @@ namespace dag
                 child->write(str);
             }
         }
+	    str.writeFooter();
         return str;
     }
 
@@ -291,8 +296,12 @@ namespace dag
     _nodeLib(&nodeLib)
     {
         str.addObj(this);
-        size_t numNodes=0;
-        str.read(&numNodes);
+	    std::string className;
+	    str.readHeader(&className);
+        std::uint32_t numNodes=0;
+	    std::string fieldName;
+	    str.readField(&fieldName);
+        str.readUInt32(&numNodes);
         if (_nodeLib!=nullptr)
         {
             for (auto i=0; i<numNodes; ++i)
@@ -306,8 +315,9 @@ namespace dag
                 }
             }
         }
-        size_t numSignalPaths=0;
-        str.read(&numSignalPaths);
+        std::uint32_t numSignalPaths=0;
+	    str.readField(&fieldName);
+        str.readUInt32(&numSignalPaths);
         for (auto i=0; i<numSignalPaths; ++i)
         {
             dagbase::Stream::ObjId id = 0;
@@ -329,8 +339,9 @@ namespace dag
                 addSignalPath(p);
             }
         }
-        size_t numChildren = 0;
-        str.read(&numChildren);
+        std::uint32_t numChildren = 0;
+	    str.readField(&fieldName);
+        str.readUInt32(&numChildren);
         for (auto i=0; i<numChildren; ++i)
         {
             dagbase::Stream::ObjId id = 0;
@@ -352,6 +363,7 @@ namespace dag
                 addChild(child);
             }
         }
+	    str.readFooter();
     }
 
     bool Graph::operator==(const Graph &other) const

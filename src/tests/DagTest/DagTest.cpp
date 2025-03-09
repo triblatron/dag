@@ -23,7 +23,9 @@
 #include "FileSystemTraverser.h"
 #include "NodePluginScanner.h"
 #include "CloningFacility.h"
-
+#include "io/MemoryBackingStore.h"
+#include "io/FormatAgnosticOutputStream.h"
+#include "io/FormatAgnosticInputStream.h"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -31,6 +33,8 @@
 
 #include "core/Class.h"
 #include "core/MetaClass.h"
+#include "io/BinaryFormat.h"
+#include "io/TextFormat.h"
 
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dag::PortDirection::Direction, double>>
 {
@@ -1801,18 +1805,43 @@ TEST(MemoryInputStreamTest, testReadLinked)
     delete parent;
 }
 
-TEST(GraphTest, testSerialisationEmptyGraph)
+class Graph_testSerialisationEmptyGraph : public ::testing::TestWithParam<std::tuple<std::string_view>>
 {
+
+};
+
+TEST_P(Graph_testSerialisationEmptyGraph, testRoundTrip)
+{
+    auto formatClassName = std::get<0>(GetParam());
+    dagbase::StreamFormat* format = nullptr;
+    dagbase::MemoryBackingStore store(dagbase::BackingStore::MODE_OUTPUT_BIT);
+    if (formatClassName == "TextFormat")
+    {
+        format = new dagbase::TextFormat(&store);
+    }
+    else if (formatClassName == "BinaryFormat")
+    {
+        format = new dagbase::BinaryFormat(&store);
+    }
+    ASSERT_NE(nullptr, format);
+    format->setMode(dagbase::StreamFormat::MODE_OUTPUT);
     dag::MemoryNodeLibrary nodeLib;
     auto g1 = new dag::Graph();
     g1->setNodeLibrary(&nodeLib);
-    auto buf = new dagbase::ByteBuffer();
-    auto out = new dagbase::MemoryOutputStream(buf);
+
+    auto out = new dagbase::FormatAgnosticOutputStream();
+    out->setFormat(format);
+    out->setBackingStore(&store);
     if (out->writeRef(g1))
     {
         g1->write(*out);
     }
-    auto in = new dagbase::MemoryInputStream(buf);
+    format->flush();
+    auto in = new dagbase::FormatAgnosticInputStream();
+    in->setFormat(format);
+    in->setBackingStore(&store);
+    format->setMode(dagbase::StreamFormat::MODE_INPUT);
+    store.open(dagbase::BackingStore::MODE_INPUT_BIT);
     dagbase::Stream::ObjId id = 0;
     dag::Graph* g2 = nullptr;
     dagbase::Stream::Ref ref = in->readRef(&id);
@@ -1832,9 +1861,13 @@ TEST(GraphTest, testSerialisationEmptyGraph)
     delete g2;
     delete in;
     delete out;
-    delete buf;
     delete g1;
+    delete format;
 }
+
+INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisationEmptyGraph, ::testing::Values(
+    std::make_tuple("TextFormat")
+    ));
 
 TEST(GraphTest, testSerialisationOneNode)
 {
