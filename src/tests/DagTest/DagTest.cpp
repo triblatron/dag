@@ -1805,14 +1805,15 @@ TEST(MemoryInputStreamTest, testReadLinked)
     delete parent;
 }
 
-class Graph_testSerialisationEmptyGraph : public ::testing::TestWithParam<std::tuple<std::string_view>>
+class Graph_testSerialisation : public ::testing::TestWithParam<std::tuple<std::string_view, std::string_view>>
 {
 
 };
 
-TEST_P(Graph_testSerialisationEmptyGraph, testRoundTrip)
+TEST_P(Graph_testSerialisation, testRoundTrip)
 {
     auto formatClassName = std::get<0>(GetParam());
+    auto graphFilename = std::get<1>(GetParam());
     dagbase::StreamFormat* format = nullptr;
     dagbase::MemoryBackingStore store(dagbase::BackingStore::MODE_OUTPUT_BIT);
     if (formatClassName == "TextFormat")
@@ -1826,8 +1827,7 @@ TEST_P(Graph_testSerialisationEmptyGraph, testRoundTrip)
     ASSERT_NE(nullptr, format);
     format->setMode(dagbase::StreamFormat::MODE_OUTPUT);
     dag::MemoryNodeLibrary nodeLib;
-    auto g1 = new dag::Graph();
-    g1->setNodeLibrary(&nodeLib);
+    auto g1 = dag::Graph::fromFile(nodeLib, graphFilename.data());
 
     auto out = new dagbase::FormatAgnosticOutputStream();
     out->setFormat(format);
@@ -1865,8 +1865,8 @@ TEST_P(Graph_testSerialisationEmptyGraph, testRoundTrip)
     delete format;
 }
 
-INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisationEmptyGraph, ::testing::Values(
-    std::make_tuple("TextFormat")
+INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
+    std::make_tuple("TextFormat", "etc/tests/Graph/empty.lua")
     ));
 
 TEST(GraphTest, testSerialisationOneNode)
