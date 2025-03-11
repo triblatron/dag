@@ -83,8 +83,13 @@ namespace dag
             Node(str, nodeLib)
 
     {
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        str.readField(&fieldName);
         dagbase::Stream::ObjId in1Id = 0;
         dagbase::Stream::Ref in1Ref = str.readRef(&in1Id);
+
 
         if (in1Id != 0)
         {
@@ -97,16 +102,19 @@ namespace dag
                 _in1 = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str));
             }
         }
+        str.readFooter();
     }
 
     dagbase::OutputStream &FooTyped::write(dagbase::OutputStream &str) const
     {
+        str.writeHeader("FooTyped");
         Node::write(str);
+        str.writeField("in1");
         if (str.writeRef(_in1))
         {
             _in1->write(str);
         }
-
+        str.writeFooter();
         return str;
     }
 

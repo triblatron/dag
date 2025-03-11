@@ -77,7 +77,7 @@ namespace dag
     Node *MemoryNodeLibrary::instantiateNode(dagbase::InputStream &str)
     {
         std::string className;
-        str.read(&className);
+        str.readString(&className, false);
         if (auto it=_classes.find(className); it!=_classes.end())
         {
             return it->second->create(str, *this);
@@ -116,7 +116,7 @@ namespace dag
     Port *MemoryNodeLibrary::instantiatePort(dagbase::InputStream &str)
     {
         std::string className;
-        str.read(&className);
+        str.readString(&className, false);
         if (className == "ValuePort")
         {
             return new ValuePort(str, *this);
@@ -167,7 +167,7 @@ namespace dag
     dagbase::OutputStream &MemoryNodeLibrary::write(dagbase::OutputStream& str,  Node *node) const
     {
         std::string className = node->className();
-        str.write(className);
+        str.writeString(className, false);
         node->write(str);
         
         return str;

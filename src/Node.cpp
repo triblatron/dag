@@ -78,37 +78,58 @@ namespace dag
 
     dagbase::OutputStream &Node::write(dagbase::OutputStream &str) const
     {
+        str.writeHeader("Node");
+        str.writeField("id");
         str.write(_id);
-        str.write(_name);
+        str.writeField("name");
+        str.writeString(_name, false);
+        str.writeField("category");
         str.write(_category);
+        str.writeField("numDynamicPortDescriptors");
         str.write(_dynamicPortDescriptors.size());
         for (auto const & d : _dynamicPortDescriptors)
         {
+            str.writeField("id");
             str.write(d.id);
-            str.write(d.name);
+            str.writeField("name");
+            str.writeString(d.name, false);
+            str.writeField("direction");
             str.write(d.direction);
         }
+        str.writeField("flags");
         str.write(_flags);
+        str.writeFooter();
 
         return str;
     }
 
     Node::Node(dagbase::InputStream &str, NodeLibrary& nodeLib)
     {
+        std::string className;
+        str.readHeader(&className);
         str.addObj(this);
+        std::string fieldName;
+        str.readField(&fieldName);
         str.read(&_id);
-        str.read(&_name);
+        str.readField(&fieldName);
+        str.readString(&_name, false);
+        str.readField(&fieldName);
         str.read(&_category);
+        str.readField(&fieldName);
         size_t numDescriptors = 0;
         str.read(&numDescriptors);
         for (auto i=0; i<numDescriptors; ++i)
         {
             PortDescriptor d;
+            str.readField(&fieldName);
             str.read(&d.id);
-            str.read(&d.name);
+            str.readField(&fieldName);
+            str.readString(&d.name, false);
+            str.readField(&fieldName);
             str.read(&d.direction);
             _dynamicPortDescriptors.push_back(d);
         }
+        str.readField(&fieldName);
         str.read(&_flags);
     }
 

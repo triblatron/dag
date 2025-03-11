@@ -18,14 +18,14 @@ namespace dag
     direction(PortDirection::DIR_UNKNOWN)
     {
         str.addObj(this);
-        str.read(&name);
+        str.readString(&name, false);
         str.read(&type);
         str.read(&direction);
     }
 
     dagbase::OutputStream& MetaPort::write(dagbase::OutputStream& str) const
     {
-        str.write(name);
+        str.writeString(name, false);
         str.write(type);
         str.write(direction);
 
@@ -34,7 +34,7 @@ namespace dag
 
     dagbase::InputStream &MetaPort::read(dagbase::InputStream &str)
     {
-        str.read(&name);
+        str.readString(&name, false);
         str.read(&type);
         str.read(&direction);
 

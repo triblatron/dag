@@ -56,6 +56,10 @@ namespace dag
         :
         Port(str, nodeLib)
         {
+        	std::string className;
+        	std::string fieldName;
+        	str.readHeader(&className);
+        	str.readField(&fieldName);
             str.read(&_value);
         }
 
@@ -81,9 +85,13 @@ namespace dag
                     assert(false);
                     break;
             }
-            str.write(className);
+        	str.writeHeader(className);
+        	str.writeField("className");
+            str.writeString(className, false);
             Port::write(str);
+        	str.writeField("value");
             str.write(_value);
+			str.writeFooter();
 
             return str;
         }

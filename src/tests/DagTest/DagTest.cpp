@@ -1805,7 +1805,7 @@ TEST(MemoryInputStreamTest, testReadLinked)
     delete parent;
 }
 
-class Graph_testSerialisation : public ::testing::TestWithParam<std::tuple<std::string_view, std::string_view>>
+class Graph_testSerialisation : public ::testing::TestWithParam<std::tuple<std::string_view, const char*>>
 {
 
 };
@@ -1827,7 +1827,7 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
     ASSERT_NE(nullptr, format);
     format->setMode(dagbase::StreamFormat::MODE_OUTPUT);
     dag::MemoryNodeLibrary nodeLib;
-    auto g1 = dag::Graph::fromFile(nodeLib, graphFilename.data());
+    auto g1 = dag::Graph::fromFile(nodeLib, graphFilename);
 
     auto out = new dagbase::FormatAgnosticOutputStream();
     out->setFormat(format);
@@ -1866,7 +1866,8 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
 }
 
 INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
-    std::make_tuple("TextFormat", "etc/tests/Graph/empty.lua")
+    std::make_tuple("TextFormat", "etc/tests/Graph/empty.lua"),
+    std::make_tuple("TextFormat", "etc/tests/Graph/onenode.lua")
     ));
 
 TEST(GraphTest, testSerialisationOneNode)
@@ -1953,10 +1954,10 @@ TEST(MemoryOutputStreamTest, testWriteString)
     dagbase::ByteBuffer buf;
     auto str = new dagbase::MemoryOutputStream(&buf);
     std::string expected="test";
-    str->write(expected);
+    str->writeString(expected, false);
     auto sut = new dagbase::MemoryInputStream(&buf);
     std::string actual;
-    sut->read(&actual);
+    sut->readString(&actual, false);
     ASSERT_EQ(expected, actual);
     delete sut;
     delete str;

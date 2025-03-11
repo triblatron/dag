@@ -181,21 +181,26 @@ namespace dag
 
     dagbase::OutputStream &Port::write(dagbase::OutputStream &str) const
     {
+        str.writeHeader("Port");
+        str.writeField("id");
         str.write(_id);
 
+        str.writeField("metaPort");
         if (str.writeRef(_metaPort))
         {
             _metaPort->write(str);
         }
 
+        str.writeField("parent");
         if (str.writeRef(_parent))
         {
             std::string className = _parent->className();
-            str.write(className);
+            str.writeString(className, false);
             _parent->write(str);
         }
-
-        str.write(_outgoingConnections.size());
+        str.writeField("numOutgoingConnections");
+        str.writeUInt32(_outgoingConnections.size());
+        str.writeField("outgoingConnections");
         for (auto c: _outgoingConnections)
         {
             if (str.writeRef(c))
@@ -204,7 +209,9 @@ namespace dag
             }
         }
 
-        str.write(_incomingConnections.size());
+        str.writeField("numIncomingConnections");
+        str.writeUInt32(_incomingConnections.size());
+        str.writeField("incomingConnections");
         for (auto c : _incomingConnections)
         {
             if (str.writeRef(c))
@@ -212,7 +219,7 @@ namespace dag
                 c->write(str);
             }
         }
-
+        str.writeFooter();
         return str;
     }
 
@@ -263,15 +270,22 @@ namespace dag
     _metaPort(nullptr),
     _parent(nullptr)
     {
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        str.readField(&fieldName);
         str.addObj(this);
         str.read(&_id);
         dagbase::Stream::ObjId metaPortId = 0;
+        str.readField(&fieldName);
         _metaPort = str.readRef<MetaPort>(&metaPortId);
         setOwnMetaPort(true);
 //        dagbase::Stream::ObjId parentId = 0;
+        str.readField(&fieldName);
         _parent = str.readRef<Node>("Node", nodeLib);
-        size_t numOutgoingConnections = 0;
-        str.read(&numOutgoingConnections);
+        std::uint32_t numOutgoingConnections = 0;
+        str.readField(&fieldName);
+        str.readUInt32(&numOutgoingConnections);
         for (auto i=0; i<numOutgoingConnections; ++i)
         {
             Port* port = str.readRef<Port>("Port",nodeLib);
@@ -280,8 +294,9 @@ namespace dag
                 addOutgoingConnection(port);
             }
         }
-        std::size_t numIncomingConnections = 0;
-        str.read(&numIncomingConnections);
+        std::uint32_t numIncomingConnections = 0;
+        str.readField(&fieldName);
+        str.readUInt32(&numIncomingConnections);
         for (auto i=0; i<numIncomingConnections; ++i)
         {
             Port* port = str.readRef<Port>("Port",nodeLib);
@@ -400,7 +415,7 @@ namespace dag
             case PortType::TYPE_STRING:
             {
                 std::string value;
-                str.read(&value);
+                str.readString(&value, false);
                 _value = value;
             }
             case PortType::TYPE_BOOL:
@@ -461,7 +476,7 @@ namespace dag
             case PortType::TYPE_STRING:
             {
                 std::string value;
-                str.read(&value);
+                str.readString(&value, false);
                 _value = value;
             }
             case PortType::TYPE_BOOL:
