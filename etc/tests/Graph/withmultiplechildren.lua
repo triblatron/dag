@@ -57,7 +57,7 @@ graph=
 					{
 						{
 							name="foo",
-							class="TypedPort<double>",
+							class="TypedPort<bool>",
 							direction="DIR_OUT",
 							type="TYPE_BOOL",
 							value=true

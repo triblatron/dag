@@ -196,7 +196,7 @@ namespace dag
         {
             std::string className = _parent->className();
             str.writeField("className");
-            str.writeString(className, false);
+            str.writeString(className, true);
             _parent->write(str);
         }
         str.writeField("numOutgoingConnections");
@@ -316,7 +316,7 @@ namespace dag
             }
 
         }
-
+        str.readFooter();
         return str;
     }
 

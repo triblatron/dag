@@ -190,8 +190,13 @@ namespace dag
 
     BarTyped::BarTyped(dagbase::InputStream &str, NodeLibrary &nodeLib)
             :
-            Node(str, nodeLib)
+            Node()
     {
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        Node::readFromStream(str, nodeLib);
+        str.readField(&fieldName);
         dagbase::Stream::ObjId out1Id = 0;
         dagbase::Stream::Ref out1Ref = str.readRef(&out1Id);
 
@@ -206,16 +211,19 @@ namespace dag
                 _out1 = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str));
             }
         }
+        str.readFooter();
     }
 
     dagbase::OutputStream &BarTyped::write(dagbase::OutputStream &str) const
     {
+        str.writeHeader("BarTyped");
         Node::write(str);
+        str.writeField("out1");
         if (str.writeRef(_out1))
         {
             _out1->write(str);
         }
-
+        str.writeFooter();
         return str;
     }
 

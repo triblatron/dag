@@ -16,16 +16,22 @@ namespace dag
 
     dagbase::OutputStream &SignalPath::write(dagbase::OutputStream &str) const
     {
-        str.write(_id);
+        str.writeHeader("SignalPath");
+        str.writeField("id");
+        str.writeInt64(_id);
+        str.writeField("source");
         if (str.writeRef(_source))
         {
             _source->write(str);
         }
+        str.writeField("dest");
         if (str.writeRef(_dest))
         {
             _dest->write(str);
         }
+        str.writeField("flags");
         str.writeUInt32(_flags);
+        str.writeFooter();
 
         return str;
     }
@@ -37,11 +43,20 @@ namespace dag
     _dest(nullptr),
     _flags(0x0)
     {
-        str.read(&_id);
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        str.readField(&fieldName);
+        std::int64_t id{0};
+        str.read(&id);
+        _id = id;
+        str.readField(&fieldName);
         _source = str.readRef<Port>("Port", nodeLib);
+        str.readField(&fieldName);
         _dest = str.readRef<Port>("Port", nodeLib);
-
-        str.read(&_flags);
+        str.readField(&fieldName);
+        str.readUInt32(&_flags);
+        str.readFooter();
     }
 
     std::ostream &SignalPath::toLua(std::ostream &str)

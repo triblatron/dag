@@ -532,6 +532,7 @@ namespace dag
     class DAG_API BarTyped : public Node
     {
     public:
+        BarTyped() = default;
         BarTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
                 :
                 Node(keyGen, name, category)

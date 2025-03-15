@@ -61,6 +61,11 @@ namespace dag
         	str.readField(&fieldName);
         	dagbase::ConfigurationElement::ValueType configValue(_value);
             str.read(&configValue);
+        	if (configValue.has_value())
+        	{
+        		_value = std::get<T>(configValue.value());
+        	}
+        	str.readFooter();
         }
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override

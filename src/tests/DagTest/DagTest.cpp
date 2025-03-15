@@ -1837,6 +1837,7 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
         g1->write(*out);
     }
     format->flush();
+    format->debug();
     auto in = new dagbase::FormatAgnosticInputStream();
     in->setFormat(format);
     in->setBackingStore(&store);
@@ -1869,7 +1870,9 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
     std::make_tuple("TextFormat", "etc/tests/Graph/empty.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/empty.lua"),
     std::make_tuple("TextFormat", "etc/tests/Graph/onenode.lua"),
-    std::make_tuple("BinaryFormat", "etc/tests/Graph/onenode.lua")
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/onenode.lua"),
+    std::make_tuple("TextFormat", "etc/tests/Graph/connectednodes.lua"),
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/connectednodes.lua")
     ));
 
 TEST(GraphTest, testSerialisationOneNode)
