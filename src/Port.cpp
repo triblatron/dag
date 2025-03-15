@@ -294,6 +294,7 @@ namespace dag
         std::uint32_t numOutgoingConnections = 0;
         str.readField(&fieldName);
         str.readUInt32(&numOutgoingConnections);
+        str.readField(&fieldName);
         for (auto i=0; i<numOutgoingConnections; ++i)
         {
             Port* port = str.readRef<Port>("Port",nodeLib);
@@ -305,6 +306,7 @@ namespace dag
         std::uint32_t numIncomingConnections = 0;
         str.readField(&fieldName);
         str.readUInt32(&numIncomingConnections);
+        str.readField(&fieldName);
         for (auto i=0; i<numIncomingConnections; ++i)
         {
             Port* port = str.readRef<Port>("Port",nodeLib);

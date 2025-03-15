@@ -1867,7 +1867,9 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
 
 INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
     std::make_tuple("TextFormat", "etc/tests/Graph/empty.lua"),
-    std::make_tuple("TextFormat", "etc/tests/Graph/onenode.lua")
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/empty.lua"),
+    std::make_tuple("TextFormat", "etc/tests/Graph/onenode.lua"),
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/onenode.lua")
     ));
 
 TEST(GraphTest, testSerialisationOneNode)
