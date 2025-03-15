@@ -264,7 +264,8 @@ namespace dag
             if (str.writeRef(p.second))
             {
                 std::string className = p.second->className();
-                str.writeString(className, false);
+                str.writeField("className");
+                str.writeString(className, true);
                 p.second->write(str);
             }
         }

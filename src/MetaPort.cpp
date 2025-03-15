@@ -17,26 +17,54 @@ namespace dag
     type(PortType::TYPE_UNKNOWN),
     direction(PortDirection::DIR_UNKNOWN)
     {
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+
         str.addObj(this);
-        str.readString(&name, false);
-        str.read(&type);
-        str.read(&direction);
+        str.readField(&fieldName);
+        str.readString(&name, true);
+        std::uint32_t rawType{0};
+        str.readField(&fieldName);
+        str.readUInt32(&rawType);
+        str.readField(&fieldName);
+        type = static_cast<PortType::Type>(rawType);
+        std::uint32_t rawDirection{0};
+        str.readUInt32(&rawDirection);
+        direction = static_cast<PortDirection::Direction>(rawDirection);
+        str.readFooter();
     }
 
     dagbase::OutputStream& MetaPort::write(dagbase::OutputStream& str) const
     {
-        str.writeString(name, false);
-        str.write(type);
-        str.write(direction);
+        str.writeHeader("MetaPort");
+        str.writeField("name");
+        str.writeString(name, true);
+        str.writeField("type");
+        str.writeUInt32(type);
+        str.writeField("direction");
+        str.writeUInt32(direction);
+        str.writeFooter();
 
         return str;
     }
 
     dagbase::InputStream &MetaPort::read(dagbase::InputStream &str)
     {
-        str.readString(&name, false);
-        str.read(&type);
-        str.read(&direction);
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        str.readField(&fieldName);
+        str.readString(&name, true);
+        std::uint32_t rawType{0};
+        str.readField(&fieldName);
+        str.readUInt32(&rawType);
+        type = static_cast<PortType::Type>(rawType);
+        std::uint32_t rawDirection{0};
+        str.readField(&fieldName);
+        str.readUInt32(&rawDirection);
+        direction = static_cast<PortDirection::Direction>(rawDirection);
+        str.readFooter();
 
         return str;
     }

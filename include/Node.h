@@ -35,6 +35,8 @@ namespace dag
 			NODE_INTERNAL_BIT	= 1<<2
 		};
 	public:
+		Node() = default;
+
 		explicit Node(KeyGenerator& keyGen, std::string name, NodeCategory::Category category=NodeCategory::CAT_NONE);
 
         explicit Node(dagbase::InputStream& str, NodeLibrary& nodeLib);
@@ -48,6 +50,8 @@ namespace dag
 		Node& operator=(const Node&) = default;
 
 		Node& operator=(Node&&) = default;
+
+		dagbase::InputStream& readFromStream(dagbase::InputStream& str, dag::NodeLibrary& nodeLib);
 
         //! Compare for equality with another Node.
         //! \note Typically downcasts to a concrete type to determine a result.

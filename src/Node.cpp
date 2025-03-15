@@ -80,13 +80,13 @@ namespace dag
     {
         str.writeHeader("Node");
         str.writeField("id");
-        str.write(_id);
+        str.writeInt64(_id);
         str.writeField("name");
-        str.writeString(_name, false);
+        str.writeString(_name, true);
         str.writeField("category");
-        str.write(_category);
+        str.writeUInt32(_category);
         str.writeField("numDynamicPortDescriptors");
-        str.write(_dynamicPortDescriptors.size());
+        str.writeUInt32(_dynamicPortDescriptors.size());
         for (auto const & d : _dynamicPortDescriptors)
         {
             str.writeField("id");
@@ -97,7 +97,7 @@ namespace dag
             str.write(d.direction);
         }
         str.writeField("flags");
-        str.write(_flags);
+        str.writeUInt32(_flags);
         str.writeFooter();
 
         return str;
@@ -105,32 +105,49 @@ namespace dag
 
     Node::Node(dagbase::InputStream &str, NodeLibrary& nodeLib)
     {
+        Node::readFromStream(str, nodeLib);
+    }
+
+    dagbase::InputStream& Node::readFromStream(dagbase::InputStream& str, dag::NodeLibrary& nodeLib)
+    {
         std::string className;
         str.readHeader(&className);
         str.addObj(this);
         std::string fieldName;
         str.readField(&fieldName);
-        str.read(&_id);
+        std::int64_t id{0};
+        str.readInt64(&id);
+        _id = id;
         str.readField(&fieldName);
-        str.readString(&_name, false);
+        str.readString(&_name, true);
         str.readField(&fieldName);
-        str.read(&_category);
+        std::uint32_t category{0};
+        str.readUInt32(&category);
+        _category = static_cast<NodeCategory::Category>(category);
         str.readField(&fieldName);
-        size_t numDescriptors = 0;
-        str.read(&numDescriptors);
+        std::uint32_t numDescriptors = 0;
+        str.readUInt32(&numDescriptors);
         for (auto i=0; i<numDescriptors; ++i)
         {
             PortDescriptor d;
             str.readField(&fieldName);
-            str.read(&d.id);
+            std::uint32_t portId{0};
+            str.readUInt32(&portId);
+            d.id = portId;
             str.readField(&fieldName);
             str.readString(&d.name, false);
             str.readField(&fieldName);
-            str.read(&d.direction);
+            std::uint32_t direction;
+            str.read(&direction);
+            d.direction = static_cast<PortDirection::Direction>(direction);
             _dynamicPortDescriptors.push_back(d);
         }
         str.readField(&fieldName);
-        str.read(&_flags);
+        std::uint32_t flags{0};
+        str.readUInt32(&flags);
+        _flags = static_cast<Node::NodeFlags>(flags);
+        str.readFooter();
+        return str;
     }
 
     bool Node::operator==(const Node &other) const

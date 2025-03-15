@@ -53,14 +53,14 @@ namespace dag
         }
 
         explicit TypedPort(dagbase::InputStream& str, NodeLibrary& nodeLib)
-        :
-        Port(str, nodeLib)
         {
         	std::string className;
         	std::string fieldName;
         	str.readHeader(&className);
+        	Port::readFromStream(str, nodeLib);
         	str.readField(&fieldName);
-            str.read(&_value);
+        	dagbase::ConfigurationElement::ValueType configValue(_value);
+            str.read(&configValue);
         }
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override
@@ -85,13 +85,13 @@ namespace dag
                     assert(false);
                     break;
             }
-        	str.writeHeader(className);
         	str.writeField("className");
-            str.writeString(className, false);
+        	str.writeString(className, true);
+        	str.writeHeader(className);
             Port::write(str);
         	str.writeField("value");
-            str.write(_value);
-			str.writeFooter();
+        	str.write(dagbase::ConfigurationElement::ValueType(_value));
+        	str.writeFooter();
 
             return str;
         }

@@ -80,12 +80,13 @@ namespace dag
 
     FooTyped::FooTyped(dagbase::InputStream &str, NodeLibrary &nodeLib)
             :
-            Node(str, nodeLib)
+            Node()
 
     {
         std::string className;
         std::string fieldName;
         str.readHeader(&className);
+        Node::readFromStream(str, nodeLib);
         str.readField(&fieldName);
         dagbase::Stream::ObjId in1Id = 0;
         dagbase::Stream::Ref in1Ref = str.readRef(&in1Id);

@@ -183,7 +183,7 @@ namespace dag
     {
         str.writeHeader("Port");
         str.writeField("id");
-        str.write(_id);
+        str.writeInt64(_id);
 
         str.writeField("metaPort");
         if (str.writeRef(_metaPort))
@@ -195,6 +195,7 @@ namespace dag
         if (str.writeRef(_parent))
         {
             std::string className = _parent->className();
+            str.writeField("className");
             str.writeString(className, false);
             _parent->write(str);
         }
@@ -270,17 +271,24 @@ namespace dag
     _metaPort(nullptr),
     _parent(nullptr)
     {
+        readFromStream(str, nodeLib);
+    }
+
+    dagbase::InputStream& Port::readFromStream(dagbase::InputStream& str, NodeLibrary& nodeLib)
+    {
         std::string className;
         std::string fieldName;
         str.readHeader(&className);
         str.readField(&fieldName);
         str.addObj(this);
-        str.read(&_id);
+        std::int64_t id{0};
+        str.readInt64(&id);
+        _id = id;
         dagbase::Stream::ObjId metaPortId = 0;
         str.readField(&fieldName);
         _metaPort = str.readRef<MetaPort>(&metaPortId);
         setOwnMetaPort(true);
-//        dagbase::Stream::ObjId parentId = 0;
+        //        dagbase::Stream::ObjId parentId = 0;
         str.readField(&fieldName);
         _parent = str.readRef<Node>("Node", nodeLib);
         std::uint32_t numOutgoingConnections = 0;
@@ -306,6 +314,8 @@ namespace dag
             }
 
         }
+
+        return str;
     }
 
     bool Port::operator==(const Port &other) const

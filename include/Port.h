@@ -103,6 +103,8 @@ namespace dag
             OWN_OUTPUTS_BIT     = (1<<2)
         };
     public:
+	    Port() = default;
+
         explicit Port(PortID id, Node* parent, MetaPort *metaPort, std::uint32_t flags=0x0);
 
         Port(const Port &port, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
@@ -112,6 +114,8 @@ namespace dag
         //! Construct from a stream and a node library.
         //! \note Requires the NodeLibrary to read the parent.
         Port(dagbase::InputStream& str, NodeLibrary& nodeLib);
+
+	    dagbase::InputStream& readFromStream(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
         virtual ~Port();
 
