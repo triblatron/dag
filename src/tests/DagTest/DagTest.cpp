@@ -1877,7 +1877,9 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
     std::make_tuple("TextFormat", "etc/tests/Graph/withchildgraph.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/withchildgraph.lua"),
     std::make_tuple("TextFormat", "etc/tests/Graph/withmultiplechildren.lua"),
-    std::make_tuple("BinaryFormat", "etc/tests/Graph/withmultiplechildren.lua")
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/withmultiplechildren.lua"),
+    std::make_tuple("TextFormat", "etc/tests/Graph/withnestedchildgraph.lua"),
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/withnestedchildgraph.lua")
     ));
 
 TEST(GraphTest, testSerialisationOneNode)
