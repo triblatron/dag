@@ -50,22 +50,31 @@ namespace dag
 
     Boundary::Boundary(dagbase::InputStream &str, NodeLibrary &nodeLib)
     :
-    Node(str, nodeLib)
+    Node()
     {
-        size_t numDynamicMetaPorts = 0;
-        str.read(&numDynamicMetaPorts);
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        Node::readFromStream(str, nodeLib);
+        std::uint32_t numDynamicMetaPorts = 0;
+        str.readField(&fieldName);
+        str.readUInt32(&numDynamicMetaPorts);
         _dynamicMetaPorts.resize(numDynamicMetaPorts);
+        str.readField(&fieldName);
         for (auto i=0; i<numDynamicMetaPorts; ++i)
         {
             _dynamicMetaPorts[i].read(str);
         }
-        size_t numDynamicPorts = 0;
-        str.read(&numDynamicPorts);
+        std::uint32_t numDynamicPorts = 0;
+        str.readField(&fieldName);
+        str.readUInt32(&numDynamicPorts);
         _dynamicPorts.resize(numDynamicPorts);
+        str.readField(&fieldName);
         for (auto i=0; i<numDynamicPorts; ++i)
         {
             _dynamicPorts[i] = nodeLib.instantiatePort(str);
         }
+        str.readFooter();
     }
 
     Boundary *Boundary::create(dagbase::InputStream &str, NodeLibrary &nodeLib)
@@ -75,17 +84,23 @@ namespace dag
 
     dagbase::OutputStream &Boundary::write(dagbase::OutputStream &str) const
     {
+        str.writeHeader("Boundary");
         Node::write(str);
-        str.write(_dynamicMetaPorts.size());
+        str.writeField("numDynamicMetaPorts");
+        str.writeUInt32(_dynamicMetaPorts.size());
+        str.writeField("dynamicMetaPorts");
         for (auto const & p : _dynamicMetaPorts)
         {
             p.write(str);
         }
-        str.write(_dynamicPorts.size());
+        str.writeField("numDynamicPorts");
+        str.writeUInt32(_dynamicPorts.size());
+        str.writeField("dynamicPorts");
         for (auto p : _dynamicPorts)
         {
             p->write(str);
         }
+        str.writeFooter();
         return str;
     }
 

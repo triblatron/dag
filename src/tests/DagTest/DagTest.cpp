@@ -1858,6 +1858,7 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
         }
     }
 
+    ASSERT_NE(nullptr, g2);
     ASSERT_EQ(*g1, *g2);
     delete g2;
     delete in;
@@ -1872,7 +1873,11 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
     std::make_tuple("TextFormat", "etc/tests/Graph/onenode.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/onenode.lua"),
     std::make_tuple("TextFormat", "etc/tests/Graph/connectednodes.lua"),
-    std::make_tuple("BinaryFormat", "etc/tests/Graph/connectednodes.lua")
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/connectednodes.lua"),
+    std::make_tuple("TextFormat", "etc/tests/Graph/withchildgraph.lua"),
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/withchildgraph.lua"),
+    std::make_tuple("TextFormat", "etc/tests/Graph/withmultiplechildren.lua"),
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/withmultiplechildren.lua")
     ));
 
 TEST(GraphTest, testSerialisationOneNode)
