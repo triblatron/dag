@@ -38,7 +38,7 @@ graph=
 							name="out1",
 							class="TypedPort<double>",
 							direction="DIR_OUT",
-							type="TYPE_DOUBLE",
+							type="TYPE_DOUBLE",	
 							value=3.0
 						}
 					}					
@@ -61,9 +61,16 @@ graph=
 							direction="DIR_OUT",
 							type="TYPE_BOOL",
 							value=true
+						},
+						{
+							name="bar",
+							class="TypedPort<int64_t>",
+							direction="DIR_IN",
+							type="TYPE_INT",
+							value=1
 						}
 					}					
-				}
+				},
 			}
 		}
 	}
