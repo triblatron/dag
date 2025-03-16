@@ -8,13 +8,11 @@
 
 #include <string>
 #include <type_traits>
-#include <utility>
 #include <vector>
 #include <algorithm>
 #include <functional>
 #include "MetaPort.h"
 #include "Types.h"
-#include "MetaPort.h"
 #include "NodeLibrary.h"
 
 namespace dagbase
@@ -28,6 +26,7 @@ namespace dag
     class CloningFacility;
     class DebugPrinter;
     class KeyGenerator;
+    struct MetaPort;
     class Node;
 	class Transfer;
 
@@ -117,7 +116,7 @@ namespace dag
 
 	    dagbase::InputStream& readFromStream(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
-        virtual ~Port();
+	    ~Port() override;
 
         bool operator==(const Port& other) const;
         
@@ -331,7 +330,10 @@ namespace dag
 
         virtual std::ostream& toLua(std::ostream& str);
 
-        [[nodiscard]]virtual const char* className() const = 0;
+        [[nodiscard]]const char* className() const override
+        {
+            return "Port";
+        }
     protected:
 		PortArray _outgoingConnections;
 		PortArray _incomingConnections;
@@ -503,6 +505,9 @@ namespace dag
                 case 3:
                     visitor.setBool(std::get<3>(_value));
                     break;
+                default:
+                    // Do nothing.
+                    break;
             }
         }
 
@@ -522,6 +527,9 @@ namespace dag
                 case 3:
                     _value = bool(visitor.value());
                     break;
+                default:
+                    // Do nothing.
+                        break;
             }
         }
 
