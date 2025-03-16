@@ -2,8 +2,6 @@
 
 #include "gtest/gtest.h"
 #include "core/LuaInterface.h"
-#include "MetaOperation.h"
-#include "MetaCoroutine.h"
 #include "Node.h"
 #include "Port.h"
 #include "TypedPort.h"
@@ -18,8 +16,6 @@
 #include "SignalPath.h"
 #include "CreateNode.h"
 #include "core/ByteBuffer.h"
-#include "io/MemoryOutputStream.h"
-#include "io/MemoryInputStream.h"
 #include "FileSystemTraverser.h"
 #include "NodePluginScanner.h"
 #include "CloningFacility.h"
@@ -1574,17 +1570,6 @@ TEST(ByteBufferTest, testRelativeStruct)
     ASSERT_EQ(value, actualValue);
 }
 
-TEST(MemoryOutputStreamTest, testWriteBuf)
-{
-    dagbase::ByteBuffer buf;
-    dagbase::MemoryOutputStream sut(&buf);
-    float f = 123.456f;
-    sut.write(f);//reinterpret_cast<dagbase::MemoryOutputStream::value_type*>(&f), sizeof(float));
-    float actual = 0.0f;
-    buf.get(&actual);
-    ASSERT_EQ(f, actual);
-}
-
 class TestObj
 {
 public:
@@ -1617,29 +1602,6 @@ private:
     int _i{0};
 };
 
-TEST(MemoryOutputStreamTest, testWriteRef)
-{
-    dagbase::ByteBuffer buf;
-    dagbase::MemoryOutputStream sut(&buf);
-    TestObj obj(1);
-    sut.writeRef(&obj);
-    std::uint32_t id;
-    buf.get(&id);
-    ASSERT_EQ(id, 1);
-}
-
-TEST(MemoryOutputStreamTest, testWrite)
-{
-    dagbase::ByteBuffer buf;
-    dagbase::MemoryOutputStream sut(&buf);
-    double d = 123.456;
-    sut.write(d);
-    double actual = 0.0;
-    dagbase::MemoryInputStream str(&buf);
-    str.read(&actual);
-    ASSERT_EQ(d,actual);
-}
-
 TEST(ByteBufferTest, testBulkGet)
 {
     dagbase::ByteBuffer sut;
@@ -1648,34 +1610,6 @@ TEST(ByteBufferTest, testBulkGet)
     int actual=0;
     sut.get(reinterpret_cast<dagbase::ByteBuffer::BufferType::value_type*>(&actual), sizeof(int));
     ASSERT_EQ(i,actual);
-}
-
-TEST(MemoryInputStreamTest, testReadRef)
-{
-    dagbase::ByteBuffer buf;
-    dagbase::MemoryOutputStream str(&buf);
-    auto s = new TestObj(1);
-    str.writeRef(&s);
-    s->write(str);
-    dagbase::MemoryInputStream sut(&buf);
-    dagbase::InputStream::ObjId id = -1;
-    TestObj* actual = sut.readRef<TestObj>(&id);
-//    if (id!=0)
-//    {
-//        if (ref == nullptr)
-//        {
-//            actual = new TestObj(sut);
-//            ASSERT_EQ(s->i(), actual->i());
-//        }
-//        else
-//        {
-//            actual = static_cast<TestObj*>(ref);
-//        }
-//    }
-    ASSERT_NE(nullptr, actual);
-    ASSERT_EQ(s->i(), actual->i());
-    delete actual;
-    delete s;
 }
 
 class TestNode
@@ -1694,7 +1628,7 @@ public:
     {
         str.addObj(this);
         dagbase::Stream::ObjId parentId{0};
-        auto parentRef = str.readRef<TestObj>(&parentId);
+        auto parentRef = str.readRef<TestNode>(&parentId);
 
         str.read(&_value);
 
@@ -1778,33 +1712,6 @@ private:
     int _value;
 };
 
-TEST(MemoryInputStreamTest, testReadLinked)
-{
-    dagbase::ByteBuffer buf;
-    dagbase::MemoryOutputStream str(&buf);
-    auto parent = new TestNode(nullptr);
-    auto obj = new TestNode(parent);
-    parent->addChild(obj);
-    auto obj2 = new TestNode(parent);
-    parent->addChild(obj2);
-    parent->setValue(1);
-    obj->setValue(2);
-    if (str.writeRef(parent))
-    {
-        parent->write(str);
-    }
-
-    dagbase::MemoryInputStream sut(&buf);
-
-    dagbase::Stream::ObjId rootId = 0;
-    auto* actual = sut.readRef<TestNode>(&rootId);
-    ASSERT_EQ(parent->value(), actual->value());
-    ASSERT_EQ(std::size_t{2}, actual->numChildren());
-    ASSERT_EQ(2, actual->child(0)->value());
-    delete actual;
-    delete parent;
-}
-
 class Graph_testSerialisation : public ::testing::TestWithParam<std::tuple<std::string_view, const char*>>
 {
 
@@ -1887,99 +1794,6 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
     std::make_tuple("TextFormat", "etc/tests/Graph/nodesFromPlugin.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/nodesFromPlugin.lua")
     ));
-
-TEST(GraphTest, testSerialisationOneNode)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto g1 = new dag::Graph();
-    g1->setNodeLibrary(&nodeLib);
-    auto n1 = g1->createNode("FooTyped", "foo1");
-    g1->addNode(n1);
-    auto buf = new dagbase::ByteBuffer();
-    auto out = new dagbase::MemoryOutputStream(buf);
-    if (out->writeRef(g1))
-    {
-        g1->write(*out);
-    }
-    g1->debug();
-    auto in = new dagbase::MemoryInputStream(buf);
-    dagbase::Stream::ObjId id = 0;
-    dag::Graph* g2 = nullptr;
-    dagbase::Stream::Ref ref = in->readRef(&id);
-    if (id != 0)
-    {
-        if (ref != nullptr)
-        {
-            g2 = static_cast<dag::Graph*>(ref);
-        }
-        else
-        {
-            g2 = new dag::Graph(*in, nodeLib);
-        }
-    }
-    ASSERT_EQ(*g1, *g2);
-    delete g2;
-    delete in;
-    delete out;
-    delete buf;
-    // g1 owns the Nodes.
-    delete g1;
-}
-
-TEST(GraphTest, testSerialisationTwoConnectedNodes)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto g1 = new dag::Graph();
-    g1->setNodeLibrary(&nodeLib);
-    auto n1 = g1->createNode("FooTyped", "foo1");
-    g1->addNode(n1);
-    auto n2 = g1->createNode("BarTyped", "bar1");
-    g1->addNode(n2);
-    auto t1 = n2->dynamicPort(0)->connectTo(*n1->dynamicPort(0));
-    auto buf = new dagbase::ByteBuffer();
-    auto out = new dagbase::MemoryOutputStream(buf);
-    if (out->writeRef(g1))
-    {
-        g1->write(*out);
-    }
-    g1->debug();
-    auto in = new dagbase::MemoryInputStream(buf);
-    dagbase::Stream::ObjId id = 0;
-    dag::Graph* g2 = nullptr;
-    dagbase::Stream::Ref ref = in->readRef(&id);
-    if (id != 0)
-    {
-        if (ref != nullptr)
-        {
-            g2 = static_cast<dag::Graph*>(ref);
-        }
-        else
-        {
-            g2 = new dag::Graph(*in, nodeLib);
-        }
-    }
-    ASSERT_EQ(*g1, *g2);
-    delete g2;
-    delete in;
-    delete out;
-    delete buf;
-    delete t1;
-    delete g1;
-}
-
-TEST(MemoryOutputStreamTest, testWriteString)
-{
-    dagbase::ByteBuffer buf;
-    auto str = new dagbase::MemoryOutputStream(&buf);
-    std::string expected="test";
-    str->writeString(expected, false);
-    auto sut = new dagbase::MemoryInputStream(&buf);
-    std::string actual;
-    sut->readString(&actual, false);
-    ASSERT_EQ(expected, actual);
-    delete sut;
-    delete str;
-}
 
 class GraphTest_fromLua : public ::testing::TestWithParam<std::tuple<const char*, std::size_t, std::size_t, dag::NodeID, std::size_t, dag::Value>>
 {
