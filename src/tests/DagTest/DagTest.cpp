@@ -1826,7 +1826,11 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
     }
     ASSERT_NE(nullptr, format);
     format->setMode(dagbase::StreamFormat::MODE_OUTPUT);
+    dag::NodePluginScanner scanner;
     dag::MemoryNodeLibrary nodeLib;
+
+    scanner.scan(nodeLib, nodeLib);
+
     auto g1 = dag::Graph::fromFile(nodeLib, graphFilename);
 
     auto out = new dagbase::FormatAgnosticOutputStream();
@@ -1879,7 +1883,9 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
     std::make_tuple("TextFormat", "etc/tests/Graph/withmultiplechildren.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/withmultiplechildren.lua"),
     std::make_tuple("TextFormat", "etc/tests/Graph/withnestedchildgraph.lua"),
-    std::make_tuple("BinaryFormat", "etc/tests/Graph/withnestedchildgraph.lua")
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/withnestedchildgraph.lua"),
+    std::make_tuple("TextFormat", "etc/tests/Graph/nodesFromPlugin.lua"),
+    std::make_tuple("BinaryFormat", "etc/tests/Graph/nodesFromPlugin.lua")
     ));
 
 TEST(GraphTest, testSerialisationOneNode)
