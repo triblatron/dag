@@ -1833,20 +1833,14 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
 
     auto g1 = dag::Graph::fromFile(nodeLib, graphFilename);
 
-    auto out = new dagbase::FormatAgnosticOutputStream();
-    out->setFormat(format);
-    out->setBackingStore(&store);
+    auto out = new dagbase::FormatAgnosticOutputStream(format,&store);
     if (out->writeRef(g1))
     {
         g1->write(*out);
     }
     format->flush();
     format->debug();
-    auto in = new dagbase::FormatAgnosticInputStream();
-    in->setFormat(format);
-    in->setBackingStore(&store);
-    format->setMode(dagbase::StreamFormat::MODE_INPUT);
-    store.open(dagbase::BackingStore::MODE_INPUT_BIT);
+    auto in = new dagbase::FormatAgnosticInputStream(format, &store);
     dagbase::Stream::ObjId id = 0;
     dag::Graph* g2 = nullptr;
     dagbase::Stream::Ref ref = in->readRef(&id);
