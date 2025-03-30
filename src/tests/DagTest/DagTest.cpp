@@ -2133,9 +2133,7 @@ TEST_P(GraphTest_testReadFromLuaThenSerialise, testSerialise)
     auto* buf = new dagbase::MemoryBackingStore(dagbase::BackingStore::MODE_OUTPUT_BIT);
     dagbase::BinaryFormat format(buf);
     format.setMode(dagbase::StreamFormat::MODE_OUTPUT);
-    dagbase::FormatAgnosticOutputStream ostr;
-    ostr.setBackingStore(buf);
-    ostr.setFormat(&format);
+    dagbase::FormatAgnosticOutputStream ostr(&format, buf);
     if (ostr.writeRef(sut))
     {
         sut->write(ostr);
@@ -2143,9 +2141,7 @@ TEST_P(GraphTest_testReadFromLuaThenSerialise, testSerialise)
     format.flush();
     format.setMode(dagbase::StreamFormat::MODE_INPUT);
     buf->setMode(dagbase::BackingStore::MODE_INPUT_BIT);
-    dagbase::FormatAgnosticInputStream istr;
-    istr.setBackingStore(buf);
-    istr.setFormat(&format);
+    dagbase::FormatAgnosticInputStream istr(&format, buf);
     dagbase::Stream::ObjId id{~0U};
     dag::Graph* actual = nullptr;
     dagbase::Stream::Ref ref = istr.readRef(&id);
