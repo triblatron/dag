@@ -226,7 +226,7 @@ namespace dag
 
     std::ostream& Port::toLua(std::ostream &str)
     {
-        str << "id = " << _id << ", ";
+        str << "id = " << std::int64_t(_id) << ", ";
         _metaPort->toLua(str);
         str << "class = \"" << className() << "\", ";
         if (_parent!=nullptr)

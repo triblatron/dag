@@ -197,7 +197,7 @@ namespace dag
     std::ostream &Node::toLua(std::ostream &str)
     {
         str << "{ ";
-        str << "id = " << _id << ", ";
+        str << "id = " << std::int64_t(_id) << ", ";
         str << "class = \"" << className() << "\", ";
         str << "name = \"" << _name << "\", ";
         str << "category = \"" << NodeCategory::toString(_category) << "\", ";
