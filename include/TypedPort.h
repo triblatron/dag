@@ -63,7 +63,7 @@ namespace dag
             str.read(&configValue);
         	if (configValue.has_value())
         	{
-        		_value = std::get<T>(configValue.value());
+        		_value = std::get<T>(configValue.value().value());
         	}
         	str.readFooter();
         }
