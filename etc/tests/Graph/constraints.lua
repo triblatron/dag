@@ -20,7 +20,7 @@ graph=
                     name="unit",
                     class="TypedPort<int64_t>",
                     direction="DIR_INTERNAL",
-                    type="TYPE_INT",
+                    type="TYPE_INTEGER",
                     value=0,
                     metaPort=
                     {

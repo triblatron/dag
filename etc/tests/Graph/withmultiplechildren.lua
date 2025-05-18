@@ -66,7 +66,7 @@ graph=
 							name="bar",
 							class="TypedPort<int64_t>",
 							direction="DIR_IN",
-							type="TYPE_INT",
+							type="TYPE_INTEGER",
 							value=1
 						}
 					}					
