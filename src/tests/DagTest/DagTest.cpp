@@ -1823,7 +1823,7 @@ TEST_P(GraphTest_fromLua, testFromString)
 INSTANTIATE_TEST_SUITE_P(GraphTest, GraphTest_fromLua, ::testing::Values(
     std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"FooTyped\", category=\"CATEGORY_SINK\", ports={ { name=\"in1\", class=\"TypedPort<double>\", type=\"TYPE_DOUBLE\", dir=\"DIR_IN\", value=2.0 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dag::NodeID{ 0 }, std::size_t{ 0 }, dag::Value{2.0} ),
     std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { name=\"in1\", class=\"TypedPort<double>\", type=\"TYPE_DOUBLE\", dir=\"DIR_IN\", value=2.0 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dag::NodeID{ 0 }, std::size_t{ 0 }, dag::Value{2.0} ),
-    std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { name=\"in1\", class=\"TypedPort<int64_t>\", type=\"TYPE_INT\", dir=\"DIR_IN\", value=2 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dag::NodeID{ 0 }, std::size_t{ 0 }, dag::Value{std::int64_t(2)} ),
+    std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { name=\"in1\", class=\"TypedPort<int64_t>\", type=\"TYPE_INTEGER\", dir=\"DIR_IN\", value=2 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dag::NodeID{ 0 }, std::size_t{ 0 }, dag::Value{std::int64_t(2)} ),
     std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { name=\"in1\", class=\"TypedPort<string>\", type=\"TYPE_STRING\", dir=\"DIR_IN\", value=\"wibble\" } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dag::NodeID{ 0 }, std::size_t{ 0 }, dag::Value{std::string("wibble")} ),
     std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { name=\"in1\", class=\"TypedPort<bool>\", type=\"TYPE_BOOL\", dir=\"DIR_IN\", value=true } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dag::NodeID{ 0 }, std::size_t{ 0 }, dag::Value{true} )
 ));
@@ -1930,7 +1930,7 @@ TEST_P(PortType_testParseFromString, testParseFromString)
 
 INSTANTIATE_TEST_SUITE_P(PortType, PortType_testParseFromString, ::testing::Values(
     std::make_tuple("TYPE_UNKNOWN", dag::PortType::TYPE_UNKNOWN),
-    std::make_tuple("TYPE_INT", dag::PortType::TYPE_INT),
+    std::make_tuple("TYPE_INTEGER", dag::PortType::TYPE_INT),
     std::make_tuple("TYPE_DOUBLE", dag::PortType::TYPE_DOUBLE),
     std::make_tuple("TYPE_STRING", dag::PortType::TYPE_STRING),
     std::make_tuple("TYPE_BOOL", dag::PortType::TYPE_BOOL),
@@ -1954,7 +1954,7 @@ TEST_P(PortType_testToString, testParseFromString)
 
 INSTANTIATE_TEST_SUITE_P(PortType, PortType_testToString, ::testing::Values(
     std::make_tuple("TYPE_UNKNOWN", dag::PortType::TYPE_UNKNOWN),
-    std::make_tuple("TYPE_INT", dag::PortType::TYPE_INT),
+    std::make_tuple("TYPE_INTEGER", dag::PortType::TYPE_INT),
     std::make_tuple("TYPE_DOUBLE", dag::PortType::TYPE_DOUBLE),
     std::make_tuple("TYPE_STRING", dag::PortType::TYPE_STRING),
     std::make_tuple("TYPE_BOOL", dag::PortType::TYPE_BOOL),

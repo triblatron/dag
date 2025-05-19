@@ -9,7 +9,7 @@ namespace dag
 	{
 		PortType::Type type = TYPE_UNKNOWN;
 
-		if (std::strcmp(str, "TYPE_INT")==0)
+		if (std::strcmp(str, "TYPE_INTEGER")==0)
 		{
 			type = TYPE_INT;
 		}
@@ -43,7 +43,7 @@ namespace dag
 
     static const char* portTypeNames[]=
     {
-        "TYPE_INT",
+        "TYPE_INTEGER",
         "TYPE_DOUBLE",
         "TYPE_STRING",
         "TYPE_BOOL",

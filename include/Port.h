@@ -257,7 +257,7 @@ namespace dag
 
 		[[nodiscard]]bool isCompatibleWith(const Port& other) const
 		{
-			return ((type() == other.type()));// || (type() == TYPE_INT && other.type() == TYPE_DOUBLE) || (type() == TYPE_BOOL && other.type() == TYPE_INT) || (type() == TYPE_BOOL && other.type() == TYPE_DOUBLE));
+			return ((type() == other.type()));// || (type() == TYPE_INTEGER && other.type() == TYPE_DOUBLE) || (type() == TYPE_BOOL && other.type() == TYPE_INTEGER) || (type() == TYPE_BOOL && other.type() == TYPE_DOUBLE));
 		}
 
 		template<typename F>

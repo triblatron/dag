@@ -27,7 +27,7 @@ graph=
                     name="baz",
                     class="TypedPort<int64_t>",
                     direction="DIR_OUT",
-                    type="TYPE_INT",
+                    type="TYPE_INTEGER",
                     value=1
                 },
                 {
