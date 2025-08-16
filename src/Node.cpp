@@ -140,7 +140,7 @@ namespace dag
             std::uint32_t direction;
             str.read(&direction);
             d.direction = static_cast<PortDirection::Direction>(direction);
-            _dynamicPortDescriptors.push_back(d);
+            _dynamicPortDescriptors.emplace_back(d);
         }
         str.readField(&fieldName);
         std::uint32_t flags{0};

@@ -46,7 +46,7 @@ namespace dag
             :
             _foo(i)
         {
-            _outputs.push_back(std::any(1));
+            _outputs.emplace_back(std::any(1));
         }
 
         const int& foo() const
@@ -64,7 +64,7 @@ namespace dag
             :
             _foo(0)
         {
-            _inputs.push_back(std::any(0));
+            _inputs.emplace_back(0);
         }
 
         void setFoo(const int& i)
@@ -94,7 +94,7 @@ namespace dag
     class FooAbstractAny : public AbstractAnyNode
     {
     public:
-        FooAbstractAny(int i)
+        explicit FooAbstractAny(int i)
             :
             _foo(i)
         {
@@ -118,7 +118,7 @@ namespace dag
             case 0:
                 return std::any(_foo);
             default:
-                return std::any();
+                return {};
             }
         }
 
@@ -205,11 +205,11 @@ namespace dag
         FieldArray _outputs;
         void addInput(const Field& value)
         {
-            _inputs.push_back(value);
+            _inputs.emplace_back(value);
         }
         void addOutput(const Field& value)
         {
-            _outputs.push_back(value);
+            _outputs.emplace_back(value);
         }
     };
 

@@ -217,7 +217,7 @@ namespace dag
 		{
 			if (port != nullptr)
 			{
-				_outgoingConnections.push_back(port);
+				_outgoingConnections.emplace_back(port);
 			}
 		}
 
@@ -233,7 +233,7 @@ namespace dag
 		{
 			if (port!=nullptr)
 			{
-				_incomingConnections.push_back(port);
+				_incomingConnections.emplace_back(port);
 			}
 		}
 

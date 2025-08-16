@@ -235,7 +235,7 @@ namespace dag
 		PortDescriptorArray _dynamicPortDescriptors;
 		void addDynamicPortDescriptor(PortDescriptor const& descriptor)
 		{
-			_dynamicPortDescriptors.push_back(descriptor);
+			_dynamicPortDescriptors.emplace_back(descriptor);
 		}
 		NodeFlags _flags{ 0x0 };
         // Position to allow for manual layout

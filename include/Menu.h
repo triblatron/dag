@@ -19,8 +19,8 @@ namespace dag
         {
             if (cmd != nullptr)
             {
-                _commands.push_back(cmd);
-                _enabled.push_back(true);
+                _commands.emplace_back(cmd);
+                _enabled.emplace_back(true);
             }
         }
 

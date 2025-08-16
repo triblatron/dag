@@ -146,7 +146,7 @@ namespace dag
                 status.resultType = Status::RESULT_SIGNAL_PATH_ID;
                 status.result.signalPathId = signalPath->id();
 
-                _transfers.push_back(transfer);
+                _transfers.emplace_back(transfer);
                 return status;
             }
             else

@@ -1686,7 +1686,7 @@ public:
     {
         if (child!=nullptr)
         {
-            _children.push_back(child);
+            _children.emplace_back(child);
             child->_parent = this;
         }
     }

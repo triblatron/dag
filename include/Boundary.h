@@ -75,12 +75,12 @@ namespace dag
             if (port != nullptr)
             {
                 port->setParent(this);
-                _dynamicPorts.push_back(port);
+                _dynamicPorts.emplace_back(port);
                 MetaPort desc;
                 desc.name = port->name();
                 desc.type = port->type();
                 desc.direction = port->dir();
-                _dynamicMetaPorts.push_back(desc);
+                _dynamicMetaPorts.emplace_back(desc);
             }
         }
     private:

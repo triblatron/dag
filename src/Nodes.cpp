@@ -293,7 +293,7 @@ namespace dag
         portDescriptor.name = _direction.name();
         portDescriptor.type = _direction.type();
         portDescriptor.direction = _direction.dir();
-        descriptor.ports.push_back(portDescriptor);
+        descriptor.ports.emplace_back(portDescriptor);
     }
 
     Node *Base::create(dagbase::InputStream &str, NodeLibrary& nodeLib)

@@ -79,7 +79,7 @@ namespace dag
                 {
                     connection = static_cast<Port*>(facility.getClone(connectionId));
                 }
-                _incomingConnections.push_back(connection);
+                _incomingConnections.emplace_back(connection);
             }
         }
 
@@ -99,7 +99,7 @@ namespace dag
                 {
                     connection = static_cast<Port*>(facility.getClone(connectionId));
                 }
-                _outgoingConnections.push_back(connection);
+                _outgoingConnections.emplace_back(connection);
             }
         }
 
@@ -142,7 +142,7 @@ namespace dag
 
                 newOutput = this->clone(facility, CopyOp{0}, nullptr);
                 newDest->addDynamicPort(newOutput);
-                newOutput->_outgoingConnections.push_back(oldInput);
+                newOutput->_outgoingConnections.emplace_back(oldInput);
                 auto itOld = oldInput->findIncomingConnection(*this);
                 if (itOld != oldInput->_incomingConnections.end())
                 {
@@ -169,7 +169,7 @@ namespace dag
 
                 Port *newInput = this->clone(facility, CopyOp{0}, nullptr);
                 newSource->addDynamicPort(newInput);
-                newInput->_incomingConnections.push_back(oldOutput);
+                newInput->_incomingConnections.emplace_back(oldOutput);
                 if (auto itOld = oldOutput->findOutgoingConnection(*this); itOld != _outgoingConnections.end())
                 {
                     (*itOld) = newInput;

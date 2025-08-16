@@ -186,7 +186,7 @@ namespace dag
 			if (child != nullptr)
 			{
                 child->setParent(this);
-				_children.push_back(child);
+				_children.emplace_back(child);
 			}
 		}
 

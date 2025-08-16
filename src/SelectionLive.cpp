@@ -99,7 +99,7 @@ namespace dag
                     }
                     if (isInput)
                     {
-                        inputs->push_back(node);
+                        inputs->emplace_back(node);
                     }
                 }
 
@@ -120,7 +120,7 @@ namespace dag
                     }
                     if (isOutput)
                     {
-                        outputs->push_back(node);
+                        outputs->emplace_back(node);
                     }
                 }
 
@@ -160,7 +160,7 @@ namespace dag
 */
                     if (isInternal)
                     {
-                        internals->push_back(node);
+                        internals->emplace_back(node);
                     }
                 }
             }

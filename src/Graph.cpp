@@ -146,7 +146,7 @@ namespace dag
             {
                 auto n = nodesWithNoDependencies.front();
                 nodesWithNoDependencies.pop();
-                order->push_back(n);
+                order->emplace_back(n);
                 std::vector<SignalPath*> allSignalPathsIncludingChildren;
                 findAllSignalPaths(&allSignalPathsIncludingChildren);
                 // for each node m with an edge e from n to m
@@ -579,7 +579,7 @@ namespace dag
         {
             for (auto p : _nodes)
             {
-                nodes->push_back(p.second);
+                nodes->emplace_back(p.second);
             }
             for (auto child : _children)
             {
@@ -631,7 +631,7 @@ namespace dag
         {
             for (auto p : _signalPaths)
             {
-                allSignalPaths->push_back(p.second);
+                allSignalPaths->emplace_back(p.second);
             }
             for (auto child : _children)
             {
@@ -693,7 +693,7 @@ namespace dag
 
             if (copy != nullptr)
             {
-                _children.push_back(copy);
+                _children.emplace_back(copy);
             }
         }
     }

@@ -109,12 +109,12 @@ public:
     {
         if (port != nullptr)
         {
-            _dynamicPorts.push_back(port);
+            _dynamicPorts.emplace_back(port);
             dag::MetaPort desc;
             desc.name = port->name();
             desc.type = port->type();
             desc.direction = port->dir();
-            _dynamicMetaPorts.push_back(desc);
+            _dynamicMetaPorts.emplace_back(desc);
         }
     }
     
@@ -184,14 +184,14 @@ Node(other, facility, copyOp, keyGen)
     {
         auto port = (*it)->clone(facility,copyOp,keyGen);
 
-        _dynamicPorts.push_back(port);
+        _dynamicPorts.emplace_back(port);
     }
 
     for (auto it=other._dynamicMetaPorts.begin(); it!=other._dynamicMetaPorts.end(); ++it)
     {
         const auto& metaPort(*it);
 
-        _dynamicMetaPorts.push_back(metaPort);
+        _dynamicMetaPorts.emplace_back(metaPort);
     }
 }
 

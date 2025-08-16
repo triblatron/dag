@@ -44,7 +44,7 @@ namespace dag
                                        (*initFunc)(keyGen, nodeLib);
                                        _totalNodes += nodeLib.numNodes() - numNodesBefore;
                                    }
-                                   _libs.push_back(lib);
+                                   _libs.emplace_back(lib);
                                }
                            }
                        });

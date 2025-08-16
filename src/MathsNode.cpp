@@ -43,17 +43,17 @@ namespace dag
         portDescriptor.name = _angle->name();
         portDescriptor.type = _angle->type();
         portDescriptor.direction = _angle->dir();
-        descriptor.ports.push_back(portDescriptor);
+        descriptor.ports.emplace_back(portDescriptor);
         portDescriptor.id = _unit->id();
         portDescriptor.name = _unit->name();
         portDescriptor.type = _unit->type();
         portDescriptor.direction = _unit->dir();
-        descriptor.ports.push_back(portDescriptor);
+        descriptor.ports.emplace_back(portDescriptor);
         portDescriptor.id = _output->id();
         portDescriptor.name = _output->name();
         portDescriptor.type = _output->type();
         portDescriptor.direction = _output->dir();
-        descriptor.ports.push_back(portDescriptor);
+        descriptor.ports.emplace_back(portDescriptor);
     }
 
     const MetaPort *MathsNode::dynamicMetaPort(size_t index) const
