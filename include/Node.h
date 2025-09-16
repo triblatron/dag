@@ -228,17 +228,17 @@ namespace dag
         //! Convert this Node to a Lua representation.
         virtual std::ostream& toLua(std::ostream& str);
 	private:
-        NodeID _id{NodeID::INVALID_ID};
-		std::string _name;
-		NodeCategory::Category _category{NodeCategory::CAT_UNKNOWN};
-		typedef std::vector<PortDescriptor> PortDescriptorArray;
-		PortDescriptorArray _dynamicPortDescriptors;
-		void addDynamicPortDescriptor(PortDescriptor const& descriptor)
-		{
-			_dynamicPortDescriptors.emplace_back(descriptor);
-		}
-		NodeFlags _flags{ 0x0 };
+        std::string _name;
+        typedef std::vector<PortDescriptor> PortDescriptorArray;
+        PortDescriptorArray _dynamicPortDescriptors;
+        void addDynamicPortDescriptor(PortDescriptor const& descriptor)
+        {
+            _dynamicPortDescriptors.emplace_back(descriptor);
+        }
         // Position to allow for manual layout
         std::int64_t _pos[2]{0,0};
+        NodeID _id{NodeID::INVALID_ID};
+		NodeCategory::Category _category{NodeCategory::CAT_UNKNOWN};
+		NodeFlags _flags{ 0x0 };
 	};
 }

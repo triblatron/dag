@@ -255,11 +255,11 @@ namespace dag
         PortMap _ports;
 		typedef std::vector<Graph*> GraphArray;
 		GraphArray _children;
+        NodeID _nextNodeID{0};
+        PortID _nextPortID{0};
         Graph* _parent{nullptr};
         NodeLibrary* _nodeLib{nullptr};
 		Node* _lastAddedNode{ nullptr };
-        NodeID _nextNodeID{0};
-        PortID _nextPortID{0};
 
         void readPort(dagbase::Table &portTable, Node *node, Port *existingPort);
         std::ostream& toLuaHelper(std::ostream & str);
