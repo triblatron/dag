@@ -93,10 +93,13 @@ namespace dag
         {                    \
         }                    \
                              \
+        Name(const Name& other) = default; \
         Name& operator=(const Name& other) \
         {                    \
-            id = other.id;   \
-                             \
+            if (this != &other) \
+            {                \
+                id = other.id;  \
+            }               \
             return *this;\
         }                    \
                              \
