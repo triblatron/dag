@@ -417,24 +417,28 @@ namespace dag
                 std::int64_t value = 0;
                 str.read(&value);
                 _value = value;
+                break;
             }
             case PortType::TYPE_DOUBLE:
             {
                 double value = 0.0;
                 str.read(&value);
                 _value = value;
+                break;
             }
             case PortType::TYPE_STRING:
             {
                 std::string value;
                 str.readString(&value, false);
                 _value = value;
+                break;
             }
             case PortType::TYPE_BOOL:
             {
                 bool value = false;
                 str.read(&value);
                 _value = value;
+                break;
             }
             default:
                 assert(false);
@@ -478,24 +482,28 @@ namespace dag
                 std::int64_t value = 0;
                 str.read(&value);
                 _value = value;
+                break;
             }
             case PortType::TYPE_DOUBLE:
             {
                 double value = 0.0;
                 str.read(&value);
                 _value = value;
+                break;
             }
             case PortType::TYPE_STRING:
             {
                 std::string value;
                 str.readString(&value, false);
                 _value = value;
+                break;
             }
             case PortType::TYPE_BOOL:
             {
                 bool value = false;
                 str.read(&value);
                 _value = value;
+                break;
             }
             case PortType::TYPE_VEC3D: {
                 
