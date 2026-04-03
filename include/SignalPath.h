@@ -24,8 +24,9 @@ namespace dag
     class DAG_API SignalPath
     {
     public:
-        enum
+        enum Flags : std::uint32_t
         {
+            FLAGS_NONE = 0x0,
             REMOVED_BIT = 1<<0
         };
     public:
@@ -34,7 +35,7 @@ namespace dag
         _id(_nextID++),
         _source(source),
         _dest(dest),
-        _flags(0x0)
+        _flags(FLAGS_NONE)
         {
             // Do nothing.
         }
@@ -88,12 +89,12 @@ namespace dag
 
         void markRemoved()
         {
-            _flags |= REMOVED_BIT;
+            _flags = static_cast<Flags>(_flags | REMOVED_BIT);
         }
 
         void clearRemoved()
         {
-            _flags &= ~REMOVED_BIT;
+            _flags = static_cast<Flags>(_flags &~REMOVED_BIT);
         }
 
         [[nodiscard]]bool isRemoved() const
@@ -106,9 +107,9 @@ namespace dag
         dagbase::OutputStream& write(dagbase::OutputStream& str) const;
     private:
         SignalPathID _id;
-        Port* _source;
-        Port* _dest;
-        std::uint32_t _flags;
+        Port* _source{nullptr};
+        Port* _dest{nullptr};
+        Flags _flags{0};
         static SignalPathID _nextID;
     };
 }

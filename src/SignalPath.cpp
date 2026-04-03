@@ -41,7 +41,7 @@ namespace dag
     :
     _source(nullptr),
     _dest(nullptr),
-    _flags(0x0)
+    _flags(FLAGS_NONE)
     {
         std::string className;
         std::string fieldName;
@@ -55,7 +55,9 @@ namespace dag
         str.readField(&fieldName);
         _dest = str.readRef<Port>("Port", nodeLib);
         str.readField(&fieldName);
-        str.readUInt32(&_flags);
+        std::uint32_t flags{0};
+        str.readUInt32(&flags);
+        _flags = static_cast<Flags>(flags);
         str.readFooter();
     }
 
