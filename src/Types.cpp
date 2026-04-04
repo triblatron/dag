@@ -1,6 +1,8 @@
 #include "config/config.h"
 
 #include "Types.h"
+#include "util/enums.h"
+
 #include <cstring>
 
 namespace dag
@@ -56,6 +58,35 @@ namespace dag
     const char *PortType::toString(PortType::Type type)
     {
         return portTypeNames[type];
+    }
+
+    std::string copyOpToString(CopyOp op)
+    {
+        std::string str;
+
+        BIT_NAME(op, DEEP_COPY_NODES_BIT, str);
+        BIT_NAME(op, DEEP_COPY_INPUTS_BIT, str);
+        BIT_NAME(op, DEEP_COPY_OUTPUTS_BIT, str);
+        BIT_NAME(op, GENERATE_UNIQUE_ID_BIT, str);
+        BIT_NAME(op, DEEP_COPY_PARENT_BIT, str);
+
+        if (!str.empty() && str.back() == ' ')
+            str.pop_back();
+
+        return str;
+    }
+
+    CopyOp parseCopyOp(std::string_view str)
+    {
+        CopyOp value{DEEP_COPY_NONE};
+
+        TEST_BIT(DEEP_COPY_NODES_BIT, str, value);
+        TEST_BIT(DEEP_COPY_INPUTS_BIT, str, value);
+        TEST_BIT(DEEP_COPY_OUTPUTS_BIT, str, value);
+        TEST_BIT(GENERATE_UNIQUE_ID_BIT, str, value);
+        TEST_BIT(DEEP_COPY_PARENT_BIT, str, value);
+
+        return value;
     }
 
     PortDirection::Direction PortDirection::parseFromString(const char* str)

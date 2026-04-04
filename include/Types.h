@@ -6,8 +6,6 @@
 
 #include "config/Export.h"
 
-#include <cstdint>
-#include <optional>
 #include <unordered_set>
 
 namespace dag
@@ -203,10 +201,15 @@ namespace dag
 
     enum CopyOp : std::uint32_t
     {
+        DEEP_COPY_NONE          = 0,
         DEEP_COPY_NODES_BIT     = 1<<0,
         DEEP_COPY_INPUTS_BIT    = 1<<1,
         DEEP_COPY_OUTPUTS_BIT   = 1<<2,
         GENERATE_UNIQUE_ID_BIT  = 1<<3,
         DEEP_COPY_PARENT_BIT    = 1<<4
     };
+
+    std::string DAG_API copyOpToString(CopyOp op);
+
+    CopyOp DAG_API parseCopyOp(std::string_view str);
 };

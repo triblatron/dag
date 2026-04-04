@@ -1,4 +1,5 @@
-SET( DagTest_SRC DagTest.cpp )
+SET( DagTest_SRC DagTest.cpp
+        RoundTripTest.cpp)
 ADD_EXECUTABLE( DagTest ${DagTest_SRC} )
 TARGET_LINK_LIBRARIES( DagTest PRIVATE dagbase;dag;GTest::gtest;GTest::gtest_main;${LUA_LIBRARIES})
 SET_TARGET_PROPERTIES( DagTest PROPERTIES INSTALL_RPATH "${CMAKE_INSTALL_RPATH};${CMAKE_INSTALL_PREFIX}/lib" )
