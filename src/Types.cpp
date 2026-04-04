@@ -64,6 +64,9 @@ namespace dag
     {
         std::string str;
 
+        if (op == DEEP_COPY_NONE)
+            return "DEEP_COPY_NONE";
+
         BIT_NAME(op, DEEP_COPY_NODES_BIT, str);
         BIT_NAME(op, DEEP_COPY_INPUTS_BIT, str);
         BIT_NAME(op, DEEP_COPY_OUTPUTS_BIT, str);

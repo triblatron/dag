@@ -20,7 +20,7 @@ TEST_P(CopyOp_testRoundTrip, testRoundTrip)
 }
 
 INSTANTIATE_TEST_SUITE_P(CopyOp, CopyOp_testRoundTrip, ::testing::Values(
-    std::make_tuple("", dag::DEEP_COPY_NONE),
+    std::make_tuple("DEEP_COPY_NONE", dag::DEEP_COPY_NONE),
     std::make_tuple("DEEP_COPY_NODES_BIT", dag::DEEP_COPY_NODES_BIT),
     std::make_tuple("DEEP_COPY_INPUTS_BIT", dag::DEEP_COPY_INPUTS_BIT),
     std::make_tuple("DEEP_COPY_OUTPUTS_BIT", dag::DEEP_COPY_OUTPUTS_BIT),
