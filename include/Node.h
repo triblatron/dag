@@ -4,7 +4,6 @@
 
 #include "NodeCategory.h"
 #include "Port.h"
-#include "PortDescriptor.h"
 #include "MetaPort.h"
 
 #include <string>
@@ -229,7 +228,6 @@ namespace dag
         virtual std::ostream& toLua(std::ostream& str);
 	private:
         std::string _name;
-        typedef std::vector<PortDescriptor> PortDescriptorArray;
         // Position to allow for manual layout
         std::int64_t _pos[2]{0,0};
         NodeID _id{NodeID::INVALID_ID};

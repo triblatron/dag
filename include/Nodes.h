@@ -58,7 +58,7 @@ namespace dag
         void describe(NodeDescriptor& descriptor) const override
         {
             Node::describe(descriptor);
-            descriptor.ports.emplace_back(in1.id(), in1.name(), in1.type(), in1.dir());
+            descriptor.ports.emplace_back(in1.name(), in1.type(), in1.dir());
         }
 
         [[nodiscard]] size_t totalPorts() const override
@@ -393,7 +393,7 @@ namespace dag
         void describe(NodeDescriptor& descriptor) const override
         {
             Node::describe(descriptor);
-            descriptor.ports.emplace_back(out1.id(), out1.name(), out1.type(), out1.dir());
+            descriptor.ports.emplace_back(out1.name(), out1.type(), out1.dir());
         }
 
         [[nodiscard]]const MetaPort * dynamicMetaPort(size_t index) const override
@@ -482,7 +482,7 @@ namespace dag
         void describe(NodeDescriptor& descriptor) const override
         {
             Node::describe(descriptor);
-            descriptor.ports.emplace_back(_in1->id(), _in1->name(), _in1->type(), _in1->dir());
+            descriptor.ports.emplace_back(_in1->name(), _in1->type(), _in1->dir());
         }
 
         TypedPort<double>& in1()
@@ -581,7 +581,7 @@ namespace dag
             Node::describe(descriptor);
             if (_out1 != nullptr)
             {
-                descriptor.ports.emplace_back(_out1->id(), _out1->name(), _out1->type(), _out1->dir());
+                descriptor.ports.emplace_back(_out1->name(), _out1->type(), _out1->dir());
             }
         }
 
@@ -670,8 +670,8 @@ namespace dag
         void describe(NodeDescriptor& descriptor) const override
         {
             Node::describe(descriptor);
-            descriptor.ports.emplace_back(_out1.id(), _out1.name(), _out1.type(), _out1.dir());
-            descriptor.ports.emplace_back(_in1.id(), _in1.name(), _in1.type(), _in1.dir());
+            descriptor.ports.emplace_back(_out1.name(), _out1.type(), _out1.dir());
+            descriptor.ports.emplace_back(_in1.name(), _in1.type(), _in1.dir());
         }
 
         TypedPort<double>& out1()

@@ -288,8 +288,8 @@ namespace dag
         descriptor.id = id();
         descriptor.name = name();
         descriptor.category = category();
-        PortDescriptor portDescriptor;
-        portDescriptor.id = _direction.id();
+        MetaPort portDescriptor;
+        //portDescriptor.id = _direction.id();
         portDescriptor.name = _direction.name();
         portDescriptor.type = _direction.type();
         portDescriptor.direction = _direction.dir();

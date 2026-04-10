@@ -2,7 +2,6 @@
 
 #include "config/Export.h"
 
-#include "PortDescriptor.h"
 #include "NodeCategory.h"
 
 #include <cstdint>
@@ -16,8 +15,8 @@ namespace dag
 		std::int64_t id;
 		std::string name;
 		NodeCategory::Category category;
-		typedef std::vector<PortDescriptor> PortDescriptorArray;
-		PortDescriptorArray ports;
+        using MetaPortArray = std::vector<MetaPort>;
+	    MetaPortArray ports;
 
 		NodeDescriptor()
 			:

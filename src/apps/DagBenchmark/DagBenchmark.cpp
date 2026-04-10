@@ -622,8 +622,8 @@ public:
     void describe(dag::NodeDescriptor& descriptor) const override
     {
         Node::describe(descriptor);
-        descriptor.ports.emplace_back(_foo.id(), _foo.name(), _foo.type(), _foo.dir());
-        descriptor.ports.emplace_back(_bar.id(), _bar.name(), _bar.type(), _bar.dir());
+        descriptor.ports.emplace_back(_foo.name(), _foo.type(), _foo.dir());
+        descriptor.ports.emplace_back(_bar.name(), _bar.type(), _bar.dir());
     }
 
     dag::Port* dynamicPort(size_t index) override
