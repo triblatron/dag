@@ -75,7 +75,7 @@ namespace dag
         //! Create a Node of the same type as this from a stream.
         //! \param[in] str The stream from which to read the data required to create the Node.
         //! \param[in] nodeLib The NodeLibrary to create Ports
-        //! \note Making this virtual means we know the exact type of the node and not not have to resort to
+        //! \note Making this virtual means we know the exact type of the node and do not have to resort to
         //! dynamic_cast<>() or similar.
         virtual Node* create(dagbase::InputStream& str, NodeLibrary& nodeLib) = 0;
 
@@ -230,11 +230,6 @@ namespace dag
 	private:
         std::string _name;
         typedef std::vector<PortDescriptor> PortDescriptorArray;
-        PortDescriptorArray _dynamicPortDescriptors;
-        void addDynamicPortDescriptor(PortDescriptor const& descriptor)
-        {
-            _dynamicPortDescriptors.emplace_back(descriptor);
-        }
         // Position to allow for manual layout
         std::int64_t _pos[2]{0,0};
         NodeID _id{NodeID::INVALID_ID};

@@ -85,17 +85,6 @@ namespace dag
         str.writeString(_name, true);
         str.writeField("category");
         str.writeUInt32(_category);
-        str.writeField("numDynamicPortDescriptors");
-        str.writeUInt32(_dynamicPortDescriptors.size());
-        for (auto const & d : _dynamicPortDescriptors)
-        {
-            str.writeField("id");
-            str.write(d.id);
-            str.writeField("name");
-            str.writeString(d.name, false);
-            str.writeField("direction");
-            str.write(d.direction);
-        }
         str.writeField("flags");
         str.writeUInt32(_flags);
         str.writeFooter();
@@ -125,24 +114,6 @@ namespace dag
         str.readUInt32(&category);
         _category = static_cast<NodeCategory::Category>(category);
         str.readField(&fieldName);
-        std::uint32_t numDescriptors = 0;
-        str.readUInt32(&numDescriptors);
-        for (auto i=0; i<numDescriptors; ++i)
-        {
-            PortDescriptor d;
-            str.readField(&fieldName);
-            std::uint32_t portId{0};
-            str.readUInt32(&portId);
-            d.id = portId;
-            str.readField(&fieldName);
-            str.readString(&d.name, false);
-            str.readField(&fieldName);
-            std::uint32_t direction;
-            str.read(&direction);
-            d.direction = static_cast<PortDirection::Direction>(direction);
-            _dynamicPortDescriptors.emplace_back(d);
-        }
-        str.readField(&fieldName);
         std::uint32_t flags{0};
         str.readUInt32(&flags);
         _flags = static_cast<Node::NodeFlags>(flags);
@@ -167,16 +138,6 @@ namespace dag
             return false;
         }
 
-        if (_dynamicPortDescriptors.size() != other._dynamicPortDescriptors.size())
-        {
-            return false;
-        }
-
-        if (!(_dynamicPortDescriptors==other._dynamicPortDescriptors))
-        {
-            return false;
-        }
-
         if (_flags != other._flags)
         {
             return false;
@@ -190,7 +151,6 @@ namespace dag
         printer.println("id: " + std::to_string(_id));
         printer.println("name: " + _name);
         printer.println("category: " + std::to_string(_category));
-        printer.println("numDynamicPortDescriptors: " + std::to_string(_dynamicPortDescriptors.size()));
         printer.println("flags: " + std::to_string(_flags));
     }
 
@@ -201,7 +161,6 @@ namespace dag
         str << "class = \"" << className() << "\", ";
         str << "name = \"" << _name << "\", ";
         str << "category = \"" << NodeCategory::toString(_category) << "\", ";
-        str << "numDynamicPortDescriptors = " << _dynamicPortDescriptors.size() << ", ";
         str << "flags = " << _flags << ", ";
         str << "ports = { ";
         for (size_t i=0; i<totalPorts(); ++i)
