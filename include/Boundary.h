@@ -19,7 +19,7 @@ namespace dag
 
         Boundary(Boundary&& other);
 
-        explicit Boundary(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        explicit Boundary(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
 
         ~Boundary() override;
 
@@ -59,7 +59,7 @@ namespace dag
             return new Boundary(*this,facility,copyOp,keyGen);
         }
 
-        Boundary* create(dagbase::InputStream& str, NodeLibrary& nodeLib) override;
+        Boundary* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const Node& other) const override;
 

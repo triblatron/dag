@@ -29,15 +29,15 @@ namespace dag
                     MetaPort("in1", PortType::TYPE_DOUBLE, PortDirection::DIR_IN)
             };
 
-    Foo *Foo::create(dagbase::InputStream &str, NodeLibrary& nodeLib)
+    Foo *Foo::create(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua &lua)
     {
-        return new Foo(str, nodeLib);
+        return new Foo(str, nodeLib, lua);
     }
 
-    Foo::Foo(dagbase::InputStream &str, NodeLibrary& nodeLib)
+    Foo::Foo(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib),
-            in1(str, nodeLib)
+            in1(str, nodeLib, lua)
     {
 
     }
@@ -73,12 +73,12 @@ namespace dag
                     MetaPort("in1", PortType::TYPE_DOUBLE, PortDirection::DIR_IN)
             };
 
-    FooTyped *FooTyped::create(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    FooTyped *FooTyped::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
-        return new FooTyped(str, nodeLib);
+        return new FooTyped(str, nodeLib, lua);
     }
 
-    FooTyped::FooTyped(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    FooTyped::FooTyped(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node()
 
@@ -100,7 +100,7 @@ namespace dag
             }
             else
             {
-                _in1 = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str));
+                _in1 = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
             }
         }
         str.readFooter();
@@ -160,17 +160,17 @@ namespace dag
         return str;
     }
 
-    Bar::Bar(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    Bar::Bar(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib),
-            out1(str, nodeLib)
+            out1(str, nodeLib, lua)
     {
 
     }
 
-    Bar *Bar::create(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    Bar *Bar::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
-        return new Bar(str, nodeLib);
+        return new Bar(str, nodeLib, lua);
     }
 
     bool Bar::equals(const Node &other) const
@@ -183,12 +183,12 @@ namespace dag
                     MetaPort("out1", PortType::TYPE_DOUBLE, PortDirection::DIR_OUT)
             };
 
-    BarTyped *BarTyped::create(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    BarTyped *BarTyped::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
-        return new BarTyped(str, nodeLib);
+        return new BarTyped(str, nodeLib, lua);
     }
 
-    BarTyped::BarTyped(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    BarTyped::BarTyped(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node()
     {
@@ -208,7 +208,7 @@ namespace dag
             }
             else
             {
-                _out1 = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str));
+                _out1 = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
             }
         }
         str.readFooter();
@@ -255,18 +255,18 @@ namespace dag
                     MetaPort("in1", PortType::TYPE_DOUBLE, PortDirection::DIR_IN)
             };
 
-    GroupTyped::GroupTyped(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    GroupTyped::GroupTyped(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib),
-            _out1(str, nodeLib),
-            _in1(str, nodeLib)
+            _out1(str, nodeLib, lua),
+            _in1(str, nodeLib, lua)
     {
         // Do nothing.
     }
 
-    GroupTyped *GroupTyped::create(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    GroupTyped *GroupTyped::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
-        return new GroupTyped(str, nodeLib);
+        return new GroupTyped(str, nodeLib, lua);
     }
 
     dagbase::OutputStream &GroupTyped::write(dagbase::OutputStream &str) const
@@ -296,16 +296,16 @@ namespace dag
         descriptor.ports.emplace_back(portDescriptor);
     }
 
-    Node *Base::create(dagbase::InputStream &str, NodeLibrary& nodeLib)
+    Node *Base::create(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua &lua)
     {
-        return new Base(str, nodeLib);
+        return new Base(str, nodeLib, lua);
     }
 
-    Base::Base(dagbase::InputStream &str, NodeLibrary& nodeLib)
+    Base::Base(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib),
             int1(0.0),
-            _direction(str,nodeLib)
+            _direction(str,nodeLib, lua)
     {
         str.read(&int1);
     }

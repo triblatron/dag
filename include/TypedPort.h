@@ -52,15 +52,15 @@ namespace dag
             _value = other._value;
         }
 
-        explicit TypedPort(dagbase::InputStream& str, NodeLibrary& nodeLib)
+        explicit TypedPort(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua)
         {
         	std::string className;
         	std::string fieldName;
         	str.readHeader(&className);
-        	Port::readFromStream(str, nodeLib);
+        	Port::readFromStream(str, nodeLib, lua);
         	str.readField(&fieldName);
         	dagbase::ConfigurationElement::ValueType configValue(_value);
-            str.read(&configValue);
+            str.read(lua, &configValue);
         	if (configValue.has_value())
         	{
         		_value = std::get<T>(configValue.value().value());

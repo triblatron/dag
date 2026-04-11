@@ -39,7 +39,7 @@ namespace dag
 	public:
 		Graph() = default;
 
-        Graph(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        Graph(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
 
 		Graph(const Graph& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
 

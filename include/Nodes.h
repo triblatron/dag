@@ -39,7 +39,7 @@ namespace dag
             // Do nothing.
         }
 
-        explicit Foo(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        explicit Foo(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
 
         [[nodiscard]] const char* className() const override
         {
@@ -51,7 +51,7 @@ namespace dag
             return new Foo(*this, facility, copyOp, keyGen);
         }
 
-        Foo* create(dagbase::InputStream& str, NodeLibrary& nodeLib) override;
+        Foo* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const Node& other) const override;
 
@@ -121,7 +121,7 @@ namespace dag
             // Do nothing.
         }
 
-        explicit Base(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        explicit Base(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
 
@@ -135,7 +135,7 @@ namespace dag
             return new Base(*this, facility, copyOp, keyGen);
         }
 
-        Node* create(dagbase::InputStream& str, NodeLibrary& nodeLib) override;
+        Node* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua) override;
 
         [[nodiscard]]bool equals(const Node& other) const override;
 
@@ -367,7 +367,7 @@ namespace dag
             // Do nothing.
         }
 
-        explicit Bar(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        explicit Bar(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua);
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
 
@@ -381,7 +381,7 @@ namespace dag
             return new Bar(*this,facility, copyOp, keyGen);
         }
 
-        Bar* create(dagbase::InputStream& str, NodeLibrary& nodeLib) override;
+        Bar* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const Node& other) const override;
 
@@ -459,7 +459,7 @@ namespace dag
             _in1->setParent(this);
         }
 
-        explicit FooTyped(dagbase::InputStream& str, NodeLibrary & nodeLib);
+        explicit FooTyped(dagbase::InputStream& str, NodeLibrary & nodeLib, dagbase::Lua &lua);
 
         ~FooTyped() override;
 
@@ -473,7 +473,7 @@ namespace dag
             return new FooTyped(*this,facility,copyOp,keyGen);
         }
 
-        FooTyped* create(dagbase::InputStream& str, NodeLibrary& nodeLib) override;
+        FooTyped* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const Node& other) const override;
 
@@ -556,7 +556,7 @@ namespace dag
             _out1->setParent(this);
         }
 
-        explicit BarTyped(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        explicit BarTyped(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua);
 
         ~BarTyped() override;
 
@@ -570,7 +570,7 @@ namespace dag
             return new BarTyped(*this,facility,copyOp,keyGen);
         }
 
-        BarTyped* create(dagbase::InputStream& str, NodeLibrary& nodeLib) override;
+        BarTyped* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const Node& other) const override;
 
@@ -649,7 +649,7 @@ namespace dag
             _in1.setParent(this);
         }
 
-        explicit GroupTyped(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        explicit GroupTyped(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua);
 
         [[nodiscard]]const char* className() const override
         {
@@ -661,7 +661,7 @@ namespace dag
             return new GroupTyped(*this, facility, copyOp, keyGen);
         }
 
-        GroupTyped* create(dagbase::InputStream& str, NodeLibrary& nodeLib) override;
+        GroupTyped* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const Node& other) const override;
 

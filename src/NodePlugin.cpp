@@ -24,7 +24,7 @@ public:
         // Do nothing.
     }
 
-    DynamicNode(dagbase::InputStream& str, dag::NodeLibrary& nodeLib)
+    DynamicNode(dagbase::InputStream& str, dag::NodeLibrary& nodeLib, dagbase::Lua& lua)
     :
     Node()
     {
@@ -48,7 +48,7 @@ public:
         str.readField(&fieldName);
         for (std::size_t i=0; i<numDynamicPorts; ++i)
         {
-            _dynamicPorts[i] = nodeLib.instantiatePort(str);
+            _dynamicPorts[i] = nodeLib.instantiatePort(str, lua);
         }
         str.readFooter();
     }
@@ -138,9 +138,9 @@ public:
         return nullptr;
     }
 
-    Node* create(dagbase::InputStream& str, dag::NodeLibrary& nodeLib) override
+    Node* create(dagbase::InputStream& str, dag::NodeLibrary& nodeLib, dagbase::Lua& lua) override
     {
-        return new DynamicNode(str, nodeLib);
+        return new DynamicNode(str, nodeLib, lua);
     }
 
     dagbase::OutputStream& write(dagbase::OutputStream& str) const override

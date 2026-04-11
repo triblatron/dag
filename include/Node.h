@@ -75,7 +75,7 @@ namespace dag
         //! \param[in] nodeLib The NodeLibrary to create Ports
         //! \note Making this virtual means we know the exact type of the node and do not have to resort to
         //! dynamic_cast<>() or similar.
-        virtual Node* create(dagbase::InputStream& str, NodeLibrary& nodeLib) = 0;
+        virtual Node* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& Lua) = 0;
 
         //! Write ourself to a binary output stream
         //! \param[in] str The stream
@@ -226,10 +226,10 @@ namespace dag
         //! Convert this Node to a Lua representation.
         virtual std::ostream& toLua(std::ostream& str);
 	private:
+        NodeID _id{NodeID::INVALID_ID};
         std::string _name;
         // Position to allow for manual layout
         std::int64_t _pos[2]{0,0};
-        NodeID _id{NodeID::INVALID_ID};
 		NodeCategory::Category _category{NodeCategory::CAT_UNKNOWN};
 		NodeFlags _flags{ 0x0 };
 	};

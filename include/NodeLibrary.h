@@ -13,6 +13,7 @@ namespace dagbase
 {
 	class Class;
 	class InputStream;
+    class Lua;
 	class OutputStream;
 }
 
@@ -50,14 +51,14 @@ namespace dag
         //! Write the given node to the stream.
         virtual dagbase::OutputStream& write(dagbase::OutputStream& str, Node* node) const = 0;
 
-		virtual dagbase::Class* instantiate(const char* className, dagbase::InputStream& str) = 0;
+		virtual dagbase::Class* instantiate(const char* className, dagbase::InputStream& str, dagbase::Lua& lua) = 0;
 
         //! Create a node from a stream.
-        virtual Node* instantiateNode(dagbase::InputStream& str) = 0;
+        virtual Node* instantiateNode(dagbase::InputStream& str, dagbase::Lua& lua) = 0;
 
         virtual Port* instantiatePort(const std::string& className, const std::string& name, PortType::Type type, PortDirection::Direction, Value value) = 0;
 
-        virtual Port* instantiatePort(dagbase::InputStream& str) = 0;
+        virtual Port* instantiatePort(dagbase::InputStream& str, dagbase::Lua &lua) = 0;
 
 //        virtual NodeID nextNodeID() = 0;
 

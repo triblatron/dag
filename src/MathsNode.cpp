@@ -81,21 +81,21 @@ namespace dag
         return nullptr;
     }
 
-    Node *MathsNode::create(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    Node *MathsNode::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
-        return new MathsNode(str, nodeLib);
+        return new MathsNode(str, nodeLib, lua);
     }
 
-    MathsNode::MathsNode(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    MathsNode::MathsNode(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib)
 
     {
         // We must do a static_cast<> here because we might be in the Port constructor
         // and the class is not yet a TypedPort and the dynamic_cast<> will fail.
-        _angle = static_cast<TypedPort<double>*>(str.readRef<Port>("Port", nodeLib));
-        _unit = static_cast<TypedPort<int64_t>*>(str.readRef<Port>("Port", nodeLib));
-        _output = static_cast<TypedPort<double>*>(str.readRef<Port>("Port", nodeLib));
+        _angle = static_cast<TypedPort<double>*>(str.readRef<Port>("Port", nodeLib, lua));
+        _unit = static_cast<TypedPort<int64_t>*>(str.readRef<Port>("Port", nodeLib, lua));
+        _output = static_cast<TypedPort<double>*>(str.readRef<Port>("Port", nodeLib, lua));
     }
 
     MathsNode::MathsNode(const MathsNode &other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)

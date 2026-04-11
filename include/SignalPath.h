@@ -40,7 +40,7 @@ namespace dag
             // Do nothing.
         }
 
-        SignalPath(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        SignalPath(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
 
         [[nodiscard]]SignalPathID id() const
         {

@@ -37,7 +37,7 @@ namespace dag
     }
 
 
-    SignalPath::SignalPath(dagbase::InputStream &str, NodeLibrary& nodeLib)
+    SignalPath::SignalPath(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua& lua)
     :
     _source(nullptr),
     _dest(nullptr),
@@ -51,9 +51,9 @@ namespace dag
         str.read(&id);
         _id = id;
         str.readField(&fieldName);
-        _source = str.readRef<Port>("Port", nodeLib);
+        _source = str.readRef<Port>("Port", nodeLib, lua);
         str.readField(&fieldName);
-        _dest = str.readRef<Port>("Port", nodeLib);
+        _dest = str.readRef<Port>("Port", nodeLib, lua);
         str.readField(&fieldName);
         std::uint32_t flags{0};
         str.readUInt32(&flags);

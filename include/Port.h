@@ -112,9 +112,9 @@ namespace dag
 
         //! Construct from a stream and a node library.
         //! \note Requires the NodeLibrary to read the parent.
-        Port(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        Port(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
 
-	    dagbase::InputStream& readFromStream(dagbase::InputStream& str, NodeLibrary& nodeLib);
+	    dagbase::InputStream& readFromStream(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
 
 	    ~Port() override;
 
@@ -387,7 +387,7 @@ namespace dag
 			// Do nothing.
 		}
 
-        explicit ValuePort(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        explicit ValuePort(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua);
 
         ValuePort(const ValuePort& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
         :
@@ -468,7 +468,7 @@ namespace dag
             _value = other._value;
         }
 
-        explicit VariantPort(dagbase::InputStream& str, NodeLibrary& nodeLib);
+        explicit VariantPort(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua);
 
         VariantPort* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
         {

@@ -1751,6 +1751,7 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
     dagbase::Stream::ObjId id = 0;
     dag::Graph* g2 = nullptr;
     dagbase::Stream::Ref ref = in->readRef(&id);
+    dagbase::Lua lua;
     if (id != 0)
     {
         if (ref != nullptr)
@@ -1759,7 +1760,7 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
         }
         else
         {
-            g2 = new dag::Graph(*in, nodeLib);
+            g2 = new dag::Graph(*in, nodeLib, lua);
         }
     }
 
@@ -2126,6 +2127,7 @@ class GraphTest_testReadFromLuaThenSerialise : public ::testing::TestWithParam<s
 
 TEST_P(GraphTest_testReadFromLuaThenSerialise, testSerialise)
 {
+    dagbase::Lua lua;
     const char* graphFilename = std::get<0>(GetParam());
     dag::MemoryNodeLibrary nodeLib;
     auto sut = dag::Graph::fromFile(nodeLib, graphFilename);
@@ -2153,7 +2155,7 @@ TEST_P(GraphTest_testReadFromLuaThenSerialise, testSerialise)
         }
         else
         {
-            actual = new dag::Graph(istr, nodeLib);
+            actual = new dag::Graph(istr, nodeLib, lua);
         }
     }
     ASSERT_NE(nullptr, actual);
@@ -2176,14 +2178,13 @@ INSTANTIATE_TEST_SUITE_P(Graph, GraphTest_testReadFromLuaThenSerialise, ::testin
 
 class GraphTest_testEvaluate : public ::testing::TestWithParam<std::tuple<const char*, dag::NodeID, std::size_t, double>>
 {
-public:
-    void TearDown()
+protected:
+    void TearDown() override
     {
         delete _sut;
     }
-protected:
     dag::MemoryNodeLibrary _nodeLib;
-    dag::Graph* _sut;
+    dag::Graph* _sut{nullptr};
 };
 
 TEST_P(GraphTest_testEvaluate, testEvaluate)

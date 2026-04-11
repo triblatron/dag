@@ -541,11 +541,11 @@ public:
         // Do nothing.
     }
 
-    explicit SpooVariant(dagbase::InputStream& str, dag::NodeLibrary& nodeLib)
+    explicit SpooVariant(dagbase::InputStream& str, dag::NodeLibrary& nodeLib, dagbase::Lua& lua)
     :
     Node(str, nodeLib),
-    _foo(str, nodeLib),
-    _bar(str, nodeLib)
+    _foo(str, nodeLib, lua),
+    _bar(str, nodeLib, lua)
     {
         // Do nothing.
     }
@@ -587,9 +587,9 @@ public:
         return new SpooVariant(*this, facility, copyOp, keyGen);
     }
 
-    SpooVariant* create(dagbase::InputStream& str, dag::NodeLibrary& nodeLib) override
+    SpooVariant* create(dagbase::InputStream& str, dag::NodeLibrary& nodeLib, dagbase::Lua& lua) override
     {
-        return new SpooVariant(str, nodeLib);
+        return new SpooVariant(str, nodeLib, lua);
     }
 
     bool equals(const dag::Node& other) const override

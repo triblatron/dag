@@ -292,7 +292,7 @@ namespace dag
         return str;
     }
 
-    Graph::Graph(dagbase::InputStream &str, NodeLibrary& nodeLib)
+    Graph::Graph(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua& lua)
     :
     _nodeLib(&nodeLib)
     {
@@ -305,9 +305,9 @@ namespace dag
         str.readUInt32(&numNodes);
         if (_nodeLib!=nullptr)
         {
-            for (auto i=0; i<numNodes; ++i)
+            for (std::size_t i=0; i<numNodes; ++i)
             {
-                auto node = str.readRef<Node>("Node", *_nodeLib);
+                auto node = str.readRef<Node>("Node", *_nodeLib, lua);
                 //auto node = _nodeLib->instantiateNode(str);
 
                 if (node!=nullptr)
@@ -332,7 +332,7 @@ namespace dag
                 }
                 else
                 {
-                    p = new SignalPath(str, nodeLib);
+                    p = new SignalPath(str, nodeLib, lua);
                 }
             }
             if (p != nullptr)
@@ -356,7 +356,7 @@ namespace dag
                 }
                 else
                 {
-                    child = new Graph(str, nodeLib);
+                    child = new Graph(str, nodeLib, lua);
                 }
             }
             if (child != nullptr)

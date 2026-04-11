@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 #include "KeyGenerator.h"
+#include "core/LuaInterface.h"
 
 namespace dag
 {
@@ -37,13 +38,13 @@ namespace dag
         dagbase::OutputStream& write(dagbase::OutputStream& str, Node* node) const override;
 
         //! \note Delegates to Node::create() to get the exact type of the node.
-        Node* instantiateNode(dagbase::InputStream& str) override;
+        Node* instantiateNode(dagbase::InputStream& str, dagbase::Lua& lua) override;
 
         Port* instantiatePort(const std::string& className, const std::string& name, PortType::Type type, PortDirection::Direction, Value value) override;
 
-        Port* instantiatePort(dagbase::InputStream& str) override;
+        Port* instantiatePort(dagbase::InputStream& str, dagbase::Lua &lua) override;
 
-		dagbase::Class* instantiate(const char* baseClassName, dagbase::InputStream& str) override;
+		dagbase::Class* instantiate(const char* baseClassName, dagbase::InputStream& str, dagbase::Lua& lua) override;
 
 		NodeID nextNodeID() override
 		{

@@ -48,7 +48,7 @@ namespace dag
         return *this;
     }
 
-    Boundary::Boundary(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    Boundary::Boundary(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
     :
     Node()
     {
@@ -61,7 +61,7 @@ namespace dag
         str.readUInt32(&numDynamicMetaPorts);
         _dynamicMetaPorts.resize(numDynamicMetaPorts);
         str.readField(&fieldName);
-        for (auto i=0; i<numDynamicMetaPorts; ++i)
+        for (std::size_t i=0; i<numDynamicMetaPorts; ++i)
         {
             _dynamicMetaPorts[i].read(str);
         }
@@ -70,16 +70,16 @@ namespace dag
         str.readUInt32(&numDynamicPorts);
         _dynamicPorts.resize(numDynamicPorts);
         str.readField(&fieldName);
-        for (auto i=0; i<numDynamicPorts; ++i)
+        for (std::size_t i=0; i<numDynamicPorts; ++i)
         {
-            _dynamicPorts[i] = nodeLib.instantiatePort(str);
+            _dynamicPorts[i] = nodeLib.instantiatePort(str, lua);
         }
         str.readFooter();
     }
 
-    Boundary *Boundary::create(dagbase::InputStream &str, NodeLibrary &nodeLib)
+    Boundary *Boundary::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
-        return new Boundary(str, nodeLib);
+        return new Boundary(str, nodeLib, lua);
     }
 
     dagbase::OutputStream &Boundary::write(dagbase::OutputStream &str) const

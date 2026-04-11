@@ -74,7 +74,7 @@ namespace dag
 //        return str;
 //    }
 
-    Node *MemoryNodeLibrary::instantiateNode(dagbase::InputStream &str)
+    Node *MemoryNodeLibrary::instantiateNode(dagbase::InputStream &str, dagbase::Lua &lua)
     {
         std::string className;
         std::string fieldName;
@@ -82,7 +82,7 @@ namespace dag
         str.readString(&className, true);
         if (auto it=_classes.find(className); it!=_classes.end())
         {
-            return it->second->create(str, *this);
+            return it->second->create(str, *this, lua);
         }
         return nullptr;
     }
@@ -115,7 +115,7 @@ namespace dag
         return nullptr;
     }
 
-    Port *MemoryNodeLibrary::instantiatePort(dagbase::InputStream &str)
+    Port *MemoryNodeLibrary::instantiatePort(dagbase::InputStream &str, dagbase::Lua &lua)
     {
         std::string className;
         std::string fieldName;
@@ -123,23 +123,23 @@ namespace dag
         str.readString(&className, true);
         if (className == "ValuePort")
         {
-            return new ValuePort(str, *this);
+            return new ValuePort(str, *this, lua);
         }
         else if (className == "TypedPort<int64_t>")
         {
-            return new TypedPort<std::int64_t>(str, *this);
+            return new TypedPort<std::int64_t>(str, *this, lua);
         }
         else if (className == "TypedPort<double>")
         {
-            return new TypedPort<double>(str, *this);
+            return new TypedPort<double>(str, *this, lua);
         }
         else if (className == "TypedPort<string>")
         {
-            return new TypedPort<std::string>(str, *this);
+            return new TypedPort<std::string>(str, *this, lua);
         }
         else if (className == "TypedPort<bool>")
         {
-            return new TypedPort<bool>(str, *this);
+            return new TypedPort<bool>(str, *this, lua);
         }
 
         return nullptr;
@@ -154,15 +154,15 @@ namespace dag
 //        return instantaatePort(className, name, type, dir, value);
     }
 
-    dagbase::Class* MemoryNodeLibrary::instantiate(const char* baseClassName, dagbase::InputStream& str)
+    dagbase::Class* MemoryNodeLibrary::instantiate(const char* baseClassName, dagbase::InputStream& str, dagbase::Lua& lua)
     {
         if (std::strcmp(baseClassName, "Node") == 0)
         {
-            return instantiateNode(str);
+            return instantiateNode(str, lua);
         }
         else if (std::strcmp(baseClassName, "Port") == 0)
         {
-            return instantiatePort(str);
+            return instantiatePort(str, lua);
         }
 
         return nullptr;
