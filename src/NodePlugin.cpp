@@ -37,7 +37,7 @@ public:
         str.readUInt32(&numDynamicMetaPorts);
         _dynamicMetaPorts.resize(numDynamicMetaPorts);
         str.readField(&fieldName);
-        for (auto i=0; i<numDynamicMetaPorts; ++i)
+        for (std::size_t i=0; i<numDynamicMetaPorts; ++i)
         {
             _dynamicMetaPorts[i].read(str);
         }
@@ -46,7 +46,7 @@ public:
         str.readUInt32(&numDynamicPorts);
         _dynamicPorts.resize(numDynamicPorts);
         str.readField(&fieldName);
-        for (auto i=0; i<numDynamicPorts; ++i)
+        for (std::size_t i=0; i<numDynamicPorts; ++i)
         {
             _dynamicPorts[i] = nodeLib.instantiatePort(str);
         }
@@ -71,7 +71,7 @@ public:
             return false;
         }
 
-        for (auto index = 0; index<totalPorts(); ++index)
+        for (std::size_t index = 0; index<totalPorts(); ++index)
         {
             if (!dynamicPort(index)->equals(*dynamic.dynamicPort(index)))
             {

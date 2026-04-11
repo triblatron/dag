@@ -7,7 +7,6 @@
 #include "MetaPort.h"
 
 #include <string>
-#include <vector>
 #include <stdexcept>
 
 namespace dagbase
@@ -50,7 +49,7 @@ namespace dag
 
 		Node& operator=(Node&&) = default;
 
-		dagbase::InputStream& readFromStream(dagbase::InputStream& str, dag::NodeLibrary& nodeLib);
+		dagbase::InputStream& readFromStream(dagbase::InputStream& str, NodeLibrary& nodeLib);
 
         //! Compare for equality with another Node.
         //! \note Typically downcasts to a concrete type to determine a result.
@@ -153,7 +152,7 @@ namespace dag
         //! \retval ~0ULL if the Port cannot be found.
         [[nodiscard]]size_t indexOfPort(Port* port)
         {
-            for (auto i=0; i<totalPorts(); ++i)
+            for (std::size_t i=0; i<totalPorts(); ++i)
             {
                 if (dynamicPort(i)==port)
                 {
@@ -193,7 +192,7 @@ namespace dag
 
         [[nodiscard]]bool hasInputs()
         {
-            for (auto index=0; index<totalPorts(); ++index)
+            for (std::size_t index=0; index<totalPorts(); ++index)
             {
                 auto p = dynamicPort(index);
 
@@ -208,7 +207,7 @@ namespace dag
 
         [[nodiscard]]bool hasOutputs()
         {
-            for (auto index=0; index<totalPorts(); ++index)
+            for (std::size_t index=0; index<totalPorts(); ++index)
             {
                 auto p = dynamicPort(index);
 
