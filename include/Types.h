@@ -42,8 +42,16 @@ namespace dag
     public:
         enum Type
         {
+            TYPE_UINT8,
+            TYPE_INT8,
+            TYPE_UINT16,
+            TYPE_INT16,
+            TYPE_UINT32,
+            TYPE_INT32,
+            TYPE_UINT64,
             //! A std::int64_t
-            TYPE_INT,
+            TYPE_INT64,
+            TYPE_FLOAT,
             //! A double-precision floating point number.
             TYPE_DOUBLE,
             //! A std::string

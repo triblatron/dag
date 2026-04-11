@@ -9,55 +9,49 @@ namespace dag
 {
 	PortType::Type PortType::parseFromString(const char* str)
 	{
-		PortType::Type type = TYPE_UNKNOWN;
+	    TEST_ENUM(TYPE_UINT8, str);
+	    TEST_ENUM(TYPE_INT8, str);
+	    TEST_ENUM(TYPE_UINT16, str);
+	    TEST_ENUM(TYPE_INT16, str);
+	    TEST_ENUM(TYPE_UINT32, str);
+	    TEST_ENUM(TYPE_INT32, str);
+	    TEST_ENUM(TYPE_UINT64, str);
+	    TEST_ENUM(TYPE_INT64, str);
+	    TEST_ENUM(TYPE_FLOAT, str);
+	    TEST_ENUM(TYPE_DOUBLE, str);
+	    TEST_ENUM(TYPE_STRING, str);
+	    TEST_ENUM(TYPE_BOOL, str);
+	    TEST_ENUM(TYPE_VEC3D, str);
+	    TEST_ENUM(TYPE_OPAQUE, str);
+	    TEST_ENUM(TYPE_VECTOR, str);
+	    TEST_ENUM(TYPE_UNKNOWN, str);
 
-		if (std::strcmp(str, "TYPE_INTEGER")==0)
-		{
-			type = TYPE_INT;
-		}
-		else if (std::strcmp(str, "TYPE_DOUBLE") == 0)
-		{
-			type = TYPE_DOUBLE;
-		}
-		else if (std::strcmp(str, "TYPE_STRING") == 0)
-		{
-			type = TYPE_STRING;
-		}
-		else if (std::strcmp(str, "TYPE_BOOL") == 0)
-		{
-			type = TYPE_BOOL;
-		}
-		else if (std::strcmp(str, "TYPE_VEC3D") == 0)
-		{
-			type = TYPE_VEC3D;
-		}
-		else if (std::strcmp(str, "TYPE_OPAQUE") == 0)
-		{
-			type = TYPE_OPAQUE;
-		}
-		else if (std::strcmp(str, "TYPE_VECTOR") == 0)
-		{
-			type = TYPE_VECTOR;
-		}
-
-		return type;
+		return TYPE_UNKNOWN;
 	}
 
-    static const char* portTypeNames[]=
+    const char *PortType::toString(Type type)
     {
-        "TYPE_INTEGER",
-        "TYPE_DOUBLE",
-        "TYPE_STRING",
-        "TYPE_BOOL",
-        "TYPE_VEC3D",
-        "TYPE_OPAQUE",
-        "TYPE_VECTOR",
-        "TYPE_UNKNOWN"
-    };
+        switch (type)
+        {
+            ENUM_NAME(TYPE_UINT8)
+            ENUM_NAME(TYPE_INT8)
+            ENUM_NAME(TYPE_UINT16)
+            ENUM_NAME(TYPE_INT16)
+            ENUM_NAME(TYPE_UINT32)
+            ENUM_NAME(TYPE_INT32)
+            ENUM_NAME(TYPE_UINT64)
+            ENUM_NAME(TYPE_INT64)
+            ENUM_NAME(TYPE_FLOAT)
+            ENUM_NAME(TYPE_DOUBLE)
+            ENUM_NAME(TYPE_STRING)
+            ENUM_NAME(TYPE_BOOL)
+            ENUM_NAME(TYPE_VEC3D)
+            ENUM_NAME(TYPE_OPAQUE)
+            ENUM_NAME(TYPE_VECTOR)
+            ENUM_NAME(TYPE_UNKNOWN)
+        }
 
-    const char *PortType::toString(PortType::Type type)
-    {
-        return portTypeNames[type];
+        return "<error>";
     }
 
     std::string copyOpToString(CopyOp op)

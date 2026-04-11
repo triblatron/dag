@@ -412,7 +412,7 @@ namespace dag
     {
         switch (type())
         {
-            case PortType::TYPE_INT:
+            case PortType::TYPE_INT64:
             {
                 std::int64_t value = 0;
                 str.read(&value);
@@ -477,7 +477,7 @@ namespace dag
     {
         switch (type())
         {
-            case PortType::TYPE_INT:
+            case PortType::TYPE_INT64:
             {
                 std::int64_t value = 0;
                 str.read(&value);

@@ -24,6 +24,7 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/KeyGenerator.h 
 		include/MetaField.h
 		include/UnionValue.h
+        include/PrimitivePort.h
 )
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )

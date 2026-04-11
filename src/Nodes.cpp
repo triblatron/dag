@@ -21,7 +21,7 @@ namespace dag
 
     std::array<MetaPort, 1> Final::ports=
             {
-                    MetaPort("int1", PortType::TYPE_INT, PortDirection::DIR_INTERNAL)
+                    MetaPort("int1", PortType::TYPE_INT64, PortDirection::DIR_INTERNAL)
             };
 
     std::array<MetaPort, 1> Foo::ports =

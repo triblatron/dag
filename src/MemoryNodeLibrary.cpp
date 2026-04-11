@@ -99,7 +99,7 @@ namespace dag
         {
             switch (type)
             {
-                case PortType::TYPE_INT:
+                case PortType::TYPE_INT64:
                     return new TypedPort<std::int64_t>(nextPortID(), name, type, dir, static_cast<std::int64_t>(value));
                 case PortType::TYPE_DOUBLE:
                     return new TypedPort<double>(nextPortID(), name, type, dir, static_cast<double>(value));

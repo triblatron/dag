@@ -1,35 +1,27 @@
+//
+// Created by Tony Horrobin on 11/04/2026.
+//
+
 #pragma once
 
 #include "config/Export.h"
 
-#include "NodeLibrary.h"
+#include "Port.h"
 #include "io/InputStream.h"
 #include "io/OutputStream.h"
 #include "Transfer.h"
-#include "TypeTraits.h"
-#include "Types.h"
-#include <atomic>
-#include <cassert>
-#include <iostream>
 
 namespace dag
 {
-/*	class DAG_API TypedPortBase : public Port
-	{
-	public:
-		explicit TypedPortBase(Node* parent, MetaPort* metaPort);
-
-
-	};
-*/
-    class DebugPrinter;
-
-	template<typename T>
-	class TypedPort : public Port
-	{
-	public:
-		static_assert(std::is_convertible_v<T, std::string> || std::is_convertible_v<T, std::int64_t> || std::is_convertible_v<T, bool> || std::is_convertible_v<T, double>);
-        TypedPort(PortID id, std::string name, PortType::Type type, PortDirection::Direction dir, T value, Node* parent = nullptr, std::uint32_t flags=0x0)
+    template <typename T>
+    class PrimitivePort : public Port
+    {
+    public:
+        using Writer = dagbase::OutputStream & (dagbase::OutputStream::*)(T);
+        using Reader = dagbase::InputStream& (dagbase::InputStream::*)(T*) const;
+    public:
+		static_assert(std::is_convertible_v<T, std::string> || std::is_integral_v<T> || std::is_convertible_v<T, bool> || std::is_floating_point_v<T>);
+        PrimitivePort(PortID id, std::string name, PortType::Type type, PortDirection::Direction dir, T value, Node* parent = nullptr, std::uint32_t flags=0x0)
         :
         Port(id, parent, new MetaPort(std::move(name), type, dir), flags|Port::OWN_META_PORT_BIT),
         _value(value)
@@ -37,7 +29,7 @@ namespace dag
             setOwnMetaPort(true);
         }
 
-		TypedPort(PortID id, Node* parent, MetaPort* metaPort, T value, std::uint32_t flags=0x0)
+		PrimitivePort(PortID id, Node* parent, MetaPort* metaPort, T value, std::uint32_t flags=0x0)
 			:
 			Port(id, parent, metaPort, flags),
 			_value(value)
@@ -45,21 +37,21 @@ namespace dag
 			// Do nothing.
 		}
 
-        TypedPort(const TypedPort& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+        PrimitivePort(const PrimitivePort& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
         :
         Port(other, facility, copyOp, keyGen)
         {
             _value = other._value;
         }
 
-        explicit TypedPort(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua)
+        explicit PrimitivePort(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua)
         {
         	std::string className;
         	std::string fieldName;
         	str.readHeader(&className);
         	Port::readFromStream(str, nodeLib, lua);
         	str.readField(&fieldName);
-        	dagbase::ConfigurationElement::ValueType configValue(_value);
+        	dagbase::Variant configValue(_value);
             str.read(lua, &configValue);
         	if (configValue.has_value())
         	{
@@ -75,16 +67,16 @@ namespace dag
             switch(type())
             {
                 case PortType::TYPE_INT64:
-                    className = "TypedPort<int64_t>";
+                    className = "PrimitivePort<int64_t>";
                     break;
                 case PortType::TYPE_DOUBLE:
-                    className = "TypedPort<double>";
+                    className = "PrimitivePort<double>";
                     break;
                 case PortType::TYPE_STRING:
-                    className = "TypedPort<string>";
+                    className = "PrimitivePort<string>";
                     break;
                 case PortType::TYPE_BOOL:
-                    className = "TypedPort<bool>";
+                    className = "PrimitivePort<bool>";
                     break;
                 default:
                     assert(false);
@@ -101,9 +93,9 @@ namespace dag
             return str;
         }
 
-        TypedPort* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        PrimitivePort* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
         {
-            return new TypedPort(*this, facility, copyOp, keyGen);
+            return new PrimitivePort(*this, facility, copyOp, keyGen);
         }
 
 		void setValue(T value)
@@ -161,7 +153,7 @@ namespace dag
                 return false;
             }
 
-            const TypedPort<T> & typed = dynamic_cast<const TypedPort<T>&>(other);
+            const PrimitivePort<T> & typed = dynamic_cast<const PrimitivePort<T>&>(other);
 
             if (_value != typed._value)
             {
@@ -184,39 +176,4 @@ namespace dag
         static const char* classNames[];
 	};
 
-    template<typename T>
-    std::ostream &TypedPort<T>::toLua(std::ostream &str)
-    {
-        Port::toLua(str);
-        str << std::boolalpha << "value = " << _value;
-
-        return str;
-    }
-
-    template<typename T>
-    const char* TypedPort<T>::classNames[]=
-            {
-                    "TypedPort<uint8_t>",
-                    "TypedPort<int8_t>",
-                    "TypedPort<uint16_t>",
-                    "TypedPort<int16_t>",
-                    "TypedPort<uint32_t>",
-                    "TypedPort<int32_t>",
-                    "TypedPort<uint64_t>",
-                    "TypedPort<int64_t>",
-                    "TypedPort<float>",
-                    "TypedPort<double>",
-                    "TypedPort<string>",
-                    "TypedPort<bool>",
-                    "TypedPort<Vec3d>",
-                    "TypedPort<void*>",
-                    "TypedPort<std::vector<Value>>",
-                    "TypedPort<unknown>"
-            };
-
-    template<typename T>
-    void TypedPort<T>::debug(dagbase::DebugPrinter& printer) const
-    {
-        Port::debug(printer);
-    }
 }

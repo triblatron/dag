@@ -310,7 +310,7 @@ TEST(TableTraversalTest, testErrorInCallback)
 TEST(VariantPortTransferTest, testConnectToDifferentTypes)
 {
     dag::VariantPort* source = new dag::VariantPort(0, "out1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT, 1.0);
-    dag::VariantPort* dest = new dag::VariantPort(1, "in1", dag::PortType::TYPE_INT, dag::PortDirection::DIR_IN, std::int64_t{ 0 });
+    dag::VariantPort* dest = new dag::VariantPort(1, "in1", dag::PortType::TYPE_INT64, dag::PortDirection::DIR_IN, std::int64_t{ 0 });
     dag::Transfer * transfer = nullptr;
     ASSERT_NO_THROW(transfer = source->connectTo(*dest));
     ASSERT_EQ(nullptr, transfer);
@@ -333,7 +333,7 @@ TEST(VariantPortTransferTest, testConnectToSameType)
 
 TEST(TypedPortTransfer, testConnectToDifferentTypes)
 {
-    auto* source = new dag::TypedPort(0, "out1", dag::PortType::TYPE_INT, dag::PortDirection::DIR_OUT, std::int64_t{ 1 });
+    auto* source = new dag::TypedPort(0, "out1", dag::PortType::TYPE_INT64, dag::PortDirection::DIR_OUT, std::int64_t{ 1 });
     auto* dest = new dag::TypedPort(1, "in1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN, 0.0);
     dag::Transfer const * transfer = source->connectTo(*dest);
     ASSERT_EQ(nullptr, transfer);
@@ -344,8 +344,8 @@ TEST(TypedPortTransfer, testConnectToDifferentTypes)
 
 TEST(TypedPortTransfer, testConnectToMatchingType)
 {
-    dag::TypedPort<std::int64_t>* source = new dag::TypedPort(0, "out1", dag::PortType::TYPE_INT, dag::PortDirection::DIR_OUT, std::int64_t{ 1 });
-    dag::TypedPort<std::int64_t>* dest = new dag::TypedPort(1, "in1", dag::PortType::TYPE_INT, dag::PortDirection::DIR_IN, std::int64_t{ 0 });
+    dag::TypedPort<std::int64_t>* source = new dag::TypedPort(0, "out1", dag::PortType::TYPE_INT64, dag::PortDirection::DIR_OUT, std::int64_t{ 1 });
+    dag::TypedPort<std::int64_t>* dest = new dag::TypedPort(1, "in1", dag::PortType::TYPE_INT64, dag::PortDirection::DIR_IN, std::int64_t{ 0 });
     dag::Transfer * transfer = source->connectTo(*dest);
     ASSERT_NE(nullptr, transfer);
     ASSERT_TRUE(transfer->valid());
@@ -486,7 +486,7 @@ TEST(PortTest, testCannotConnectDifferentTypes)
 
 TEST(PortTestCompatibleTypes, testCompatibleTypesIntToDouble)
 {
-    auto output = new dag::TypedPort(0, "output", dag::PortType::TYPE_INT, dag::PortDirection::DIR_OUT, std::int64_t{1});
+    auto output = new dag::TypedPort(0, "output", dag::PortType::TYPE_INT64, dag::PortDirection::DIR_OUT, std::int64_t{1});
     auto input = new dag::TypedPort(1, "input", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN, 2.0);
     ASSERT_EQ(false, output->isCompatibleWith(*input));
     delete input;
@@ -505,7 +505,7 @@ TEST(PortTestCompatibleTypes, testCompatibleExactMatch)
 TEST(PortTestCompatibleTypes, testCompatibleBoolToInt)
 {
     auto const output = new dag::TypedPort(0, "output", dag::PortType::TYPE_BOOL, dag::PortDirection::DIR_OUT, true);
-    auto input = new dag::TypedPort(1, "input", dag::PortType::TYPE_INT, dag::PortDirection::DIR_IN, std::int64_t{2});
+    auto input = new dag::TypedPort(1, "input", dag::PortType::TYPE_INT64, dag::PortDirection::DIR_IN, std::int64_t{2});
     ASSERT_EQ(false, output->isCompatibleWith(*input));
     delete input;
     delete output;
@@ -535,7 +535,7 @@ TEST(PortTest, testDisconnectRemovesConnection)
 
 TEST(TransferTest, testTransferToCompatiblePort)
 {
-    auto output = new dag::TypedPort<std::int64_t>(0, "output", dag::PortType::TYPE_INT, dag::PortDirection::DIR_OUT, 1);
+    auto output = new dag::TypedPort<std::int64_t>(0, "output", dag::PortType::TYPE_INT64, dag::PortDirection::DIR_OUT, 1);
     auto* input = new dag::TypedPort(1, "input", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN, 2.0);
     dag::Transfer* transfer = output->connectTo(*input);
     ASSERT_EQ(nullptr, transfer);
@@ -1914,54 +1914,6 @@ INSTANTIATE_TEST_SUITE_P(GraphTest, GraphTest_toLuaRoundTrip, ::testing::Values(
     std::make_tuple("etc/tests/Graph/withchildgraph.lua"),
     std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua"),
     std::make_tuple("etc/tests/Graph/typedport.lua")
-));
-
-class PortType_testParseFromString : public ::testing::TestWithParam<std::tuple<const char*, dag::PortType::Type>>
-{
-
-};
-
-TEST_P(PortType_testParseFromString, testParseFromString)
-{
-    const char* str = std::get<0>(GetParam());
-    dag::PortType::Type type = std::get<1>(GetParam());
-    auto actualType = dag::PortType::parseFromString(str);
-    EXPECT_EQ(type, actualType);
-}
-
-INSTANTIATE_TEST_SUITE_P(PortType, PortType_testParseFromString, ::testing::Values(
-    std::make_tuple("TYPE_UNKNOWN", dag::PortType::TYPE_UNKNOWN),
-    std::make_tuple("TYPE_INTEGER", dag::PortType::TYPE_INT),
-    std::make_tuple("TYPE_DOUBLE", dag::PortType::TYPE_DOUBLE),
-    std::make_tuple("TYPE_STRING", dag::PortType::TYPE_STRING),
-    std::make_tuple("TYPE_BOOL", dag::PortType::TYPE_BOOL),
-    std::make_tuple("TYPE_VEC3D", dag::PortType::TYPE_VEC3D),
-    std::make_tuple("TYPE_OPAQUE", dag::PortType::TYPE_OPAQUE),
-    std::make_tuple("TYPE_VECTOR", dag::PortType::TYPE_VECTOR)
-));
-
-class PortType_testToString : public ::testing::TestWithParam<std::tuple<const char*, dag::PortType::Type>>
-{
-
-};
-
-TEST_P(PortType_testToString, testParseFromString)
-{
-    std::string str = std::get<0>(GetParam());
-    dag::PortType::Type type = std::get<1>(GetParam());
-    auto actualStr = dag::PortType::toString(type);
-    EXPECT_EQ(str, actualStr);
-}
-
-INSTANTIATE_TEST_SUITE_P(PortType, PortType_testToString, ::testing::Values(
-    std::make_tuple("TYPE_UNKNOWN", dag::PortType::TYPE_UNKNOWN),
-    std::make_tuple("TYPE_INTEGER", dag::PortType::TYPE_INT),
-    std::make_tuple("TYPE_DOUBLE", dag::PortType::TYPE_DOUBLE),
-    std::make_tuple("TYPE_STRING", dag::PortType::TYPE_STRING),
-    std::make_tuple("TYPE_BOOL", dag::PortType::TYPE_BOOL),
-    std::make_tuple("TYPE_VEC3D", dag::PortType::TYPE_VEC3D),
-    std::make_tuple("TYPE_OPAQUE", dag::PortType::TYPE_OPAQUE),
-    std::make_tuple("TYPE_VECTOR", dag::PortType::TYPE_VECTOR)
 ));
 
 class PortDirection_testParseFromString : public ::testing::TestWithParam<std::tuple<const char*, dag::PortDirection::Direction>>

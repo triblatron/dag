@@ -12,7 +12,7 @@ namespace dag
     std::array<MetaPort,3> MathsNode::ports =
             {
                     MetaPort{"angle",PortType::TYPE_DOUBLE, PortDirection::DIR_IN},
-                    MetaPort("unit", PortType::TYPE_INT, PortDirection::DIR_INTERNAL),
+                    MetaPort("unit", PortType::TYPE_INT64, PortDirection::DIR_INTERNAL),
                     MetaPort("output", PortType::TYPE_DOUBLE, PortDirection::DIR_OUT)
             };
 
