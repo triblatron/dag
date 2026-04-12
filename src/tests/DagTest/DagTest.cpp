@@ -30,7 +30,11 @@
 #include "core/Class.h"
 #include "core/MetaClass.h"
 #include "io/BinaryFormat.h"
+#include "io/BinaryInputStream.h"
+#include "io/BinaryOutputStream.h"
 #include "io/TextFormat.h"
+#include "io/TextInputStream.h"
+#include "io/TextOutputStream.h"
 
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dag::PortDirection::Direction, double>>
 {
@@ -1721,18 +1725,19 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
 {
     auto formatClassName = std::get<0>(GetParam());
     auto graphFilename = std::get<1>(GetParam());
-    dagbase::StreamFormat* format = nullptr;
+    //dagbase::StreamFormat* format = nullptr;
     dagbase::MemoryBackingStore store(dagbase::BackingStore::MODE_OUTPUT_BIT);
+    dagbase::OutputStream* sut  = nullptr;
     if (formatClassName == "TextFormat")
     {
-        format = new dagbase::TextFormat(&store);
+        sut = new dagbase::TextOutputStream(&store);
     }
     else if (formatClassName == "BinaryFormat")
     {
-        format = new dagbase::BinaryFormat(&store);
+        sut = new dagbase::BinaryOutputStream(&store);
     }
-    ASSERT_NE(nullptr, format);
-    format->setMode(dagbase::StreamFormat::MODE_OUTPUT);
+    ASSERT_NE(nullptr, sut);
+    store.setMode(dagbase::BackingStore::MODE_OUTPUT_BIT);
     dag::NodePluginScanner scanner;
     dag::MemoryNodeLibrary nodeLib;
 
@@ -1740,14 +1745,25 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
 
     auto g1 = dag::Graph::fromFile(nodeLib, graphFilename);
 
-    auto out = new dagbase::FormatAgnosticOutputStream(format,&store);
-    if (out->writeRef(g1))
+    //auto out = new dagbase::FormatAgnosticOutputStream(format,&store);
+    if (sut->writeRef(g1))
     {
-        g1->write(*out);
+        g1->write(*sut);
     }
-    format->flush();
-    format->debug();
-    auto in = new dagbase::FormatAgnosticInputStream(format, &store);
+    sut->flush();
+    //sut->debug();
+    store.setMode(dagbase::BackingStore::MODE_INPUT_BIT);
+    dagbase::InputStream* in = nullptr;
+    if (formatClassName == "TextFormat")
+    {
+        in = new dagbase::TextInputStream(&store);
+    }
+    else if (formatClassName == "BinaryFormat")
+    {
+        in = new dagbase::BinaryInputStream(&store);
+    }
+    ASSERT_NE(nullptr, in);
+
     dagbase::Stream::ObjId id = 0;
     dag::Graph* g2 = nullptr;
     dagbase::Stream::Ref ref = in->readRef(&id);
@@ -1768,9 +1784,8 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
     ASSERT_EQ(*g1, *g2);
     delete g2;
     delete in;
-    delete out;
+    delete sut;
     delete g1;
-    delete format;
 }
 
 INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
