@@ -20,8 +20,6 @@
 #include "NodePluginScanner.h"
 #include "CloningFacility.h"
 #include "io/MemoryBackingStore.h"
-#include "io/FormatAgnosticOutputStream.h"
-#include "io/FormatAgnosticInputStream.h"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -1743,13 +1741,11 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
 
     auto g1 = dag::Graph::fromFile(nodeLib, graphFilename);
 
-    //auto out = new dagbase::FormatAgnosticOutputStream(format,&store);
     if (sut->writeRef(g1))
     {
         g1->write(*sut);
     }
     sut->flush();
-    //sut->debug();
     store.setMode(dagbase::BackingStore::MODE_INPUT_BIT);
     dagbase::InputStream* in = nullptr;
     if (formatClassName == "TextFormat")
