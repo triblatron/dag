@@ -29,10 +29,8 @@
 
 #include "core/Class.h"
 #include "core/MetaClass.h"
-#include "io/BinaryFormat.h"
 #include "io/BinaryInputStream.h"
 #include "io/BinaryOutputStream.h"
-#include "io/TextFormat.h"
 #include "io/TextInputStream.h"
 #include "io/TextOutputStream.h"
 
@@ -2100,17 +2098,14 @@ TEST_P(GraphTest_testReadFromLuaThenSerialise, testSerialise)
     auto sut = dag::Graph::fromFile(nodeLib, graphFilename);
     ASSERT_NE(nullptr, sut);
     auto* buf = new dagbase::MemoryBackingStore(dagbase::BackingStore::MODE_OUTPUT_BIT);
-    dagbase::BinaryFormat format(buf);
-    format.setMode(dagbase::StreamFormat::MODE_OUTPUT);
-    dagbase::FormatAgnosticOutputStream ostr(&format, buf);
+    dagbase::BinaryOutputStream ostr(buf);
     if (ostr.writeRef(sut))
     {
         sut->write(ostr);
     }
-    format.flush();
-    format.setMode(dagbase::StreamFormat::MODE_INPUT);
+    ostr.flush();
     buf->setMode(dagbase::BackingStore::MODE_INPUT_BIT);
-    dagbase::FormatAgnosticInputStream istr(&format, buf);
+    dagbase::BinaryInputStream istr(buf);
     dagbase::Stream::ObjId id{~0U};
     dag::Graph* actual = nullptr;
     dagbase::Stream::Ref ref = istr.readRef(&id);
