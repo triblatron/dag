@@ -6,10 +6,10 @@
 
 #include "config/Export.h"
 
-#include "Port.h"
+#include "../thirdparty/dagbase/include/core/Port.h"
 #include "io/InputStream.h"
 #include "io/OutputStream.h"
-#include "Transfer.h"
+#include "../thirdparty/dagbase/include/core/Transfer.h"
 
 namespace dag
 {

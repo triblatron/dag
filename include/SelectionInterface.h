@@ -6,23 +6,26 @@
 
 #include "config/Export.h"
 
-#include "Types.h"
+#include "../thirdparty/dagbase/include/core/Types.h"
 #include "config/config.h"
-#include "Node.h"
+#include "../thirdparty/dagbase/include/core/Node.h"
 
 #include <cstdint>
 #include <vector>
 #include <algorithm>
 
-namespace dag
+namespace dagbase
 {
     class Node;
+}
 
+namespace dag
+{
     class DAG_API SelectionInterface
     {
     public:
-        typedef NodeSet Cont;
-        typedef std::vector<Node*> NodeArray;
+        typedef dagbase::NodeSet Cont;
+        typedef std::vector<dagbase::Node*> NodeArray;
 
     public:
         virtual ~SelectionInterface() = default;
@@ -31,7 +34,7 @@ namespace dag
 
         virtual void add(Cont::iterator begin, Cont::iterator end) = 0;
 
-        virtual void add(Node* node) = 0;
+        virtual void add(dagbase::Node* node) = 0;
 
         virtual void subtract(Cont::iterator begin, Cont::iterator end) = 0;
 
@@ -39,12 +42,12 @@ namespace dag
 
         virtual void toggle(Cont::iterator begin, Cont::iterator end) = 0;
 
-        virtual bool isSelected(Node* node) = 0;
+        virtual bool isSelected(dagbase::Node* node) = 0;
 
         virtual void computeBoundaryNodes(NodeArray* inputs, NodeArray* outputs, NodeArray* internals) = 0;
 
-        virtual void reconnectInputs(NodeArray& inputs, Node* newSource) = 0;
+        virtual void reconnectInputs(NodeArray& inputs, dagbase::Node* newSource) = 0;
 
-        virtual void reconnectOutputs(NodeArray& outputs, Node* newSink) = 0;
+        virtual void reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink) = 0;
     };
 }

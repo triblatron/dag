@@ -6,14 +6,18 @@
 
 #include "config/Export.h"
 
-#include "Types.h"
+#include "core/Types.h"
 
 #include <vector>
 #include <string>
 
-namespace dag
+namespace dagbase
 {
     class Node;
+}
+
+namespace dag
+{
     class SelectionInterface;
 
     class DAG_API NodeEditorInterface
@@ -30,40 +34,40 @@ namespace dag
             //! Flip between selected and deselected.
             SELECTION_TOGGLE,
         };
-        typedef std::vector<Node*> NodeArray;
+        typedef std::vector<dagbase::Node*> NodeArray;
 public:
         virtual ~NodeEditorInterface() = default;
 
         //! Select a set of Nodes with the given mode
         //! \param[in] mode The mode of the selection
-        virtual Status select(SelectionMode mode, NodeSet& a) = 0;
+        virtual dagbase::Status select(SelectionMode mode, dagbase::NodeSet& a) = 0;
 
         //! Select every node in the Graph
-        virtual Status selectAll() = 0;
+        virtual dagbase::Status selectAll() = 0;
 
         //! Cancel the selection
-        virtual Status selectNone() = 0;
+        virtual dagbase::Status selectNone() = 0;
 
         virtual size_t selectionCount() = 0;
 
         //! Create a Node from the library
-        virtual Status createNode(std::string const& className, std::string const& name) = 0;
+        virtual dagbase::Status createNode(std::string const& className, std::string const& name) = 0;
 
         //! Delete a Node from the Graph
-        virtual Status deleteNode(NodeID id) = 0;
+        virtual dagbase::Status deleteNode(dagbase::NodeID id) = 0;
 
         //! Connect two ports
-        virtual Status connect(PortID from, PortID to) = 0;
+        virtual dagbase::Status connect(dagbase::PortID from, dagbase::PortID to) = 0;
 
         //! Disconnect two ports
-        virtual Status disconnect(SignalPathID id) = 0;
+        virtual dagbase::Status disconnect(dagbase::SignalPathID id) = 0;
 
         //! Create a Group from the selection
-        virtual Status createChild() = 0;
+        virtual dagbase::Status createChild() = 0;
 
         //! Create a template from a Group
-        virtual Status createTemplate(NodeID id) = 0;
+        virtual dagbase::Status createTemplate(dagbase::NodeID id) = 0;
 
-        virtual Status deleteTemplate(TemplateID id) = 0;
+        virtual dagbase::Status deleteTemplate(dagbase::TemplateID id) = 0;
     };
 }

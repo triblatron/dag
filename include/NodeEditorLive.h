@@ -10,16 +10,19 @@
 
 #include <vector>
 
+namespace dagbase
+{
+    class Transfer;
+}
+
 namespace dag
 {
     class Graph;
     class MemoryNodeLibrary;
     class SelectionLive;
-    class Transfer;
 
     class DAG_API NodeEditorLive : public NodeEditorInterface
     {
-    public:
     public:
         NodeEditorLive();
 
@@ -27,40 +30,40 @@ namespace dag
 
         //! Select a set of Nodes with the given mode
         //! \param[in] mode The mode of the selection
-        Status select(SelectionMode mode, NodeSet& a) override;
+        dagbase::Status select(SelectionMode mode, dagbase::NodeSet& a) override;
 
         //! Select every node in the Graph
-        Status selectAll() override;
+        dagbase::Status selectAll() override;
 
         //! Cancel the selection
-        Status selectNone() override;
+        dagbase::Status selectNone() override;
 
         size_t selectionCount() override;
 
         //! Create a Node from the library
-        Status createNode(std::string const& className, std::string const& name) override;
+        dagbase::Status createNode(std::string const& className, std::string const& name) override;
 
         //! Delete a Node from the Graph
-        Status deleteNode(NodeID id) override;
+        dagbase::Status deleteNode(dagbase::NodeID id) override;
 
         //! Connect two ports
-        Status connect(PortID from, PortID to) override;
+        dagbase::Status connect(dagbase::PortID from, dagbase::PortID to) override;
 
         //! Disconnect two ports
-        Status disconnect(SignalPathID id) override;
+        dagbase::Status disconnect(dagbase::SignalPathID id) override;
 
         //! Create a Group from the selection
-        Status createChild() override;
+        dagbase::Status createChild() override;
 
         //! Create a template from a Group
-        Status createTemplate(NodeID id) override;
+        dagbase::Status createTemplate(dagbase::NodeID id) override;
 
-        Status deleteTemplate(TemplateID id) override;
+        dagbase::Status deleteTemplate(dagbase::TemplateID id) override;
     private:
         MemoryNodeLibrary *_nodeLib{nullptr};
-        Graph* _graph{nullptr};
+        dagbase::Graph* _graph{nullptr};
         SelectionLive* _selection{nullptr};
-        typedef std::vector<Transfer*> TransferArray;
+        typedef std::vector<dagbase::Transfer*> TransferArray;
         TransferArray _transfers;
     };
 }

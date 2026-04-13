@@ -1,18 +1,18 @@
 // ReSharper disable CppInconsistentNaming
 #include <benchmark/benchmark.h>
 
-#include "SignalPathDef.h"
+#include "core/SignalPathDef.h"
 #include "UnionValue.h"
-#include "Value.h"
-#include "Port.h"
+#include "core/Value.h"
+#include "core/Port.h"
 #include "MemoryNodeLibrary.h"
 #include "Nodes.h"
-#include "NodeDescriptor.h"
-#include "MetaPort.h"
+#include "core/NodeDescriptor.h"
+#include "core/MetaPort.h"
 
-#include "TypedPort.h"
+#include "core/TypedPort.h"
 #include "SelectionLive.h"
-#include "Graph.h"
+#include "core/Graph.h"
 
 class DataSink
 {
@@ -54,7 +54,7 @@ static void BM_TypedAccessor(benchmark::State& state)
 {
 	const DataSource* source = new DataSource(1);
     auto* sink = new DataSink();
-    auto* sut = new dag::TypedTransferMemFun<DataSource, DataSink, int>(source, sink, &DataSource::foo, &DataSink::setFoo);
+    auto* sut = new dagbase::TypedTransferMemFun<DataSource, DataSink, int>(source, sink, &DataSource::foo, &DataSink::setFoo);
     for (auto _ : state)
     {
         sut->makeItSo();
@@ -68,9 +68,9 @@ BENCHMARK(BM_TypedAccessor);
 
 static void BM_TypedTransferMemFun(benchmark::State& state) {
 //    state.PauseTiming();
-    auto* foo = new dag::Output(1);
-    auto* bar = new dag::Input();
-    auto* sut = new dag::TypedTransferMemFun<dag::Output, dag::Input, int>(foo, bar, &dag::Output::foo, &dag::Input::setFoo);
+    auto* foo = new dagbase::Output(1);
+    auto* bar = new dagbase::Input();
+    auto* sut = new dagbase::TypedTransferMemFun<dagbase::Output, dagbase::Input, int>(foo, bar, &dagbase::Output::foo, &dagbase::Input::setFoo);
 //    state.ResumeTiming();
     for (auto _ : state)
         sut->makeItSo();
@@ -93,14 +93,14 @@ BENCHMARK(BM_StringCopy);
 
 static void BM_AnyTransfer(benchmark::State& state)
 {
-    auto* foo = new dag::Output(1);
-    auto* bar = new dag::Input();
-    dag::SignalPathDef path;
-    path.source.node = dag::NodeID(1);
-    path.source.port = dag::PortID(0);
-    path.dest.node = dag::NodeID(2);
-    path.dest.port = dag::PortID(0);
-    auto* sut = new dag::AnyTransfer(path, *foo, *bar);
+    auto* foo = new dagbase::Output(1);
+    auto* bar = new dagbase::Input();
+    dagbase::SignalPathDef path;
+    path.source.node = dagbase::NodeID(1);
+    path.source.port = dagbase::PortID(0);
+    path.dest.node = dagbase::NodeID(2);
+    path.dest.port = dagbase::PortID(0);
+    auto* sut = new dagbase::AnyTransfer(path, *foo, *bar);
     for ( auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -112,14 +112,14 @@ BENCHMARK(BM_AnyTransfer);
 
 static void BM_AbstractAnyTransfer(benchmark::State& state)
 {
-    auto foo = new dag::FooAbstractAny(1);
-    auto bar = new dag::FooAbstractAny(0);
-    dag::SignalPathDef path;
+    auto foo = new dagbase::FooAbstractAny(1);
+    auto bar = new dagbase::FooAbstractAny(0);
+    dagbase::SignalPathDef path;
     path.source.node = 1;
     path.source.port = 0;
     path.dest.node = 2;
     path.dest.port = 0;
-    auto sut = new dag::AbstractAnyTransfer(path, *foo, *bar);
+    auto sut = new dagbase::AbstractAnyTransfer(path, *foo, *bar);
     for (auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -131,14 +131,14 @@ BENCHMARK(BM_AbstractAnyTransfer);
 
 static void BM_TypedSwitchTransfer(benchmark::State& state)
 {
-    auto foo = new dag::FooTypedSwitch(1);
-    auto bar = new dag::FooTypedSwitch(0);
-    dag::SignalPathDef path;
+    auto foo = new dagbase::FooTypedSwitch(1);
+    auto bar = new dagbase::FooTypedSwitch(0);
+    dagbase::SignalPathDef path;
     path.source.node = 1;
     path.source.port = 0;
     path.dest.node = 2;
     path.dest.port = 0;
-    auto sut = new dag::TypedSwitchTransfer(path, *foo, *bar);
+    auto sut = new dagbase::TypedSwitchTransfer(path, *foo, *bar);
     for (auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -150,9 +150,9 @@ BENCHMARK(BM_TypedSwitchTransfer);
 
 static void BM_TypedPointerTransfer(benchmark::State& state)
 {
-    auto node = new dag::Output(1);
-    auto node2 = new dag::Input();
-    auto sut = new dag::TypedPointerTransfer(&node->_foo, &node2->_foo);
+    auto node = new dagbase::Output(1);
+    auto node2 = new dagbase::Input();
+    auto sut = new dagbase::TypedPointerTransfer(&node->_foo, &node2->_foo);
     for (auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -164,14 +164,14 @@ BENCHMARK(BM_TypedPointerTransfer);
 
 static void BM_VariantTransfer(benchmark::State& state)
 {
-    auto* foo = new dag::Baz(1);
-    auto* bar = new dag::Qux();
-    dag::SignalPathDef path;
+    auto* foo = new dagbase::Baz(1);
+    auto* bar = new dagbase::Qux();
+    dagbase::SignalPathDef path;
     path.source.node = 1;
     path.source.port = 0;
     path.dest.node = 2;
     path.dest.port = 0;
-    auto* sut = new dag::VariantTransfer(&path, foo, bar);
+    auto* sut = new dagbase::VariantTransfer(&path, foo, bar);
     for (auto _ : state)
         sut->makeItSo();
     delete sut;
@@ -181,7 +181,7 @@ static void BM_VariantTransfer(benchmark::State& state)
 
 BENCHMARK(BM_VariantTransfer);
 
-typedef dag::Value VariantValue;
+typedef dagbase::Value VariantValue;
 
 static void BM_VariantSetPrimitive(benchmark::State& state)
 {
@@ -217,7 +217,7 @@ static void BM_VariantSetVector(benchmark::State& state)
 
     for (auto _ : state)
     {
-        v = std::vector<VariantValue>{dag::Value(std::int64_t(1)),dag::Value(std::int64_t(2)),dag::Value(std::int64_t(3))};
+        v = std::vector<VariantValue>{dagbase::Value(std::int64_t(1)),dagbase::Value(std::int64_t(2)),dagbase::Value(std::int64_t(3))};
     }
 }
 
@@ -400,7 +400,7 @@ BENCHMARK(BM_ModifyArrayChangeTypeFromNumeric);
 static void BM_GetTypedPortValueStatic(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    dag::TypedPort<double> port(nodeLib.nextPortID(), nullptr, new dag::MetaPort("port1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN), 1.0);
+    dagbase::TypedPort<double> port(nodeLib.nextPortID(), nullptr, new dagbase::MetaPort("port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN), 1.0);
 
     for (auto _ : state)
     {
@@ -417,11 +417,11 @@ BENCHMARK(BM_GetTypedPortValueStatic);
 static void BM_GetPortValueStatic(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    auto* port = new dag::ValuePort(nodeLib.nextPortID(), new dag::MetaPort("port1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN), dag::Value(1.0));
+    auto* port = new dagbase::ValuePort(nodeLib.nextPortID(), new dagbase::MetaPort("port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN), dagbase::Value(1.0));
 
     for (auto _ : state)
     {
-        dag::Value value = port->value();
+        dagbase::Value value = port->value();
 
         value += 1.0;
 
@@ -471,11 +471,11 @@ BENCHMARK(BM_SetValueDoublePort);
 static void BM_ValuePortTransfer(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    auto g = new dag::Graph();
+    auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto foo = dynamic_cast<dag::Foo*>(g->createNode("Foo", "foo1"));
     auto bar = dynamic_cast<dag::Bar*>(g->createNode("Bar", "bar1"));
-    dag::PortTransfer transfer(dynamic_cast<dag::ValuePort*>(bar->dynamicPort(0)), dynamic_cast<dag::ValuePort*>(foo->dynamicPort(0)));
+    dagbase::PortTransfer transfer(dynamic_cast<dagbase::ValuePort*>(bar->dynamicPort(0)), dynamic_cast<dagbase::ValuePort*>(foo->dynamicPort(0)));
 
     for (auto _ : state)
     {
@@ -490,26 +490,26 @@ BENCHMARK(BM_ValuePortTransfer);
 class InputNode
 {
 public:
-    InputNode(dag::NodeLibrary& nodeLib)
+    InputNode(dagbase::NodeLibrary& nodeLib)
         :
-        in1(nodeLib.nextPortID(), nullptr, new dag::MetaPort("in1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN), 1.0)
+        in1(nodeLib.nextPortID(), nullptr, new dagbase::MetaPort("in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN), 1.0)
     {
         // Do nothing.
     }
-    dag::TypedPort<double> in1;
+    dagbase::TypedPort<double> in1;
 };
 
 class OutputNode
 {
 public:
-    OutputNode(dag::NodeLibrary& nodeLib)
+    OutputNode(dagbase::NodeLibrary& nodeLib)
         :
-        out1(nodeLib.nextPortID(), nullptr, new dag::MetaPort("_out1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0)
+        out1(nodeLib.nextPortID(), nullptr, new dagbase::MetaPort("_out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT), 1.0)
     {
         // Do nothing.
     }
 
-    dag::TypedPort<double> out1;
+    dagbase::TypedPort<double> out1;
 };
 
 static void BM_TypedPortTransfer(benchmark::State& state)
@@ -517,7 +517,7 @@ static void BM_TypedPortTransfer(benchmark::State& state)
     dag::MemoryNodeLibrary nodeLib;
     InputNode foo(nodeLib);
     OutputNode bar(nodeLib);
-    dag::Transfer* transfer = bar.out1.connectTo(foo.in1);
+    dagbase::Transfer* transfer = bar.out1.connectTo(foo.in1);
 
     for (auto _ : state)
     {
@@ -529,19 +529,19 @@ static void BM_TypedPortTransfer(benchmark::State& state)
 
 BENCHMARK(BM_TypedPortTransfer);
 
-class SpooVariant : public dag::Node
+class SpooVariant : public dagbase::Node
 {
 public:
-    SpooVariant(dag::KeyGenerator& nodeLib, const std::string& name)
+    SpooVariant(dagbase::KeyGenerator& nodeLib, const std::string& name)
         :
-        Node(nodeLib, name, dag::NodeCategory::CAT_SOURCE),
-        _foo(nodeLib.nextPortID(), new dag::MetaPort("foo1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0),
-        _bar(nodeLib.nextPortID(), new dag::MetaPort("bar1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN), 0.0)
+        Node(nodeLib, name, dagbase::NodeCategory::CAT_SOURCE),
+        _foo(nodeLib.nextPortID(), new dagbase::MetaPort("foo1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT), 1.0),
+        _bar(nodeLib.nextPortID(), new dagbase::MetaPort("bar1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN), 0.0)
     {
         // Do nothing.
     }
 
-    explicit SpooVariant(dagbase::InputStream& str, dag::NodeLibrary& nodeLib, dagbase::Lua& lua)
+    explicit SpooVariant(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua)
     :
     Node(str, nodeLib),
     _foo(str, nodeLib, lua),
@@ -550,9 +550,9 @@ public:
         // Do nothing.
     }
 
-    explicit SpooVariant(const SpooVariant& other, dag::CloningFacility& facility, dag::CopyOp copyOp, dag::KeyGenerator* keyGen);
+    explicit SpooVariant(const SpooVariant& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen);
 
-    void setFoo(const dag::VariantPort::ValueType& value)
+    void setFoo(const dagbase::VariantPort::ValueType& value)
     {
         _foo.setValue(value);
     }
@@ -562,7 +562,7 @@ public:
         return std::get<double>(_foo.value());
     }
 
-    dag::VariantPort* foo()
+    dagbase::VariantPort* foo()
     {
         return &_foo;
     }
@@ -572,7 +572,7 @@ public:
         _foo.setValue(value);
     }
 
-    dag::VariantPort* bar()
+    dagbase::VariantPort* bar()
     {
         return &_bar;
     }
@@ -582,17 +582,17 @@ public:
         return "_p_SpooVariant";
     }
 
-    SpooVariant* clone(dag::CloningFacility& facility, dag::CopyOp copyOp, dag::KeyGenerator* keyGen) override
+    SpooVariant* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
     {
         return new SpooVariant(*this, facility, copyOp, keyGen);
     }
 
-    SpooVariant* create(dagbase::InputStream& str, dag::NodeLibrary& nodeLib, dagbase::Lua& lua) override
+    SpooVariant* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override
     {
         return new SpooVariant(str, nodeLib, lua);
     }
 
-    bool equals(const dag::Node& other) const override
+    bool equals(const dagbase::Node& other) const override
     {
         if (!Node::operator==(other))
         {
@@ -619,14 +619,14 @@ public:
         return str;
     }
 
-    void describe(dag::NodeDescriptor& descriptor) const override
+    void describe(dagbase::NodeDescriptor& descriptor) const override
     {
         Node::describe(descriptor);
         descriptor.ports.emplace_back(_foo.name(), _foo.type(), _foo.dir());
         descriptor.ports.emplace_back(_bar.name(), _bar.type(), _bar.dir());
     }
 
-    dag::Port* dynamicPort(size_t index) override
+    dagbase::Port* dynamicPort(size_t index) override
     {
 	    if (index == 0)
 	    {
@@ -640,7 +640,7 @@ public:
         return nullptr;
     }
     
-    static dag::MetaPort const* metaPort(size_t index)
+    static dagbase::MetaPort const* metaPort(size_t index)
     {
         if (index < firstPort + numPorts)
         {
@@ -650,26 +650,26 @@ public:
         return nullptr;
     }
     
-    const dag::MetaPort * dynamicMetaPort(size_t index) const override
+    const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
     {
         return metaPort(index);
     }
 protected:
-    static const std::array<dag::MetaPort, 2> ports;
+    static const std::array<dagbase::MetaPort, 2> ports;
     static constexpr size_t firstPort = 0;
     static constexpr size_t numPorts = 2;
 private:
-    dag::VariantPort _foo;
-    dag::VariantPort _bar;
+    dagbase::VariantPort _foo;
+    dagbase::VariantPort _bar;
 };
 
-const std::array<dag::MetaPort, 2> SpooVariant::ports =
+const std::array<dagbase::MetaPort, 2> SpooVariant::ports =
 {
-    dag::MetaPort("foo1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT),
-    dag::MetaPort("bar1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_IN)
+    dagbase::MetaPort("foo1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT),
+    dagbase::MetaPort("bar1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN)
 };
 
-SpooVariant::SpooVariant(const SpooVariant &other, dag::CloningFacility& facility, dag::CopyOp copyOp, dag::KeyGenerator *keyGen)
+SpooVariant::SpooVariant(const SpooVariant &other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator *keyGen)
 :
 Node(other,facility,copyOp,keyGen),
 _foo(other._foo, facility, copyOp, keyGen),
@@ -681,7 +681,7 @@ _bar(other._bar, facility, copyOp, keyGen)
 static void BM_SetVariantPort(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    dag::VariantPort port(nodeLib.nextPortID(), new dag::MetaPort("_out1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0);
+    dagbase::VariantPort port(nodeLib.nextPortID(), new dagbase::MetaPort("_out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT), 1.0);
 
     for (auto _ : state)
     {
@@ -697,7 +697,7 @@ static void BM_VariantPortTransfer(benchmark::State& state)
     SpooVariant * source = new SpooVariant(nodeLib, "source");
     SpooVariant * dest = new SpooVariant(nodeLib, "dest");
     source->foo()->setValue(1.0);
-    dag::Transfer * sut = new dag::VariantPortTransfer(source->foo(), dest->bar());
+    dagbase::Transfer * sut = new dagbase::VariantPortTransfer(source->foo(), dest->bar());
     
     for (auto _ : state)
     {
@@ -764,7 +764,7 @@ static void BM_PropertyTransfer(benchmark::State& state)
 {
     auto source = new FooSource(1);
     auto sink = new FooSink();
-    dag::Transfer* transfer = new FooTransfer(*source,*sink);
+    dagbase::Transfer* transfer = new FooTransfer(*source,*sink);
     
     for (auto _ : state)
     {
@@ -781,11 +781,11 @@ BENCHMARK(BM_PropertyTransfer);
 static void BM_NodeDescribe(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    dag::FooTyped const* foo = new dag::FooTyped(nodeLib, "foo1", dag::NodeCategory::CAT_SINK);
+    dag::FooTyped const* foo = new dag::FooTyped(nodeLib, "foo1", dagbase::NodeCategory::CAT_SINK);
 
     for (auto _ : state)
     {
-        dag::NodeDescriptor d;
+        dagbase::NodeDescriptor d;
 
         foo->describe(d);
     }
@@ -797,14 +797,14 @@ BENCHMARK(BM_NodeDescribe);
 static void BM_VirtualPortArray(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    auto g = new dag::Graph();
+    auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto sut = dynamic_cast<dag::Final*>(g->createNode("Final", "final1"));
-    sut->addDynamicPort(new dag::TypedPort<double>(nodeLib.nextPortID(), nullptr, new dag::MetaPort("test1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0));
+    sut->addDynamicPort(new dagbase::TypedPort<double>(nodeLib.nextPortID(), nullptr, new dagbase::MetaPort("test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT), 1.0));
 
     for (auto _ : state)
     {
-        auto port = static_cast<dag::TypedPort<double>*>(sut->dynamicPort(0));
+        auto port = static_cast<dagbase::TypedPort<double>*>(sut->dynamicPort(0));
 
         port->setValue(2.0);
     }
@@ -816,10 +816,10 @@ BENCHMARK(BM_VirtualPortArray);
 static void BM_VirtualMetaPortArray(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    auto g = new dag::Graph();
+    auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto sut = dynamic_cast<dag::Final*>(g->createNode("Final", "final1"));
-    sut->addDynamicPort(new dag::TypedPort<double>(nodeLib.nextPortID(), nullptr, new dag::MetaPort("test1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_OUT), 1.0));
+    sut->addDynamicPort(new dagbase::TypedPort<double>(nodeLib.nextPortID(), nullptr, new dagbase::MetaPort("test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT), 1.0));
     std::int64_t i = 0;
 
     for (auto _ : state)
@@ -836,7 +836,7 @@ BENCHMARK(BM_VirtualMetaPortArray);
 static void BM_SelectionLiveAdd(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    auto g = new dag::Graph();
+    auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto node1 = dynamic_cast<dag::FooTyped*>(g->createNode("FooTyped", "foo1"));
     auto node2 = dynamic_cast<dag::BarTyped*>(g->createNode("BarTyped", "bar1"));
@@ -859,7 +859,7 @@ BENCHMARK(BM_SelectionLiveAdd);
 static void BM_SelectionLiveSubtract(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    auto g = new dag::Graph();
+    auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto node1 = dynamic_cast<dag::FooTyped*>(g->createNode("FooTyped", "foo1"));
     auto node2 = dynamic_cast<dag::BarTyped*>(g->createNode("BarTyped", "bar1"));
@@ -884,7 +884,7 @@ BENCHMARK(BM_SelectionLiveSubtract);
 static void BM_SelectionLiveSet(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    auto g = new dag::Graph();
+    auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto node1 = dynamic_cast<dag::FooTyped*>(g->createNode("FooTyped", "foo1"));
     auto node2 = dynamic_cast<dag::BarTyped*>(g->createNode("BarTyped", "bar1"));
@@ -907,7 +907,7 @@ BENCHMARK(BM_SelectionLiveSet);
 static void BM_SelectionLiveToggle(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    auto g = new dag::Graph();
+    auto g = new dagbase::Graph();
     auto node1 = dynamic_cast<dag::FooTyped*>(g->createNode("FooTyped", "foo1"));
     auto node2 = dynamic_cast<dag::BarTyped*>(g->createNode("BarTyped", "bar1"));
     dag::SelectionInterface::Cont a;
@@ -930,10 +930,10 @@ BENCHMARK(BM_SelectionLiveToggle);
 
 static void BM_DynamicCastPort(benchmark::State& state)
 {
-    dag::Port* p = new dag::TypedPort<double>(0, "port1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    dagbase::Port* p = new dagbase::TypedPort<double>(0, "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL, 0.0, nullptr);
     for (auto _ : state)
     {
-        auto typed = dynamic_cast<dag::TypedPort<double>*>(p);
+        auto typed = dynamic_cast<dagbase::TypedPort<double>*>(p);
         // Avoid optimising out the cast.
         typed->setValue(1.0);
     }
@@ -943,10 +943,10 @@ BENCHMARK(BM_DynamicCastPort);
 
 static void BM_StaticCastPort(benchmark::State& state)
 {
-    dag::Port* p = new dag::TypedPort<double>(0, "port1", dag::PortType::TYPE_DOUBLE, dag::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    dagbase::Port* p = new dagbase::TypedPort<double>(0, "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL, 0.0, nullptr);
     for (auto _ : state)
     {
-        auto typed = static_cast<dag::TypedPort<double>*>(p);
+        auto typed = static_cast<dagbase::TypedPort<double>*>(p);
         typed->setValue(1.0);
     }
 }

@@ -4,16 +4,16 @@
 #include "config/config.h"
 
 #include "MathNode.h"
-#include "NodeDescriptor.h"
+#include "../thirdparty/dagbase/include/core/NodeDescriptor.h"
 #include <cmath>
 
 namespace dag
 {
-    std::array<MetaPort,3> MathsNode::ports =
+    std::array<dagbase::MetaPort,3> MathsNode::ports =
             {
-                    MetaPort{"angle",PortType::TYPE_DOUBLE, PortDirection::DIR_IN},
-                    MetaPort("unit", PortType::TYPE_INT64, PortDirection::DIR_INTERNAL),
-                    MetaPort("output", PortType::TYPE_DOUBLE, PortDirection::DIR_OUT)
+                    dagbase::MetaPort{"angle",dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN},
+                    dagbase::MetaPort("unit", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL),
+                    dagbase::MetaPort("output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT)
             };
 
     bool MathsNode::equals(const Node &other) const
@@ -33,12 +33,12 @@ namespace dag
         return "MathsNode";
     }
 
-    void MathsNode::describe(NodeDescriptor &descriptor) const
+    void MathsNode::describe(dagbase::NodeDescriptor &descriptor) const
     {
         descriptor.id = id();
         descriptor.name = name();
         descriptor.category = category();
-        MetaPort portDescriptor;
+        dagbase::MetaPort portDescriptor;
         portDescriptor.name = _angle->name();
         portDescriptor.type = _angle->type();
         portDescriptor.direction = _angle->dir();
@@ -53,7 +53,7 @@ namespace dag
         descriptor.ports.emplace_back(portDescriptor);
     }
 
-    const MetaPort *MathsNode::dynamicMetaPort(size_t index) const
+    const dagbase::MetaPort *MathsNode::dynamicMetaPort(size_t index) const
     {
         if (index < firstPort + numPorts)
         {
@@ -63,7 +63,7 @@ namespace dag
         return nullptr;
     }
 
-    Port *MathsNode::dynamicPort(size_t index)
+    dagbase::Port *MathsNode::dynamicPort(size_t index)
     {
         if (index == firstPort)
         {
@@ -81,32 +81,32 @@ namespace dag
         return nullptr;
     }
 
-    Node *MathsNode::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    dagbase::Node *MathsNode::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
         return new MathsNode(str, nodeLib, lua);
     }
 
-    MathsNode::MathsNode(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    MathsNode::MathsNode(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib)
 
     {
         // We must do a static_cast<> here because we might be in the Port constructor
         // and the class is not yet a TypedPort and the dynamic_cast<> will fail.
-        _angle = static_cast<TypedPort<double>*>(str.readRef<Port>("Port", nodeLib, lua));
-        _unit = static_cast<TypedPort<int64_t>*>(str.readRef<Port>("Port", nodeLib, lua));
-        _output = static_cast<TypedPort<double>*>(str.readRef<Port>("Port", nodeLib, lua));
+        _angle = static_cast<dagbase::TypedPort<double>*>(str.readRef<dagbase::Port>("Port", nodeLib, lua));
+        _unit = static_cast<dagbase::TypedPort<int64_t>*>(str.readRef<dagbase::Port>("Port", nodeLib, lua));
+        _output = static_cast<dagbase::TypedPort<double>*>(str.readRef<dagbase::Port>("Port", nodeLib, lua));
     }
 
-    MathsNode::MathsNode(const MathsNode &other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+    MathsNode::MathsNode(const MathsNode &other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
     :
     Node(other, facility, copyOp, keyGen)
     {
-        _angle = new TypedPort<double>(*other._angle, facility, copyOp, keyGen);
+        _angle = new dagbase::TypedPort<double>(*other._angle, facility, copyOp, keyGen);
         _angle->setParent(this);
-        _unit = new TypedPort<int64_t>(*other._unit, facility, copyOp, keyGen);
+        _unit = new dagbase::TypedPort<int64_t>(*other._unit, facility, copyOp, keyGen);
         _unit->setParent(this);
-        _output = new TypedPort<double>(*other._output, facility, copyOp, keyGen);
+        _output = new dagbase::TypedPort<double>(*other._output, facility, copyOp, keyGen);
         _output->setParent(this);
     }
 

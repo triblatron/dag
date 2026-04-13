@@ -18,7 +18,7 @@ namespace dag
 
         void add(Cont::iterator begin, Cont::iterator end) override;
 
-        void add(Node* node) override;
+        void add(dagbase::Node* node) override;
 
         void subtract(Cont::iterator begin, Cont::iterator end) override;
 
@@ -26,13 +26,13 @@ namespace dag
 
         void toggle(Cont::iterator begin, Cont::iterator end) override;
 
-        bool isSelected(Node* node) override;
+        bool isSelected(dagbase::Node* node) override;
 
         void computeBoundaryNodes(NodeArray* inputs, NodeArray* outputs, NodeArray* internals) override;
 
-        void reconnectInputs(NodeArray& inputs, Node* newSource) override;
+        void reconnectInputs(NodeArray& inputs, dagbase::Node* newSource) override;
 
-        void reconnectOutputs(NodeArray& outputs, Node* newSink) override;
+        void reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink) override;
     private:
         Cont _selection;
     };

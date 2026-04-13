@@ -5,7 +5,7 @@
 
 #include "NodePluginScanner.h"
 #include "FileSystemTraverser.h"
-#include "NodeLibrary.h"
+#include "core/NodeLibrary.h"
 
 #include "DynamicLibrary.h"
 
@@ -23,9 +23,9 @@ namespace dag
 #else
 #error "Your platform is not supported by NodePluginScanner";
 #endif
-    typedef void (*InitFunc)(KeyGenerator&, NodeLibrary&);
+    typedef void (*InitFunc)(dagbase::KeyGenerator&, dagbase::NodeLibrary&);
 
-    void NodePluginScanner::scan(KeyGenerator& keyGen, NodeLibrary& nodeLib)
+    void NodePluginScanner::scan(dagbase::KeyGenerator& keyGen, dagbase::NodeLibrary& nodeLib)
     {
         FileSystemTraverser trav(pathToPlugins);
 
@@ -36,7 +36,7 @@ namespace dag
                                DynamicLibrary* lib = DynamicLibrary::loadLibrary(entry.path().string());
                                if (lib != nullptr)
                                {
-                                   InitFunc initFunc = reinterpret_cast<InitFunc>(lib->getProcAddress("init"));
+                                   auto initFunc = reinterpret_cast<InitFunc>(lib->getProcAddress("init"));
 
                                    if (initFunc != nullptr)
                                    {
@@ -52,9 +52,9 @@ namespace dag
 
     NodePluginScanner::~NodePluginScanner()
     {
-        for (auto it=_libs.begin(); it!=_libs.end(); ++it)
+        for (auto lib : _libs)
         {
-            delete *it;
+            delete lib;
         }
     }
 }

@@ -10,17 +10,21 @@
 
 #include <string>
 
+namespace dagbase
+{
+    class Node;
+    class Graph;
+}
+
 namespace dag
 {
-    class Graph;
-    class Node;
 
     class DAG_API CreateNode : public Command
     {
     public:
         CreateNode() = default;
 
-        void setGraph(Graph* graph)
+        void setGraph(dagbase::Graph* graph)
         {
             _graph = graph;
         }
@@ -35,7 +39,7 @@ namespace dag
             _name = name;
         }
 
-        Node* node()
+        dagbase::Node* node()
         {
             return _node;
         }
@@ -46,9 +50,9 @@ namespace dag
 
         [[nodiscard]]CreateNode* clone() const override;
     private:
-        Graph* _graph{nullptr};
+        dagbase::Graph* _graph{nullptr};
         std::string _className;
         std::string _name;
-        Node* _node{nullptr};
+        dagbase::Node* _node{nullptr};
     };
 }

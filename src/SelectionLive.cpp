@@ -5,7 +5,7 @@
 #include "config/config.h"
 
 #include "SelectionLive.h"
-#include "Node.h"
+#include "../thirdparty/dagbase/include/core/Node.h"
 #include "SelectionInterface.h"
 
 #include <algorithm>
@@ -58,12 +58,12 @@ namespace dag
         }
     }
 
-    bool SelectionLive::isSelected(Node *node)
+    bool SelectionLive::isSelected(dagbase::Node *node)
     {
         return std::find(_selection.begin(), _selection.end(), node) != _selection.end();
     }
 
-    void SelectionLive::add(Node *node)
+    void SelectionLive::add(dagbase::Node *node)
     {
         if (node!=nullptr)
         {
@@ -86,7 +86,7 @@ namespace dag
                 {
                     for (auto index=0; index<node->totalPorts(); ++index)
                     {
-                        node->dynamicPort(index)->eachIncomingConnection([this,&isInput](Port* p)
+                        node->dynamicPort(index)->eachIncomingConnection([this,&isInput](dagbase::Port* p)
                                                                          {
                             if (p->parent() != nullptr && !isSelected(p->parent()))
                             {
@@ -107,7 +107,7 @@ namespace dag
                 {
                     for (auto index=0; index<node->totalPorts(); ++index)
                     {
-                        node->dynamicPort(index)->eachOutgoingConnection([this,&isOutput](Port* p)
+                        node->dynamicPort(index)->eachOutgoingConnection([this,&isOutput](dagbase::Port* p)
                                                                          {
                             if (p->parent() != nullptr && !isSelected(p->parent()))
                             {
@@ -167,7 +167,7 @@ namespace dag
         }
     }
 
-    void SelectionLive::reconnectInputs(NodeArray& inputs, Node* newSource)
+    void SelectionLive::reconnectInputs(NodeArray& inputs, dagbase::Node* newSource)
     {
         for (auto input : inputs)
         {
@@ -175,7 +175,7 @@ namespace dag
         }
     }
 
-    void SelectionLive::reconnectOutputs(NodeArray& outputs, Node* newSink)
+    void SelectionLive::reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink)
     {
         for (auto output : outputs)
         {

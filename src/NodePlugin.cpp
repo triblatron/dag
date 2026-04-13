@@ -4,27 +4,27 @@
 
 #include "config/config.h"
 
-#include "NodeLibrary.h"
-#include "Node.h"
-#include "NodeDescriptor.h"
+#include "core/NodeLibrary.h"
+#include "core/Node.h"
+#include "core/NodeDescriptor.h"
 #include "io/InputStream.h"
 #include "io/OutputStream.h"
 #include "NodePlugin.h"
-#include "MetaPort.h"
+#include "core/MetaPort.h"
 
 #include <vector>
 
-class DynamicNode : public dag::Node
+class DynamicNode : public dagbase::Node
 {
 public:
-    DynamicNode(dag::KeyGenerator& keyGen, const std::string& name)
+    DynamicNode(dagbase::KeyGenerator& keyGen, const std::string& name)
     :
-    Node(keyGen, name, dag::NodeCategory::CAT_GROUP)
+    Node(keyGen, name, dagbase::NodeCategory::CAT_GROUP)
     {
         // Do nothing.
     }
 
-    DynamicNode(dagbase::InputStream& str, dag::NodeLibrary& nodeLib, dagbase::Lua& lua)
+    DynamicNode(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua)
     :
     Node()
     {
@@ -53,7 +53,7 @@ public:
         str.readFooter();
     }
 
-    DynamicNode(const DynamicNode& other, dag::CloningFacility& facility,  dag::CopyOp copyOp, dag::KeyGenerator* keyGen);
+    DynamicNode(const DynamicNode& other, dagbase::CloningFacility& facility,  dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen);
 
     ~DynamicNode() override;
 
@@ -87,7 +87,7 @@ public:
         return "NodePlugin.DynamicNode";
     }
 
-    void describe(dag::NodeDescriptor& descriptor) const override
+    void describe(dagbase::NodeDescriptor& descriptor) const override
     {
         descriptor.id = id();
         descriptor.category = category();
@@ -95,7 +95,7 @@ public:
         //descriptor.ports
     }
 
-    [[nodiscard]]const dag::MetaPort * dynamicMetaPort(size_t index) const override
+    [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
     {
         if (index < _dynamicMetaPorts.size())
         {
@@ -105,12 +105,12 @@ public:
         return nullptr;
     }
 
-    void addDynamicPort(dag::Port* port) override
+    void addDynamicPort(dagbase::Port* port) override
     {
         if (port != nullptr)
         {
             _dynamicPorts.emplace_back(port);
-            dag::MetaPort desc;
+            dagbase::MetaPort desc;
             desc.name = port->name();
             desc.type = port->type();
             desc.direction = port->dir();
@@ -118,7 +118,7 @@ public:
         }
     }
     
-    dag::Port* dynamicPort(size_t index) override
+    dagbase::Port* dynamicPort(size_t index) override
     {
         if (index<_dynamicPorts.size())
         {
@@ -128,7 +128,7 @@ public:
         return nullptr;
     }
 
-    [[nodiscard]]const dag::Port* dynamicPort(size_t index) const
+    [[nodiscard]]const dagbase::Port* dynamicPort(size_t index) const
     {
         if (index<_dynamicPorts.size())
         {
@@ -138,7 +138,7 @@ public:
         return nullptr;
     }
 
-    Node* create(dagbase::InputStream& str, dag::NodeLibrary& nodeLib, dagbase::Lua& lua) override
+    Node* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override
     {
         return new DynamicNode(str, nodeLib, lua);
     }
@@ -165,18 +165,18 @@ public:
         return str;
     }
 
-    DynamicNode* clone(dag::CloningFacility& facility, dag::CopyOp copyOp, dag::KeyGenerator* keyGen) override
+    DynamicNode* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
     {
         return new DynamicNode(*this,facility,copyOp,keyGen);
     }
 private:
-    typedef std::vector<dag::MetaPort> MetaPortArray;
+    typedef std::vector<dagbase::MetaPort> MetaPortArray;
     MetaPortArray _dynamicMetaPorts;
-    typedef std::vector<dag::Port*> PortArray;
+    typedef std::vector<dagbase::Port*> PortArray;
     PortArray _dynamicPorts;
 };
 
-DynamicNode::DynamicNode(const DynamicNode &other, dag::CloningFacility& facility, dag::CopyOp copyOp, dag::KeyGenerator *keyGen)
+DynamicNode::DynamicNode(const DynamicNode &other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator *keyGen)
 :
 Node(other, facility, copyOp, keyGen)
 {
@@ -209,7 +209,7 @@ DynamicNode::~DynamicNode()
 
 extern "C"
 {
-    NODEPLUGIN_API void  init(dag::KeyGenerator& keyGen, dag::NodeLibrary& nodeLib)
+    NODEPLUGIN_API void  init(dagbase::KeyGenerator& keyGen, dagbase::NodeLibrary& nodeLib)
     {
         auto node = new DynamicNode(keyGen, "dyn1");
         nodeLib.registerNode(node);

@@ -11,7 +11,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 #FIND_PACKAGE(benchmark REQUIRED)
 FIND_PACKAGE(Lua 5.4)
 
-SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h include/Command.h include/CreateNode.h include/FileSystemTraverser.h include/Graph.h include/MemoryNodeLibrary.h include/MetaCoroutine.h include/MetaOperation.h include/MetaPort.h include/NodeCategory.h include/NodeDescriptor.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodeLibrary.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h include/Port.h include/SelectionInterface.h include/SelectionLive.h include/SignalPath.h include/SignalPathDef.h include/Transfer.h include/TypedPort.h include/Types.h include/TypeTraits.h include/Value.h
+SET( ALL_PUBLIC_HEADERS thirdparty/dagbase/include/core/Node.h include/Action.h include/Boundary.h include/Command.h include/CreateNode.h include/FileSystemTraverser.h thirdparty/dagbase/include/core/Graph.h include/MemoryNodeLibrary.h include/MetaCoroutine.h include/MetaOperation.h thirdparty/dagbase/include/core/MetaPort.h thirdparty/dagbase/include/core/NodeCategory.h thirdparty/dagbase/include/core/NodeDescriptor.h include/NodeEditorInterface.h include/NodeEditorLive.h thirdparty/dagbase/include/core/NodeLibrary.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h thirdparty/dagbase/include/core/Port.h include/SelectionInterface.h include/SelectionLive.h thirdparty/dagbase/include/core/SignalPath.h thirdparty/dagbase/include/core/SignalPathDef.h thirdparty/dagbase/include/core/Transfer.h thirdparty/dagbase/include/core/TypedPort.h thirdparty/dagbase/include/core/Types.h include/TypeTraits.h thirdparty/dagbase/include/core/Value.h
         include/DynamicLibrary.h
 		include/MathNode.h
 		include/NodeEditorFrontEnd.h
@@ -19,9 +19,9 @@ SET( ALL_PUBLIC_HEADERS include/Node.h include/Action.h include/Boundary.h inclu
 		include/NodeEditorBackEnd.h
 		include/NodeEditorBackEndNodeEditorInterface.h
 		include/Menu.h
-		include/CloningFacility.h
+        thirdparty/dagbase/include/core/CloningFacility.h
 		include/Fields.h
-		include/KeyGenerator.h 
+        thirdparty/dagbase/include/core/KeyGenerator.h
 		include/MetaField.h
 		include/UnionValue.h
         include/PrimitivePort.h
@@ -50,34 +50,34 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/CreateNode.cpp
         src/DynamicLibrary.cpp
         src/FileSystemTraverser.cpp
-        src/Graph.cpp
-        src/KeyGenerator.cpp
+        thirdparty/dagbase/src/core/Graph.cpp
+        thirdparty/dagbase/src/core/KeyGenerator.cpp
         src/MemoryNodeLibrary.cpp
         src/MetaCoroutine.cpp
         src/MetaField.cpp
         src/MetaOperation.cpp
-        src/MetaPort.cpp
-        src/Node.cpp
-        src/NodeCategory.cpp
-        src/NodeDescriptor.cpp
+        thirdparty/dagbase/src/core/MetaPort.cpp
+        thirdparty/dagbase/src/core/Node.cpp
+        thirdparty/dagbase/src/core/NodeCategory.cpp
+        thirdparty/dagbase/src/core/NodeDescriptor.cpp
         src/NodeEditorLive.cpp
-        src/NodeLibrary.cpp
+        thirdparty/dagbase/src/core/NodeLibrary.cpp
         src/NodePlugin.cpp
         src/NodePluginScanner.cpp
         src/Nodes.cpp
         src/Port.cpp
         src/SelectionLive.cpp
-        src/SignalPath.cpp
-		src/SignalPathDef.cpp
-        src/Transfer.cpp
-        src/Types.cpp
+        thirdparty/dagbase/src/core/SignalPath.cpp
+        thirdparty/dagbase/src/core/SignalPathDef.cpp
+        thirdparty/dagbase/src/core/Transfer.cpp
+        thirdparty/dagbase/src/core/Types.cpp
         src/UnionValue.cpp
  		src/MathsNode.cpp
 		src/NodeEditorFrontEnd.cpp
 		src/NodeEditorFrontEndTUI.cpp
 		src/NodeEditorBackEndNodeEditorInterface.cpp
 		src/Menu.cpp
-		src/CloningFacility.cpp
+        thirdparty/dagbase/src/core/CloningFacility.cpp
 )
 
 set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "-o linker-signed")

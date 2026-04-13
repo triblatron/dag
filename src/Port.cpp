@@ -1,15 +1,15 @@
 #include "config/config.h"
 
-#include "Port.h"
-#include "TypedPort.h"
-#include "Node.h"
+#include "../thirdparty/dagbase/include/core/Port.h"
+#include "../thirdparty/dagbase/include/core/TypedPort.h"
+#include "../thirdparty/dagbase/include/core/Node.h"
 #include "io/OutputStream.h"
 #include "io/InputStream.h"
-#include "NodeLibrary.h"
+#include "../thirdparty/dagbase/include/core/NodeLibrary.h"
 #include "util/DebugPrinter.h"
-#include "CloningFacility.h"
+#include "../thirdparty/dagbase/include/core/CloningFacility.h"
 
-namespace dag
+namespace dagbase
 {
     Port::Port(PortID id, Node *parent, MetaPort *metaPort, std::uint32_t flags)
             :
@@ -394,7 +394,7 @@ namespace dag
         return nullptr;
     }
 
-    Transfer* VariantPort::setDestination(dag::Transfer *transfer)
+    Transfer* VariantPort::setDestination(dagbase::Transfer *transfer)
     {
         if (auto typedTransfer = dynamic_cast<VariantPortTransfer*>(transfer); typedTransfer!=nullptr)
         {

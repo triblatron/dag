@@ -2,16 +2,16 @@
 
 #include "config/Export.h"
 
-#include "Node.h"
-#include "TypedPort.h"
-#include "NodeDescriptor.h"
-#include "MetaPort.h"
-#include "Types.h"
+#include "core/Node.h"
+#include "../thirdparty/dagbase/include/core/TypedPort.h"
+#include "core/NodeDescriptor.h"
+#include "core/MetaPort.h"
+#include "core/Types.h"
+#include "core/KeyGenerator.h"
+#include "core/CloningFacility.h"
 
 #include <string>
 #include <array>
-#include "KeyGenerator.h"
-#include "CloningFacility.h"
 
 namespace dagbase
 {
@@ -21,17 +21,17 @@ namespace dagbase
 
 namespace dag
 {
-    class DAG_API Foo : public Node
+    class DAG_API Foo : public dagbase::Node
     {
     public:
-        Foo(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
+        Foo(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Node(keyGen, name, category),
-                in1(keyGen.nextPortID(), & ports[0], Value(1.0), this)
+                in1(keyGen.nextPortID(), & ports[0], dagbase::Value(1.0), this)
         {
         }
 
-        Foo(const Foo& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+        Foo(const Foo& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
                 Node(other,facility,copyOp,keyGen),
                 in1(other.in1.id(), other.in1.metaPort(), other.in1.value(), this)
@@ -39,25 +39,25 @@ namespace dag
             // Do nothing.
         }
 
-        explicit Foo(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
+        explicit Foo(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
 
         [[nodiscard]] const char* className() const override
         {
             return "Foo";
         }
 
-        Foo* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        Foo* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Foo(*this, facility, copyOp, keyGen);
         }
 
-        Foo* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
+        Foo* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
-        [[nodiscard]]bool equals(const Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
-        void describe(NodeDescriptor& descriptor) const override
+        void describe(dagbase::NodeDescriptor& descriptor) const override
         {
-            Node::describe(descriptor);
+            dagbase::Node::describe(descriptor);
             descriptor.ports.emplace_back(in1.name(), in1.type(), in1.dir());
         }
 
@@ -66,7 +66,7 @@ namespace dag
             return numPorts;
         }
 
-        Port* dynamicPort(size_t index) override
+        dagbase::Port* dynamicPort(size_t index) override
         {
             if (index == 0)
             {
@@ -76,9 +76,9 @@ namespace dag
             return nullptr;
         }
 
-        ValuePort in1;
+        dagbase::ValuePort in1;
 
-        static MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort const* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -88,22 +88,22 @@ namespace dag
             return nullptr;
         }
 
-        [[nodiscard]] const MetaPort * dynamicMetaPort(size_t index) const override
+        [[nodiscard]] const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
         {
             return metaPort(index);
         }
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
     protected:
-        static std::array<MetaPort, 1> ports;
+        static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = ports.size();
     };
 
-    class DAG_API Base : public Node
+    class DAG_API Base : public dagbase::Node
     {
     public:
-        Base(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
+        Base(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Node(keyGen, name, category),
                 int1(0.0),
@@ -112,7 +112,7 @@ namespace dag
             // Do nothing.
         }
 
-        explicit Base(const Base& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+        explicit Base(const Base& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
                 Node(other,facility,copyOp,keyGen),
                 int1(other.int1),
@@ -121,7 +121,7 @@ namespace dag
             // Do nothing.
         }
 
-        explicit Base(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
+        explicit Base(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
 
@@ -130,16 +130,16 @@ namespace dag
             return "Base";
         }
 
-        Base* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        Base* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Base(*this, facility, copyOp, keyGen);
         }
 
-        Node* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua) override;
+        dagbase::Node* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override;
 
-        [[nodiscard]]bool equals(const Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
-        void describe(NodeDescriptor& descriptor) const override;
+        void describe(dagbase::NodeDescriptor& descriptor) const override;
 
         double int1;
 
@@ -148,12 +148,12 @@ namespace dag
             return numPorts;
         }
 
-        [[nodiscard]]const MetaPort * dynamicMetaPort(size_t index) const override
+        [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
         {
             return metaPort(index);
         }
 
-        Port* dynamicPort(size_t index) override
+        dagbase::Port* dynamicPort(size_t index) override
         {
             if (index == 0)
             {
@@ -163,7 +163,7 @@ namespace dag
             return nullptr;
         }
 
-        static MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort const* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -173,17 +173,17 @@ namespace dag
             return nullptr;
         }
     protected:
-        static std::array<MetaPort, 1> ports;
+        static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = ports.size();
     private:
-        TypedPort<double> _direction;
+        dagbase::TypedPort<double> _direction;
     };
 
     class DAG_API Derived : public Base
     {
     public:
-        Derived(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
+        Derived(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Base(keyGen, name,category),
                 _trigger(keyGen.nextPortID(), this, &ports[0], true)
@@ -191,7 +191,7 @@ namespace dag
             // Do nothing.
         }
 
-        Derived(const Derived& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+        Derived(const Derived& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
                 Base(other, facility, copyOp, keyGen),
                 _trigger(other._trigger.id(), this, &ports[0], other._trigger.value())
@@ -199,12 +199,12 @@ namespace dag
             // Do nothing.
         }
 
-        Derived* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        Derived* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Derived(*this, facility, copyOp, keyGen);
         }
 
-        [[nodiscard]]static const MetaPort * metaPort(size_t index)
+        [[nodiscard]]static const dagbase::MetaPort * metaPort(size_t index)
         {
             if (index < firstPort)
             {
@@ -223,12 +223,12 @@ namespace dag
             return Base::totalPorts() + numPorts;
         }
 
-        [[nodiscard]]MetaPort const* dynamicMetaPort(size_t index) const override
+        [[nodiscard]]dagbase::MetaPort const* dynamicMetaPort(size_t index) const override
         {
             return metaPort(index);
         }
 
-        [[nodiscard]]Port* dynamicPort(size_t index) override
+        [[nodiscard]]dagbase::Port* dynamicPort(size_t index) override
         {
             if (index<firstPort)
             {
@@ -242,17 +242,17 @@ namespace dag
             return nullptr;
         }
     protected:
-        static std::array<MetaPort, 1> ports;
+        static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = Base::numPorts;
         static constexpr size_t numPorts = 1;
     private:
-        TypedPort<bool> _trigger;
+        dagbase::TypedPort<bool> _trigger;
     };
 
     class DAG_API Final final : public Derived
     {
     public:
-        Final(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
+        Final(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Derived(keyGen, name,category),
                 _int1(keyGen.nextPortID(), this, &ports[0], 1)
@@ -260,7 +260,7 @@ namespace dag
             // Do nothing.
         }
 
-        Final(const Final& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+        Final(const Final& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
                 Derived(other, facility, copyOp, keyGen),
                 _int1(other._int1.id(), this, &ports[0], other._int1.value())
@@ -276,17 +276,17 @@ namespace dag
             }
         }
 
-        Final* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        Final* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Final(*this, facility, copyOp, keyGen);
         }
 
-        void addDynamicPort(Port* port) override
+        void addDynamicPort(dagbase::Port* port) override
         {
             if (port != nullptr)
             {
                 _dynamicPorts.emplace_back(port);
-                MetaPort desc;
+                dagbase::MetaPort desc;
                 desc.name = port->name();
                 desc.type = port->type();
                 desc.direction = port->dir();
@@ -294,7 +294,7 @@ namespace dag
             }
         }
 
-        [[nodiscard]]const MetaPort * dynamicMetaPort(size_t index) const override
+        [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
         {
             if (index < firstPort)
             {
@@ -319,7 +319,7 @@ namespace dag
             return Derived::totalPorts() + numPorts + _dynamicMetaPorts.size();
         }
 
-        [[nodiscard]]Port* dynamicPort(size_t index) override
+        [[nodiscard]]dagbase::Port* dynamicPort(size_t index) override
         {
             if (index<firstPort)
             {
@@ -339,27 +339,27 @@ namespace dag
             return nullptr;
         }
     private:
-        TypedPort<std::int64_t> _int1;
-        static std::array<MetaPort, 1> ports;
-        typedef std::vector<MetaPort> MetaPortArray;
+        dagbase::TypedPort<std::int64_t> _int1;
+        static std::array<dagbase::MetaPort, 1> ports;
+        typedef std::vector<dagbase::MetaPort> MetaPortArray;
         MetaPortArray _dynamicMetaPorts;
-        typedef std::vector<Port*> PortArray;
+        typedef std::vector<dagbase::Port*> PortArray;
         PortArray _dynamicPorts;
         static constexpr size_t firstPort = Derived::firstPort + Derived::numPorts;
         static constexpr size_t numPorts = 1;
     };
 
-    class DAG_API Bar : public Node
+    class DAG_API Bar : public dagbase::Node
     {
     public:
-        Bar(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
+        Bar(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Node(keyGen, name, category),
-                out1(keyGen.nextPortID(), & ports[0], Value(1.0), this)
+                out1(keyGen.nextPortID(), & ports[0], dagbase::Value(1.0), this)
         {
         }
 
-        Bar(const Bar& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+        Bar(const Bar& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
                 Node(other, facility, copyOp, keyGen),
                 out1(other.out1.id(), other.out1.metaPort(), other.out1.value(), this)
@@ -367,7 +367,7 @@ namespace dag
             // Do nothing.
         }
 
-        explicit Bar(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua);
+        explicit Bar(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
 
@@ -376,27 +376,27 @@ namespace dag
             return "Bar";
         }
 
-        Bar* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        Bar* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Bar(*this,facility, copyOp, keyGen);
         }
 
-        Bar* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
+        Bar* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
-        [[nodiscard]]bool equals(const Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
         [[nodiscard]]size_t totalPorts() const override
         {
             return numPorts;
         }
 
-        void describe(NodeDescriptor& descriptor) const override
+        void describe(dagbase::NodeDescriptor& descriptor) const override
         {
             Node::describe(descriptor);
             descriptor.ports.emplace_back(out1.name(), out1.type(), out1.dir());
         }
 
-        [[nodiscard]]const MetaPort * dynamicMetaPort(size_t index) const override
+        [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
         {
             if (index == 0)
             {
@@ -406,7 +406,7 @@ namespace dag
             return nullptr;
         }
 
-        Port* dynamicPort(size_t index) override
+        dagbase::Port* dynamicPort(size_t index) override
         {
             if (index == 0)
             {
@@ -416,9 +416,9 @@ namespace dag
             return nullptr;
         }
 
-        ValuePort out1;
+        dagbase::ValuePort out1;
 
-        static MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort const* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -428,38 +428,38 @@ namespace dag
             return nullptr;
         }
     protected:
-        static std::array<MetaPort, 1> ports;
+        static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = 1;
     };
 
-    class DAG_API FooTyped : public Node
+    class DAG_API FooTyped : public dagbase::Node
     {
     public:
-        FooTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
+        FooTyped(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Node(keyGen, name, category)
         {
-            _in1 = new TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
+            _in1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
         }
 
-        FooTyped(const FooTyped& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+        FooTyped(const FooTyped& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
                 Node(other, facility, copyOp, keyGen)
         {
             std::uint64_t in1Id = 0;
             if (facility.putOrig(other._in1, &in1Id))
             {
-                _in1 = new TypedPort<double>(*other._in1, facility, copyOp, keyGen);
+                _in1 = new dagbase::TypedPort<double>(*other._in1, facility, copyOp, keyGen);
             }
             else
             {
-                _in1 = static_cast<TypedPort<double>*>(facility.getClone(in1Id));
+                _in1 = static_cast<dagbase::TypedPort<double>*>(facility.getClone(in1Id));
             }
             _in1->setParent(this);
         }
 
-        explicit FooTyped(dagbase::InputStream& str, NodeLibrary & nodeLib, dagbase::Lua &lua);
+        explicit FooTyped(dagbase::InputStream& str, dagbase::NodeLibrary & nodeLib, dagbase::Lua &lua);
 
         ~FooTyped() override;
 
@@ -468,24 +468,24 @@ namespace dag
             return "FooTyped";
         }
 
-        FooTyped* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        FooTyped* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new FooTyped(*this,facility,copyOp,keyGen);
         }
 
-        FooTyped* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
+        FooTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
-        [[nodiscard]]bool equals(const Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
 
-        void describe(NodeDescriptor& descriptor) const override
+        void describe(dagbase::NodeDescriptor& descriptor) const override
         {
             Node::describe(descriptor);
             descriptor.ports.emplace_back(_in1->name(), _in1->type(), _in1->dir());
         }
 
-        TypedPort<double>& in1()
+        dagbase::TypedPort<double>& in1()
         {
             return *_in1;
         }
@@ -495,7 +495,7 @@ namespace dag
             return size_t{1};
         }
 
-        Port* dynamicPort(size_t index) override
+        dagbase::Port* dynamicPort(size_t index) override
         {
             if (index == 0)
             {
@@ -505,7 +505,7 @@ namespace dag
             return nullptr;
         }
 
-        static MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort const* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -515,48 +515,48 @@ namespace dag
             return nullptr;
         }
 
-        [[nodiscard]]const MetaPort * dynamicMetaPort(size_t index) const override
+        [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
         {
             return metaPort(index);
         }
 
         void debug(dagbase::DebugPrinter& printer) const override;
     protected:
-        static std::array<MetaPort, 1> ports;
+        static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = 1;
     private:
-        TypedPort<double>* _in1{nullptr};
+        dagbase::TypedPort<double>* _in1{nullptr};
     };
 
-    class DAG_API BarTyped : public Node
+    class DAG_API BarTyped : public dagbase::Node
     {
     public:
         BarTyped() = default;
-        BarTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
+        BarTyped(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Node(keyGen, name, category)
         {
-            _out1 = new TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
+            _out1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
         }
 
-        BarTyped(const BarTyped& other,CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+        BarTyped(const BarTyped& other,dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
                 Node(other,facility,copyOp,keyGen)
         {
             std::uint64_t out1Id = 0;
             if (facility.putOrig(other._out1, &out1Id))
             {
-                _out1 = new TypedPort<double>(*other._out1, facility, copyOp, keyGen);
+                _out1 = new dagbase::TypedPort<double>(*other._out1, facility, copyOp, keyGen);
             }
             else
             {
-                _out1 = static_cast<TypedPort<double>*>(facility.getClone(out1Id));
+                _out1 = static_cast<dagbase::TypedPort<double>*>(facility.getClone(out1Id));
             }
             _out1->setParent(this);
         }
 
-        explicit BarTyped(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua);
+        explicit BarTyped(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);
 
         ~BarTyped() override;
 
@@ -565,18 +565,18 @@ namespace dag
             return "BarTyped";
         }
 
-        BarTyped* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        BarTyped* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new BarTyped(*this,facility,copyOp,keyGen);
         }
 
-        BarTyped* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
+        BarTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
-        [[nodiscard]]bool equals(const Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
 
-        void describe(NodeDescriptor& descriptor) const override
+        void describe(dagbase::NodeDescriptor& descriptor) const override
         {
             Node::describe(descriptor);
             if (_out1 != nullptr)
@@ -585,7 +585,7 @@ namespace dag
             }
         }
 
-        TypedPort<double>* out1()
+        dagbase::TypedPort<double>* out1()
         {
             return _out1;
         }
@@ -594,7 +594,7 @@ namespace dag
         {
             return size_t{1};
         }
-        Port* dynamicPort(size_t index) override
+        dagbase::Port* dynamicPort(size_t index) override
         {
             if (index == 0)
             {
@@ -604,7 +604,7 @@ namespace dag
             return nullptr;
         }
 
-        static MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort const* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -614,23 +614,23 @@ namespace dag
             return nullptr;
         }
 
-        [[nodiscard]]const MetaPort * dynamicMetaPort(size_t index) const override
+        [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
         {
             return metaPort(index);
         }
     protected:
-        static std::array<MetaPort, 1> ports;
+        static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = 1;
 
     private:
-        TypedPort<double>* _out1{nullptr};
+        dagbase::TypedPort<double>* _out1{nullptr};
     };
 
-    class DAG_API GroupTyped : public Node
+    class DAG_API GroupTyped : public dagbase::Node
     {
     public:
-        GroupTyped(KeyGenerator& keyGen, const std::string& name, NodeCategory::Category category)
+        GroupTyped(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Node(keyGen, name, category),
                 _out1(keyGen.nextPortID(), this, &ports[0], 1.0),
@@ -639,7 +639,7 @@ namespace dag
             // Do nothing.
         }
 
-        GroupTyped(const GroupTyped& other,CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+        GroupTyped(const GroupTyped& other,dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
                 Node(other,facility,copyOp,keyGen),
                 _out1(other._out1, facility, copyOp, keyGen),
@@ -649,42 +649,42 @@ namespace dag
             _in1.setParent(this);
         }
 
-        explicit GroupTyped(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua);
+        explicit GroupTyped(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);
 
         [[nodiscard]]const char* className() const override
         {
             return "GroupTyped";
         }
 
-        GroupTyped* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        GroupTyped* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new GroupTyped(*this, facility, copyOp, keyGen);
         }
 
-        GroupTyped* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
+        GroupTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
-        [[nodiscard]]bool equals(const Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
         dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
 
-        void describe(NodeDescriptor& descriptor) const override
+        void describe(dagbase::NodeDescriptor& descriptor) const override
         {
-            Node::describe(descriptor);
+            dagbase::Node::describe(descriptor);
             descriptor.ports.emplace_back(_out1.name(), _out1.type(), _out1.dir());
             descriptor.ports.emplace_back(_in1.name(), _in1.type(), _in1.dir());
         }
 
-        TypedPort<double>& out1()
+        dagbase::TypedPort<double>& out1()
         {
             return _out1;
         }
 
-        TypedPort<double>& in1()
+        dagbase::TypedPort<double>& in1()
         {
             return _in1;
         }
 
-        Port* dynamicPort(size_t index) override
+        dagbase::Port* dynamicPort(size_t index) override
         {
             if (index == 0)
             {
@@ -698,7 +698,7 @@ namespace dag
             return nullptr;
         }
 
-        static MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort const* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -713,16 +713,16 @@ namespace dag
             return numPorts;
         }
 
-        [[nodiscard]]const MetaPort * dynamicMetaPort(size_t index) const override
+        [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
         {
             return metaPort(index);
         }
     protected:
-        static std::array<MetaPort, 2> ports;
+        static std::array<dagbase::MetaPort, 2> ports;
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = 2;
     private:
-        TypedPort<double> _out1;
-        TypedPort<double> _in1;
+        dagbase::TypedPort<double> _out1;
+        dagbase::TypedPort<double> _in1;
     };
 }

@@ -3,24 +3,24 @@
 //
 
 #include "Boundary.h"
-#include "NodeLibrary.h"
+#include "../thirdparty/dagbase/include/core/NodeLibrary.h"
 #include "io/InputStream.h"
 #include "io/OutputStream.h"
-#include "CloningFacility.h"
+#include "../thirdparty/dagbase/include/core/CloningFacility.h"
 
 namespace dag
 {
-    dag::Boundary::Boundary(KeyGenerator& keyGen, std::string name, NodeCategory::Category category) : Node(keyGen, std::move(name), category)
+    dag::Boundary::Boundary(dagbase::KeyGenerator& keyGen, std::string name, dagbase::NodeCategory::Category category) : Node(keyGen, std::move(name), category)
     {
         // Do nothing.
     }
 
-    void Boundary::describe(NodeDescriptor &descriptor) const
+    void Boundary::describe(dagbase::NodeDescriptor &descriptor) const
     {
 
     }
 
-    Boundary::Boundary(const Boundary &other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen)
+    Boundary::Boundary(const Boundary &other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
     :
     Node(other, facility, copyOp, keyGen)
     {
@@ -36,19 +36,19 @@ namespace dag
     {
         if (this != &other)
         {
-            CloningFacility facility;
+            dagbase::CloningFacility facility;
             Node::operator=(other);
 
             for (auto p : other._dynamicPorts)
             {
-                addDynamicPort(p->clone(facility, CopyOp{0}, nullptr));
+                addDynamicPort(p->clone(facility, dagbase::CopyOp{0}, nullptr));
             }
         }
 
         return *this;
     }
 
-    Boundary::Boundary(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    Boundary::Boundary(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
     :
     Node()
     {
@@ -77,7 +77,7 @@ namespace dag
         str.readFooter();
     }
 
-    Boundary *Boundary::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    Boundary *Boundary::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
         return new Boundary(str, nodeLib, lua);
     }

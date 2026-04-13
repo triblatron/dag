@@ -12,11 +12,15 @@
 
 namespace fs = std::filesystem;
 
+namespace dagbase
+{
+    class KeyGenerator;
+    class NodeLibrary;
+}
+
 namespace dag
 {
     class DynamicLibrary;
-    class KeyGenerator;
-    class NodeLibrary;
 
     class DAG_API NodePluginScanner
     {
@@ -28,7 +32,7 @@ namespace dag
         //! by registering new Node types with the NodeLibrary.
         //! \note The KeyGenerator can be the same object as the 
         //! NodeLibrary but presenting a narrow interface
-        void scan(KeyGenerator& keyGen, NodeLibrary& nodeLib);
+        void scan(dagbase::KeyGenerator& keyGen, dagbase::NodeLibrary& nodeLib);
 
         //! \return The total number of nodes found by scanning plugins.
         [[nodiscard]]std::size_t totalNodes() const

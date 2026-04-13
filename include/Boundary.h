@@ -6,20 +6,20 @@
 
 #include "config/Export.h"
 
-#include "Node.h"
+#include "core/Node.h"
 
 namespace dag
 {
-    class DAG_API Boundary final : public Node
+    class DAG_API Boundary final : public dagbase::Node
     {
     public:
-        explicit Boundary(KeyGenerator& keyGen, std::string name, NodeCategory::Category category=NodeCategory::CAT_NONE);
+        explicit Boundary(dagbase::KeyGenerator& keyGen, std::string name, dagbase::NodeCategory::Category category=dagbase::NodeCategory::CAT_NONE);
 
-        Boundary(const Boundary& other, CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen);
+        Boundary(const Boundary& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen);
 
         Boundary(Boundary&& other);
 
-        explicit Boundary(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua& lua);
+        explicit Boundary(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
 
         ~Boundary() override;
 
@@ -32,9 +32,9 @@ namespace dag
             return "Boundary";
         }
 
-        void describe(NodeDescriptor& descriptor) const override;
+        void describe(dagbase::NodeDescriptor& descriptor) const override;
 
-        [[nodiscard]]MetaPort const* dynamicMetaPort(size_t index) const override
+        [[nodiscard]]dagbase::MetaPort const* dynamicMetaPort(size_t index) const override
         {
             if (index<_dynamicMetaPorts.size())
             {
@@ -44,7 +44,7 @@ namespace dag
             return nullptr;
         }
 
-        Port* dynamicPort(size_t index) override
+        dagbase::Port* dynamicPort(size_t index) override
         {
             if (index<_dynamicPorts.size())
             {
@@ -54,12 +54,12 @@ namespace dag
             return nullptr;
         }
 
-        Boundary* clone(CloningFacility& facility, CopyOp copyOp, KeyGenerator* keyGen) override
+        Boundary* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Boundary(*this,facility,copyOp,keyGen);
         }
 
-        Boundary* create(dagbase::InputStream& str, NodeLibrary& nodeLib, dagbase::Lua &lua) override;
+        Boundary* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const Node& other) const override;
 
@@ -70,13 +70,13 @@ namespace dag
             return _dynamicPorts.size();
         }
 
-        void addDynamicPort(Port* port) override
+        void addDynamicPort(dagbase::Port* port) override
         {
             if (port != nullptr)
             {
                 port->setParent(this);
                 _dynamicPorts.emplace_back(port);
-                MetaPort desc;
+                dagbase::MetaPort desc;
                 desc.name = port->name();
                 desc.type = port->type();
                 desc.direction = port->dir();
@@ -84,9 +84,9 @@ namespace dag
             }
         }
     private:
-        typedef std::vector<MetaPort> MetaPortArray;
+        typedef std::vector<dagbase::MetaPort> MetaPortArray;
         MetaPortArray _dynamicMetaPorts;
-        typedef std::vector<Port*> PortArray;
+        typedef std::vector<dagbase::Port*> PortArray;
         PortArray _dynamicPorts;
     };
 }

@@ -4,8 +4,8 @@
 #include "config/config.h"
 
 #include "CreateNode.h"
-#include "Graph.h"
-#include "Node.h"
+#include "../thirdparty/dagbase/include/core/Graph.h"
+#include "../thirdparty/dagbase/include/core/Node.h"
 
 namespace dag
 {

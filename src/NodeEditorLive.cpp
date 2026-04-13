@@ -6,19 +6,19 @@
 
 #include "NodeEditorLive.h"
 #include "MemoryNodeLibrary.h"
-#include "Graph.h"
+#include "core/Graph.h"
 #include "SelectionLive.h"
 #include "Boundary.h"
 #include "SelectionInterface.h"
-#include "SignalPath.h"
-#include "Transfer.h"
+#include "core/SignalPath.h"
+#include "core/Transfer.h"
 
 namespace dag
 {
     NodeEditorLive::NodeEditorLive()
     {
         _nodeLib = new MemoryNodeLibrary();
-        _graph = new Graph();
+        _graph = new dagbase::Graph();
         _graph->setNodeLibrary(_nodeLib);
         _selection = new SelectionLive();
     }
@@ -34,9 +34,9 @@ namespace dag
         }
     }
 
-    Status NodeEditorLive::select(NodeEditorInterface::SelectionMode mode, NodeSet &a)
+    dagbase::Status NodeEditorLive::select(NodeEditorInterface::SelectionMode mode, dagbase::NodeSet &a)
     {
-        Status status;
+        dagbase::Status status;
 
         switch (mode)
         {
@@ -56,12 +56,12 @@ namespace dag
         return status;
     }
 
-    Status NodeEditorLive::selectAll()
+    dagbase::Status NodeEditorLive::selectAll()
     {
-        Status status;
+        dagbase::Status status;
         SelectionInterface::Cont s;
         _selection->set(s.begin(), s.end());
-        _graph->eachNode([this](Node* node)
+        _graph->eachNode([this](dagbase::Node* node)
                          {
                              _selection->add(node);
 
@@ -70,9 +70,9 @@ namespace dag
         return status;
     }
 
-    Status NodeEditorLive::selectNone()
+    dagbase::Status NodeEditorLive::selectNone()
     {
-        Status status{Status::STATUS_OK};
+        dagbase::Status status{dagbase::Status::STATUS_OK};
         SelectionInterface::Cont s;
 
         _selection->set(s.begin(), s.end());
@@ -80,7 +80,7 @@ namespace dag
         return status;
     }
 
-    Status NodeEditorLive::createNode(const std::string &className, const std::string &name)
+    dagbase::Status NodeEditorLive::createNode(const std::string &className, const std::string &name)
     {
         if (_graph!=nullptr)
         {
@@ -88,10 +88,10 @@ namespace dag
 
             if (node != nullptr)
             {
-                Status status;
+                dagbase::Status status;
 
-                status.status = Status::STATUS_OK;
-                status.resultType = Status::RESULT_NODE;
+                status.status = dagbase::Status::STATUS_OK;
+                status.resultType = dagbase::Status::RESULT_NODE;
                 status.result.node = node;
                 _graph->addNode(node);
                 for (auto i=0; i<node->totalPorts(); ++i)
@@ -104,46 +104,46 @@ namespace dag
         return {};
     }
 
-    Status NodeEditorLive::deleteNode(NodeID id)
+    dagbase::Status NodeEditorLive::deleteNode(dagbase::NodeID id)
     {
-        Status status;
+        dagbase::Status status;
         auto node = _graph->node(id);
 
         if (node != nullptr)
         {
             _graph->removeNode(node);
             delete node;
-            status.status = Status::STATUS_OK;
-            status.resultType = Status::RESULT_NODE_ID;
+            status.status = dagbase::Status::STATUS_OK;
+            status.resultType = dagbase::Status::RESULT_NODE_ID;
             status.result.nodeId = id;
         }
         else
         {
-            status.status = Status::STATUS_OBJECT_NOT_FOUND;
-            status.resultType = Status::RESULT_NODE_ID;
+            status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
+            status.resultType = dagbase::Status::RESULT_NODE_ID;
             status.result.nodeId = id;
         }
         return status;
     }
 
-    Status NodeEditorLive::connect(PortID from, PortID to)
+    dagbase::Status NodeEditorLive::connect(dagbase::PortID from, dagbase::PortID to)
     {
         auto fromPort = _graph->port(from);
         auto toPort = _graph->port(to);
 
         if (fromPort != nullptr && toPort != nullptr)
         {
-            if (fromPort->dir() == PortDirection::DIR_OUT && toPort->dir() == PortDirection::DIR_IN && fromPort->isCompatibleWith(*toPort))
+            if (fromPort->dir() == dagbase::PortDirection::DIR_OUT && toPort->dir() == dagbase::PortDirection::DIR_IN && fromPort->isCompatibleWith(*toPort))
             {
                 auto transfer = fromPort->connectTo(*toPort);
-                auto signalPath = new SignalPath(fromPort, toPort);
+                auto signalPath = new dagbase::SignalPath(fromPort, toPort);
 
                 _graph->addSignalPath(signalPath);
 
-                Status status;
+                dagbase::Status status;
 
-                status.status = Status::STATUS_OK;
-                status.resultType = Status::RESULT_SIGNAL_PATH_ID;
+                status.status = dagbase::Status::STATUS_OK;
+                status.resultType = dagbase::Status::RESULT_SIGNAL_PATH_ID;
                 status.result.signalPathId = signalPath->id();
 
                 _transfers.emplace_back(transfer);
@@ -151,18 +151,18 @@ namespace dag
             }
             else
             {
-                Status status;
+                dagbase::Status status;
 
-                if (fromPort->dir() != PortDirection::DIR_OUT)
+                if (fromPort->dir() != dagbase::PortDirection::DIR_OUT)
                 {
-                    status.resultType = Status::RESULT_PORT;
-                    status.status = Status::STATUS_INVALID_PORT;
+                    status.resultType = dagbase::Status::RESULT_PORT;
+                    status.status = dagbase::Status::STATUS_INVALID_PORT;
                     status.result.port = fromPort;
                 }
-                else if (toPort->dir() != PortDirection::DIR_IN)
+                else if (toPort->dir() != dagbase::PortDirection::DIR_IN)
                 {
-                    status.resultType = Status::RESULT_PORT;
-                    status.status = Status::STATUS_INVALID_PORT;
+                    status.resultType = dagbase::Status::RESULT_PORT;
+                    status.status = dagbase::Status::STATUS_INVALID_PORT;
                     status.result.port = toPort;
                 }
                 return status;
@@ -170,18 +170,18 @@ namespace dag
         }
         else
         {
-            Status status;
+            dagbase::Status status;
 
             if (fromPort == nullptr)
             {
-                status.resultType = Status::RESULT_PORT_ID;
-                status.status = Status::STATUS_OBJECT_NOT_FOUND;
+                status.resultType = dagbase::Status::RESULT_PORT_ID;
+                status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
                 status.result.portId = from;
             }
             else
             {
-                status.resultType = Status::RESULT_PORT_ID;
-                status.status = Status::STATUS_OBJECT_NOT_FOUND;
+                status.resultType = dagbase::Status::RESULT_PORT_ID;
+                status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
                 status.result.portId = to;
             }
 
@@ -190,34 +190,34 @@ namespace dag
         return {};
     }
 
-    Status NodeEditorLive::disconnect(SignalPathID id)
+    dagbase::Status NodeEditorLive::disconnect(dagbase::SignalPathID id)
     {
-        Status status;
+        dagbase::Status status;
 
-        SignalPath* path = _graph->signalPath(id);
+        dagbase::SignalPath* path = _graph->signalPath(id);
 
         if (path != nullptr)
         {
             path->source()->disconnect(*path->dest());
             _graph->removeSignalPath(path);
-            status.status = Status::STATUS_OK;
+            status.status = dagbase::Status::STATUS_OK;
         }
         else
         {
-            status.status = Status::STATUS_OBJECT_NOT_FOUND;
-            status.resultType = Status::RESULT_SIGNAL_PATH_ID;
+            status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
+            status.resultType = dagbase::Status::RESULT_SIGNAL_PATH_ID;
             status.result.signalPathId = id;
         }
         return status;
     }
 
-    Status NodeEditorLive::createChild()
+    dagbase::Status NodeEditorLive::createChild()
     {
-        Status status;
+        dagbase::Status status;
 
         if (_selection->count() == 0)
         {
-            status.status = Status::STATUS_INVALID_SELECTION;
+            status.status = dagbase::Status::STATUS_INVALID_SELECTION;
         }
         else
         {
@@ -225,7 +225,7 @@ namespace dag
             NodeArray outputs;
             NodeArray internals;
             _selection->computeBoundaryNodes(&inputs, &outputs, &internals);
-            auto child = new Graph();
+            auto child = new dagbase::Graph();
             child->setNodeLibrary(_nodeLib);
             auto boundaryInput = child->createNode("Boundary","boundaryInput");
             auto boundaryOutput = child->createNode("Boundary", "boundaryOutput");
@@ -246,20 +246,20 @@ namespace dag
 
             _graph->addChild(child);
 
-            status.status = Status::STATUS_OK;
-            status.resultType = Status::RESULT_GRAPH;
+            status.status = dagbase::Status::STATUS_OK;
+            status.resultType = dagbase::Status::RESULT_GRAPH;
             status.result.graph = child;
         }
 
         return status;
     }
 
-    Status NodeEditorLive::createTemplate(NodeID id)
+    dagbase::Status NodeEditorLive::createTemplate(dagbase::NodeID id)
     {
         return {};
     }
 
-    Status NodeEditorLive::deleteTemplate(TemplateID id)
+    dagbase::Status NodeEditorLive::deleteTemplate(dagbase::TemplateID id)
     {
         return {};
     }

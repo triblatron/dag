@@ -1,8 +1,8 @@
 #include "config/config.h"
 
 #include "MemoryNodeLibrary.h"
-#include "Node.h"
-#include "TypedPort.h"
+#include "../thirdparty/dagbase/include/core/Node.h"
+#include "../thirdparty/dagbase/include/core/TypedPort.h"
 
 #include <stdexcept>
 
@@ -11,7 +11,7 @@
 #include "Nodes.h"
 #include "Boundary.h"
 #include "MathNode.h"
-#include "CloningFacility.h"
+#include "../thirdparty/dagbase/include/core/CloningFacility.h"
 
 #include <cstring>
 
@@ -21,16 +21,16 @@ namespace dag
 	    :
     NodeLibrary()
     {
-        _classes["Foo"] = new Foo(*this, "foo1", dag::NodeCategory::CAT_SINK);
-        _classes["Bar"] = new Bar(*this, "bar1", dag::NodeCategory::CAT_SOURCE);
-        _classes["FooTyped"] = new FooTyped(*this, "footyped1", dag::NodeCategory::CAT_SINK);
-        _classes["BarTyped"] = new BarTyped(*this, "bartyped1", dag::NodeCategory::CAT_SOURCE);
-        _classes["GroupTyped"] = new GroupTyped(*this, "grouptyped1", dag::NodeCategory::CAT_GROUP);
-        _classes["Base"] = new Base(*this, "base1", dag::NodeCategory::CAT_SOURCE);
-        _classes["Derived"] = new Derived(*this, "derived1", dag::NodeCategory::CAT_CONDITION);
-        _classes["Final"] = new Final(*this, "final1", dag::NodeCategory::CAT_GROUP);
-        _classes["Boundary"] = new Boundary(*this, "b1", dag::NodeCategory::CAT_GROUP);
-        _classes["MathsNode"] = new MathsNode(*this, "maths1", dag::NodeCategory::CAT_ACTION);
+        _classes["Foo"] = new Foo(*this, "foo1", dagbase::NodeCategory::CAT_SINK);
+        _classes["Bar"] = new Bar(*this, "bar1", dagbase::NodeCategory::CAT_SOURCE);
+        _classes["FooTyped"] = new FooTyped(*this, "footyped1", dagbase::NodeCategory::CAT_SINK);
+        _classes["BarTyped"] = new BarTyped(*this, "bartyped1", dagbase::NodeCategory::CAT_SOURCE);
+        _classes["GroupTyped"] = new GroupTyped(*this, "grouptyped1", dagbase::NodeCategory::CAT_GROUP);
+        _classes["Base"] = new Base(*this, "base1", dagbase::NodeCategory::CAT_SOURCE);
+        _classes["Derived"] = new Derived(*this, "derived1", dagbase::NodeCategory::CAT_CONDITION);
+        _classes["Final"] = new Final(*this, "final1", dagbase::NodeCategory::CAT_GROUP);
+        _classes["Boundary"] = new Boundary(*this, "b1", dagbase::NodeCategory::CAT_GROUP);
+        _classes["MathsNode"] = new MathsNode(*this, "maths1", dagbase::NodeCategory::CAT_ACTION);
     }
 
     MemoryNodeLibrary::~MemoryNodeLibrary()
@@ -41,13 +41,13 @@ namespace dag
 		}
 	}
 	
-    Node* MemoryNodeLibrary::instantiateNode(NodeID id, const std::string& className, const std::string& name)
+    dagbase::Node* MemoryNodeLibrary::instantiateNode(dagbase::NodeID id, const std::string& className, const std::string& name)
     {
-        CloningFacility facility;
+        dagbase::CloningFacility facility;
 
 	    if (auto const it = _classes.find(className); it != _classes.end() )
         {
-	        const auto copy = it->second->clone(facility, CopyOp{0}, nullptr);
+	        const auto copy = it->second->clone(facility, dagbase::CopyOp{0}, nullptr);
             copy->setId(id);
             copy->setName(name);
 
@@ -74,7 +74,7 @@ namespace dag
 //        return str;
 //    }
 
-    Node *MemoryNodeLibrary::instantiateNode(dagbase::InputStream &str, dagbase::Lua &lua)
+    dagbase::Node *MemoryNodeLibrary::instantiateNode(dagbase::InputStream &str, dagbase::Lua &lua)
     {
         std::string className;
         std::string fieldName;
@@ -87,26 +87,26 @@ namespace dag
         return nullptr;
     }
 
-    Port *
-    MemoryNodeLibrary::instantiatePort(const std::string &className, const std::string& name, PortType::Type type, PortDirection::Direction dir,
-                                       Value value)
+    dagbase::Port *
+    MemoryNodeLibrary::instantiatePort(const std::string &className, const std::string& name, dagbase::PortType::Type type, dagbase::PortDirection::Direction dir,
+                                       dagbase::Value value)
     {
         if (className == "ValuePort")
         {
-            return new ValuePort(nextPortID(), name, type, dir, value);
+            return new dagbase::ValuePort(nextPortID(), name, type, dir, value);
         }
         else if (className == "TypedPort")
         {
             switch (type)
             {
-                case PortType::TYPE_INT64:
-                    return new TypedPort<std::int64_t>(nextPortID(), name, type, dir, static_cast<std::int64_t>(value));
-                case PortType::TYPE_DOUBLE:
-                    return new TypedPort<double>(nextPortID(), name, type, dir, static_cast<double>(value));
-                case PortType::TYPE_STRING:
-                    return new TypedPort<std::string>(nextPortID(), name, type, dir, value.operator std::string());
-                case PortType::TYPE_BOOL:
-                    return new TypedPort<bool>(nextPortID(), name, type, dir, static_cast<bool>(value));
+                case dagbase::PortType::TYPE_INT64:
+                    return new dagbase::TypedPort<std::int64_t>(nextPortID(), name, type, dir, static_cast<std::int64_t>(value));
+                case dagbase::PortType::TYPE_DOUBLE:
+                    return new dagbase::TypedPort<double>(nextPortID(), name, type, dir, static_cast<double>(value));
+                case dagbase::PortType::TYPE_STRING:
+                    return new dagbase::TypedPort<std::string>(nextPortID(), name, type, dir, value.operator std::string());
+                case dagbase::PortType::TYPE_BOOL:
+                    return new dagbase::TypedPort<bool>(nextPortID(), name, type, dir, static_cast<bool>(value));
                 default:
                     assert(false);
             }
@@ -115,7 +115,7 @@ namespace dag
         return nullptr;
     }
 
-    Port *MemoryNodeLibrary::instantiatePort(dagbase::InputStream &str, dagbase::Lua &lua)
+    dagbase::Port *MemoryNodeLibrary::instantiatePort(dagbase::InputStream &str, dagbase::Lua &lua)
     {
         std::string className;
         std::string fieldName;
@@ -123,23 +123,23 @@ namespace dag
         str.readString(&className, true);
         if (className == "ValuePort")
         {
-            return new ValuePort(str, *this, lua);
+            return new dagbase::ValuePort(str, *this, lua);
         }
         else if (className == "TypedPort<int64_t>")
         {
-            return new TypedPort<std::int64_t>(str, *this, lua);
+            return new dagbase::TypedPort<std::int64_t>(str, *this, lua);
         }
         else if (className == "TypedPort<double>")
         {
-            return new TypedPort<double>(str, *this, lua);
+            return new dagbase::TypedPort<double>(str, *this, lua);
         }
         else if (className == "TypedPort<string>")
         {
-            return new TypedPort<std::string>(str, *this, lua);
+            return new dagbase::TypedPort<std::string>(str, *this, lua);
         }
         else if (className == "TypedPort<bool>")
         {
-            return new TypedPort<bool>(str, *this, lua);
+            return new dagbase::TypedPort<bool>(str, *this, lua);
         }
 
         return nullptr;
@@ -168,7 +168,7 @@ namespace dag
         return nullptr;
     }
 
-    dagbase::OutputStream &MemoryNodeLibrary::write(dagbase::OutputStream& str,  Node *node) const
+    dagbase::OutputStream &MemoryNodeLibrary::write(dagbase::OutputStream& str,  dagbase::Node *node) const
     {
         std::string className = node->className();
         str.writeString(className, false);
@@ -177,7 +177,7 @@ namespace dag
         return str;
     }
 
-    void MemoryNodeLibrary::registerNode(Node *node)
+    void MemoryNodeLibrary::registerNode(dagbase::Node *node)
     {
         if (node != nullptr)
         {

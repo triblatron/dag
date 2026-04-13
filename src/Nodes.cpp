@@ -9,32 +9,32 @@
 
 namespace dag
 {
-    std::array<MetaPort,1> Base::ports =
+    std::array<dagbase::MetaPort,1> Base::ports =
             {
-                    MetaPort{"direction",PortType::TYPE_DOUBLE, PortDirection::DIR_OUT}
+                    dagbase::MetaPort{"direction",dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT}
             };
 
-    std::array<MetaPort, 1> Derived::ports =
+    std::array<dagbase::MetaPort, 1> Derived::ports =
             {
-                    MetaPort("trigger", PortType::TYPE_BOOL, PortDirection::DIR_IN)
+                    dagbase::MetaPort("trigger", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_IN)
             };
 
-    std::array<MetaPort, 1> Final::ports=
+    std::array<dagbase::MetaPort, 1> Final::ports=
             {
-                    MetaPort("int1", PortType::TYPE_INT64, PortDirection::DIR_INTERNAL)
+                    dagbase::MetaPort("int1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL)
             };
 
-    std::array<MetaPort, 1> Foo::ports =
+    std::array<dagbase::MetaPort, 1> Foo::ports =
             {
-                    MetaPort("in1", PortType::TYPE_DOUBLE, PortDirection::DIR_IN)
+                    dagbase::MetaPort("in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN)
             };
 
-    Foo *Foo::create(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua &lua)
+    Foo *Foo::create(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
     {
         return new Foo(str, nodeLib, lua);
     }
 
-    Foo::Foo(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua &lua)
+    Foo::Foo(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib),
             in1(str, nodeLib, lua)
@@ -68,17 +68,17 @@ namespace dag
         return true;
     }
 
-    std::array<MetaPort, 1> FooTyped::ports =
+    std::array<dagbase::MetaPort, 1> FooTyped::ports =
             {
-                    MetaPort("in1", PortType::TYPE_DOUBLE, PortDirection::DIR_IN)
+                    dagbase::MetaPort("in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN)
             };
 
-    FooTyped *FooTyped::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    FooTyped *FooTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
         return new FooTyped(str, nodeLib, lua);
     }
 
-    FooTyped::FooTyped(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    FooTyped::FooTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node()
 
@@ -96,11 +96,11 @@ namespace dag
         {
             if (in1Ref != nullptr)
             {
-                _in1 = static_cast<TypedPort<double>*>(in1Ref);
+                _in1 = static_cast<dagbase::TypedPort<double>*>(in1Ref);
             }
             else
             {
-                _in1 = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
+                _in1 = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
             }
         }
         str.readFooter();
@@ -147,9 +147,9 @@ namespace dag
         delete _in1;
     }
 
-    std::array<MetaPort, 1> Bar::ports =
+    std::array<dagbase::MetaPort, 1> Bar::ports =
             {
-                    MetaPort("out1", PortType::TYPE_DOUBLE, PortDirection::DIR_OUT)
+                    dagbase::MetaPort("out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT)
             };
 
     dagbase::OutputStream &Bar::write(dagbase::OutputStream &str) const
@@ -160,7 +160,7 @@ namespace dag
         return str;
     }
 
-    Bar::Bar(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    Bar::Bar(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib),
             out1(str, nodeLib, lua)
@@ -168,7 +168,7 @@ namespace dag
 
     }
 
-    Bar *Bar::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    Bar *Bar::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
         return new Bar(str, nodeLib, lua);
     }
@@ -178,17 +178,17 @@ namespace dag
         return false;
     }
 
-    std::array<MetaPort, 1> BarTyped::ports =
+    std::array<dagbase::MetaPort, 1> BarTyped::ports =
             {
-                    MetaPort("out1", PortType::TYPE_DOUBLE, PortDirection::DIR_OUT)
+                    dagbase::MetaPort("out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT)
             };
 
-    BarTyped *BarTyped::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    BarTyped *BarTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
         return new BarTyped(str, nodeLib, lua);
     }
 
-    BarTyped::BarTyped(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    BarTyped::BarTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node()
     {
@@ -204,11 +204,11 @@ namespace dag
         {
             if (out1Ref != nullptr)
             {
-                _out1 = static_cast<TypedPort<double>*>(out1Ref);
+                _out1 = static_cast<dagbase::TypedPort<double>*>(out1Ref);
             }
             else
             {
-                _out1 = dynamic_cast<TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
+                _out1 = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
             }
         }
         str.readFooter();
@@ -249,13 +249,13 @@ namespace dag
         delete _out1;
     }
 
-    std::array<MetaPort, 2> GroupTyped::ports =
+    std::array<dagbase::MetaPort, 2> GroupTyped::ports =
             {
-                    MetaPort("out1", PortType::TYPE_DOUBLE, PortDirection::DIR_OUT),
-                    MetaPort("in1", PortType::TYPE_DOUBLE, PortDirection::DIR_IN)
+                    dagbase::MetaPort("out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT),
+                    dagbase::MetaPort("in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN)
             };
 
-    GroupTyped::GroupTyped(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    GroupTyped::GroupTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib),
             _out1(str, nodeLib, lua),
@@ -264,7 +264,7 @@ namespace dag
         // Do nothing.
     }
 
-    GroupTyped *GroupTyped::create(dagbase::InputStream &str, NodeLibrary &nodeLib, dagbase::Lua &lua)
+    GroupTyped *GroupTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
         return new GroupTyped(str, nodeLib, lua);
     }
@@ -283,12 +283,12 @@ namespace dag
         return false;
     }
 
-    void Base::describe(NodeDescriptor& descriptor) const
+    void Base::describe(dagbase::NodeDescriptor& descriptor) const
     {
         descriptor.id = id();
         descriptor.name = name();
         descriptor.category = category();
-        MetaPort portDescriptor;
+        dagbase::MetaPort portDescriptor;
         //portDescriptor.id = _direction.id();
         portDescriptor.name = _direction.name();
         portDescriptor.type = _direction.type();
@@ -296,12 +296,12 @@ namespace dag
         descriptor.ports.emplace_back(portDescriptor);
     }
 
-    Node *Base::create(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua &lua)
+    dagbase::Node *Base::create(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
     {
         return new Base(str, nodeLib, lua);
     }
 
-    Base::Base(dagbase::InputStream &str, NodeLibrary& nodeLib, dagbase::Lua &lua)
+    Base::Base(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib),
             int1(0.0),
