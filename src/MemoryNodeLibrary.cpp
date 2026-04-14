@@ -168,11 +168,11 @@ namespace dag
         return nullptr;
     }
 
-    dagbase::OutputStream &MemoryNodeLibrary::write(dagbase::OutputStream& str,  dagbase::Node *node) const
+    dagbase::OutputStream &MemoryNodeLibrary::write(dagbase::OutputStream& str, dagbase::Node *node, dagbase::Lua &lua)
     {
         std::string className = node->className();
         str.writeString(className, false);
-        node->write(str);
+        node->writeToStream(str, *this, lua);
         
         return str;
     }

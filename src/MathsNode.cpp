@@ -88,7 +88,7 @@ namespace dag
 
     MathsNode::MathsNode(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
-            Node(str, nodeLib)
+            Node(str, nodeLib, lua)
 
     {
         // We must do a static_cast<> here because we might be in the Port constructor
@@ -110,23 +110,23 @@ namespace dag
         _output->setParent(this);
     }
 
-    dagbase::OutputStream &MathsNode::write(dagbase::OutputStream &str) const
+    dagbase::OutputStream &MathsNode::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
-        Node::write(str);
+        Node::writeToStream(str, nodeLib, lua);
 
         if (str.writeRef(_angle))
         {
-            _angle->write(str);
+            _angle->writeToStream(str, nodeLib, lua);
         }
 
         if (str.writeRef(_unit))
         {
-            _unit->write(str);
+            _unit->writeToStream(str, nodeLib, lua);
         }
 
         if (str.writeRef(_output))
         {
-            _output->write(str);
+            _output->writeToStream(str, nodeLib, lua);
         }
 
         return str;

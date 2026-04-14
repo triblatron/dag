@@ -543,7 +543,7 @@ public:
 
     explicit SpooVariant(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua)
     :
-    Node(str, nodeLib),
+    Node(str, nodeLib, lua),
     _foo(str, nodeLib, lua),
     _bar(str, nodeLib, lua)
     {
@@ -610,11 +610,11 @@ public:
         }
         return true;
     }
-    dagbase::OutputStream& write(dagbase::OutputStream& str) const override
+    dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) const override
     {
-        Node::write(str);
-        _foo.write(str);
-        _bar.write(str);
+        Node::writeToStream(str, nodeLib, lua);
+        _foo.writeToStream(str, nodeLib, lua);
+        _bar.writeToStream(str, nodeLib, lua);
 
         return str;
     }

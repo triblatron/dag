@@ -36,17 +36,17 @@ namespace dag
 
     Foo::Foo(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
             :
-            Node(str, nodeLib),
+            Node(str, nodeLib, lua),
             in1(str, nodeLib, lua)
     {
 
     }
 
-    dagbase::OutputStream &Foo::write(dagbase::OutputStream &str) const
+    dagbase::OutputStream &Foo::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
-        Node::write(str);
+        Node::writeToStream(str, nodeLib, lua);
 
-        in1.write(str);
+        in1.writeToStream(str, nodeLib, lua);
 
         return str;
     }
@@ -86,7 +86,7 @@ namespace dag
         std::string className;
         std::string fieldName;
         str.readHeader(&className);
-        Node::readFromStream(str, nodeLib);
+        Node::readFromStream(str, nodeLib, lua);
         str.readField(&fieldName);
         dagbase::Stream::ObjId in1Id = 0;
         dagbase::Stream::Ref in1Ref = str.readRef(&in1Id);
@@ -106,14 +106,14 @@ namespace dag
         str.readFooter();
     }
 
-    dagbase::OutputStream &FooTyped::write(dagbase::OutputStream &str) const
+    dagbase::OutputStream &FooTyped::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
         str.writeHeader("FooTyped");
-        Node::write(str);
+        Node::writeToStream(str, nodeLib, lua);
         str.writeField("in1");
         if (str.writeRef(_in1))
         {
-            _in1->write(str);
+            _in1->writeToStream(str, nodeLib, lua);
         }
         str.writeFooter();
         return str;
@@ -152,17 +152,17 @@ namespace dag
                     dagbase::MetaPort("out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT)
             };
 
-    dagbase::OutputStream &Bar::write(dagbase::OutputStream &str) const
+    dagbase::OutputStream &Bar::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
-        Node::write(str);
-        out1.write(str);
+        Node::writeToStream(str, nodeLib, lua);
+        out1.writeToStream(str, nodeLib, lua);
 
         return str;
     }
 
     Bar::Bar(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
-            Node(str, nodeLib),
+            Node(str, nodeLib, lua),
             out1(str, nodeLib, lua)
     {
 
@@ -195,7 +195,7 @@ namespace dag
         std::string className;
         std::string fieldName;
         str.readHeader(&className);
-        Node::readFromStream(str, nodeLib);
+        Node::readFromStream(str, nodeLib, lua);
         str.readField(&fieldName);
         dagbase::Stream::ObjId out1Id = 0;
         dagbase::Stream::Ref out1Ref = str.readRef(&out1Id);
@@ -214,14 +214,14 @@ namespace dag
         str.readFooter();
     }
 
-    dagbase::OutputStream &BarTyped::write(dagbase::OutputStream &str) const
+    dagbase::OutputStream &BarTyped::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
         str.writeHeader("BarTyped");
-        Node::write(str);
+        Node::writeToStream(str,  nodeLib, lua);
         str.writeField("out1");
         if (str.writeRef(_out1))
         {
-            _out1->write(str);
+            _out1->writeToStream(str, nodeLib, lua);
         }
         str.writeFooter();
         return str;
@@ -257,7 +257,7 @@ namespace dag
 
     GroupTyped::GroupTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
-            Node(str, nodeLib),
+            Node(str, nodeLib, lua),
             _out1(str, nodeLib, lua),
             _in1(str, nodeLib, lua)
     {
@@ -269,11 +269,11 @@ namespace dag
         return new GroupTyped(str, nodeLib, lua);
     }
 
-    dagbase::OutputStream &GroupTyped::write(dagbase::OutputStream &str) const
+    dagbase::OutputStream &GroupTyped::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
-        Node::write(str);
-        _out1.write(str);
-        _in1.write(str);
+        Node::writeToStream(str, nodeLib, lua);
+        _out1.writeToStream(str, nodeLib, lua);
+        _in1.writeToStream(str, nodeLib, lua);
 
         return str;
     }
@@ -303,17 +303,17 @@ namespace dag
 
     Base::Base(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
             :
-            Node(str, nodeLib),
+            Node(str, nodeLib, lua),
             int1(0.0),
             _direction(str,nodeLib, lua)
     {
         str.read(&int1);
     }
 
-    dagbase::OutputStream &Base::write(dagbase::OutputStream &str) const
+    dagbase::OutputStream &Base::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
-        Node::write(str);
-        _direction.write(str);
+        Node::writeToStream(str, nodeLib, lua);
+        _direction.writeToStream(str, nodeLib, lua);
         str.write(int1);
 
         return str;

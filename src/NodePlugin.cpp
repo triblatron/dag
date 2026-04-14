@@ -31,7 +31,7 @@ public:
         std::string className;
         std::string fieldName;
         str.readHeader(&className);
-        Node::readFromStream(str, nodeLib);
+        Node::readFromStream(str, nodeLib, lua);
         std::uint32_t numDynamicMetaPorts = 0;
         str.readField(&fieldName);
         str.readUInt32(&numDynamicMetaPorts);
@@ -143,10 +143,10 @@ public:
         return new DynamicNode(str, nodeLib, lua);
     }
 
-    dagbase::OutputStream& write(dagbase::OutputStream& str) const override
+    dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override
     {
         str.writeHeader("NodePlugin.DynamicNode");
-        Node::write(str);
+        Node::writeToStream(str, nodeLib, lua);
         str.writeField("numDynamicMetaPorts");
         str.writeUInt32(_dynamicMetaPorts.size());
         str.writeField("dynamicMetaPorts");
@@ -159,7 +159,7 @@ public:
         str.writeField("dynamicPorts");
         for (auto p : _dynamicPorts)
         {
-            p->write(str);
+            p->writeToStream(str, nodeLib, lua);
         }
         str.writeFooter();
         return str;

@@ -57,7 +57,8 @@ namespace dag
 
         //! Write ourself to a stream
         //! \param[in] str The stream
-        dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
+        //! \param lua
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
         //! Clone ourself to support the Prototype pattern
         //! \note A deep copy of Ports is required.

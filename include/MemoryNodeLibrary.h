@@ -35,7 +35,7 @@ namespace dag
 
 		dagbase::Node* instantiateNode(dagbase::NodeID id, const std::string& className, const std::string& name) override;
 
-        dagbase::OutputStream& write(dagbase::OutputStream& str, dagbase::Node* node) const override;
+        dagbase::OutputStream& write(dagbase::OutputStream& str, dagbase::Node* node, dagbase::Lua &lua) override;
 
         //! \note Delegates to Node::create() to get the exact type of the node.
         dagbase::Node* instantiateNode(dagbase::InputStream& str, dagbase::Lua& lua) override;

@@ -63,7 +63,7 @@ namespace dag
 
         [[nodiscard]]bool equals(const Node& other) const override;
 
-        dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
         [[nodiscard]]size_t totalPorts() const override
         {

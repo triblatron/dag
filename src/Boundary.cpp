@@ -55,7 +55,7 @@ namespace dag
         std::string className;
         std::string fieldName;
         str.readHeader(&className);
-        Node::readFromStream(str, nodeLib);
+        Node::readFromStream(str, nodeLib, lua);
         std::uint32_t numDynamicMetaPorts = 0;
         str.readField(&fieldName);
         str.readUInt32(&numDynamicMetaPorts);
@@ -82,10 +82,10 @@ namespace dag
         return new Boundary(str, nodeLib, lua);
     }
 
-    dagbase::OutputStream &Boundary::write(dagbase::OutputStream &str) const
+    dagbase::OutputStream &Boundary::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
         str.writeHeader("Boundary");
-        Node::write(str);
+        Node::writeToStream(str, nodeLib, lua);
         str.writeField("numDynamicMetaPorts");
         str.writeUInt32(_dynamicMetaPorts.size());
         str.writeField("dynamicMetaPorts");
@@ -98,7 +98,7 @@ namespace dag
         str.writeField("dynamicPorts");
         for (auto p : _dynamicPorts)
         {
-            p->write(str);
+            p->writeToStream(str, nodeLib, lua);
         }
         str.writeFooter();
         return str;

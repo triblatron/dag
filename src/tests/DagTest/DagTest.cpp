@@ -1719,6 +1719,7 @@ class Graph_testSerialisation : public ::testing::TestWithParam<std::tuple<std::
 
 TEST_P(Graph_testSerialisation, testRoundTrip)
 {
+    dagbase::Lua lua;
     auto formatClassName = std::get<0>(GetParam());
     auto graphFilename = std::get<1>(GetParam());
     //dagbase::StreamFormat* format = nullptr;
@@ -1743,7 +1744,7 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
 
     if (sut->writeRef(g1))
     {
-        g1->write(*sut);
+        g1->write(*sut, nodeLib, lua);
     }
     sut->flush();
     store.setMode(dagbase::BackingStore::MODE_INPUT_BIT);
@@ -1761,7 +1762,6 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
     dagbase::Stream::ObjId id = 0;
     dagbase::Graph* g2 = nullptr;
     dagbase::Stream::Ref ref = in->readRef(&id);
-    dagbase::Lua lua;
     if (id != 0)
     {
         if (ref != nullptr)
@@ -2097,7 +2097,7 @@ TEST_P(GraphTest_testReadFromLuaThenSerialise, testSerialise)
     dagbase::BinaryOutputStream ostr(buf);
     if (ostr.writeRef(sut))
     {
-        sut->write(ostr);
+        sut->write(ostr, nodeLib, lua);
     }
     ostr.flush();
     buf->setMode(dagbase::BackingStore::MODE_INPUT_BIT);

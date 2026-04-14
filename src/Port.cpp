@@ -179,7 +179,7 @@ namespace dagbase
         }
     }
 
-    dagbase::OutputStream &Port::write(dagbase::OutputStream &str) const
+    dagbase::OutputStream &Port::writeToStream(dagbase::OutputStream &str, NodeLibrary& nodeLib, Lua& lua) const
     {
         str.writeHeader("Port");
         str.writeField("id");
@@ -197,7 +197,7 @@ namespace dagbase
             std::string className = _parent->className();
             str.writeField("className");
             str.writeString(className, true);
-            _parent->write(str);
+            _parent->writeToStream(str, nodeLib, lua);
         }
         str.writeField("numOutgoingConnections");
         str.writeUInt32(_outgoingConnections.size());
@@ -206,7 +206,7 @@ namespace dagbase
         {
             if (str.writeRef(c))
             {
-                c->write(str);
+                c->writeToStream(str, nodeLib, lua);
             }
         }
 
@@ -217,7 +217,7 @@ namespace dagbase
         {
             if (str.writeRef(c))
             {
-                c->write(str);
+                c->writeToStream(str, nodeLib, lua);
             }
         }
         str.writeFooter();

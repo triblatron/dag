@@ -93,7 +93,7 @@ namespace dag
             return metaPort(index);
         }
 
-        dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
     protected:
         static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
@@ -123,7 +123,7 @@ namespace dag
 
         explicit Base(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
 
-        dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
         [[nodiscard]]const char* className() const override
         {
@@ -369,7 +369,7 @@ namespace dag
 
         explicit Bar(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);
 
-        dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
         [[nodiscard]]const char* className() const override
         {
@@ -477,7 +477,7 @@ namespace dag
 
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
-        dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
         void describe(dagbase::NodeDescriptor& descriptor) const override
         {
@@ -574,7 +574,7 @@ namespace dag
 
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
-        dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
         void describe(dagbase::NodeDescriptor& descriptor) const override
         {
@@ -665,7 +665,7 @@ namespace dag
 
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
-        dagbase::OutputStream& write(dagbase::OutputStream& str) const override;
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
         void describe(dagbase::NodeDescriptor& descriptor) const override
         {
