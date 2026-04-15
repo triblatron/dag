@@ -38,7 +38,7 @@ namespace dag
         [[nodiscard]]const char* className() const override;
 
         //! Describe ourself
-        void describe(dagbase::NodeDescriptor& descriptor) const override;
+        void describeNode(dagbase::NodeDescriptor& descriptor) const override;
 
         //! \return A MetaPort corresponding to a given index.
         //! \param[in] The index of the port, zero-based.

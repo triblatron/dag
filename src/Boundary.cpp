@@ -15,7 +15,7 @@ namespace dag
         // Do nothing.
     }
 
-    void Boundary::describe(dagbase::NodeDescriptor &descriptor) const
+    void Boundary::describeNode(dagbase::NodeDescriptor &descriptor) const
     {
 
     }

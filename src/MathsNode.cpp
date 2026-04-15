@@ -33,7 +33,7 @@ namespace dag
         return "MathsNode";
     }
 
-    void MathsNode::describe(dagbase::NodeDescriptor &descriptor) const
+    void MathsNode::describeNode(dagbase::NodeDescriptor &descriptor) const
     {
         descriptor.id = id();
         descriptor.name = name();

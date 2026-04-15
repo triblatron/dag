@@ -55,9 +55,9 @@ namespace dag
 
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
-        void describe(dagbase::NodeDescriptor& descriptor) const override
+        void describeNode(dagbase::NodeDescriptor& descriptor) const override
         {
-            dagbase::Node::describe(descriptor);
+            dagbase::Node::describeNode(descriptor);
             descriptor.ports.emplace_back(in1.name(), in1.type(), in1.dir());
         }
 
@@ -139,7 +139,7 @@ namespace dag
 
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
-        void describe(dagbase::NodeDescriptor& descriptor) const override;
+        void describeNode(dagbase::NodeDescriptor& descriptor) const override;
 
         double int1;
 
@@ -390,9 +390,9 @@ namespace dag
             return numPorts;
         }
 
-        void describe(dagbase::NodeDescriptor& descriptor) const override
+        void describeNode(dagbase::NodeDescriptor& descriptor) const override
         {
-            Node::describe(descriptor);
+            Node::describeNode(descriptor);
             descriptor.ports.emplace_back(out1.name(), out1.type(), out1.dir());
         }
 
@@ -479,9 +479,9 @@ namespace dag
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
-        void describe(dagbase::NodeDescriptor& descriptor) const override
+        void describeNode(dagbase::NodeDescriptor& descriptor) const override
         {
-            Node::describe(descriptor);
+            Node::describeNode(descriptor);
             descriptor.ports.emplace_back(_in1->name(), _in1->type(), _in1->dir());
         }
 
@@ -576,9 +576,9 @@ namespace dag
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
-        void describe(dagbase::NodeDescriptor& descriptor) const override
+        void describeNode(dagbase::NodeDescriptor& descriptor) const override
         {
-            Node::describe(descriptor);
+            Node::describeNode(descriptor);
             if (_out1 != nullptr)
             {
                 descriptor.ports.emplace_back(_out1->name(), _out1->type(), _out1->dir());
@@ -667,9 +667,9 @@ namespace dag
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
-        void describe(dagbase::NodeDescriptor& descriptor) const override
+        void describeNode(dagbase::NodeDescriptor& descriptor) const override
         {
-            dagbase::Node::describe(descriptor);
+            dagbase::Node::describeNode(descriptor);
             descriptor.ports.emplace_back(_out1.name(), _out1.type(), _out1.dir());
             descriptor.ports.emplace_back(_in1.name(), _in1.type(), _in1.dir());
         }

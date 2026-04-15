@@ -362,7 +362,7 @@ TEST(NodeTest, testDescribe)
     dag::Foo* foo = dynamic_cast<dag::Foo*>(nodeLib.instantiateNode(0, "Foo", "foo1"));
     ASSERT_NE(nullptr, foo);
     dagbase::NodeDescriptor sut;
-    foo->describe(sut);
+    foo->describeNode(sut);
     ASSERT_EQ(dagbase::NodeCategory::CAT_SINK, sut.category);
     ASSERT_EQ("foo1", sut.name);
     ASSERT_EQ(size_t{ 1 }, sut.ports.size());

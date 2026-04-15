@@ -32,7 +32,7 @@ namespace dag
             return "Boundary";
         }
 
-        void describe(dagbase::NodeDescriptor& descriptor) const override;
+        void describeNode(dagbase::NodeDescriptor& descriptor) const override;
 
         [[nodiscard]]dagbase::MetaPort const* dynamicMetaPort(size_t index) const override
         {

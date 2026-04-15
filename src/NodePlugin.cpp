@@ -87,7 +87,7 @@ public:
         return "NodePlugin.DynamicNode";
     }
 
-    void describe(dagbase::NodeDescriptor& descriptor) const override
+    void describeNode(dagbase::NodeDescriptor& descriptor) const override
     {
         descriptor.id = id();
         descriptor.category = category();

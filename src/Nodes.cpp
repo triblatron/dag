@@ -283,7 +283,7 @@ namespace dag
         return false;
     }
 
-    void Base::describe(dagbase::NodeDescriptor& descriptor) const
+    void Base::describeNode(dagbase::NodeDescriptor& descriptor) const
     {
         descriptor.id = id();
         descriptor.name = name();

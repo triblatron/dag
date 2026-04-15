@@ -619,9 +619,9 @@ public:
         return str;
     }
 
-    void describe(dagbase::NodeDescriptor& descriptor) const override
+    void describeNode(dagbase::NodeDescriptor& descriptor) const override
     {
-        Node::describe(descriptor);
+        Node::describeNode(descriptor);
         descriptor.ports.emplace_back(_foo.name(), _foo.type(), _foo.dir());
         descriptor.ports.emplace_back(_bar.name(), _bar.type(), _bar.dir());
     }
@@ -787,7 +787,7 @@ static void BM_NodeDescribe(benchmark::State& state)
     {
         dagbase::NodeDescriptor d;
 
-        foo->describe(d);
+        foo->describeNode(d);
     }
     delete foo;
 }
