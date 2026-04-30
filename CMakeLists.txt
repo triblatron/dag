@@ -11,6 +11,8 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 #FIND_PACKAGE(benchmark REQUIRED)
 FIND_PACKAGE(Lua 5.4)
 
+FIND_PACKAGE(tvision CONFIG)
+
 SET( ALL_PUBLIC_HEADERS include/Action.h include/Boundary.h include/Command.h include/CreateNode.h include/FileSystemTraverser.h include/MemoryNodeLibrary.h include/MetaCoroutine.h include/MetaOperation.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h include/SelectionInterface.h include/SelectionLive.h include/TypeTraits.h 
         include/DynamicLibrary.h
 		include/MathNode.h
