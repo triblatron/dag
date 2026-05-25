@@ -1521,6 +1521,7 @@ TEST(ByteBufferTest, testRelativeFloat)
 
     sut.put(101.234f);
     float f = 0.0f;
+    sut.flip();
     sut.get(&f);
     ASSERT_EQ(101.234f, f);
 }
@@ -1531,6 +1532,7 @@ TEST(ByteBufferTest, testRelativeInt)
 
     sut.put(101);
     std::int32_t f = 0;
+    sut.flip();
     sut.get(&f);
     ASSERT_EQ(101, f);
 }
@@ -1541,6 +1543,7 @@ TEST(ByteBufferTest, testRelativeDouble)
 
     sut.put(101.234);
     double f = 0;
+    sut.flip();
     sut.get(&f);
     ASSERT_EQ(101.234, f);
 }
@@ -1566,6 +1569,7 @@ TEST(ByteBufferTest, testRelativeStruct)
 
     sut.put(value);
     TestStruct actualValue;
+    sut.flip();
     sut.get(&actualValue);
     ASSERT_EQ(value, actualValue);
 }
@@ -1608,6 +1612,7 @@ TEST(ByteBufferTest, testBulkGet)
     int i=100;
     sut.put(i);
     int actual=0;
+    sut.flip();
     sut.get(reinterpret_cast<dagbase::ByteBuffer::BufferType::value_type*>(&actual), sizeof(int));
     ASSERT_EQ(i,actual);
 }
@@ -1734,7 +1739,6 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
         sut = new dagbase::BinaryOutputStream(&store);
     }
     ASSERT_NE(nullptr, sut);
-    store.setMode(dagbase::BackingStore::MODE_OUTPUT_BIT);
     dag::NodePluginScanner scanner;
     dag::MemoryNodeLibrary nodeLib;
 
@@ -1747,7 +1751,7 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
         g1->write(*sut, nodeLib, lua);
     }
     sut->flush();
-    store.setMode(dagbase::BackingStore::MODE_INPUT_BIT);
+    store.open(dagbase::BackingStore::MODE_INPUT_BIT);
     dagbase::InputStream* in = nullptr;
     if (formatClassName == "TextFormat")
     {
@@ -2100,7 +2104,7 @@ TEST_P(GraphTest_testReadFromLuaThenSerialise, testSerialise)
         sut->write(ostr, nodeLib, lua);
     }
     ostr.flush();
-    buf->setMode(dagbase::BackingStore::MODE_INPUT_BIT);
+    buf->open(dagbase::BackingStore::MODE_INPUT_BIT);
     dagbase::BinaryInputStream istr(buf);
     dagbase::Stream::ObjId id{~0U};
     dagbase::Graph* actual = nullptr;
