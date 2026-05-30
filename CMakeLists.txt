@@ -25,6 +25,7 @@ SET( ALL_PUBLIC_HEADERS include/Action.h include/Boundary.h include/Command.h in
 		include/MetaField.h
 		include/UnionValue.h
         include/PrimitivePort.h
+        include/Nodes.h
 )
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
@@ -60,11 +61,12 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/Nodes.cpp
         src/SelectionLive.cpp
         src/UnionValue.cpp
- 		src/MathsNode.cpp
-		src/NodeEditorFrontEnd.cpp
-		src/NodeEditorFrontEndTUI.cpp
-		src/NodeEditorBackEndNodeEditorInterface.cpp
-		src/Menu.cpp
+        src/MathsNode.cpp
+        src/NodeEditorFrontEnd.cpp
+        src/NodeEditorFrontEndTUI.cpp
+        src/NodeEditorBackEndNodeEditorInterface.cpp
+        src/Menu.cpp
+        src/Nodes.cpp
 )
 
 set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "-o linker-signed")

@@ -938,7 +938,7 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testFindNode, ::testing::Values(
 
 TEST(PortTest, testConnectToExistingPortGivesTransfer)
 {
-    auto source = new dagbase::TypedPort<double>(0, nullptr, new dagbase::MetaPort("out", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT), 1.0, std::int32_t (dagbase::Port::OWN_META_PORT_BIT));
+    auto source = new dagbase::TypedPort<double>(0, nullptr, new dagbase::MetaPort("out", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT), 1.0, dagbase::Port::OWN_META_PORT_BIT);
     auto dest = new dagbase::TypedPort<double>(1, nullptr, new dagbase::MetaPort("in", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN), 0.0, dagbase::Port::OWN_META_PORT_BIT);
     auto* visitor = new dagbase::SetValueVisitor(dagbase::Value(2.0));
     source->accept(*visitor);
@@ -1152,6 +1152,7 @@ TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)
     ASSERT_NE(nullptr, actual.result.graph);
     ASSERT_EQ(size_t{3}, actual.result.graph->numNodes());
     ASSERT_NE(nullptr, actual.result.graph->parent());
+    sut->debug();
     delete t2;
     delete t1;
     delete sut;

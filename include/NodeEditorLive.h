@@ -59,6 +59,8 @@ namespace dag
         dagbase::Status createTemplate(dagbase::NodeID id) override;
 
         dagbase::Status deleteTemplate(dagbase::TemplateID id) override;
+
+        void debug();
     private:
         MemoryNodeLibrary *_nodeLib{nullptr};
         dagbase::Graph* _graph{nullptr};

@@ -139,7 +139,9 @@ namespace dag
     void FooTyped::debug(dagbase::DebugPrinter& printer) const
     {
         Node::debug(printer);
+        printer.indent();
         _in1->debug(printer);
+        printer.outdent();
     }
 
     FooTyped::~FooTyped()
@@ -227,6 +229,14 @@ namespace dag
         return str;
     }
 
+    void BarTyped::debug(dagbase::DebugPrinter &printer) const
+    {
+        Node::debug(printer);
+        printer.indent();
+        _out1->debug(printer);
+        printer.outdent();
+    }
+
     bool BarTyped::equals(const Node &other) const
     {
         if (!Node::operator==(other))
@@ -257,11 +267,43 @@ namespace dag
 
     GroupTyped::GroupTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
-            Node(str, nodeLib, lua),
-            _out1(str, nodeLib, lua),
-            _in1(str, nodeLib, lua)
+            Node(str, nodeLib, lua)
     {
-        // Do nothing.
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        Node::readFromStream(str, nodeLib, lua);
+        str.readField(&fieldName);
+        dagbase::Stream::ObjId out1Id = 0;
+        dagbase::Stream::Ref out1Ref = str.readRef(&out1Id);
+
+        if (out1Id != 0)
+        {
+            if (out1Ref != nullptr)
+            {
+                _out1 = static_cast<dagbase::TypedPort<double>*>(out1Ref);
+            }
+            else
+            {
+                _out1 = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
+            }
+        }
+
+        dagbase::Stream::ObjId in1Id = 0;
+        dagbase::Stream::Ref in1Ref = str.readRef(&in1Id);
+
+        if (in1Id != 0)
+        {
+            if (in1Ref != nullptr)
+            {
+                _in1 = static_cast<dagbase::TypedPort<double>*>(in1Ref);
+            }
+            else
+            {
+                _in1 = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
+            }
+        }
+        str.readFooter();
     }
 
     GroupTyped *GroupTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
@@ -271,11 +313,24 @@ namespace dag
 
     dagbase::OutputStream &GroupTyped::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
-        Node::writeToStream(str, nodeLib, lua);
-        _out1.writeToStream(str, nodeLib, lua);
-        _in1.writeToStream(str, nodeLib, lua);
-
+        str.writeHeader("GroupTyped");
+        Node::writeToStream(str,  nodeLib, lua);
+        str.writeField("out1");
+        if (str.writeRef(_out1))
+        {
+            _out1->writeToStream(str, nodeLib, lua);
+        }
+        if (str.writeRef(_in1))
+        {
+            _in1->writeToStream(str, nodeLib, lua);
+        }
+        str.writeFooter();
         return str;
+        // Node::writeToStream(str, nodeLib, lua);
+        // _out1->writeToStream(str, nodeLib, lua);
+        // _in1->writeToStream(str, nodeLib, lua);
+
+        // return str;
     }
 
     bool GroupTyped::equals(const Node &other) const

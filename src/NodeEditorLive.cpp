@@ -264,6 +264,14 @@ namespace dag
         return {};
     }
 
+    void NodeEditorLive::debug()
+    {
+        if (_graph)
+        {
+            _graph->debug();
+        }
+    }
+
     size_t NodeEditorLive::selectionCount()
     {
         return _selection->count();

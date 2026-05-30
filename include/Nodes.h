@@ -618,6 +618,8 @@ namespace dag
         {
             return metaPort(index);
         }
+
+        void debug(dagbase::DebugPrinter& printer) const override;
     protected:
         static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
@@ -632,21 +634,36 @@ namespace dag
     public:
         GroupTyped(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
-                Node(keyGen, name, category),
-                _out1(keyGen.nextPortID(), this, &ports[0], 1.0),
-                _in1(keyGen.nextPortID(), this, &ports[1], 2.0)
+                Node(keyGen, name, category)
         {
-            // Do nothing.
+            _out1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
+            _in1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[1], 2.0);
         }
 
         GroupTyped(const GroupTyped& other,dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
-                Node(other,facility,copyOp,keyGen),
-                _out1(other._out1, facility, copyOp, keyGen),
-                _in1(other._in1, facility, copyOp, keyGen)
+                Node(other,facility,copyOp,keyGen)
         {
-            _out1.setParent(this);
-            _in1.setParent(this);
+            std::uint64_t out1Id = 0;
+            if (facility.putOrig(other._out1, &out1Id))
+            {
+                _out1 = new dagbase::TypedPort<double>(*other._out1, facility, copyOp, keyGen);
+            }
+            else
+            {
+                _out1 = static_cast<dagbase::TypedPort<double>*>(facility.getClone(out1Id));
+            }
+            _out1->setParent(this);
+            std::uint64_t in1Id = 0;
+            if (facility.putOrig(other._in1, &out1Id))
+            {
+                _in1 = new dagbase::TypedPort<double>(*other._in1, facility, copyOp, keyGen);
+            }
+            else
+            {
+                _in1 = static_cast<dagbase::TypedPort<double>*>(facility.getClone(in1Id));
+            }
+            _in1->setParent(this);
         }
 
         explicit GroupTyped(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);
@@ -670,29 +687,35 @@ namespace dag
         void describeNode(dagbase::NodeDescriptor& descriptor) const override
         {
             dagbase::Node::describeNode(descriptor);
-            descriptor.ports.emplace_back(_out1.name(), _out1.type(), _out1.dir());
-            descriptor.ports.emplace_back(_in1.name(), _in1.type(), _in1.dir());
+            if (_out1)
+            {
+                descriptor.ports.emplace_back(_out1->name(), _out1->type(), _out1->dir());
+            }
+            if (_in1)
+            {
+                descriptor.ports.emplace_back(_in1->name(), _in1->type(), _in1->dir());
+            }
         }
 
         dagbase::TypedPort<double>& out1()
         {
-            return _out1;
+            return *_out1;
         }
 
         dagbase::TypedPort<double>& in1()
         {
-            return _in1;
+            return *_in1;
         }
 
         dagbase::Port* dynamicPort(size_t index) override
         {
             if (index == 0)
             {
-                return &_out1;
+                return _out1;
             }
             if (index == 1)
             {
-                return &_in1;
+                return _in1;
             }
 
             return nullptr;
@@ -722,7 +745,7 @@ namespace dag
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = 2;
     private:
-        dagbase::TypedPort<double> _out1;
-        dagbase::TypedPort<double> _in1;
+        dagbase::TypedPort<double>* _out1{nullptr};
+        dagbase::TypedPort<double>* _in1{nullptr};
     };
 }
