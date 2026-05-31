@@ -111,10 +111,10 @@ namespace dag
 
     Boundary::~Boundary()
     {
-        //for (auto p : _dynamicPorts)
-        //{
-        //    delete p;
-        //}
+        for (auto p : _dynamicPorts)
+        {
+            delete p;
+        }
     }
 
     void Boundary::debug(dagbase::DebugPrinter& printer) const
