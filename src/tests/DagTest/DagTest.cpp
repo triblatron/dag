@@ -21,7 +21,6 @@
 #include "core/CloningFacility.h"
 #include "io/MemoryBackingStore.h"
 #include <iostream>
-#include <fstream>
 #include <algorithm>
 #include <filesystem>
 
@@ -189,8 +188,11 @@ INSTANTIATE_TEST_SUITE_P(NodeTestClone, NodeTest_testClone, ::testing::Values(
     std::make_tuple("Derived", "derived1", 0),
     std::make_tuple("Final", "final1", 0),
     std::make_tuple("Final", "final1", 1),
-    std::make_tuple("Final", "final1", 2)
+    std::make_tuple("Final", "final1", 2),
+    std::make_tuple("GroupTyped", "group1", 0),
+    std::make_tuple("GroupTyped", "group1", 1)
 ));
+
 TEST(TypedTransferTest, checkMakeItSo)
 {
     dag::MemoryNodeLibrary nodeLib;

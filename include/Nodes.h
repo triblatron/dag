@@ -655,7 +655,7 @@ namespace dag
             }
             _out1->setParent(this);
             std::uint64_t in1Id = 0;
-            if (facility.putOrig(other._in1, &out1Id))
+            if (facility.putOrig(other._in1, &in1Id))
             {
                 _in1 = new dagbase::TypedPort<double>(*other._in1, facility, copyOp, keyGen);
             }
@@ -667,6 +667,8 @@ namespace dag
         }
 
         explicit GroupTyped(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);
+
+        ~GroupTyped() override;
 
         [[nodiscard]]const char* className() const override
         {

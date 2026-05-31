@@ -6,10 +6,11 @@
 
 #include "config/Export.h"
 
-#include "../thirdparty/dagbase/include/core/Port.h"
+#include "core/Port.h"
 #include "io/InputStream.h"
 #include "io/OutputStream.h"
-#include "../thirdparty/dagbase/include/core/Transfer.h"
+#include "core/Transfer.h"
+#include "core/Types.h"
 
 namespace dag
 {
@@ -167,13 +168,12 @@ namespace dag
 
         [[nodiscard]]const char* className() const override
         {
-            return classNames[type()];
+            return PortType::toString(type());
         }
 
         std::ostream& toLua(std::ostream& str) override;
     private:
 		T _value;
-        static const char* classNames[];
 	};
 
 }

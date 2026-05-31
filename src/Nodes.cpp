@@ -306,6 +306,12 @@ namespace dag
         str.readFooter();
     }
 
+    GroupTyped::~GroupTyped()
+    {
+        delete _out1;
+        delete _in1;
+    }
+
     GroupTyped *GroupTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
         return new GroupTyped(str, nodeLib, lua);
