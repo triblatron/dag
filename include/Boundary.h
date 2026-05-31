@@ -83,6 +83,8 @@ namespace dag
                 _dynamicMetaPorts.emplace_back(desc);
             }
         }
+
+        void debug(dagbase::DebugPrinter& printer) const;
     private:
         typedef std::vector<dagbase::MetaPort> MetaPortArray;
         MetaPortArray _dynamicMetaPorts;

@@ -111,9 +111,20 @@ namespace dag
 
     Boundary::~Boundary()
     {
-        for (auto p : _dynamicPorts)
+        //for (auto p : _dynamicPorts)
+        //{
+        //    delete p;
+        //}
+    }
+
+    void Boundary::debug(dagbase::DebugPrinter& printer) const
+    {
+        Node::debug(printer);
+        printer.indent();
+        for (auto port : _dynamicPorts)
         {
-            delete p;
+            port->debug(printer);
         }
+        printer.outdent();
     }
 }

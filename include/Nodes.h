@@ -742,6 +742,8 @@ namespace dag
         {
             return metaPort(index);
         }
+
+        void debug(dagbase::DebugPrinter& printer) const;
     protected:
         static std::array<dagbase::MetaPort, 2> ports;
         static constexpr size_t firstPort = 0;

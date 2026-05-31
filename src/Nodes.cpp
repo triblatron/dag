@@ -344,6 +344,15 @@ namespace dag
         return false;
     }
 
+    void GroupTyped::debug(dagbase::DebugPrinter& printer) const
+    {
+        Node::debug(printer);
+        printer.indent();
+        _out1->debug(printer);
+        _in1->debug(printer);
+        printer.outdent();
+    }
+
     void Base::describeNode(dagbase::NodeDescriptor& descriptor) const
     {
         descriptor.id = id();
