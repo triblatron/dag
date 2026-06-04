@@ -41,6 +41,15 @@ namespace dag
 		}
 	}
 	
+    void MemoryNodeLibrary::eachNode(std::function<bool(dagbase::Node&)> f)
+    {
+        for (auto c : _classes)
+        {
+            if (!f || !f(*c.second))
+                break;
+        }
+    }
+
     dagbase::Node* MemoryNodeLibrary::instantiateNode(dagbase::NodeID id, const std::string& className, const std::string& name)
     {
         dagbase::CloningFacility facility;
