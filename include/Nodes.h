@@ -241,6 +241,11 @@ namespace dag
 
             return nullptr;
         }
+
+        const char* className() const override
+        {
+            return "Derived";
+        }
     protected:
         static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = Base::numPorts;
