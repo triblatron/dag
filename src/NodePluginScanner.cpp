@@ -19,7 +19,7 @@ namespace dag
     fs::path NodePluginScanner::pluginExtension = ".dll";
 #elif defined(__APPLE__)
     fs::path NodePluginScanner::pathToPlugins = "lib/NodePlugins";
-    fs::path NodePluginScanner::pluginExtension = ".dylib";
+    fs::path NodePluginScanner::pluginExtension = ".so";
 #else
 #error "Your platform is not supported by NodePluginScanner";
 #endif

@@ -29,5 +29,5 @@
 #else
     #  define DAG_API
     #  define SHELL_API
-#define NODEPLUGIN_API
+#define NODEPLUGIN_API __attribute__((visibility("default")))
 #endif

@@ -11,7 +11,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 #FIND_PACKAGE(benchmark REQUIRED)
 FIND_PACKAGE(Lua 5.4)
 
-SET( ALL_PUBLIC_HEADERS include/Action.h include/Boundary.h include/Command.h include/CreateNode.h include/FileSystemTraverser.h include/MemoryNodeLibrary.h include/MetaCoroutine.h include/MetaOperation.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodePlugin.h include/NodePluginScanner.h include/Nodes.h include/SelectionInterface.h include/SelectionLive.h include/TypeTraits.h 
+SET( ALL_PUBLIC_HEADERS include/Action.h include/Boundary.h include/Command.h include/CreateNode.h include/FileSystemTraverser.h include/MemoryNodeLibrary.h include/MetaCoroutine.h include/MetaOperation.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodePluginScanner.h include/Nodes.h include/SelectionInterface.h include/SelectionLive.h include/TypeTraits.h
         include/DynamicLibrary.h
 		include/MathNode.h
 		include/NodeEditorFrontEnd.h
@@ -56,7 +56,6 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/MetaField.cpp
         src/MetaOperation.cpp
         src/NodeEditorLive.cpp
-        src/NodePlugin.cpp
         src/NodePluginScanner.cpp
         src/Nodes.cpp
         src/SelectionLive.cpp
@@ -142,10 +141,16 @@ INSTALL( FILES ${PROJECT_BINARY_DIR}/etc/setup.sh DESTINATION . )
 ELSEIF ( WIN32 )
 INSTALL( FILES ${PROJECT_BINARY_DIR}/etc/setup.bat DESTINATION . )
 ENDIF( UNIX )
-add_library(NodePlugin SHARED include/NodePlugin.h
+add_library(NodePlugin MODULE include/NodePlugin.h
         src/NodePlugin.cpp)
 set_target_properties( NodePlugin PROPERTIES DEFINE_SYMBOL NODEPLUGIN_LIBRARY )
-
+TARGET_COMPILE_OPTIONS(NodePlugin PRIVATE -fvisibility=hidden)
+TARGET_INCLUDE_DIRECTORIES(NodePlugin PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/include
+        ${PROJECT_BINARY_DIR}/include
+        ${LUA_INCLUDE_DIR}
+        ${CMAKE_CURRENT_LIST_DIR}/thirdparty/dagbase/include
+)
 TARGET_LINK_LIBRARIES(NodePlugin PRIVATE dag dagbase)
-
+TARGET_LINK_OPTIONS(NodePlugin PRIVATE -bundle_loader $<TARGET_FILE:DagTest>)
 INSTALL( TARGETS NodePlugin LIBRARY DESTINATION lib/NodePlugins RUNTIME DESTINATION bin/NodePlugins )
