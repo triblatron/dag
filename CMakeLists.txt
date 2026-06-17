@@ -66,19 +66,34 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/NodeEditorBackEndNodeEditorInterface.cpp
         src/Menu.cpp
         src/Nodes.cpp
+		../imgui/imconfig.h
+		../imgui/imgui.h
+		../imgui/imgui_internal.h
+		../imgui/imstb_rectpack.h
+		../imgui/imstb_textedit.h
+		../imgui/imstb_truetype.h
+		../imgui/imgui.cpp
+		../imgui/imgui_draw.cpp
+		../imgui/imgui_tables.cpp
+		../imgui/imgui_widgets.cpp
+		../imnodes/imnodes.h
+		../imnodes/imnodes.cpp
+		../imnodes/imnodes_internal.h
 )
 
 set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "-o linker-signed")
 
-ADD_LIBRARY( dag SHARED ${dag_SRC} )
 
-TARGET_INCLUDE_DIRECTORIES( dag PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR})
+ADD_LIBRARY( dag STATIC ${dag_SRC} )
+
+TARGET_COMPILE_DEFINITIONS( dag PUBLIC DAG_LIBRARY_STATIC )
+
+TARGET_INCLUDE_DIRECTORIES( dag PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../imgui ${CMAKE_CURRENT_LIST_DIR}/include ${PROJECT_BINARY_DIR}/include ${LUA_INCLUDE_DIR})
 TARGET_LINK_DIRECTORIES( dag PUBLIC ${DEP_ROOT}/lib )
 TARGET_LINK_LIBRARIES( dag PRIVATE dagbase GTest::gtest ${LUA_LIBRARIES})
 
-set_target_properties( dag PROPERTIES DEFINE_SYMBOL DAG_LIBRARY )
 
-REMOVE_DEFINITIONS( -DDAG_LIBRARY )
+#REMOVE_DEFINITIONS( -DDAG_LIBRARY_STATIC )
 
 
 INCLUDE( CheckIncludeFile )
