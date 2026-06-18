@@ -300,6 +300,11 @@ namespace dag
             }
         }
 
+        const char* className() const override
+        {
+            return "Final";
+        }
+
         [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
         {
             if (index < firstPort)
