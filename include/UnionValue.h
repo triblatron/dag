@@ -55,7 +55,7 @@ namespace dag
         Value _value;
         template<typename T> friend T& get(UnionValue& v);
     };
-   
+    
     template<>
     std::string& get(UnionValue& v);
     

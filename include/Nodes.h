@@ -22,7 +22,7 @@ namespace dagbase
 
 namespace dag
 {
-    class DAG_API Foo : public dagbase::Node, public dagbase::Editable
+    class DAG_API Foo : public dagbase::Node
     {
     public:
         Foo(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
@@ -55,8 +55,6 @@ namespace dag
         Foo* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
-
-        void edit(ImGuiContext* context) override;
 
         void describeNode(dagbase::NodeDescriptor& descriptor) const override
         {

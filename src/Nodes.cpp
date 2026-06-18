@@ -68,11 +68,6 @@ namespace dag
         return true;
     }
 
-    void Foo::edit(ImGuiContext* context)
-    {
-        in1.edit(context);
-    }
-
     std::array<dagbase::MetaPort, 1> FooTyped::ports =
             {
                     dagbase::MetaPort("in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN)
