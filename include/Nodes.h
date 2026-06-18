@@ -3,12 +3,13 @@
 #include "config/Export.h"
 
 #include "core/Node.h"
-#include "../thirdparty/dagbase/include/core/TypedPort.h"
+#include "core/TypedPort.h"
 #include "core/NodeDescriptor.h"
 #include "core/MetaPort.h"
 #include "core/Types.h"
 #include "core/KeyGenerator.h"
 #include "core/CloningFacility.h"
+#include "core/Editable.h"
 
 #include <string>
 #include <array>
@@ -21,7 +22,7 @@ namespace dagbase
 
 namespace dag
 {
-    class DAG_API Foo : public dagbase::Node
+    class DAG_API Foo : public dagbase::Node, public dagbase::Editable
     {
     public:
         Foo(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
@@ -54,6 +55,8 @@ namespace dag
         Foo* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
+
+        void edit(ImGuiContext* context) override;
 
         void describeNode(dagbase::NodeDescriptor& descriptor) const override
         {

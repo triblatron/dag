@@ -19,9 +19,7 @@ SET( ALL_PUBLIC_HEADERS include/Action.h include/Boundary.h include/Command.h in
 		include/NodeEditorBackEnd.h
 		include/NodeEditorBackEndNodeEditorInterface.h
 		include/Menu.h
-        thirdparty/dagbase/include/core/CloningFacility.h
 		include/Fields.h
-        thirdparty/dagbase/include/core/KeyGenerator.h
 		include/MetaField.h
 		include/UnionValue.h
         include/PrimitivePort.h
@@ -66,19 +64,6 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/NodeEditorBackEndNodeEditorInterface.cpp
         src/Menu.cpp
         src/Nodes.cpp
-		../imgui/imconfig.h
-		../imgui/imgui.h
-		../imgui/imgui_internal.h
-		../imgui/imstb_rectpack.h
-		../imgui/imstb_textedit.h
-		../imgui/imstb_truetype.h
-		../imgui/imgui.cpp
-		../imgui/imgui_draw.cpp
-		../imgui/imgui_tables.cpp
-		../imgui/imgui_widgets.cpp
-		../imnodes/imnodes.h
-		../imnodes/imnodes.cpp
-		../imnodes/imnodes_internal.h
 )
 
 set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "-o linker-signed")

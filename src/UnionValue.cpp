@@ -116,4 +116,30 @@ namespace dag
         
         return *this;
     }
+    
+    template<>
+    std::string& get(UnionValue& v)
+    {
+        if (v.index() == UnionValue::TYPE_STRING)
+        {
+            return *v._value.value.s;
+        }
+        else
+        {
+            throw std::bad_variant_access();
+        }
+    }
+
+    template<>
+    std::int32_t& get(UnionValue& v)
+    {
+        if (v.index() == UnionValue::TYPE_INT)
+        {
+            return v._value.value.i;
+        }
+        else
+        {
+            throw std::bad_variant_access();
+        }
+    }
 }

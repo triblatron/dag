@@ -1,3 +1,5 @@
+#pragma once
+
 #include "config/Export.h"
 
 #include <string>
@@ -6,6 +8,11 @@
 
 namespace dag
 {    
+    class UnionValue;
+
+    template<typename T>
+    T& get(UnionValue& v);
+    
     class DAG_API UnionValue
     {
     public:
@@ -47,34 +54,11 @@ namespace dag
         };
         Value _value;
         template<typename T> friend T& get(UnionValue& v);
-   };
+    };
    
-   template<typename T>
-   T& get(UnionValue & v);
-   
-   template<>
-   std::string& get(UnionValue& v)
-   {
-        if (v.index()==UnionValue::TYPE_STRING)
-        {
-            return *v._value.value.s;
-        }
-        else
-        {
-            throw std::bad_variant_access();
-        }
-   }
-   
-   template<>
-   std::int32_t& get(UnionValue& v)
-   {
-       if (v.index()==UnionValue::TYPE_INT)
-       {
-           return v._value.value.i;
-       }
-       else
-       {
-           throw std::bad_variant_access();
-       }
-   }
+    template<>
+    std::string& get(UnionValue& v);
+    
+    template<>
+    std::int32_t& get(UnionValue& v);
 }
