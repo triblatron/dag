@@ -34,6 +34,24 @@ namespace dag
         }
     }
 
+    void NodeEditorLive::eachClass(std::function<bool(dagbase::Node&)> f)
+    {
+        if (_nodeLib)
+            _nodeLib->eachNode(f);
+    }
+
+    void NodeEditorLive::eachNode(std::function<bool(dagbase::Node*)> f)
+    {
+        if (_graph)
+            _graph->eachNode(f);
+    }
+
+    void NodeEditorLive::eachSignalPath(std::function<bool(dagbase::SignalPath*)> f)
+    {
+        if (_graph)
+            _graph->eachSignalPath(f);
+    }
+
     dagbase::Status NodeEditorLive::select(NodeEditorInterface::SelectionMode mode, dagbase::NodeSet &a)
     {
         dagbase::Status status;

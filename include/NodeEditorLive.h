@@ -9,9 +9,11 @@
 #include "NodeEditorInterface.h"
 
 #include <vector>
+#include <functional>
 
 namespace dagbase
 {
+    class SignalPath;
     class Transfer;
 }
 
@@ -27,6 +29,17 @@ namespace dag
         NodeEditorLive();
 
         ~NodeEditorLive() override;
+
+        dagbase::Graph* graph()
+        {
+            return _graph;
+        }
+
+        void eachClass(std::function<bool(dagbase::Node&)> f);
+
+        void eachNode(std::function<bool(dagbase::Node*)> f);
+
+        void eachSignalPath(std::function<bool(dagbase::SignalPath*)> f);
 
         //! Select a set of Nodes with the given mode
         //! \param[in] mode The mode of the selection
