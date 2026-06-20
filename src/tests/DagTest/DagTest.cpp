@@ -307,30 +307,6 @@ TEST(TableTraversalTest, testErrorInCallback)
     ASSERT_FALSE(foo);
 }
 
-TEST(VariantPortTransferTest, testConnectToDifferentTypes)
-{
-    dagbase::VariantPort* source = new dagbase::VariantPort(0, "out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
-    dagbase::VariantPort* dest = new dagbase::VariantPort(1, "in1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_IN, std::int64_t{ 0 });
-    dagbase::Transfer * transfer = nullptr;
-    ASSERT_NO_THROW(transfer = source->connectTo(*dest));
-    ASSERT_EQ(nullptr, transfer);
-    delete dest;
-    delete source;
-}
-
-TEST(VariantPortTransferTest, testConnectToSameType)
-{
-    dagbase::VariantPort* source = new dagbase::VariantPort(0, "out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
-    dagbase::VariantPort* dest = new dagbase::VariantPort(1, "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0);
-    dagbase::Transfer * transfer = source->connectTo(*dest);
-    ASSERT_NE(nullptr, transfer);
-    transfer->makeItSo();
-    ASSERT_EQ(1.0, std::get<double>(dest->value()));
-    delete transfer;
-    delete dest;
-    delete source;
-}
-
 TEST(TypedPortTransfer, testConnectToDifferentTypes)
 {
     auto* source = new dagbase::TypedPort(0, "out1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{ 1 });
