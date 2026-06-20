@@ -15,7 +15,7 @@ namespace dag
     fs::path NodePluginScanner::pathToPlugins = "lib/NodePlugins";
     fs::path NodePluginScanner::pluginExtension = ".so";
 #elif defined(_WIN32)
-    fs::path NodePluginScanner::pathToPlugins = "bin/NodePlugins";
+    fs::path NodePluginScanner::pathToPlugins = "lib/NodePlugins";
     fs::path NodePluginScanner::pluginExtension = ".dll";
 #elif defined(__APPLE__)
     fs::path NodePluginScanner::pathToPlugins = "lib/NodePlugins";
