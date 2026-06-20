@@ -24,50 +24,6 @@ namespace dag
                     dagbase::MetaPort("int1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL)
             };
 
-    std::array<dagbase::MetaPort, 1> Foo::ports =
-            {
-                    dagbase::MetaPort("in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN)
-            };
-
-    Foo *Foo::create(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
-    {
-        return new Foo(str, nodeLib, lua);
-    }
-
-    Foo::Foo(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
-            :
-            Node(str, nodeLib, lua),
-            in1(str, nodeLib, lua)
-    {
-
-    }
-
-    dagbase::OutputStream &Foo::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
-    {
-        Node::writeToStream(str, nodeLib, lua);
-
-        in1.writeToStream(str, nodeLib, lua);
-
-        return str;
-    }
-
-    bool Foo::equals(const Node &other) const
-    {
-        if (Node::operator==(other))
-        {
-            return false;
-        }
-
-        const Foo& foo = dynamic_cast<const Foo&>(other);
-
-        if (!(in1 == foo.in1))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     std::array<dagbase::MetaPort, 1> FooTyped::ports =
             {
                     dagbase::MetaPort("in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN)
@@ -147,37 +103,6 @@ namespace dag
     FooTyped::~FooTyped()
     {
         delete _in1;
-    }
-
-    std::array<dagbase::MetaPort, 1> Bar::ports =
-            {
-                    dagbase::MetaPort("out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT)
-            };
-
-    dagbase::OutputStream &Bar::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
-    {
-        Node::writeToStream(str, nodeLib, lua);
-        out1.writeToStream(str, nodeLib, lua);
-
-        return str;
-    }
-
-    Bar::Bar(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
-            :
-            Node(str, nodeLib, lua),
-            out1(str, nodeLib, lua)
-    {
-
-    }
-
-    Bar *Bar::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
-    {
-        return new Bar(str, nodeLib, lua);
-    }
-
-    bool Bar::equals(const Node &other) const
-    {
-        return false;
     }
 
     std::array<dagbase::MetaPort, 1> BarTyped::ports =

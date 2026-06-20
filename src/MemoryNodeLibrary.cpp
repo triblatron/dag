@@ -21,8 +21,6 @@ namespace dag
 	    :
     NodeLibrary()
     {
-        _classes["Foo"] = new Foo(*this, "foo1", dagbase::NodeCategory::CAT_SINK);
-        _classes["Bar"] = new Bar(*this, "bar1", dagbase::NodeCategory::CAT_SOURCE);
         _classes["FooTyped"] = new FooTyped(*this, "footyped1", dagbase::NodeCategory::CAT_SINK);
         _classes["BarTyped"] = new BarTyped(*this, "bartyped1", dagbase::NodeCategory::CAT_SOURCE);
         _classes["GroupTyped"] = new GroupTyped(*this, "grouptyped1", dagbase::NodeCategory::CAT_GROUP);
@@ -100,11 +98,7 @@ namespace dag
     MemoryNodeLibrary::instantiatePort(const std::string &className, const std::string& name, dagbase::PortType::Type type, dagbase::PortDirection::Direction dir,
                                        dagbase::Value value)
     {
-        if (className == "ValuePort")
-        {
-            return new dagbase::ValuePort(nextPortID(), name, type, dir, value);
-        }
-        else if (className == "TypedPort")
+        if (className == "TypedPort")
         {
             switch (type)
             {
@@ -130,11 +124,8 @@ namespace dag
         std::string fieldName;
         str.readField(&fieldName);
         str.readString(&className, true);
-        if (className == "ValuePort")
-        {
-            return new dagbase::ValuePort(str, *this, lua);
-        }
-        else if (className == "TypedPort<int64_t>")
+
+        if (className == "TypedPort<int64_t>")
         {
             return new dagbase::TypedPort<std::int64_t>(str, *this, lua);
         }

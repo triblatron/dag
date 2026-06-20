@@ -1,5 +1,3 @@
-// ReSharper disable CppInconsistentNaming
-#include <benchmark/benchmark.h>
 
 #include "core/SignalPathDef.h"
 #include "UnionValue.h"
@@ -13,6 +11,8 @@
 #include "core/TypedPort.h"
 #include "SelectionLive.h"
 #include "core/Graph.h"
+
+#include <benchmark/benchmark.h>
 
 class DataSink
 {
@@ -414,23 +414,6 @@ static void BM_GetTypedPortValueStatic(benchmark::State& state)
 
 BENCHMARK(BM_GetTypedPortValueStatic);
 
-static void BM_GetPortValueStatic(benchmark::State& state)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto* port = new dagbase::ValuePort(nodeLib.nextPortID(), new dagbase::MetaPort("port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN), dagbase::Value(1.0));
-
-    for (auto _ : state)
-    {
-        dagbase::Value value = port->value();
-
-        value += 1.0;
-
-        port->setValue(value);
-    }
-}
-
-BENCHMARK(BM_GetPortValueStatic);
-
 class DoublePort
 {
 public:
@@ -467,25 +450,6 @@ static void BM_SetValueDoublePort(benchmark::State& state)
 }
 
 BENCHMARK(BM_SetValueDoublePort);
-
-static void BM_ValuePortTransfer(benchmark::State& state)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto g = new dagbase::Graph();
-    g->setNodeLibrary(&nodeLib);
-    auto foo = dynamic_cast<dag::Foo*>(g->createNode("Foo", "foo1"));
-    auto bar = dynamic_cast<dag::Bar*>(g->createNode("Bar", "bar1"));
-    dagbase::PortTransfer transfer(dynamic_cast<dagbase::ValuePort*>(bar->dynamicPort(0)), dynamic_cast<dagbase::ValuePort*>(foo->dynamicPort(0)));
-
-    for (auto _ : state)
-    {
-
-        transfer.makeItSo();
-    }
-    delete g;
-}
-
-BENCHMARK(BM_ValuePortTransfer);
 
 class InputNode
 {

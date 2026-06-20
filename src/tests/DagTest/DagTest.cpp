@@ -48,7 +48,7 @@ TEST_P(MemoryNodeLibraryTest, checkInstantiate)
     ASSERT_NE(nullptr, actualNode);
     EXPECT_STREQ(name, actualNode->name().c_str());
     EXPECT_GT(actualNode->totalPorts(), portIndex);
-    auto actualPort = dynamic_cast<dagbase::ValuePort*>(actualNode->dynamicPort(portIndex));
+    auto actualPort = dynamic_cast<dagbase::TypedPort<double>*>(actualNode->dynamicPort(portIndex));
     ASSERT_NE(nullptr, actualPort);
     EXPECT_STREQ(portName, actualPort->name().c_str());
     EXPECT_EQ(portDir, actualPort->dir());
@@ -58,8 +58,8 @@ TEST_P(MemoryNodeLibraryTest, checkInstantiate)
 }
 
 INSTANTIATE_TEST_SUITE_P(MemoryNodeLibraryInstantiateTest, MemoryNodeLibraryTest, ::testing::Values(
-    std::make_tuple("Foo", "foo1", 0, "in1", dagbase::PortDirection::DIR_IN, 1.0),
-    std::make_tuple("Bar", "bar1", 0, "out1", dagbase::PortDirection::DIR_OUT, 1.0)
+    std::make_tuple("FooTyped", "foo1", 0, "in1", dagbase::PortDirection::DIR_IN, 1.0),
+    std::make_tuple("BarTyped", "bar1", 0, "out1", dagbase::PortDirection::DIR_OUT, 1.0)
 ));
 
 TEST(MemoryNodeLibraryTest_testClassNotFound, checkClassNotFound)
@@ -93,7 +93,7 @@ TEST_P(NodeCategoryTest, checkCategory)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeCategoryVerifyCategoryTest, NodeCategoryTest, ::testing::Values(
-    std::make_tuple("Foo", "foo1", dagbase::NodeCategory::CAT_SINK)
+    std::make_tuple("FooTyped", "foo1", dagbase::NodeCategory::CAT_SINK)
 ));
 
 class PortTypeTest : public ::testing::TestWithParam<std::tuple<dagbase::PortType::Type, double, double>>
@@ -182,8 +182,6 @@ TEST_P(NodeTest_testClone, checkClone)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeTestClone, NodeTest_testClone, ::testing::Values(
-    std::make_tuple("Foo", "foo1", 0),
-    std::make_tuple("Bar", "bar1", 0),
     std::make_tuple("Base", "base1", 0),
     std::make_tuple("Derived", "derived1", 0),
     std::make_tuple("Final", "final1", 0),
@@ -361,7 +359,7 @@ TEST(TypedPortTransfer, testConnectToMatchingType)
 TEST(NodeTest, testDescribe)
 {
     dag::MemoryNodeLibrary nodeLib;
-    dag::Foo* foo = dynamic_cast<dag::Foo*>(nodeLib.instantiateNode(0, "Foo", "foo1"));
+    dag::FooTyped* foo = dynamic_cast<dag::FooTyped*>(nodeLib.instantiateNode(0, "FooTyped", "foo1"));
     ASSERT_NE(nullptr, foo);
     dagbase::NodeDescriptor sut;
     foo->describeNode(sut);
@@ -407,7 +405,7 @@ TEST(GraphTest, testWhenAddingANodeThenQueryReturnsIt)
     dag::MemoryNodeLibrary nodeLib;
     auto* sut = new dagbase::Graph();
     sut->setNodeLibrary(&nodeLib);
-    auto const node = nodeLib.instantiateNode(sut->nextNodeID(), "Foo", "foo1");
+    auto const node = nodeLib.instantiateNode(sut->nextNodeID(), "FooTyped", "foo1");
     sut->addNode(node);
     ASSERT_EQ(size_t{ 1 }, sut->numNodes());
     ASSERT_EQ(node, sut->node(node->id()));
@@ -706,8 +704,6 @@ TEST_P(NodeTestDynamicPortDescriptorForNode, testDynamicPortDescriptor)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeTest, NodeTestDynamicPortDescriptorForNode, ::testing::Values(
-    std::make_tuple("Foo", 0, "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN),
-    std::make_tuple("Bar", 0, "out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT),
     std::make_tuple("Base", 0, "direction", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT),
     std::make_tuple("Derived", 1, "trigger", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_IN),
     std::make_tuple("Final", 0, "direction", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT),
@@ -1102,10 +1098,11 @@ TEST(NodeEditorLiveTest, testConnectionBetweenNonExistentToPortFails)
     auto sut = new dag::NodeEditorLive();
     auto s1 = sut->createNode("BarTyped", "bar1");
     ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
-    auto actual = sut->connect(s1.result.node->dynamicPort(0)->id(), dagbase::PortID{1});
+    // BarTyped.out1 gets an ID of 1.
+    auto actual = sut->connect(s1.result.node->dynamicPort(0)->id(), dagbase::PortID{2});
     ASSERT_EQ(dagbase::Status::StatusCode::STATUS_OBJECT_NOT_FOUND, actual.status);
     ASSERT_EQ(dagbase::Status::RESULT_PORT_ID, actual.resultType);
-    ASSERT_EQ(1, actual.result.portId);
+    ASSERT_EQ(2, actual.result.portId);
 
     delete sut;
 }
