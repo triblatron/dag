@@ -1,6 +1,5 @@
 
 #include "core/SignalPathDef.h"
-#include "UnionValue.h"
 #include "core/Value.h"
 #include "core/Port.h"
 #include "MemoryNodeLibrary.h"
@@ -313,41 +312,6 @@ static void BM_UnionModify(benchmark::State& state)
 }
 
 BENCHMARK(BM_UnionModify);
-
-static void BM_UnionValueModifyInt(benchmark::State& state)
-{        
-    for ( auto _ : state )
-    {
-        dag::UnionValue v{1};
-        ++v;
-    }
-}
-
-BENCHMARK(BM_UnionValueModifyInt);
-
-static void BM_UnionValueModifyIntByGet(benchmark::State& state)
-{
-    for ( auto _ : state )
-    {
-        dag::UnionValue v{1};
-        
-        ++dag::get<std::int32_t>(v);
-    }
-}
-
-BENCHMARK(BM_UnionValueModifyIntByGet);
-
-static void BM_UnionValueModifyString(benchmark::State& state)
-{
-    for ( auto _ : state )
-    {
-        dag::UnionValue v{new std::string("Hello")};
-        
-        dag::get<std::string>(v) += " World";
-    }
-}
-
-BENCHMARK(BM_UnionValueModifyString);
 
 static void BM_ModifyString(benchmark::State& state)
 {

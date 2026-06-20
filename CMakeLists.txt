@@ -21,7 +21,6 @@ SET( ALL_PUBLIC_HEADERS include/Action.h include/Boundary.h include/Command.h in
 		include/Menu.h
 		include/Fields.h
 		include/MetaField.h
-		include/UnionValue.h
         include/PrimitivePort.h
         include/Nodes.h
 )
@@ -57,7 +56,6 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/NodePluginScanner.cpp
         src/Nodes.cpp
         src/SelectionLive.cpp
-        src/UnionValue.cpp
         src/MathsNode.cpp
         src/NodeEditorFrontEnd.cpp
         src/NodeEditorFrontEndTUI.cpp
@@ -143,7 +141,9 @@ ENDIF( UNIX )
 add_library(NodePlugin MODULE include/NodePlugin.h
         src/NodePlugin.cpp)
 set_target_properties( NodePlugin PROPERTIES DEFINE_SYMBOL NODEPLUGIN_LIBRARY )
+IF (LINUX)
 TARGET_COMPILE_OPTIONS(NodePlugin PRIVATE -fvisibility=hidden)
+ENDIF(LINUX)
 TARGET_INCLUDE_DIRECTORIES(NodePlugin PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/include
         ${PROJECT_BINARY_DIR}/include
