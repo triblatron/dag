@@ -151,6 +151,10 @@ namespace dag
 
         if (fromPort != nullptr && toPort != nullptr)
         {
+            if (fromPort->dir() != dagbase::PortDirection::DIR_OUT)
+            {
+                std::swap(fromPort, toPort);
+            }
             if (fromPort->dir() == dagbase::PortDirection::DIR_OUT && toPort->dir() == dagbase::PortDirection::DIR_IN && fromPort->isCompatibleWith(*toPort))
             {
                 auto transfer = fromPort->connectTo(*toPort);

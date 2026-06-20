@@ -1040,7 +1040,7 @@ TEST(NodeEditorLiveTest, testConnectionBetweenExistingNodesSucceeds)
     delete sut;
 }
 
-TEST(NodeEditorLiveTest, testConnectionBetweenInputAndOutputFails)
+TEST(NodeEditorLiveTest, testConnectionBetweenInputAndOutputSwapsPorts)
 {
     auto sut = new dag::NodeEditorLive();
     auto s1 = sut->createNode("FooTyped", "foo1");
@@ -1049,10 +1049,9 @@ TEST(NodeEditorLiveTest, testConnectionBetweenInputAndOutputFails)
     ASSERT_EQ(dagbase::Status::RESULT_NODE, s2.resultType);
 
     auto actual = sut->connect(s1.result.node->dynamicPort(0)->id(), s2.result.node->dynamicPort(0)->id());
-    ASSERT_EQ(dagbase::Status::StatusCode::STATUS_INVALID_PORT, actual.status);
-    ASSERT_EQ(dagbase::Status::RESULT_PORT, actual.resultType);
-    ASSERT_NE(nullptr, actual.result.port);
-    ASSERT_EQ(s1.result.node->dynamicPort(0)->id(), actual.result.port->id());
+    ASSERT_EQ(dagbase::Status::StatusCode::STATUS_OK, actual.status);
+    ASSERT_EQ(dagbase::Status::RESULT_SIGNAL_PATH_ID, actual.resultType);
+    ASSERT_TRUE(s1.result.signalPathId.valid());
 
     delete sut;
 }
