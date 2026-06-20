@@ -57,8 +57,8 @@ namespace dag
     };
     
     template<>
-    std::string& get(UnionValue& v);
+    std::string DAG_API & get(UnionValue& v);
     
     template<>
-    std::int32_t& get(UnionValue& v);
+    std::int32_t DAG_API & get(UnionValue& v);
 }
