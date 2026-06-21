@@ -3,7 +3,6 @@
 #include "gtest/gtest.h"
 #include "core/LuaInterface.h"
 #include "core/Node.h"
-#include "core/Port.h"
 #include "core/TypedPort.h"
 #include "MemoryNodeLibrary.h"
 #include "Nodes.h"
@@ -1064,7 +1063,7 @@ TEST(NodeEditorLiveTest, testCreateNode)
 
 TEST(NodeEditorLiveTest, testCreateTwoNodesOfTheSameType)
 {
-    auto sut = new dag::NodeEditorLive();
+    auto sut = std::make_unique<dag::NodeEditorLive>();
     auto s1 = sut->createNode("GroupTyped", "group1");
     ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
     ASSERT_EQ(2, sut->graph()->numPorts());
@@ -1076,6 +1075,28 @@ TEST(NodeEditorLiveTest, testCreateTwoNodesOfTheSameType)
     auto s3 = sut->connect(s1.result.node->dynamicPort(0)->id(), s2.result.node->dynamicPort(1)->id());
     ASSERT_EQ(dagbase::Status::STATUS_OK, s3.status);
 }
+
+class NodeEditorLiveTest_testLoad : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Status::StatusCode>>
+{
+
+};
+
+TEST_P(NodeEditorLiveTest_testLoad, testExpectedStatus)
+{
+    auto filename = std::get<0>(GetParam());
+    auto status = std::get<1>(GetParam());
+
+    auto sut = std::make_unique<dag::NodeEditorLive>();
+    auto actual = sut->load(filename);
+    EXPECT_EQ(status, actual.status);
+}
+
+INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLiveTest_testLoad, ::testing::Values(
+    std::make_tuple("NotFound.lua", dagbase::Status::STATUS_FILE_NOT_FOUND),
+    std::make_tuple("etc/tests/NodeEditorLive/SyntaxError.lua", dagbase::Status::STATUS_SYNTAX_ERROR),
+    std::make_tuple("etc/tests/NodeEditorLive/FailedToCreateGraph.lua", dagbase::Status::STATUS_OBJECT_NOT_FOUND),
+    std::make_tuple("etc/tests/Graph/onenode.lua", dagbase::Status::STATUS_OK)
+));
 
 class NodeEditorLiveTest_testCreateNodeIncrementsPortID : public ::testing::TestWithParam<std::tuple<const char*, dagbase::PortID>>
 {

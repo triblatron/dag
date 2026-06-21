@@ -36,12 +36,16 @@ namespace dag
 
     dagbase::Status NodeEditorLive::load(const char* filename)
     {
-        delete _graph;
-        _graph = dagbase::Graph::fromFile(*_nodeLib, filename);
-        if (_graph)
-            return dagbase::Status{ dagbase::Status::STATUS_OK };
+        dagbase::Status status{ dagbase::Status::STATUS_UNKNOWN };
+        auto g = dagbase::Graph::fromFile(*_nodeLib, filename, &status);
 
-        return dagbase::Status{ dagbase::Status::STATUS_FILE_NOT_FOUND };
+        if (g)
+        {
+            delete _graph;
+            _graph = g;
+        }
+
+        return status;
     }
 
     void NodeEditorLive::eachClass(std::function<bool(dagbase::Node&)> f)
