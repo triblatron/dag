@@ -3,7 +3,6 @@ graph=
     nodes=
     {
         {
-            id=0,
             name="foo1",
             class="FooTyped",
             category="Sink",

@@ -35,7 +35,7 @@ namespace dag
 
 		void eachNode(std::function<bool(dagbase::Node&)> f);
 
-		dagbase::Node* instantiateNode(dagbase::NodeID id, const std::string& className, const std::string& name) override;
+		dagbase::Node* instantiateNode(dagbase::KeyGenerator& keyGen, const std::string& className, const std::string& name) override;
 
         dagbase::OutputStream& write(dagbase::OutputStream& str, dagbase::Node* node, dagbase::Lua &lua) override;
 

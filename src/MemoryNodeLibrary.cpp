@@ -48,14 +48,13 @@ namespace dag
         }
     }
 
-    dagbase::Node* MemoryNodeLibrary::instantiateNode(dagbase::NodeID id, const std::string& className, const std::string& name)
+    dagbase::Node* dag::MemoryNodeLibrary::instantiateNode(dagbase::KeyGenerator& keyGen, const std::string& className, const std::string& name)
     {
         dagbase::CloningFacility facility;
 
 	    if (auto const it = _classes.find(className); it != _classes.end() )
         {
-	        const auto copy = it->second->clone(facility, dagbase::CopyOp{0}, nullptr);
-            copy->setId(id);
+	        const auto copy = it->second->clone(facility, dagbase::GENERATE_UNIQUE_ID_BIT, &keyGen);
             copy->setName(name);
 
             return copy;

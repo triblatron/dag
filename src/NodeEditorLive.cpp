@@ -112,10 +112,7 @@ namespace dag
                 status.resultType = dagbase::Status::RESULT_NODE;
                 status.result.node = node;
                 _graph->addNode(node);
-                for (auto i=0; i<node->totalPorts(); ++i)
-                {
-                    _graph->addPort(node->dynamicPort(i));
-                }
+
                 return status;
             }
         }
