@@ -1062,6 +1062,21 @@ TEST(NodeEditorLiveTest, testCreateNode)
     delete sut;
 }
 
+TEST(NodeEditorLiveTest, testCreateTwoNodesOfTheSameType)
+{
+    auto sut = new dag::NodeEditorLive();
+    auto s1 = sut->createNode("GroupTyped", "group1");
+    ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
+    ASSERT_EQ(2, sut->graph()->numPorts());
+    ASSERT_NE(nullptr, s1.result.node);
+    auto s2 = sut->createNode("GroupTyped", "group1");
+    ASSERT_EQ(dagbase::Status::STATUS_OK, s2.status);
+    ASSERT_EQ(4, sut->graph()->numPorts());
+    ASSERT_NE(nullptr, s2.result.node);
+    auto s3 = sut->connect(s1.result.node->dynamicPort(0)->id(), s2.result.node->dynamicPort(1)->id());
+    ASSERT_EQ(dagbase::Status::STATUS_OK, s3.status);
+}
+
 class NodeEditorLiveTest_testCreateNodeIncrementsPortID : public ::testing::TestWithParam<std::tuple<const char*, dagbase::PortID>>
 {
 
