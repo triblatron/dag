@@ -941,7 +941,9 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testDeleteNode, ::testing::Values(
     std::make_tuple("etc/tests/Graph/connectednodes.lua", 0, "numNodes", std::uint32_t(1), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
     std::make_tuple("etc/tests/Graph/connectednodes.lua", 0, "numSignalPaths", std::uint32_t(0), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
     std::make_tuple("etc/tests/Graph/connectednodes.lua", 1, "numNodes", std::uint32_t(1), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
-    std::make_tuple("etc/tests/Graph/connectednodes.lua", 0, "numSignalPaths", std::uint32_t(0), 0.0, dagbase::ConfigurationElement::RELOP_EQ)
+    std::make_tuple("etc/tests/Graph/connectednodes.lua", 0, "numSignalPaths", std::uint32_t(0), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
+    std::make_tuple("etc/tests/Graph/connectednestedchildgraph.lua", dagbase::PortID::INVALID_ID, "totalSignalPaths", std::uint32_t(1), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
+    std::make_tuple("etc/tests/Graph/connectednestedchildgraph.lua", 1, "totalSignalPaths", std::uint32_t(0), 0.0, dagbase::ConfigurationElement::RELOP_EQ)
 ));
 
 TEST(PortTest, testConnectToExistingPortGivesTransfer)
