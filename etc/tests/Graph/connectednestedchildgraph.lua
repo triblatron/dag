@@ -3,7 +3,6 @@ graph=
     nodes=
     {
         {
-            id=0,
             name="foo1",
             class="FooTyped",
             category="CATEGORY_SINK",
@@ -28,7 +27,6 @@ graph=
 			nodes=
 			{
 				{
-					id=0,
 					name="bar1",
 					class="BarTyped",
 					category="CATEGORY_SOURCE",
@@ -50,7 +48,6 @@ graph=
 					nodes=
 					{
 						{
-							id=0,
 							name="bound1",
 							class="Boundary",
 							category="CATEGORY_GROUP",
