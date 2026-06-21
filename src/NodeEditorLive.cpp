@@ -126,7 +126,7 @@ namespace dag
 
         if (node != nullptr)
         {
-            _graph->removeNode(node);
+            _graph->deleteNode(node);
             delete node;
             status.status = dagbase::Status::STATUS_OK;
             status.resultType = dagbase::Status::RESULT_NODE_ID;

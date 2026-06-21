@@ -20,16 +20,17 @@
 #include "NodePluginScanner.h"
 #include "core/CloningFacility.h"
 #include "io/MemoryBackingStore.h"
-#include <iostream>
-#include <algorithm>
-#include <filesystem>
-
 #include "core/Class.h"
 #include "core/MetaClass.h"
 #include "io/BinaryInputStream.h"
 #include "io/BinaryOutputStream.h"
 #include "io/TextInputStream.h"
 #include "io/TextOutputStream.h"
+#include "test/TestUtils.h"
+
+#include <iostream>
+#include <algorithm>
+#include <filesystem>
 
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dagbase::PortDirection::Direction, double>>
 {
@@ -909,6 +910,39 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testFindNode, ::testing::Values(
         std::make_tuple("etc/tests/Graph/withchildgraph.lua", "child[0].bar1", "bar1"),
         std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua", "child[0].child[0].bound1", "bound1")
         ));
+
+class Graph_testDeleteNode : public ::testing::TestWithParam<std::tuple<const char*, dagbase::NodeID, const char*, dagbase::Variant, double, dagbase::ConfigurationElement::RelOp>>
+{
+
+};
+
+TEST_P(Graph_testDeleteNode, testExpectedValue)
+{
+    auto graphFilename = std::get<0>(GetParam());
+    auto id = std::get<1>(GetParam());
+    auto path = std::get<2>(GetParam());
+    auto value = std::get<3>(GetParam());
+    auto tolerance = std::get<4>(GetParam());
+    auto op = std::get<5>(GetParam());
+
+    dagbase::Lua lua;
+    dag::MemoryNodeLibrary nodeLib;
+    auto sut = dagbase::Graph::fromFile(nodeLib, graphFilename);
+    ASSERT_NE(nullptr, sut);
+    auto nodeToDelete = sut->node(id);
+    sut->deleteNode(nodeToDelete);
+    auto actual = sut->find(path);
+    assertComparison(value, actual, tolerance, op);
+}
+
+INSTANTIATE_TEST_SUITE_P(Graph, Graph_testDeleteNode, ::testing::Values(
+    std::make_tuple("etc/tests/Graph/onenode.lua", 0, "numNodes", std::uint32_t(0), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
+    std::make_tuple("etc/tests/Graph/onenode.lua", 1, "numNodes", std::uint32_t(1), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
+    std::make_tuple("etc/tests/Graph/connectednodes.lua", 0, "numNodes", std::uint32_t(1), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
+    std::make_tuple("etc/tests/Graph/connectednodes.lua", 0, "numSignalPaths", std::uint32_t(0), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
+    std::make_tuple("etc/tests/Graph/connectednodes.lua", 1, "numNodes", std::uint32_t(1), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
+    std::make_tuple("etc/tests/Graph/connectednodes.lua", 0, "numSignalPaths", std::uint32_t(0), 0.0, dagbase::ConfigurationElement::RELOP_EQ)
+));
 
 TEST(PortTest, testConnectToExistingPortGivesTransfer)
 {
