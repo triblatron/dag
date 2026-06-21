@@ -34,6 +34,16 @@ namespace dag
         }
     }
 
+    dagbase::Status NodeEditorLive::load(const char* filename)
+    {
+        delete _graph;
+        _graph = dagbase::Graph::fromFile(*_nodeLib, filename);
+        if (_graph)
+            return dagbase::Status{ dagbase::Status::STATUS_OK };
+
+        return dagbase::Status{ dagbase::Status::STATUS_FILE_NOT_FOUND };
+    }
+
     void NodeEditorLive::eachClass(std::function<bool(dagbase::Node&)> f)
     {
         if (_nodeLib)
@@ -148,6 +158,13 @@ namespace dag
 
         if (fromPort != nullptr && toPort != nullptr)
         {
+            if (fromPort->parent() == toPort->parent())
+            {
+                auto status = dagbase::Status{ dagbase::Status::STATUS_CYCLE_DETECTED };
+                status.resultType = dagbase::Status::RESULT_NODE;
+                status.result.node = fromPort->parent();
+                return status;
+            }
             if (fromPort->dir() != dagbase::PortDirection::DIR_OUT)
             {
                 std::swap(fromPort, toPort);

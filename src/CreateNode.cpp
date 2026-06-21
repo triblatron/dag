@@ -25,7 +25,7 @@ namespace dag
     {
         if (_graph!=nullptr && _node!=nullptr)
         {
-            _graph->removeNode(_node);
+            _graph->deleteNode(_node);
             delete _node;
         }
     }

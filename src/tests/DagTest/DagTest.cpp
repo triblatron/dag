@@ -1150,6 +1150,20 @@ TEST(NodeEditorLiveTest, testConnectionBetweenNonExistentToPortFails)
     delete sut;
 }
 
+TEST(NodeEditorLiveTest, testConnectingANodeToItselfFails)
+{
+    auto sut = new dag::NodeEditorLive();
+    auto s1 = sut->load("etc/tests/Graph/connectednestedchildgraph.lua");
+    ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
+    // Boundary.out1 gets an ID of 1.
+    auto actual = sut->connect(3,2);
+    ASSERT_EQ(dagbase::Status::StatusCode::STATUS_CYCLE_DETECTED, actual.status);
+    ASSERT_EQ(dagbase::Status::RESULT_NODE, actual.resultType);
+    ASSERT_EQ(sut->graph()->node(2), actual.result.node);
+
+    delete sut;
+}
+
 TEST(NodeEditorLiveTest, testCreateChildWithAnEmptySelectionFails)
 {
     auto sut = new dag::NodeEditorLive();

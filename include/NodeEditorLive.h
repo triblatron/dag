@@ -35,6 +35,8 @@ namespace dag
             return _graph;
         }
 
+        dagbase::Status load(const char* filename);
+
         void eachClass(std::function<bool(dagbase::Node&)> f);
 
         void eachNode(std::function<bool(dagbase::Node*)> f);

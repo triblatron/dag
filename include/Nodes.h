@@ -29,21 +29,14 @@ namespace dag
                 :
                 Node(keyGen, name, category),
                 int1(0.0),
-                _direction(keyGen.nextPortID(), this, &ports[0], 1.0)
+                _direction(new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0))
         {
             // Do nothing.
         }
 
-        explicit Base(const Base& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
-                :
-                Node(other,facility,copyOp,keyGen),
-                int1(other.int1),
-                _direction(other._direction.id(), this, &ports[0], other._direction.value())
-        {
-            // Do nothing.
-        }
+        Base(const Base& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen);
 
-        explicit Base(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
+        Base(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
@@ -79,7 +72,7 @@ namespace dag
         {
             if (index == 0)
             {
-                return &_direction;
+                return _direction;
             }
 
             return nullptr;
@@ -99,7 +92,7 @@ namespace dag
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = ports.size();
     private:
-        dagbase::TypedPort<double> _direction;
+        dagbase::TypedPort<double>* _direction{ nullptr };
     };
 
     class DAG_API Derived : public Base
@@ -108,18 +101,14 @@ namespace dag
         Derived(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Base(keyGen, name,category),
-                _trigger(keyGen.nextPortID(), this, &ports[0], true)
+                _trigger(new dagbase::TypedPort<bool>(keyGen.nextPortID(), this, &ports[0], true))
         {
             // Do nothing.
         }
 
-        Derived(const Derived& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
-                :
-                Base(other, facility, copyOp, keyGen),
-                _trigger(other._trigger.id(), this, &ports[0], other._trigger.value())
-        {
-            // Do nothing.
-        }
+        Derived(const Derived& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen);
+
+        Derived(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
 
         Derived* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
@@ -158,7 +147,7 @@ namespace dag
             }
             if (index == 1)
             {
-                return &_trigger;
+                return _trigger;
             }
 
             return nullptr;
@@ -173,7 +162,7 @@ namespace dag
         static constexpr size_t firstPort = Base::numPorts;
         static constexpr size_t numPorts = 1;
     private:
-        dagbase::TypedPort<bool> _trigger;
+        dagbase::TypedPort<bool>* _trigger{ nullptr };
     };
 
     class DAG_API Final final : public Derived

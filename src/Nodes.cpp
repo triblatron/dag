@@ -285,9 +285,9 @@ namespace dag
         descriptor.category = category();
         dagbase::MetaPort portDescriptor;
         //portDescriptor.id = _direction.id();
-        portDescriptor.name = _direction.name();
-        portDescriptor.type = _direction.type();
-        portDescriptor.direction = _direction.dir();
+        portDescriptor.name = _direction->name();
+        portDescriptor.type = _direction->type();
+        portDescriptor.direction = _direction->dir();
         descriptor.ports.emplace_back(portDescriptor);
     }
 
@@ -296,19 +296,49 @@ namespace dag
         return new Base(str, nodeLib, lua);
     }
 
+    Base::Base(const Base& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
+        :
+        Node(other, facility, copyOp, keyGen),
+        int1(other.int1)
+    {
+        std::uint64_t directionId = 0;
+        if (facility.putOrig(other._direction, &directionId))
+        {
+            _direction = new dagbase::TypedPort(*other._direction, facility, copyOp, keyGen);
+        }
+        else
+        {
+            _direction = static_cast<dagbase::TypedPort<double>*>(facility.getClone(directionId));
+        }
+        _direction->setParent(this);
+    }
+
     Base::Base(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
             :
             Node(str, nodeLib, lua),
-            int1(0.0),
-            _direction(str,nodeLib, lua)
+            int1(0.0)
     {
+        dagbase::Stream::ObjId directionId = 0;
+        dagbase::Stream::Ref directionRef = str.readRef(&directionId);
+
+        if (directionId != 0)
+        {
+            if (directionRef != nullptr)
+            {
+                _direction = static_cast<dagbase::TypedPort<double>*>(directionRef);
+            }
+            else
+            {
+                _direction = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
+            }
+        }
         str.read(&int1);
     }
 
     dagbase::OutputStream &Base::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
     {
         Node::writeToStream(str, nodeLib, lua);
-        _direction.writeToStream(str, nodeLib, lua);
+        _direction->writeToStream(str, nodeLib, lua);
         str.write(int1);
 
         return str;
@@ -317,5 +347,41 @@ namespace dag
     bool Base::equals(const Node &other) const
     {
         return false;
+    }
+
+    Derived::Derived(const Derived& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
+        :
+        Base(other, facility, copyOp, keyGen)
+    {
+        std::uint64_t triggerId = 0;
+        if (facility.putOrig(other._trigger, &triggerId))
+        {
+            _trigger = new dagbase::TypedPort(*other._trigger, facility, copyOp, keyGen);
+        }
+        else
+        {
+            _trigger = static_cast<dagbase::TypedPort<bool>*>(facility.getClone(triggerId));
+        }
+        _trigger->setParent(this);
+    }
+
+    Derived::Derived(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua)
+        :
+        Base(str, nodeLib, lua)
+    {
+        dagbase::Stream::ObjId directionId = 0;
+        dagbase::Stream::Ref directionRef = str.readRef(&directionId);
+
+        if (directionId != 0)
+        {
+            if (directionRef != nullptr)
+            {
+                _trigger = static_cast<dagbase::TypedPort<bool>*>(directionRef);
+            }
+            else
+            {
+                _trigger = dynamic_cast<dagbase::TypedPort<bool>*>(nodeLib.instantiatePort(str, lua));
+            }
+        }
     }
 }
