@@ -7,9 +7,11 @@
 #include "config/Export.h"
 
 #include "NodeEditorInterface.h"
+#include "core/Variant.h"
 
 #include <vector>
 #include <functional>
+#include <string_view>
 
 namespace dagbase
 {
@@ -74,6 +76,8 @@ namespace dag
         dagbase::Status createTemplate(dagbase::NodeID id) override;
 
         dagbase::Status deleteTemplate(dagbase::TemplateID id) override;
+
+        dagbase::Variant find(std::string_view path) const;
 
         void debug();
     private:

@@ -316,4 +316,18 @@ namespace dag
     {
         return _selection->count();
     }
+
+    dagbase::Variant NodeEditorLive::find(std::string_view path) const
+    {
+        dagbase::Variant retval;
+
+        if (_graph)
+        {
+            retval = dagbase::findInternal(path, "graph", _graph);
+            if (retval.has_value())
+                return retval;
+        }
+
+        return {};
+    }
 }

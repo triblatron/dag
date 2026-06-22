@@ -1223,6 +1223,225 @@ TEST(NodeEditorLiveTest, testSelectAll)
     delete sut;
 }
 
+struct NodeEditorLiveAssertion
+{
+    std::string path;
+    dagbase::Variant value;
+    double tolerance{ 0.0 };
+    dagbase::ConfigurationElement::RelOp op{ dagbase::ConfigurationElement::RELOP_UNKNOWN };
+    dagbase::Variant::Index typeIndex{ dagbase::Variant::TYPE_UNKNOWN };
+
+    void configure(dagbase::ConfigurationElement& config)
+    {
+        dagbase::ConfigurationElement::readConfig(config, "path", &path);
+        dagbase::ConfigurationElement::readConfig(config, "value", &value);
+        dagbase::ConfigurationElement::readConfig<dagbase::Variant::Index>(config, "typeIndex", &dagbase::Variant::parseIndex, &typeIndex);
+        if (typeIndex != dagbase::Variant::TYPE_UNKNOWN)
+        {
+            value = value.cast(typeIndex);
+        }
+        dagbase::ConfigurationElement::readConfig(config, "tolerance", &tolerance);
+        dagbase::ConfigurationElement::readConfig<dagbase::ConfigurationElement::RelOp>(config, "op", &dagbase::ConfigurationElement::parseRelOp, &op);
+    }
+
+    void makeItSo(dag::NodeEditorLive& sut)
+    {
+        auto actual = sut.find(path.c_str());
+        assertComparison(value, actual, tolerance, op);
+    }
+};
+
+struct NodeEditorLiveScriptItem
+{
+    enum Command : std::uint32_t
+    {
+        COMMAND_UNKNOWN,
+        COMMAND_CREATE_NODE,
+        COMMAND_CONNECT,
+        COMMAND_SELECT,
+        COMMAND_CREATE_CHILD
+    };
+
+    void configure(dagbase::ConfigurationElement& config)
+    {
+        dagbase::ConfigurationElement::readConfig<Command>(config, "cmd", &parseCommand, &cmd);
+        switch (cmd)
+        {
+        case COMMAND_CREATE_NODE:
+            dagbase::ConfigurationElement::readConfig(config, "nodeClass", &nodeClass);
+            dagbase::ConfigurationElement::readConfig(config, "nodeName", &nodeName);
+
+            break;
+        case COMMAND_CONNECT:
+            dagbase::ConfigurationElement::readConfig(config, "fromPort", &fromPort);
+            dagbase::ConfigurationElement::readConfig(config, "toPort", &toPort);
+
+            break;
+        case COMMAND_SELECT:
+            if (auto element = config.findElement("selection"); element)
+            {
+                element->eachChild([this](dagbase::ConfigurationElement& child) {
+                    if (child.value().index() == dagbase::Variant::TYPE_INTEGER)
+                        selection.emplace_back(child.asInteger());
+
+                    return true;
+                    });
+            }
+
+            break;
+        case COMMAND_CREATE_CHILD:
+            // No parameters.
+            break;
+        }
+        dagbase::ConfigurationElement::readConfigVector(config, "assertions", &assertions);
+    }
+
+    void makeItSo(dag::NodeEditorLive& sut)
+    {
+        switch (cmd)
+        {
+        case COMMAND_CREATE_NODE:
+        {
+            auto status = sut.createNode(nodeClass, nodeName);
+            ASSERT_EQ(dagbase::Status::STATUS_OK, status.status);
+            break;
+        }
+        case COMMAND_CONNECT:
+        {
+            auto status = sut.connect(fromPort, toPort);
+            break;
+        }
+        case COMMAND_SELECT:
+            FAIL() << "Got into an unhandled command " << commandToString(cmd);
+            break;
+        case COMMAND_CREATE_CHILD:
+            FAIL() << "Got into an unhandled command " << commandToString(cmd);
+            break;
+        default:
+            FAIL() << "Got into an unhandled command " << commandToString(cmd);
+            break;
+        }
+
+        for (auto a : assertions)
+        {
+            a.makeItSo(sut);
+        }
+
+        done = true;
+    }
+
+    Command cmd{ COMMAND_UNKNOWN };
+    using NodeIDArray = std::vector<dagbase::NodeID>;
+    NodeIDArray selection;
+    using AssertionArray = std::vector<NodeEditorLiveAssertion>;
+    AssertionArray assertions;
+    std::string nodeClass;
+    std::string nodeName;
+    dagbase::PortID fromPort{ dagbase::PortID::INVALID_ID };
+    dagbase::PortID toPort{ dagbase::PortID::INVALID_ID };
+    bool done{ false };
+
+    static const char* commandToString(Command value)
+    {
+        switch (value)
+        {
+            ENUM_NAME(COMMAND_UNKNOWN)
+            ENUM_NAME(COMMAND_CREATE_NODE)
+            ENUM_NAME(COMMAND_CONNECT)
+            ENUM_NAME(COMMAND_SELECT)
+            ENUM_NAME(COMMAND_CREATE_CHILD)
+        }
+
+        return "<error>";
+    }
+
+    static Command parseCommand(const char* str)
+    {
+        TEST_ENUM(COMMAND_UNKNOWN, str);
+        TEST_ENUM(COMMAND_CREATE_NODE, str);
+        TEST_ENUM(COMMAND_CONNECT, str);
+        TEST_ENUM(COMMAND_SELECT, str);
+        TEST_ENUM(COMMAND_CREATE_CHILD, str);
+
+        return COMMAND_UNKNOWN;
+    }
+};
+
+class NodeEditorLiveScript
+{
+public:
+    void configure(dagbase::ConfigurationElement& config)
+    {
+        dagbase::ConfigurationElement::readConfigVector(config, "items", &_items);
+        _currentItem = _items.begin();
+    }
+
+    bool done() const
+    {
+        return _currentItem == _items.end();
+    }
+
+    void makeItSo(dag::NodeEditorLive& sut);
+private:
+    using ItemArray = std::vector<NodeEditorLiveScriptItem>;
+    ItemArray _items;
+    ItemArray::iterator _currentItem;
+};
+
+void NodeEditorLiveScript::makeItSo(dag::NodeEditorLive& sut)
+{
+    if (!done())
+    {
+        _currentItem->makeItSo(sut);
+        if (_currentItem->done)
+        {
+            ++_currentItem;
+        }
+    }
+}
+
+class NodeEditorLive_testScripted : public ::testing::TestWithParam<std::tuple<const char*>>
+{
+public:
+    void SetUp() override;
+    void TearDown() override;
+protected:
+    NodeEditorLiveScript _script;
+    dag::NodeEditorLive* _sut{ nullptr };
+};
+
+void NodeEditorLive_testScripted::SetUp()
+{
+    auto scriptFilename = std::get<0>(GetParam());
+    dagbase::Lua lua;
+    auto scriptConfig = dagbase::ConfigurationElement::fromFile(lua, scriptFilename);
+    ASSERT_NE(nullptr, scriptConfig);
+    _script.configure(*scriptConfig);
+    _sut = new dag::NodeEditorLive();
+    delete scriptConfig;
+}
+
+void NodeEditorLive_testScripted::TearDown()
+{
+    delete _sut;
+}
+
+TEST_P(NodeEditorLive_testScripted, testExpectedValue)
+{
+    //auto graphFilename = std::get<1>(GetParam());
+    //dagbase::Lua lua;
+    //auto graphConfig = dagbase::ConfigurationElement::fromFile(lua, graphFilename);
+    //ASSERT_NE(nullptr, graphConfig);
+    while (!_script.done())
+    {
+        _script.makeItSo(*_sut);
+    }
+}
+
+INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua")
+));
+
 TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)
 {
     auto sut = new dag::NodeEditorLive();
@@ -1230,6 +1449,8 @@ TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)
     auto s2 = sut->createNode("FooTyped", "foo1");
     auto s3 = sut->createNode("BarTyped", "bar1");
     auto t1 = s3.result.node->dynamicPort(0)->connectTo(*s1.result.node->dynamicPort(1));
+    ASSERT_EQ(std::size_t{ 1 }, s3.result.node->dynamicPort(0)->numOutgoingConnections());
+    ASSERT_EQ(std::size_t{ 1 }, s1.result.node->dynamicPort(1)->numIncomingConnections());
     auto t2 = s1.result.node->dynamicPort(0)->connectTo(*s2.result.node->dynamicPort(0));
     ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
     ASSERT_EQ(dagbase::Status::RESULT_NODE, s1.resultType);
@@ -2392,3 +2613,4 @@ TEST(Class, testRaiseError)
     auto& str = sut->raiseError(dagbase::Class::TypeNotFound) << "Test";
     EXPECT_EQ("TypeNotFound:Test",sut->errorMessage());
 }
+
