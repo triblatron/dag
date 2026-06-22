@@ -130,6 +130,12 @@ root=
 					op="RELOP_EQ",
 				},
 				{
+					path="graph.ports[3].numOutgoingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
 					path="graph.children[0].ports[0].numOutgoingConnections",
 					value=1,
 					typeIndex="TYPE_UINT",
@@ -137,6 +143,30 @@ root=
 				},
 				{
 					path="graph.children[0].ports[1].numIncomingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.children[0].ports[4].numOutgoingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.children[0].ports[5].numIncomingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.children[0].ports[6].numIncomingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.children[0].ports[7].numOutgoingConnections",
 					value=1,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
