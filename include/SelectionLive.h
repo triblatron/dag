@@ -30,9 +30,9 @@ namespace dag
 
         void computeBoundaryNodes(NodeArray* inputs, NodeArray* outputs, NodeArray* internals) override;
 
-        void reconnectInputs(NodeArray& inputs, dagbase::Node* newSource) override;
+        void reconnectInputs(NodeArray& inputs, dagbase::Node* newSource, dagbase::KeyGenerator& keyGen) override;
 
-        void reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink) override;
+        void reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink, dagbase::KeyGenerator& keyGen) override;
     private:
         Cont _selection;
     };

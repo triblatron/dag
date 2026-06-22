@@ -17,7 +17,7 @@ SET( ALL_PUBLIC_HEADERS include/Action.h include/Boundary.h include/Command.h in
 		include/NodeEditorFrontEnd.h
 		include/NodeEditorFrontEndTUI.h
 		include/NodeEditorBackEnd.h
-		include/NodeEditorBackEndNodeEditorInterface.h
+		include/NodeEditorInterface.h
 		include/Menu.h
 		include/Fields.h
 		include/MetaField.h
@@ -62,6 +62,7 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/NodeEditorBackEndNodeEditorInterface.cpp
         src/Menu.cpp
         src/Nodes.cpp
+		src/NodeEditorInterface.cpp
 )
 
 set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "-o linker-signed")

@@ -25,6 +25,7 @@ namespace dag
     public:
         enum SelectionMode
         {
+            SELECTION_UNKNOWN,
             //! Replace the current selection
             SELECTION_SET,
             //! Add to the current selection
@@ -69,5 +70,9 @@ public:
         virtual dagbase::Status createTemplate(dagbase::NodeID id) = 0;
 
         virtual dagbase::Status deleteTemplate(dagbase::TemplateID id) = 0;
+
+        static const char* selectionModeToString(SelectionMode value);
+
+        static SelectionMode parseSelectionMode(const char* str);
     };
 }

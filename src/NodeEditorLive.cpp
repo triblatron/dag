@@ -270,11 +270,12 @@ namespace dag
             auto boundaryInput = child->createNode("Boundary","boundaryInput");
             auto boundaryOutput = child->createNode("Boundary", "boundaryOutput");
 
+
+            _selection->reconnectInputs(inputs, boundaryInput, *_graph);
+            _selection->reconnectOutputs(outputs, boundaryOutput, *_graph);
+
             child->addNode(boundaryInput);
             child->addNode(boundaryOutput);
-
-            _selection->reconnectInputs(inputs, boundaryInput);
-            _selection->reconnectOutputs(outputs, boundaryOutput);
 
             for (auto node : internals)
             {
@@ -320,6 +321,10 @@ namespace dag
     dagbase::Variant NodeEditorLive::find(std::string_view path) const
     {
         dagbase::Variant retval;
+
+        retval = dagbase::findEndpoint(path, "numSelectedNodes", std::uint32_t(_selection->count()));
+        if (retval.has_value())
+            return retval;
 
         if (_graph)
         {

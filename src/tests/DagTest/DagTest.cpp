@@ -1247,7 +1247,7 @@ struct NodeEditorLiveAssertion
     void makeItSo(dag::NodeEditorLive& sut)
     {
         auto actual = sut.find(path.c_str());
-        assertComparison(value, actual, tolerance, op);
+        assertComparison(value, actual, tolerance, op, path.c_str());
     }
 };
 
@@ -1278,6 +1278,7 @@ struct NodeEditorLiveScriptItem
 
             break;
         case COMMAND_SELECT:
+            dagbase::ConfigurationElement::readConfig<dag::NodeEditorInterface::SelectionMode>(config, "selectionMode", &dag::NodeEditorInterface::parseSelectionMode, &selectionMode);
             if (auto element = config.findElement("selection"); element)
             {
                 element->eachChild([this](dagbase::ConfigurationElement& child) {
@@ -1312,13 +1313,24 @@ struct NodeEditorLiveScriptItem
             break;
         }
         case COMMAND_SELECT:
-            FAIL() << "Got into an unhandled command " << commandToString(cmd);
+        {
+            dagbase::NodeSet a;
+            for (auto id : selection)
+            {
+                if (auto node = sut.graph()->node(id); node)
+                {
+                    a.emplace(node);
+                }
+            }
+            sut.select(selectionMode, a);
             break;
+        }
         case COMMAND_CREATE_CHILD:
-            FAIL() << "Got into an unhandled command " << commandToString(cmd);
+            sut.createChild();
             break;
         default:
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
+            done = true;
             break;
         }
 
@@ -1339,6 +1351,7 @@ struct NodeEditorLiveScriptItem
     std::string nodeName;
     dagbase::PortID fromPort{ dagbase::PortID::INVALID_ID };
     dagbase::PortID toPort{ dagbase::PortID::INVALID_ID };
+    dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
     bool done{ false };
 
     static const char* commandToString(Command value)
@@ -1605,7 +1618,7 @@ TEST(NodeTest, testReconnectOutputsSimple)
     auto transfer = output->out1()->connectTo(oldInput->in1());
     dagbase::NodeSet selection;
     selection.insert(output);
-    output->reconnectOutputs(selection, newInput);
+    output->reconnectOutputs(selection, newInput, nodeLib);
     ASSERT_EQ(size_t{2}, newInput->totalPorts());
     ASSERT_EQ(size_t{1}, oldInput->dynamicPort(0)->numIncomingConnections());
     ASSERT_EQ(dagbase::PortDirection::DIR_OUT, newInput->dynamicPort(1)->dir());
@@ -1632,7 +1645,7 @@ TEST(NodeTest, testReconnectOutputsHairy)
     auto t2 = output->out1()->connectTo(s1->in1());
     dagbase::NodeSet selection;
     selection.insert(output);
-    output->reconnectOutputs(selection, newInput);
+    output->reconnectOutputs(selection, newInput, nodeLib);
     ASSERT_EQ(size_t{4}, newInput->totalPorts());
     ASSERT_EQ(size_t{1}, oldInput->dynamicPort(0)->numIncomingConnections());
     ASSERT_EQ(dagbase::PortDirection::DIR_OUT, newInput->dynamicPort(1)->dir());
@@ -1659,7 +1672,7 @@ TEST(NodeTest, testReconnectInputsSimple)
     auto t = oldOutput->out1()->connectTo(input->in1());
     dagbase::NodeSet selection;
     selection.insert(input);
-    input->reconnectInputs(selection, newOutput);
+    input->reconnectInputs(selection, newOutput, nodeLib);
     ASSERT_EQ(size_t{ 2 }, newOutput->totalPorts());
     ASSERT_EQ(dagbase::PortDirection::DIR_IN, newOutput->dynamicPort(1)->dir());
     ASSERT_EQ(oldOutput->dynamicPort(0), newOutput->dynamicPort(1)->incomingConnections()[0]);
@@ -1691,7 +1704,7 @@ TEST(NodeTest, testReconnectInputsHairy)
 
     dagbase::NodeSet selection;
     selection.insert(input);
-    input->reconnectInputs(selection, newOutput);
+    input->reconnectInputs(selection, newOutput, nodeLib);
     ASSERT_EQ(size_t{ 4 }, newOutput->totalPorts());
     ASSERT_EQ(dagbase::PortDirection::DIR_IN, newOutput->dynamicPort(1)->dir());
     ASSERT_EQ(oldOutput->dynamicPort(0), newOutput->dynamicPort(1)->incomingConnections()[0]);

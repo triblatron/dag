@@ -46,8 +46,8 @@ namespace dag
 
         virtual void computeBoundaryNodes(NodeArray* inputs, NodeArray* outputs, NodeArray* internals) = 0;
 
-        virtual void reconnectInputs(NodeArray& inputs, dagbase::Node* newSource) = 0;
+        virtual void reconnectInputs(NodeArray& inputs, dagbase::Node* newSource, dagbase::KeyGenerator& keyGen) = 0;
 
-        virtual void reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink) = 0;
+        virtual void reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink, dagbase::KeyGenerator& keyGen) = 0;
     };
 }

@@ -64,22 +64,90 @@ root=
 				},
 			},
 		},
-		-- {
-			-- cmd="COMMAND_SELECT",
-			-- selection=
-			-- {
-				-- 0,
-				-- 1,
-				-- 2,
-			-- },
-			-- assertions=
-			-- {
-				-- {
-					-- path="numSelectedNodes",
-					-- value=3,
-					-- op="RELOP_EQ",
-				-- },
-			-- },
-		-- },
+		{
+			cmd="COMMAND_CONNECT",
+			fromPort=0,
+			toPort=2,
+			assertions=
+			{
+				{
+					path="graph.ports[0].numOutgoingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.ports[2].numIncomingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
+			cmd="COMMAND_SELECT",
+			selection=
+			{
+				0,
+			},
+			selectionMode="SELECTION_SET",
+			assertions=
+			{
+				{
+					path="numSelectedNodes",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.numPorts",
+					value=4,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
+			cmd="COMMAND_CREATE_CHILD",
+			assertions=
+			{
+				{
+					path="graph.children[0].numNodes",
+					value=3,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.children[0].numPorts",
+					value=6,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.numPorts",
+					value=4,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.children[0].ports[0].numOutgoingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.children[0].ports[1].numIncomingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.numNodes",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
 	}
 }
