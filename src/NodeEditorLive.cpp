@@ -267,8 +267,9 @@ namespace dag
             _selection->computeBoundaryNodes(&inputs, &outputs, &internals);
             auto child = new dagbase::Graph();
             child->setNodeLibrary(_nodeLib);
-            auto boundaryInput = child->createNode("Boundary","boundaryInput");
-            auto boundaryOutput = child->createNode("Boundary", "boundaryOutput");
+            // We create Nodes using the parent Graph for consistency of IDs.
+            auto boundaryInput = _graph->createNode("Boundary","boundaryInput");
+            auto boundaryOutput = _graph->createNode("Boundary", "boundaryOutput");
 
 
             _selection->reconnectInputs(inputs, boundaryInput, *_graph);
@@ -281,7 +282,6 @@ namespace dag
             {
                 // Avoid double-free of node in both orignal and child Graph.
                 _graph->removeNode(node);
-                node->setId(child->nextNodeID());
                 child->addNode(node);
             }
 

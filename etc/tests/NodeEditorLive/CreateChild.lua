@@ -111,6 +111,31 @@ root=
 			cmd="COMMAND_CREATE_CHILD",
 			assertions=
 			{
+                {
+                    path="graph.nodes[0].class",
+                    value="GroupTyped",
+                    op="RELOP_EQ",
+                },
+                {
+                    path="graph.nodes[1].class",
+                    value="FooTyped",
+                    op="RELOP_EQ",
+                },
+                {
+                    path="graph.nodes[2].class",
+                    value="BarTyped",
+                    op="RELOP_EQ",
+                },
+                {
+                    path="graph.children[0].nodes[3].class",
+                    value="Boundary",
+                    op="RELOP_EQ",
+                },
+                {
+                    path="graph.children[0].nodes[4].class",
+                    value="Boundary",
+                    op="RELOP_EQ",
+                },
 				{
 					path="graph.children[0].numNodes",
 					value=3,
@@ -177,11 +202,6 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
-                {
-                    path="graph.nodes[0].class",
-                    value="GroupTyped",
-                    op="RELOP_EQ",
-                },
 			},
 		},
 	}
