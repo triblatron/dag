@@ -177,6 +177,11 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+                {
+                    path="graph.nodes[0].class",
+                    value="GroupTyped",
+                    op="RELOP_EQ",
+                },
 			},
 		},
 	}
