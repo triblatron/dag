@@ -1258,6 +1258,7 @@ struct NodeEditorLiveScriptItem
         COMMAND_UNKNOWN,
         COMMAND_CREATE_NODE,
         COMMAND_CONNECT,
+        COMMAND_DISCONNECT,
         COMMAND_SELECT,
         COMMAND_CREATE_CHILD
     };
@@ -1273,6 +1274,11 @@ struct NodeEditorLiveScriptItem
 
             break;
         case COMMAND_CONNECT:
+            dagbase::ConfigurationElement::readConfig(config, "fromPort", &fromPort);
+            dagbase::ConfigurationElement::readConfig(config, "toPort", &toPort);
+
+            break;
+        case COMMAND_DISCONNECT:
             dagbase::ConfigurationElement::readConfig(config, "fromPort", &fromPort);
             dagbase::ConfigurationElement::readConfig(config, "toPort", &toPort);
 
@@ -1293,6 +1299,9 @@ struct NodeEditorLiveScriptItem
         case COMMAND_CREATE_CHILD:
             // No parameters.
             break;
+        default:
+            FAIL() << "Creating unknown command";
+            break;
         }
         dagbase::ConfigurationElement::readConfigVector(config, "assertions", &assertions);
     }
@@ -1312,6 +1321,19 @@ struct NodeEditorLiveScriptItem
             auto status = sut.connect(fromPort, toPort);
             break;
         }
+        case COMMAND_DISCONNECT:
+        {
+            sut.eachSignalPath([this, &sut](dagbase::SignalPath* signalPath)
+            {
+                if (signalPath->source()->id() == fromPort && signalPath->dest()->id() == toPort)
+                {
+                    auto status = sut.disconnect(signalPath->id());
+
+                    EXPECT_EQ(dagbase::Status::STATUS_OK, status.status);
+                }
+                return true;
+            });
+        }
         case COMMAND_SELECT:
         {
             dagbase::NodeSet a;
@@ -1329,8 +1351,8 @@ struct NodeEditorLiveScriptItem
             sut.createChild();
             break;
         default:
-            FAIL() << "Got into an unhandled command " << commandToString(cmd);
             done = true;
+            FAIL() << "Got into an unhandled command " << commandToString(cmd);
             break;
         }
 
@@ -1361,6 +1383,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_UNKNOWN)
             ENUM_NAME(COMMAND_CREATE_NODE)
             ENUM_NAME(COMMAND_CONNECT)
+            ENUM_NAME(COMMAND_DISCONNECT)
             ENUM_NAME(COMMAND_SELECT)
             ENUM_NAME(COMMAND_CREATE_CHILD)
         }
@@ -1373,6 +1396,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_UNKNOWN, str);
         TEST_ENUM(COMMAND_CREATE_NODE, str);
         TEST_ENUM(COMMAND_CONNECT, str);
+        TEST_ENUM(COMMAND_DISCONNECT, str);
         TEST_ENUM(COMMAND_SELECT, str);
         TEST_ENUM(COMMAND_CREATE_CHILD, str);
 
@@ -1452,7 +1476,8 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
-    std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua")
+    std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua")
 ));
 
 TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)
