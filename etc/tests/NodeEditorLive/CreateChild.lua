@@ -142,15 +142,15 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+                {
+                    path="graph.numPorts",
+                    value=2,
+                    typeIndex="TYPE_UINT",
+                    op="RELOP_EQ",
+                },
 				{
 					path="graph.children[0].numPorts",
 					value=6,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.numPorts",
-					value=4,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},

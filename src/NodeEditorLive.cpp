@@ -282,6 +282,8 @@ namespace dag
             {
                 // Avoid double-free of node in both orignal and child Graph.
                 _graph->removeNode(node);
+                _graph->removePortsForNode(node);
+
                 child->addNode(node);
             }
 
