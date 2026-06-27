@@ -19,26 +19,28 @@ namespace dag
 
     void SelectionLive::add(Cont::iterator begin, Cont::iterator end)
     {
-        _selection.insert(begin, end);
+        _selection.m.insert(begin, end);
     }
 
+    //! \note begin and end cannot be from _selection because each erase() would invalidate the iterators
     void SelectionLive::subtract(Cont::iterator begin, Cont::iterator end)
     {
         for (auto it=begin; it!=end; ++it)
         {
-            auto itFind = _selection.find(*it);
+            auto itFind = _selection.m.find(*it);
 
             if (itFind != _selection.end())
             {
-                _selection.erase(itFind);
+                _selection.m.erase(itFind);
             }
         }
     }
 
     void SelectionLive::set(Cont::iterator begin, Cont::iterator end)
     {
-        _selection.clear();
+        _selection.m.clear();
         add(begin, end);
+        computeBoundaryNodes(&_inputs, &_outputs, &_internals);
     }
 
     void SelectionLive::toggle(Cont::iterator begin, Cont::iterator end)
@@ -49,11 +51,11 @@ namespace dag
 
             if (itFind!=_selection.end())
             {
-                _selection.erase(itFind);
+                _selection.m.erase(itFind);
             }
             else
             {
-                _selection.insert(*it);
+                _selection.m.insert(*it);
             }
         }
     }
@@ -67,7 +69,7 @@ namespace dag
     {
         if (node!=nullptr)
         {
-            _selection.insert(node);
+            _selection.m.insert(node);
         }
     }
 
@@ -84,7 +86,7 @@ namespace dag
                 bool isInput = false, isOutput = false;
                 if (node->hasInputs())
                 {
-                    for (auto index=0; index<node->totalPorts(); ++index)
+                    for (std::size_t index=0; index<node->totalPorts(); ++index)
                     {
                         node->dynamicPort(index)->eachIncomingConnection([this,&isInput](dagbase::Port* p)
                                                                          {
@@ -99,13 +101,13 @@ namespace dag
                     }
                     if (isInput)
                     {
-                        inputs->emplace_back(node);
+                        inputs->a.emplace_back(node);
                     }
                 }
 
                 if (node->hasOutputs())
                 {
-                    for (auto index=0; index<node->totalPorts(); ++index)
+                    for (std::size_t index=0; index<node->totalPorts(); ++index)
                     {
                         node->dynamicPort(index)->eachOutgoingConnection([this,&isOutput](dagbase::Port* p)
                                                                          {
@@ -120,7 +122,7 @@ namespace dag
                     }
                     if (isOutput)
                     {
-                        outputs->emplace_back(node);
+                        outputs->a.emplace_back(node);
                     }
                 }
 
@@ -160,7 +162,7 @@ namespace dag
 */
                     if (isInternal)
                     {
-                        internals->emplace_back(node);
+                        internals->a.emplace_back(node);
                     }
                 }
             }
@@ -171,7 +173,7 @@ namespace dag
     {
         for (auto input : inputs)
         {
-            input->reconnectInputs(_selection, newSource, keyGen);
+            input->reconnectInputs(_selection.m, newSource, keyGen);
         }
     }
 
@@ -179,8 +181,26 @@ namespace dag
     {
         for (auto output : outputs)
         {
-            output->reconnectOutputs(_selection, newSink, keyGen);
+            output->reconnectOutputs(_selection.m, newSink, keyGen);
         }
     }
 
+    dagbase::Variant SelectionLive::find(std::string_view path) const
+    {
+        dagbase::Variant retval;
+
+        retval = dagbase::findInternal(path, "inputs", _inputs);
+        if (retval.has_value())
+            return retval;
+
+        retval = dagbase::findInternal(path, "outputs", _outputs);
+        if (retval.has_value())
+            return retval;
+
+        retval = dagbase::findInternal(path, "internals", _internals);
+        if (retval.has_value())
+            return retval;
+
+        return {};
+    }
 }

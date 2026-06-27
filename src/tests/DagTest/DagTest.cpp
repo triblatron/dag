@@ -1349,7 +1349,7 @@ struct NodeEditorLiveScriptItem
         }
         case COMMAND_SELECT:
         {
-            dagbase::NodeSet a;
+            dag::SelectionInterface::Cont a;
             for (auto id : selection)
             {
                 if (auto node = sut.activeGraph()->node(id); node)
@@ -1571,7 +1571,7 @@ TEST(NodeEditorLiveTest, testCreateChildWithMultipleChildrenSucceeds)
     createNode(sut, "FooTyped", "input1",&input1);
     auto t3 = multi2->dynamicPort(4)->connectTo(*input1->dynamicPort(0));
 
-    dagbase::NodeSet selection;
+    dag::SelectionInterface::Cont selection;
     selection.insert(multi1);
     selection.insert(multi2);
     sut->select(dag::NodeEditorInterface::SELECTION_SET, selection);
@@ -1590,7 +1590,7 @@ TEST(NodeEditorLiveTest, testCreateChildWithMultipleChildrenSucceeds)
 TEST(SelectionLiveTest, testComputeBoundaryOfEmptySetGivesEmptyOutputs)
 {
     auto sut = new dag::SelectionLive();
-    dagbase::NodeArray inputs, outputs, internals;
+    dag::SelectionInterface::NodeArray inputs, outputs, internals;
     sut->computeBoundaryNodes(&inputs, &outputs, &internals);
     ASSERT_TRUE(inputs.empty());
     ASSERT_TRUE(outputs.empty());
@@ -1609,7 +1609,7 @@ TEST(SelectionLiveTest, testComputeBoundaryOnNodeWithInputsAndOutputsGivesTheNod
     auto t1 = b1->out1()->connectTo(g1->in1());
     auto t2 = g1->out1().connectTo(f1->in1());
     sut->add(g1);
-    dagbase::NodeArray inputs, outputs, internals;
+    dag::SelectionInterface::NodeArray inputs, outputs, internals;
     sut->computeBoundaryNodes(&inputs, &outputs, &internals);
     ASSERT_FALSE(inputs.empty());
     ASSERT_FALSE(outputs.empty());

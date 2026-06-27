@@ -6,13 +6,13 @@
 
 #include "config/Export.h"
 
-#include "../thirdparty/dagbase/include/core/Types.h"
-#include "config/config.h"
-#include "../thirdparty/dagbase/include/core/Node.h"
+#include "core/Node.h"
+#include "util/SearchableSet.h"
+#include "util/VectorSet.h"
 
-#include <cstdint>
 #include <vector>
-#include <algorithm>
+
+#include "util/SearchableArray.h"
 
 namespace dagbase
 {
@@ -24,8 +24,8 @@ namespace dag
     class DAG_API SelectionInterface
     {
     public:
-        typedef dagbase::NodeSet Cont;
-        typedef std::vector<dagbase::Node*> NodeArray;
+        typedef dagbase::SearchableSet<dagbase::VectorSet<dagbase::Node*>> Cont;
+        typedef dagbase::SearchableArray<std::vector<dagbase::Node*>>    NodeArray;
 
     public:
         virtual ~SelectionInterface() = default;

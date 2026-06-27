@@ -11,6 +11,8 @@
 #include <vector>
 #include <string>
 
+#include "SelectionInterface.h"
+
 namespace dagbase
 {
     class Node;
@@ -35,13 +37,13 @@ namespace dag
             //! Flip between selected and deselected.
             SELECTION_TOGGLE,
         };
-        typedef std::vector<dagbase::Node*> NodeArray;
+        typedef SelectionInterface::NodeArray NodeArray;
 public:
         virtual ~NodeEditorInterface() = default;
 
         //! Select a set of Nodes with the given mode
         //! \param[in] mode The mode of the selection
-        virtual dagbase::Status select(SelectionMode mode, dagbase::NodeSet& a) = 0;
+        virtual dagbase::Status select(SelectionMode mode, SelectionInterface::Cont& a) = 0;
 
         //! Select every node in the Graph
         virtual dagbase::Status selectAll() = 0;

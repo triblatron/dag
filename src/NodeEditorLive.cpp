@@ -81,7 +81,7 @@ namespace dag
             _activeGraph->eachSignalPath(f);
     }
 
-    dagbase::Status NodeEditorLive::select(NodeEditorInterface::SelectionMode mode, dagbase::NodeSet &a)
+    dagbase::Status NodeEditorLive::select(NodeEditorInterface::SelectionMode mode, SelectionInterface::Cont &a)
     {
         dagbase::Status status;
 
@@ -368,6 +368,10 @@ namespace dag
         dagbase::Variant retval;
 
         retval = dagbase::findEndpoint(path, "numSelectedNodes", std::uint32_t(_selection->count()));
+        if (retval.has_value())
+            return retval;
+
+        retval = dagbase::findInternal(path, "selection", _selection);
         if (retval.has_value())
             return retval;
 

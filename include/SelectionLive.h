@@ -6,6 +6,9 @@
 
 #include "config/Export.h"
 #include "SelectionInterface.h"
+#include "core/Variant.h"
+
+#include <string_view>
 
 namespace dag
 {
@@ -33,8 +36,13 @@ namespace dag
         void reconnectInputs(NodeArray& inputs, dagbase::Node* newSource, dagbase::KeyGenerator& keyGen) override;
 
         void reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink, dagbase::KeyGenerator& keyGen) override;
+
+        dagbase::Variant find(std::string_view path) const;
     private:
         Cont _selection;
+        NodeArray _inputs;
+        NodeArray _outputs;
+        NodeArray _internals;
     };
 
 }

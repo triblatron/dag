@@ -52,7 +52,7 @@ namespace dag
 
         //! Select a set of Nodes with the given mode
         //! \param[in] mode The mode of the selection
-        dagbase::Status select(SelectionMode mode, dagbase::NodeSet& a) override;
+        dagbase::Status select(SelectionMode mode, SelectionInterface::Cont& a) override;
 
         //! Select every node in the Graph
         dagbase::Status selectAll() override;
