@@ -1066,11 +1066,11 @@ TEST(NodeEditorLiveTest, testCreateTwoNodesOfTheSameType)
     auto sut = std::make_unique<dag::NodeEditorLive>();
     auto s1 = sut->createNode("GroupTyped", "group1");
     ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
-    ASSERT_EQ(2, sut->graph()->numPorts());
+    ASSERT_EQ(2, sut->activeGraph()->numPorts());
     ASSERT_NE(nullptr, s1.result.node);
     auto s2 = sut->createNode("GroupTyped", "group1");
     ASSERT_EQ(dagbase::Status::STATUS_OK, s2.status);
-    ASSERT_EQ(4, sut->graph()->numPorts());
+    ASSERT_EQ(4, sut->activeGraph()->numPorts());
     ASSERT_NE(nullptr, s2.result.node);
     auto s3 = sut->connect(s1.result.node->dynamicPort(0)->id(), s2.result.node->dynamicPort(1)->id());
     ASSERT_EQ(dagbase::Status::STATUS_OK, s3.status);
@@ -1121,7 +1121,7 @@ TEST_P(NodeEditorLiveTest_testCreateNodeIncrementsPortID, testExpectedPortID)
         sut.createNode(className, nodeName);
         return true;
     });
-    EXPECT_EQ(portID, sut.graph()->nextPortID());
+    EXPECT_EQ(portID, sut.activeGraph()->nextPortID());
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLiveTest, NodeEditorLiveTest_testCreateNodeIncrementsPortID, ::testing::Values(
@@ -1195,7 +1195,7 @@ TEST(NodeEditorLiveTest, testConnectingANodeToItselfFails)
     auto actual = sut->connect(3,2);
     ASSERT_EQ(dagbase::Status::StatusCode::STATUS_CYCLE_DETECTED, actual.status);
     ASSERT_EQ(dagbase::Status::RESULT_NODE, actual.resultType);
-    ASSERT_EQ(sut->graph()->node(2), actual.result.node);
+    ASSERT_EQ(sut->activeGraph()->node(2), actual.result.node);
 
     delete sut;
 }
@@ -1339,7 +1339,7 @@ struct NodeEditorLiveScriptItem
             dagbase::NodeSet a;
             for (auto id : selection)
             {
-                if (auto node = sut.graph()->node(id); node)
+                if (auto node = sut.activeGraph()->node(id); node)
                 {
                     a.emplace(node);
                 }
@@ -1477,7 +1477,8 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
     std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),
-    std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua")
+    std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/ConnectToIncompatible.lua")
 ));
 
 TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)

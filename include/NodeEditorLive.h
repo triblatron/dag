@@ -32,9 +32,9 @@ namespace dag
 
         ~NodeEditorLive() override;
 
-        dagbase::Graph* graph()
+        dagbase::Graph* activeGraph()
         {
-            return _graph;
+            return _activeGraph;
         }
 
         dagbase::Status load(const char* filename);
@@ -83,6 +83,7 @@ namespace dag
     private:
         MemoryNodeLibrary *_nodeLib{nullptr};
         dagbase::Graph* _graph{nullptr};
+        dagbase::Graph* _activeGraph{nullptr};
         SelectionLive* _selection{nullptr};
         typedef std::vector<dagbase::Transfer*> TransferArray;
         TransferArray _transfers;
