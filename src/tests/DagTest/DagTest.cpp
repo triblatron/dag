@@ -1499,7 +1499,8 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing:
     std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectToIncompatible.lua"),
-    std::make_tuple("etc/tests/NodeEditorLive/CreateChildInNonRootGraph.lua")
+    std::make_tuple("etc/tests/NodeEditorLive/CreateChildInNonRootGraph.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/SelectMultipleInternals.lua")
 ));
 
 TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)

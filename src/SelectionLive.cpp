@@ -55,7 +55,7 @@ namespace dag
             }
             else
             {
-                _selection.m.insert(*it);
+                _selection.m.emplace(*it);
             }
         }
     }
