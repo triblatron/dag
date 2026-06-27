@@ -1260,7 +1260,8 @@ struct NodeEditorLiveScriptItem
         COMMAND_CONNECT,
         COMMAND_DISCONNECT,
         COMMAND_SELECT,
-        COMMAND_CREATE_CHILD
+        COMMAND_CREATE_CHILD,
+        COMMAND_SET_ACTIVE_GRAPH
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1298,6 +1299,18 @@ struct NodeEditorLiveScriptItem
             break;
         case COMMAND_CREATE_CHILD:
             // No parameters.
+            break;
+        case COMMAND_SET_ACTIVE_GRAPH:
+            if (auto element = config.findElement("graphPath"); element)
+            {
+                element->eachChild([this](dagbase::ConfigurationElement& child) {
+                    auto value = child.asInteger();
+
+                    graphChildPath.emplace_back(value);
+
+                    return true;
+                });
+            }
             break;
         default:
             FAIL() << "Creating unknown command";
@@ -1350,6 +1363,10 @@ struct NodeEditorLiveScriptItem
         case COMMAND_CREATE_CHILD:
             sut.createChild();
             break;
+        case COMMAND_SET_ACTIVE_GRAPH:
+            sut.setActiveGraph(graphChildPath);
+
+            break;
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1374,6 +1391,7 @@ struct NodeEditorLiveScriptItem
     dagbase::PortID fromPort{ dagbase::PortID::INVALID_ID };
     dagbase::PortID toPort{ dagbase::PortID::INVALID_ID };
     dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
+    dag::NodeEditorLive::GraphChildPath graphChildPath;
     bool done{ false };
 
     static const char* commandToString(Command value)
@@ -1386,6 +1404,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_DISCONNECT)
             ENUM_NAME(COMMAND_SELECT)
             ENUM_NAME(COMMAND_CREATE_CHILD)
+            ENUM_NAME(COMMAND_SET_ACTIVE_GRAPH)
         }
 
         return "<error>";
@@ -1399,6 +1418,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_DISCONNECT, str);
         TEST_ENUM(COMMAND_SELECT, str);
         TEST_ENUM(COMMAND_CREATE_CHILD, str);
+        TEST_ENUM(COMMAND_SET_ACTIVE_GRAPH, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1478,7 +1498,8 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
     std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua"),
-    std::make_tuple("etc/tests/NodeEditorLive/ConnectToIncompatible.lua")
+    std::make_tuple("etc/tests/NodeEditorLive/ConnectToIncompatible.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/CreateChildInNonRootGraph.lua")
 ));
 
 TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)

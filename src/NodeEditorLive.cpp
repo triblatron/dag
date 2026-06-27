@@ -36,6 +36,18 @@ namespace dag
         }
     }
 
+    void NodeEditorLive::setActiveGraph(const GraphChildPath &path)
+    {
+        if (_graph)
+        {
+            _activeGraph = _graph;
+            for (auto childIndex : path)
+            {
+                _activeGraph = _activeGraph->child(childIndex);
+            }
+        }
+    }
+
     dagbase::Status NodeEditorLive::load(const char* filename)
     {
         dagbase::Status status{ dagbase::Status::STATUS_UNKNOWN };

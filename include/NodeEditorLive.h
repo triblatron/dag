@@ -28,9 +28,14 @@ namespace dag
     class DAG_API NodeEditorLive : public NodeEditorInterface
     {
     public:
+        using GraphChildPath = std::vector<std::uint32_t>;
+
+    public:
         NodeEditorLive();
 
         ~NodeEditorLive() override;
+
+        void setActiveGraph(const GraphChildPath& path);
 
         dagbase::Graph* activeGraph()
         {
