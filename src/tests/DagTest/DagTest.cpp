@@ -1247,6 +1247,7 @@ struct NodeEditorLiveScriptItem
             break;
         case COMMAND_DISCONNECT:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "signalPath", &signalPath);
             dagbase::ConfigurationElement::readConfig(config, "fromPort", &fromPort);
             dagbase::ConfigurationElement::readConfig(config, "toPort", &toPort);
 
@@ -1311,16 +1312,15 @@ struct NodeEditorLiveScriptItem
         }
         case COMMAND_DISCONNECT:
         {
-            sut.eachSignalPath([this, &sut, &actualStatus](dagbase::SignalPath* signalPath)
-            {
-                if (signalPath->source()->id() == fromPort && signalPath->dest()->id() == toPort)
-                {
-                    actualStatus = sut.disconnect(signalPath->id());
-
-                    EXPECT_EQ(dagbase::Status::STATUS_OK, actualStatus.status);
-                }
-                return true;
-            });
+            actualStatus = sut.disconnect(signalPath);
+            // sut.eachSignalPath([this, &sut, &actualStatus](dagbase::SignalPath* signalPath)
+            // {
+            //     if (signalPath->source()->id() == fromPort && signalPath->dest()->id() == toPort)
+            //     {
+            //         actualStatus = sut.disconnect(signalPath->id());
+            //     }
+            //     return true;
+            // });
             break;
         }
         case COMMAND_SELECT:
@@ -1372,6 +1372,7 @@ struct NodeEditorLiveScriptItem
     std::string nodeName;
     dagbase::PortID fromPort{ dagbase::PortID::INVALID_ID };
     dagbase::PortID toPort{ dagbase::PortID::INVALID_ID };
+    dagbase::SignalPathID signalPath{ dagbase::SignalPathID::INVALID_ID };
     dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
     dag::NodeEditorLive::GraphChildPath graphChildPath;
     bool done{ false };
@@ -1453,6 +1454,7 @@ protected:
 
 void NodeEditorLive_testScripted::SetUp()
 {
+    dagbase::SignalPath::resetID();
     auto scriptFilename = std::get<0>(GetParam());
     dagbase::Lua lua;
     auto scriptConfig = dagbase::ConfigurationElement::fromFile(lua, scriptFilename);
@@ -1484,6 +1486,7 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing:
     std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectToIncompatible.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectToSelf.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/DisconnectInvalidSignalPathID.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChildInNonRootGraph.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectMultipleInternals.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectMultipleWithAnOnlyInternal.lua"),

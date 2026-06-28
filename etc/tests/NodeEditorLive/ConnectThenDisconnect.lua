@@ -58,8 +58,7 @@ root=
 		},
         {
             cmd="COMMAND_DISCONNECT",
-            fromPort=0,
-            toPort=2,
+            signalPath=0,
             assertions=
             {
                 {
