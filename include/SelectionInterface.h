@@ -7,8 +7,7 @@
 #include "config/Export.h"
 
 #include "core/Node.h"
-#include "util/SearchableSet.h"
-#include "util/VectorSet.h"
+#include "core/Types.h"
 
 #include <vector>
 
@@ -24,7 +23,7 @@ namespace dag
     class DAG_API SelectionInterface
     {
     public:
-        typedef dagbase::SearchableSet<dagbase::VectorSet<dagbase::Node*>> Cont;
+        typedef dagbase::NodeSet Cont;
         typedef dagbase::SearchableArray<std::vector<dagbase::Node*>>    NodeArray;
 
     public:

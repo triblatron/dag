@@ -169,19 +169,19 @@ namespace dag
         }
     }
 
-    void dag::SelectionLive::reconnectInputs(NodeArray& inputs, dagbase::Node* newSource, dagbase::KeyGenerator& keyGen)
+    void SelectionLive::reconnectInputs(NodeArray& inputs, dagbase::Node* newSource, dagbase::KeyGenerator& keyGen)
     {
         for (auto input : inputs)
         {
-            input->reconnectInputs(_selection.m, newSource, keyGen);
+            input->reconnectInputs(_selection, newSource, keyGen);
         }
     }
 
-    void dag::SelectionLive::reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink, dagbase::KeyGenerator& keyGen)
+    void SelectionLive::reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink, dagbase::KeyGenerator& keyGen)
     {
         for (auto output : outputs)
         {
-            output->reconnectOutputs(_selection.m, newSink, keyGen);
+            output->reconnectOutputs(_selection, newSink, keyGen);
         }
     }
 
