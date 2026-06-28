@@ -34,6 +34,11 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=2,
 			toPort=1,
+    			status=
+			{
+				statusCode="STATUS_SYNTAX_ERROR",
+				resultType="RESULT_PORT",
+			},
 			assertions=
 			{
 				{

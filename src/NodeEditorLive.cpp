@@ -36,7 +36,7 @@ namespace dag
         }
     }
 
-    void NodeEditorLive::setActiveGraph(const GraphChildPath &path)
+    dagbase::Status NodeEditorLive::setActiveGraph(const GraphChildPath &path)
     {
         if (_graph)
         {
@@ -45,7 +45,12 @@ namespace dag
             {
                 _activeGraph = _activeGraph->child(childIndex);
             }
+
+            if (_activeGraph)
+                return dagbase::Status{dagbase::Status::STATUS_OK};
         }
+
+        return dagbase::Status{dagbase::Status::STATUS_OBJECT_NOT_FOUND};
     }
 
     dagbase::Status NodeEditorLive::load(const char* filename)
@@ -83,7 +88,7 @@ namespace dag
 
     dagbase::Status NodeEditorLive::select(NodeEditorInterface::SelectionMode mode, SelectionInterface::Cont &a)
     {
-        dagbase::Status status;
+        dagbase::Status status{dagbase::Status::STATUS_OK};
 
         switch (mode)
         {
@@ -101,6 +106,9 @@ namespace dag
                 break;
             case SELECTION_CLEAR:
                 _selection->clear();
+                break;
+            case SELECTION_UNKNOWN:
+                status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
                 break;
         }
         return status;
@@ -147,7 +155,7 @@ namespace dag
 
                 status.status = dagbase::Status::STATUS_OK;
                 status.resultType = dagbase::Status::RESULT_NODE;
-                status.result.node = node;
+                status.result = node;
                 // Add the node to the active Graph
                 _activeGraph->addNode(node);
 
@@ -170,13 +178,13 @@ namespace dag
                 delete node;
                 status.status = dagbase::Status::STATUS_OK;
                 status.resultType = dagbase::Status::RESULT_NODE_ID;
-                status.result.nodeId = id;
+                status.result = id;
             }
             else
             {
                 status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
                 status.resultType = dagbase::Status::RESULT_NODE_ID;
-                status.result.nodeId = id;
+                status.result = id;
             }
             return status;
         }
@@ -197,14 +205,15 @@ namespace dag
                 {
                     auto status = dagbase::Status{ dagbase::Status::STATUS_CYCLE_DETECTED };
                     status.resultType = dagbase::Status::RESULT_NODE;
-                    status.result.node = fromPort->parent();
+                    status.result = fromPort->parent();
                     return status;
                 }
                 if (fromPort->dir() != dagbase::PortDirection::DIR_OUT)
                 {
                     std::swap(fromPort, toPort);
                 }
-                if (fromPort->dir() == dagbase::PortDirection::DIR_OUT && toPort->dir() == dagbase::PortDirection::DIR_IN && fromPort->isCompatibleWith(*toPort))
+                bool isCompatible = fromPort->isCompatibleWith(*toPort);
+                if (fromPort->dir() == dagbase::PortDirection::DIR_OUT && toPort->dir() == dagbase::PortDirection::DIR_IN && isCompatible)
                 {
                     auto transfer = fromPort->connectTo(*toPort);
                     auto signalPath = new dagbase::SignalPath(fromPort, toPort);
@@ -215,7 +224,7 @@ namespace dag
 
                     status.status = dagbase::Status::STATUS_OK;
                     status.resultType = dagbase::Status::RESULT_SIGNAL_PATH_ID;
-                    status.result.signalPathId = signalPath->id();
+                    status.result = signalPath->id();
                     _transfers.emplace_back(transfer);
 
                     return status;
@@ -228,13 +237,19 @@ namespace dag
                     {
                         status.resultType = dagbase::Status::RESULT_PORT;
                         status.status = dagbase::Status::STATUS_INVALID_PORT;
-                        status.result.port = fromPort;
+                        status.result = fromPort;
                     }
                     else if (toPort->dir() != dagbase::PortDirection::DIR_IN)
                     {
                         status.resultType = dagbase::Status::RESULT_PORT;
                         status.status = dagbase::Status::STATUS_INVALID_PORT;
-                        status.result.port = toPort;
+                        status.result = toPort;
+                    }
+                    else if (!isCompatible)
+                    {
+                        status.resultType = dagbase::Status::RESULT_PORT;
+                        status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
+                        status.result = fromPort;
                     }
 
                     return status;
@@ -248,13 +263,13 @@ namespace dag
                 {
                     status.resultType = dagbase::Status::RESULT_PORT_ID;
                     status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
-                    status.result.portId = from;
+                    status.result = from;
                 }
                 else
                 {
                     status.resultType = dagbase::Status::RESULT_PORT_ID;
                     status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
-                    status.result.portId = to;
+                    status.result = to;
                 }
 
                 return status;
@@ -281,7 +296,7 @@ namespace dag
             {
                 status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
                 status.resultType = dagbase::Status::RESULT_SIGNAL_PATH_ID;
-                status.result.signalPathId = id;
+                status.result = id;
             }
 
             return status;
@@ -329,7 +344,7 @@ namespace dag
 
                 status.status = dagbase::Status::STATUS_OK;
                 status.resultType = dagbase::Status::RESULT_GRAPH;
-                status.result.graph = child;
+                status.result = child;
             }
 
             return status;
