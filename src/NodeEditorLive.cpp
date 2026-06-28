@@ -107,6 +107,9 @@ namespace dag
             case SELECTION_CLEAR:
                 _selection->clear();
                 break;
+            case SELECTION_ALL:
+                selectAll();
+                break;
             case SELECTION_UNKNOWN:
                 status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
                 break;
@@ -118,15 +121,15 @@ namespace dag
     {
         if (_activeGraph)
         {
-            dagbase::Status status;
+            dagbase::Status status{dagbase::Status::STATUS_OK};
             SelectionInterface::Cont s;
-            _selection->set(s.begin(), s.end());
-            _graph->eachNode([this](dagbase::Node* node)
+            _activeGraph->eachNode([&s](dagbase::Node* node)
                              {
-                                 _selection->add(node);
+                                 s.emplace(node);
 
                                  return true;
                              });
+            _selection->set(s.begin(), s.end());
             return status;
         }
 

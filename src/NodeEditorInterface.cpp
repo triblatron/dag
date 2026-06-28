@@ -15,6 +15,7 @@ namespace dag
 			ENUM_NAME(SELECTION_SUBTRACT)
 			ENUM_NAME(SELECTION_TOGGLE)
 		    ENUM_NAME(SELECTION_CLEAR)
+		    ENUM_NAME(SELECTION_ALL)
 		}
 
 		return "<error>";
@@ -28,6 +29,7 @@ namespace dag
 		TEST_ENUM(SELECTION_SUBTRACT, str);
 		TEST_ENUM(SELECTION_TOGGLE, str);
         TEST_ENUM(SELECTION_CLEAR, str);
+        TEST_ENUM(SELECTION_ALL, str);
 
 		return SELECTION_UNKNOWN;
 	}

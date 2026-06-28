@@ -85,5 +85,6 @@ INSTANTIATE_TEST_SUITE_P(SelectionMode, SelectionMode_testRoundTrip, ::testing::
     std::make_tuple("SELECTION_SUBTRACT", dag::NodeEditorInterface::SELECTION_SUBTRACT),
     std::make_tuple("SELECTION_TOGGLE", dag::NodeEditorInterface::SELECTION_TOGGLE),
     std::make_tuple("SELECTION_CLEAR", dag::NodeEditorInterface::SELECTION_CLEAR),
+    std::make_tuple("SELECTION_ALL", dag::NodeEditorInterface::SELECTION_ALL),
     std::make_tuple("SELECTION_UNKNOWN", dag::NodeEditorInterface::SELECTION_UNKNOWN)
     ));

@@ -37,7 +37,9 @@ namespace dag
             //! Flip between selected and deselected.
             SELECTION_TOGGLE,
             //! Reset to an empty selection.
-            SELECTION_CLEAR
+            SELECTION_CLEAR,
+            //! Select every Node
+            SELECTION_ALL
         };
         typedef SelectionInterface::NodeArray NodeArray;
 public:
