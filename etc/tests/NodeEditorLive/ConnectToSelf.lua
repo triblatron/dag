@@ -23,7 +23,7 @@ root=
 			status=
 			{
 				statusCode="STATUS_CYCLE_DETECTED",
-				resultType="RESULT_NODE",
+				resultType="RESULT_NODE_ID",
 			},
 			assertions=
 			{

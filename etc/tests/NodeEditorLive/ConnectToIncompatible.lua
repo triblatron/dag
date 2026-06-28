@@ -37,7 +37,7 @@ root=
 			status=
 			{
 				statusCode="STATUS_SYNTAX_ERROR",
-				resultType="RESULT_PORT",
+				resultType="RESULT_PORT_ID",
 			},
 			assertions=
 			{

@@ -157,8 +157,8 @@ namespace dag
                 dagbase::Status status{dagbase::Status::STATUS_UNKNOWN};
 
                 status.status = dagbase::Status::STATUS_OK;
-                status.resultType = dagbase::Status::RESULT_NODE;
-                status.result = node;
+                status.resultType = dagbase::Status::RESULT_NODE_ID;
+                status.result = node->id();
                 // Add the node to the active Graph
                 _activeGraph->addNode(node);
 
@@ -207,8 +207,8 @@ namespace dag
                 if (fromPort->parent() == toPort->parent())
                 {
                     auto status = dagbase::Status{ dagbase::Status::STATUS_CYCLE_DETECTED };
-                    status.resultType = dagbase::Status::RESULT_NODE;
-                    status.result = fromPort->parent();
+                    status.resultType = dagbase::Status::RESULT_NODE_ID;
+                    status.result = fromPort->parent()->id();
                     return status;
                 }
                 if (fromPort->dir() != dagbase::PortDirection::DIR_OUT)
@@ -238,21 +238,21 @@ namespace dag
 
                     if (fromPort->dir() != dagbase::PortDirection::DIR_OUT)
                     {
-                        status.resultType = dagbase::Status::RESULT_PORT;
+                        status.resultType = dagbase::Status::RESULT_PORT_ID;
                         status.status = dagbase::Status::STATUS_INVALID_PORT;
-                        status.result = fromPort;
+                        status.result = fromPort->id();
                     }
                     else if (toPort->dir() != dagbase::PortDirection::DIR_IN)
                     {
-                        status.resultType = dagbase::Status::RESULT_PORT;
+                        status.resultType = dagbase::Status::RESULT_PORT_ID;
                         status.status = dagbase::Status::STATUS_INVALID_PORT;
-                        status.result = toPort;
+                        status.result = toPort->id();
                     }
                     else if (!isCompatible)
                     {
-                        status.resultType = dagbase::Status::RESULT_PORT;
+                        status.resultType = dagbase::Status::RESULT_PORT_ID;
                         status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
-                        status.result = fromPort;
+                        status.result = fromPort->id();
                     }
 
                     return status;

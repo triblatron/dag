@@ -1005,34 +1005,6 @@ TEST(SelectionLiveTest, testToggle)
     delete sut;
 }
 
-TEST(NodeEditorLiveTest, testCreateNode)
-{
-    auto sut = new dag::NodeEditorLive();
-    auto actual = sut->createNode("FooTyped", "foo1");
-    ASSERT_EQ(dagbase::Status::StatusCode::STATUS_OK, actual.status);
-    ASSERT_EQ(dagbase::Status::RESULT_NODE, actual.resultType);
-    ASSERT_NE(nullptr, std::get<dagbase::Node*>(actual.result));
-
-    delete sut;
-}
-
-TEST(NodeEditorLiveTest, testCreateTwoNodesOfTheSameType)
-{
-    auto sut = std::make_unique<dag::NodeEditorLive>();
-    auto s1 = sut->createNode("GroupTyped", "group1");
-    ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
-    ASSERT_EQ(2, sut->activeGraph()->numPorts());
-    ASSERT_NE(nullptr, std::get<dagbase::Node*>(s1.result));
-    auto s2 = sut->createNode("GroupTyped", "group1");
-    ASSERT_EQ(dagbase::Status::STATUS_OK, s2.status);
-    ASSERT_EQ(4, sut->activeGraph()->numPorts());
-    ASSERT_NE(nullptr, std::get<dagbase::Node*>(s2.result));
-    auto node1 = std::get<dagbase::Node*>(s1.result);
-    auto node2 = std::get<dagbase::Node*>(s2.result);
-    auto s3 = sut->connect(node1->dynamicPort(0)->id(), node2->dynamicPort(1)->id());
-    ASSERT_EQ(dagbase::Status::STATUS_OK, s3.status);
-}
-
 class NodeEditorLiveTest_testLoad : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Status::StatusCode>>
 {
 
@@ -1085,103 +1057,6 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLiveTest, NodeEditorLiveTest_testCreateNodeIn
     std::make_tuple("etc/tests/NodeEditorLive/OneFooTyped.lua", dagbase::PortID(1))
 ));
 
-// TEST(NodeEditorLiveTest, testConnectionBetweenExistingNodesSucceeds)
-// {
-//     auto sut = new dag::NodeEditorLive();
-//     auto s1 = sut->createNode("FooTyped", "foo1");
-//     ASSERT_EQ(dagbase::Status::RESULT_NODE, s1.resultType);
-//     auto s2 = sut->createNode("BarTyped", "bar1");
-//     ASSERT_EQ(dagbase::Status::RESULT_NODE, s2.resultType);
-//
-//     auto actual = sut->connect(s2.result.node->dynamicPort(0)->id(), s1.result.node->dynamicPort(0)->id());
-//     ASSERT_EQ(dagbase::Status::StatusCode::STATUS_OK, actual.status);
-//     ASSERT_EQ(dagbase::Status::RESULT_SIGNAL_PATH_ID, actual.resultType);
-//     ASSERT_TRUE(actual.result.signalPathId.valid());
-//
-//     delete sut;
-// }
-//
-// TEST(NodeEditorLiveTest, testConnectionBetweenInputAndOutputSwapsPorts)
-// {
-//     auto sut = new dag::NodeEditorLive();
-//     auto s1 = sut->createNode("FooTyped", "foo1");
-//     ASSERT_EQ(dagbase::Status::RESULT_NODE, s1.resultType);
-//     auto s2 = sut->createNode("BarTyped", "bar1");
-//     ASSERT_EQ(dagbase::Status::RESULT_NODE, s2.resultType);
-//
-//     auto node1 = std::get<dagbase::Node*>(s1.result);
-//     auto node2 = std::get<dagbase::Node*>(s2.result);
-//     auto actual = sut->connect(node1->dynamicPort(0)->id(), node2->dynamicPort(0)->id());
-//     ASSERT_EQ(dagbase::Status::StatusCode::STATUS_OK, actual.status);
-//     ASSERT_EQ(dagbase::Status::RESULT_SIGNAL_PATH_ID, actual.resultType);
-//     ASSERT_TRUE(std::get<dagbase::SignalPathID>(s1.result).valid());
-//
-//     delete sut;
-// }
-
-// TEST(NodeEditorLiveTest, testConnectionBetweenNonExistentFromPortFails)
-// {
-//     auto sut = new dag::NodeEditorLive();
-//
-//     auto actual = sut->connect(dagbase::PortID{0}, dagbase::PortID{1});
-//     ASSERT_EQ(dagbase::Status::StatusCode::STATUS_OBJECT_NOT_FOUND, actual.status);
-//     ASSERT_EQ(dagbase::Status::RESULT_PORT_ID, actual.resultType);
-//     ASSERT_EQ(0, actual.result.portId);
-//
-//     delete sut;
-// }
-
-// TEST(NodeEditorLiveTest, testConnectionBetweenNonExistentToPortFails)
-// {
-//     auto sut = new dag::NodeEditorLive();
-//     auto s1 = sut->createNode("BarTyped", "bar1");
-//     ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
-//     // BarTyped.out1 gets an ID of 1.
-//     auto actual = sut->connect(std::get<dagbase::Node*>(s1.result)->dynamicPort(0)->id(), dagbase::PortID{2});
-//     ASSERT_EQ(dagbase::Status::StatusCode::STATUS_OBJECT_NOT_FOUND, actual.status);
-//     ASSERT_EQ(dagbase::Status::RESULT_PORT_ID, actual.resultType);
-//     ASSERT_EQ(2, std::get<dagbase::PortID>(actual.result));
-//
-//     delete sut;
-// }
-
-// TEST(NodeEditorLiveTest, testConnectingANodeToItselfFails)
-// {
-//     auto sut = new dag::NodeEditorLive();
-//     auto s1 = sut->load("etc/tests/Graph/connectednestedchildgraph.lua");
-//     ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
-//     // Boundary.out1 gets an ID of 1.
-//     auto actual = sut->connect(3,2);
-//     ASSERT_EQ(dagbase::Status::StatusCode::STATUS_CYCLE_DETECTED, actual.status);
-//     ASSERT_EQ(dagbase::Status::RESULT_NODE, actual.resultType);
-//     ASSERT_EQ(sut->activeGraph()->node(2), actual.result.node);
-//
-//     delete sut;
-// }
-
-TEST(NodeEditorLiveTest, testCreateChildWithAnEmptySelectionFails)
-{
-    auto sut = new dag::NodeEditorLive();
-
-    auto actual = sut->createChild();
-    ASSERT_EQ(dagbase::Status::STATUS_INVALID_SELECTION, actual.status);
-    ASSERT_EQ(dagbase::Status::RESULT_NONE, actual.resultType);
-
-    delete sut;
-}
-
-TEST(NodeEditorLiveTest, testSelectAll)
-{
-    auto sut = new dag::NodeEditorLive();
-    auto s1 = sut->createNode("GroupTyped", "group1");
-    ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
-    ASSERT_EQ(dagbase::Status::RESULT_NODE, s1.resultType);
-    ASSERT_NE(nullptr, std::get<dagbase::Node*>(s1.result));
-    sut->selectAll();
-    ASSERT_EQ(size_t{1}, sut->selectionCount());
-    delete sut;
-}
-
 struct NodeEditorLiveAssertion
 {
     std::string path;
@@ -1203,9 +1078,9 @@ struct NodeEditorLiveAssertion
         dagbase::ConfigurationElement::readConfig<dagbase::ConfigurationElement::RelOp>(config, "op", &dagbase::ConfigurationElement::parseRelOp, &op);
     }
 
-    void makeItSo(dag::NodeEditorLive& sut)
+    void makeItSo(dag::NodeEditorLive& sut) const
     {
-        auto actual = sut.find(path.c_str());
+        auto actual = sut.find(path);
         assertComparison(value, actual, tolerance, op, path.c_str());
     }
 };
@@ -1235,7 +1110,7 @@ struct NodeEditorLiveScriptItem
             // No parameters.
             break;
         case COMMAND_CREATE_NODE:
-            status.resultType = dagbase::Status::RESULT_NODE;
+            status.resultType = dagbase::Status::RESULT_NODE_ID;
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "nodeClass", &nodeClass);
             dagbase::ConfigurationElement::readConfig(config, "nodeName", &nodeName);

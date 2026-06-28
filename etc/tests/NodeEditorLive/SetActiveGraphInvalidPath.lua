@@ -9,7 +9,7 @@ root=
 				statusCode="STATUS_OBJECT_NOT_FOUND",
 				resultType="RESULT_NONE",
 			},
-			path=
+			graphPath=
 			{
 				0
 			},
