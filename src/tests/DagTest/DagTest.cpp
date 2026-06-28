@@ -1221,7 +1221,8 @@ struct NodeEditorLiveScriptItem
         COMMAND_DISCONNECT,
         COMMAND_SELECT,
         COMMAND_CREATE_CHILD,
-        COMMAND_SET_ACTIVE_GRAPH
+        COMMAND_SET_ACTIVE_GRAPH,
+        COMMAND_DELETE_NODE
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1272,6 +1273,7 @@ struct NodeEditorLiveScriptItem
             // No parameters.
             break;
         case COMMAND_SET_ACTIVE_GRAPH:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
             if (auto element = config.findElement("graphPath"); element)
             {
                 element->eachChild([this](dagbase::ConfigurationElement& child) {
@@ -1282,6 +1284,10 @@ struct NodeEditorLiveScriptItem
                     return true;
                 });
             }
+            break;
+        case COMMAND_DELETE_NODE:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "node", &node);
             break;
         default:
             FAIL() << "Creating unknown command";
@@ -1313,14 +1319,6 @@ struct NodeEditorLiveScriptItem
         case COMMAND_DISCONNECT:
         {
             actualStatus = sut.disconnect(signalPath);
-            // sut.eachSignalPath([this, &sut, &actualStatus](dagbase::SignalPath* signalPath)
-            // {
-            //     if (signalPath->source()->id() == fromPort && signalPath->dest()->id() == toPort)
-            //     {
-            //         actualStatus = sut.disconnect(signalPath->id());
-            //     }
-            //     return true;
-            // });
             break;
         }
         case COMMAND_SELECT:
@@ -1343,6 +1341,10 @@ struct NodeEditorLiveScriptItem
         }
         case COMMAND_SET_ACTIVE_GRAPH:
             actualStatus = sut.setActiveGraph(graphChildPath);
+
+            break;
+        case COMMAND_DELETE_NODE:
+            actualStatus = sut.deleteNode(node);
 
             break;
         default:
@@ -1373,6 +1375,7 @@ struct NodeEditorLiveScriptItem
     dagbase::PortID fromPort{ dagbase::PortID::INVALID_ID };
     dagbase::PortID toPort{ dagbase::PortID::INVALID_ID };
     dagbase::SignalPathID signalPath{ dagbase::SignalPathID::INVALID_ID };
+    dagbase::NodeID node;
     dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
     dag::NodeEditorLive::GraphChildPath graphChildPath;
     bool done{ false };
@@ -1389,6 +1392,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_SELECT)
             ENUM_NAME(COMMAND_CREATE_CHILD)
             ENUM_NAME(COMMAND_SET_ACTIVE_GRAPH)
+            ENUM_NAME(COMMAND_DELETE_NODE)
         }
 
         return "<error>";
@@ -1404,6 +1408,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_SELECT, str);
         TEST_ENUM(COMMAND_CREATE_CHILD, str);
         TEST_ENUM(COMMAND_SET_ACTIVE_GRAPH, str);
+        TEST_ENUM(COMMAND_DELETE_NODE, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1503,7 +1508,9 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing:
     std::make_tuple("etc/tests/NodeEditorLive/SelectionSubtract.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectionClear.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectionAll.lua"),
-    std::make_tuple("etc/tests/NodeEditorLive/SetActiveGraphInvalidPath.lua")
+    std::make_tuple("etc/tests/NodeEditorLive/SetActiveGraphInvalidPath.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/DeleteValid.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/DeleteInvalid.lua")
 ));
 
 TEST(BoundaryNode, testAddDynamicPort)

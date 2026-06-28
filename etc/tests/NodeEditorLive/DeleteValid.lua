@@ -1,0 +1,38 @@
+root=
+{
+	items=
+	{
+		{
+			cmd="COMMAND_CREATE_NODE",
+			nodeClass="GroupTyped",
+			nodeName="group1",
+			assertions=
+			{
+				{
+					path="graph.numNodes",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
+			cmd="COMMAND_DELETE_NODE",
+			node=0,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+			},
+			assertions=
+			{
+				{
+					path="activeGraph.numNodes",
+					value=0,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+	}
+}
