@@ -40,7 +40,7 @@ namespace dag
     {
         _selection.m.clear();
         add(begin, end);
-        computeBoundaryNodes(&_inputs, &_outputs, &_internals);
+        computeBoundaryNodes();
     }
 
     void SelectionLive::toggle(Cont::iterator begin, Cont::iterator end)
@@ -73,13 +73,13 @@ namespace dag
         }
     }
 
-    void SelectionLive::computeBoundaryNodes(NodeArray* inputs, NodeArray* outputs, NodeArray* internals)
+    void SelectionLive::computeBoundaryNodes()
     {
-        if (inputs != nullptr && outputs!=nullptr && internals != nullptr)
+        if (true)
         {
-            inputs->clear();
-            outputs->clear();
-            internals->clear();
+            _inputs.clear();
+            _outputs.clear();
+            _internals.clear();
 
             for (auto node : _selection)
             {
@@ -101,7 +101,7 @@ namespace dag
                     }
                     if (isInput)
                     {
-                        inputs->a.emplace_back(node);
+                        _inputs.a.emplace_back(node);
                     }
                 }
 
@@ -122,7 +122,7 @@ namespace dag
                     }
                     if (isOutput)
                     {
-                        outputs->a.emplace_back(node);
+                        _outputs.a.emplace_back(node);
                     }
                 }
 
@@ -162,24 +162,24 @@ namespace dag
 */
                     if (isInternal)
                     {
-                        internals->a.emplace_back(node);
+                        _internals.a.emplace_back(node);
                     }
                 }
             }
         }
     }
 
-    void SelectionLive::reconnectInputs(NodeArray& inputs, dagbase::Node* newSource, dagbase::KeyGenerator& keyGen)
+    void SelectionLive::reconnectInputs(dagbase::Node* newSource, dagbase::KeyGenerator& keyGen)
     {
-        for (auto input : inputs)
+        for (auto input : _inputs)
         {
             input->reconnectInputs(_selection, newSource, keyGen);
         }
     }
 
-    void SelectionLive::reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink, dagbase::KeyGenerator& keyGen)
+    void SelectionLive::reconnectOutputs(dagbase::Node* newSink, dagbase::KeyGenerator& keyGen)
     {
-        for (auto output : outputs)
+        for (auto output : _outputs)
         {
             output->reconnectOutputs(_selection, newSink, keyGen);
         }

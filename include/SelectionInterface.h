@@ -43,10 +43,8 @@ namespace dag
 
         virtual bool isSelected(dagbase::Node* node) = 0;
 
-        virtual void computeBoundaryNodes(NodeArray* inputs, NodeArray* outputs, NodeArray* internals) = 0;
+        virtual void reconnectInputs(dagbase::Node* newSource, dagbase::KeyGenerator& keyGen) = 0;
 
-        virtual void reconnectInputs(NodeArray& inputs, dagbase::Node* newSource, dagbase::KeyGenerator& keyGen) = 0;
-
-        virtual void reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink, dagbase::KeyGenerator& keyGen) = 0;
+        virtual void reconnectOutputs(dagbase::Node* newSink, dagbase::KeyGenerator& keyGen) = 0;
     };
 }

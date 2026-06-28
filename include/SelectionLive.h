@@ -31,14 +31,28 @@ namespace dag
 
         bool isSelected(dagbase::Node* node) override;
 
-        void computeBoundaryNodes(NodeArray* inputs, NodeArray* outputs, NodeArray* internals) override;
+        const NodeArray& inputs() const
+        {
+            return _inputs;
+        }
 
-        void reconnectInputs(NodeArray& inputs, dagbase::Node* newSource, dagbase::KeyGenerator& keyGen) override;
+        const NodeArray& outputs() const
+        {
+            return _outputs;
+        }
 
-        void reconnectOutputs(NodeArray& outputs, dagbase::Node* newSink, dagbase::KeyGenerator& keyGen) override;
+        const NodeArray& internals() const
+        {
+            return _internals;
+        }
+
+        void reconnectInputs(dagbase::Node* newSource, dagbase::KeyGenerator& keyGen) override;
+
+        void reconnectOutputs(dagbase::Node* newSink, dagbase::KeyGenerator& keyGen) override;
 
         dagbase::Variant find(std::string_view path) const;
     private:
+        void computeBoundaryNodes();
         Cont _selection;
         NodeArray _inputs;
         NodeArray _outputs;

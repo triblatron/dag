@@ -1256,6 +1256,7 @@ struct NodeEditorLiveScriptItem
     enum Command : std::uint32_t
     {
         COMMAND_UNKNOWN,
+        COMMAND_NOP,
         COMMAND_CREATE_NODE,
         COMMAND_CONNECT,
         COMMAND_DISCONNECT,
@@ -1269,6 +1270,9 @@ struct NodeEditorLiveScriptItem
         dagbase::ConfigurationElement::readConfig<Command>(config, "cmd", &parseCommand, &cmd);
         switch (cmd)
         {
+        case COMMAND_NOP:
+            // No parameters.
+            break;
         case COMMAND_CREATE_NODE:
             dagbase::ConfigurationElement::readConfig(config, "nodeClass", &nodeClass);
             dagbase::ConfigurationElement::readConfig(config, "nodeName", &nodeName);
@@ -1323,6 +1327,9 @@ struct NodeEditorLiveScriptItem
     {
         switch (cmd)
         {
+        case COMMAND_NOP:
+            // Do nothing but allow assertions.
+            break;
         case COMMAND_CREATE_NODE:
         {
             auto status = sut.createNode(nodeClass, nodeName);
@@ -1399,6 +1406,7 @@ struct NodeEditorLiveScriptItem
         switch (value)
         {
             ENUM_NAME(COMMAND_UNKNOWN)
+            ENUM_NAME(COMMAND_NOP)
             ENUM_NAME(COMMAND_CREATE_NODE)
             ENUM_NAME(COMMAND_CONNECT)
             ENUM_NAME(COMMAND_DISCONNECT)
@@ -1413,6 +1421,7 @@ struct NodeEditorLiveScriptItem
     static Command parseCommand(const char* str)
     {
         TEST_ENUM(COMMAND_UNKNOWN, str);
+        TEST_ENUM(COMMAND_NOP, str);
         TEST_ENUM(COMMAND_CREATE_NODE, str);
         TEST_ENUM(COMMAND_CONNECT, str);
         TEST_ENUM(COMMAND_DISCONNECT, str);
@@ -1501,7 +1510,10 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing:
     std::make_tuple("etc/tests/NodeEditorLive/ConnectToIncompatible.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChildInNonRootGraph.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectMultipleInternals.lua"),
-    std::make_tuple("etc/tests/NodeEditorLive/SelectMultipleWithAnOnlyInternal.lua")
+    std::make_tuple("etc/tests/NodeEditorLive/SelectMultipleWithAnOnlyInternal.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/EmptySelection.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/SelectionSetEmpty.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/SelectionSetOne.lua")
 ));
 
 TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)
@@ -1587,42 +1599,6 @@ TEST(NodeEditorLiveTest, testCreateChildWithMultipleChildrenSucceeds)
     delete t2;
     delete t1;
     delete sut;
-}
-
-TEST(SelectionLiveTest, testComputeBoundaryOfEmptySetGivesEmptyOutputs)
-{
-    auto sut = new dag::SelectionLive();
-    dag::SelectionInterface::NodeArray inputs, outputs, internals;
-    sut->computeBoundaryNodes(&inputs, &outputs, &internals);
-    ASSERT_TRUE(inputs.empty());
-    ASSERT_TRUE(outputs.empty());
-    delete sut;
-}
-
-TEST(SelectionLiveTest, testComputeBoundaryOnNodeWithInputsAndOutputsGivesTheNode)
-{
-    auto graph = new dagbase::Graph();
-    dag::MemoryNodeLibrary nodeLib;
-    auto sut = new dag::SelectionLive();
-    auto g1 = dynamic_cast<dag::GroupTyped*>(nodeLib.instantiateNode(*graph, "GroupTyped", "group1"));
-    auto f1 = dynamic_cast<dag::FooTyped*>(nodeLib.instantiateNode(*graph, "FooTyped", "foo1"));
-    auto b1 = dynamic_cast<dag::BarTyped*>(nodeLib.instantiateNode(*graph, "BarTyped", "bar1"));
-    ASSERT_NE(nullptr, g1);
-    auto t1 = b1->out1()->connectTo(g1->in1());
-    auto t2 = g1->out1().connectTo(f1->in1());
-    sut->add(g1);
-    dag::SelectionInterface::NodeArray inputs, outputs, internals;
-    sut->computeBoundaryNodes(&inputs, &outputs, &internals);
-    ASSERT_FALSE(inputs.empty());
-    ASSERT_FALSE(outputs.empty());
-    ASSERT_FALSE(internals.empty());
-    delete t2;
-    delete t1;
-    delete b1;
-    delete f1;
-    delete g1;
-    delete sut;
-    delete graph;
 }
 
 TEST(BoundaryNode, testAddDynamicsPort)

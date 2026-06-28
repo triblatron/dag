@@ -300,10 +300,7 @@ namespace dag
             }
             else
             {
-                NodeArray inputs;
-                NodeArray outputs;
-                NodeArray internals;
-                _selection->computeBoundaryNodes(&inputs, &outputs, &internals);
+                const NodeArray& internals = _selection->internals();
                 auto child = new dagbase::Graph();
                 child->setNodeLibrary(_nodeLib);
                 // We create Nodes using the parent Graph for consistency of IDs.
@@ -312,8 +309,8 @@ namespace dag
 
 
                 // Use the root Graph as the KeyGenerator for unique IDs
-                _selection->reconnectInputs(inputs, boundaryInput, *_graph);
-                _selection->reconnectOutputs(outputs, boundaryOutput, *_graph);
+                _selection->reconnectInputs(boundaryInput, *_graph);
+                _selection->reconnectOutputs(boundaryOutput, *_graph);
 
                 child->addNode(boundaryInput);
                 child->addNode(boundaryOutput);
@@ -322,7 +319,6 @@ namespace dag
                 {
                     // Avoid double-free of node in both orignal and child Graph.
                     _activeGraph->removeNode(node);
-                    _activeGraph->removePortsForNode(node);
 
                     child->addNode(node);
                 }

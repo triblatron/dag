@@ -1,0 +1,37 @@
+root=
+{
+	items=
+	{
+		{
+			cmd="COMMAND_NOP",
+			assertions=
+			{
+				{
+					path="numSelectedNodes",
+					value=0,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="selection.inputs.size",
+					value=0,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="selection.outputs.size",
+					value=0,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="selection.internals.size",
+					value=0,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+	}
+}
+    
