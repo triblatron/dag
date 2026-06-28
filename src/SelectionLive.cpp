@@ -5,7 +5,7 @@
 #include "config/config.h"
 
 #include "SelectionLive.h"
-#include "../thirdparty/dagbase/include/core/Node.h"
+#include "core/Node.h"
 #include "SelectionInterface.h"
 
 #include <algorithm>
@@ -20,6 +20,7 @@ namespace dag
     void SelectionLive::add(Cont::iterator begin, Cont::iterator end)
     {
         _selection.m.insert(begin, end);
+        computeBoundaryNodes();
     }
 
     //! \note begin and end cannot be from _selection because each erase() would invalidate the iterators
@@ -34,6 +35,7 @@ namespace dag
                 _selection.m.erase(itFind);
             }
         }
+        computeBoundaryNodes();
     }
 
     void SelectionLive::set(Cont::iterator begin, Cont::iterator end)
@@ -47,7 +49,7 @@ namespace dag
     {
         for (auto it=begin; it!=end; ++it)
         {
-            auto itFind = std::find(_selection.begin(), _selection.end(), *it);
+            auto itFind = _selection.m.find(*it);
 
             if (itFind!=_selection.end())
             {
@@ -58,6 +60,7 @@ namespace dag
                 _selection.m.emplace(*it);
             }
         }
+        computeBoundaryNodes();
     }
 
     bool SelectionLive::isSelected(dagbase::Node *node)
@@ -198,6 +201,10 @@ namespace dag
             return retval;
 
         retval = dagbase::findInternal(path, "internals", _internals);
+        if (retval.has_value())
+            return retval;
+
+        retval = dagbase::findArray(path, _selection.m);
         if (retval.has_value())
             return retval;
 
