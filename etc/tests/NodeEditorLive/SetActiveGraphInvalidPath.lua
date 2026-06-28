@@ -1,0 +1,18 @@
+root=
+{
+	items=
+	{
+		{
+			cmd="COMMAND_SET_ACTIVE_GRAPH",
+			status=
+			{
+				statusCode="STATUS_OBJECT_NOT_FOUND",
+				resultType="RESULT_NONE",
+			},
+			path=
+			{
+				0
+			},
+		},
+	}
+}

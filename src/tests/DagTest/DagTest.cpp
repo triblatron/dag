@@ -1483,6 +1483,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
     std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/CreateChildFromEmptySelection.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectToIncompatible.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectToSelf.lua"),
@@ -1500,95 +1501,11 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing:
     std::make_tuple("etc/tests/NodeEditorLive/SelectionToggle.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectionAdd.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectionSubtract.lua"),
-    std::make_tuple("etc/tests/NodeEditorLive/SelectionClear.lua")
+    std::make_tuple("etc/tests/NodeEditorLive/SelectionClear.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/SetActiveGraphInvalidPath.lua")
 ));
 
-// TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)
-// {
-//     auto sut = new dag::NodeEditorLive();
-//     auto s1 = sut->createNode("GroupTyped", "group1");
-//     auto s2 = sut->createNode("FooTyped", "foo1");
-//     auto s3 = sut->createNode("BarTyped", "bar1");
-//     auto t1 = s3.result.node->dynamicPort(0)->connectTo(*s1.result.node->dynamicPort(1));
-//     ASSERT_EQ(std::size_t{ 1 }, s3.result.node->dynamicPort(0)->numOutgoingConnections());
-//     ASSERT_EQ(std::size_t{ 1 }, s1.result.node->dynamicPort(1)->numIncomingConnections());
-//     auto t2 = s1.result.node->dynamicPort(0)->connectTo(*s2.result.node->dynamicPort(0));
-//     ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
-//     ASSERT_EQ(dagbase::Status::RESULT_NODE, s1.resultType);
-//     ASSERT_NE(nullptr, s1.result.node);
-//     dag::SelectionInterface::Cont c;
-//     c.insert(s1.result.node);
-//     auto s4 = sut->select(dag::NodeEditorInterface::SELECTION_SET, c);
-//     ASSERT_EQ(size_t{1}, sut->selectionCount());
-//     auto actual = sut->createChild();
-//     ASSERT_EQ(dagbase::Status::STATUS_OK, actual.status);
-//     ASSERT_EQ(dagbase::Status::RESULT_GRAPH, actual.resultType);
-//     ASSERT_NE(nullptr, actual.result.graph);
-//     ASSERT_EQ(size_t{3}, actual.result.graph->numNodes());
-//     ASSERT_NE(nullptr, actual.result.graph->parent());
-//     sut->debug();
-//     delete t2;
-//     delete t1;
-//     delete sut;
-// }
-
-// void createNode(dag::NodeEditorInterface* sut, const char* className, const char* nodeName, dagbase::Node** node)
-// {
-//     auto s1 = sut->createNode(className, nodeName);
-//     ASSERT_EQ(dagbase::Status::STATUS_OK, s1.status);
-//     ASSERT_EQ(dagbase::Status::ResultType::RESULT_NODE, s1.resultType);
-//     ASSERT_NE(nullptr, s1.result.node);
-//     if (node != nullptr)
-//     {
-//         *node = s1.result.node;
-//     }
-// }
-//
-// template <typename T>
-// void createPort(dagbase::PortID id, dagbase::Node* parent, const char* name, dagbase::PortType::Type type, dagbase::PortDirection::Direction dir, T value)
-// {
-//     auto port = new dagbase::TypedPort<T>(id, parent, new dagbase::MetaPort(name, type, dir), value, dagbase::Port::OWN_META_PORT_BIT);
-//     parent->addDynamicPort(port);
-// }
-
-// TEST(NodeEditorLiveTest, testCreateChildWithMultipleChildrenSucceeds)
-// {
-//     auto sut = new dag::NodeEditorLive();
-//
-//     dagbase::Node* multi1 = nullptr;
-//     createNode(sut,"Final", "multi1", &multi1);
-//     createPort(0, multi1, "out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
-//     createPort(1, multi1, "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
-//     dagbase::Node* multi2 = nullptr;
-//     createNode(sut,"Final", "multi2", &multi2);
-//     createPort(2, multi2, "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
-//
-//     createPort(4, multi2, "out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 3.0);
-//     dagbase::Node* output1 = nullptr;
-//     createNode(sut, "BarTyped", "output1",&output1);
-//     auto t1 = output1->dynamicPort(0)->connectTo(*multi1->dynamicPort(4));
-//     auto t2 = multi1->dynamicPort(3)->connectTo(*multi2->dynamicPort(3));
-//     dagbase::Node* input1 = nullptr;
-//     createNode(sut, "FooTyped", "input1",&input1);
-//     auto t3 = multi2->dynamicPort(4)->connectTo(*input1->dynamicPort(0));
-//
-//     dag::SelectionInterface::Cont selection;
-//     selection.insert(multi1);
-//     selection.insert(multi2);
-//     sut->select(dag::NodeEditorInterface::SELECTION_SET, selection);
-//     auto s = sut->createChild();
-//     ASSERT_EQ(dagbase::Status::STATUS_OK, s.status);
-//     ASSERT_EQ(dagbase::Status::RESULT_GRAPH, s.resultType);
-//     ASSERT_NE(nullptr, s.result.graph);
-//     ASSERT_EQ(size_t{4}, s.result.graph->numNodes());
-//
-//     delete t3;
-//     delete t2;
-//     delete t1;
-//     delete sut;
-// }
-
-TEST(BoundaryNode, testAddDynamicsPort)
+TEST(BoundaryNode, testAddDynamicPort)
 {
     dag::MemoryNodeLibrary nodeLib;
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
