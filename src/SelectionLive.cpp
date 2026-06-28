@@ -63,9 +63,15 @@ namespace dag
         computeBoundaryNodes();
     }
 
+    void SelectionLive::clear()
+    {
+        _selection.m.clear();
+        computeBoundaryNodes();
+    }
+
     bool SelectionLive::isSelected(dagbase::Node *node)
     {
-        return std::find(_selection.begin(), _selection.end(), node) != _selection.end();
+        return _selection.m.find(node) != _selection.end();
     }
 
     void SelectionLive::add(dagbase::Node *node)

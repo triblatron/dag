@@ -99,6 +99,9 @@ namespace dag
             case SELECTION_TOGGLE:
                 _selection->toggle(a.begin(), a.end());
                 break;
+            case SELECTION_CLEAR:
+                _selection->clear();
+                break;
         }
         return status;
     }
@@ -125,9 +128,8 @@ namespace dag
     dagbase::Status NodeEditorLive::selectNone()
     {
         dagbase::Status status{dagbase::Status::STATUS_OK};
-        SelectionInterface::Cont s;
 
-        _selection->set(s.begin(), s.end());
+        _selection->clear();
 
         return status;
     }

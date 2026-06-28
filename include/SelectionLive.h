@@ -29,6 +29,8 @@ namespace dag
 
         void toggle(Cont::iterator begin, Cont::iterator end) override;
 
+        void clear() override;
+
         bool isSelected(dagbase::Node* node) override;
 
         const NodeArray& inputs() const

@@ -1472,7 +1472,8 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing:
     std::make_tuple("etc/tests/NodeEditorLive/SelectionReplaceOne.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectionToggle.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectionAdd.lua"),
-    std::make_tuple("etc/tests/NodeEditorLive/SelectionSubtract.lua")
+    std::make_tuple("etc/tests/NodeEditorLive/SelectionSubtract.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/SelectionClear.lua")
 ));
 
 TEST(NodeEditorLiveTest, testCreateChildWithSingleChildSucceeds)

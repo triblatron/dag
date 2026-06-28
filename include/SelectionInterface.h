@@ -41,6 +41,8 @@ namespace dag
 
         virtual void toggle(Cont::iterator begin, Cont::iterator end) = 0;
 
+        virtual void clear() = 0;
+
         virtual bool isSelected(dagbase::Node* node) = 0;
 
         virtual void reconnectInputs(dagbase::Node* newSource, dagbase::KeyGenerator& keyGen) = 0;
