@@ -63,4 +63,3 @@ INSTANTIATE_TEST_SUITE_P(PortType, PortType_testRoundTrip, ::testing::Values(
     std::make_tuple("TYPE_OPAQUE", dagbase::PortType::TYPE_OPAQUE),
     std::make_tuple("TYPE_VECTOR", dagbase::PortType::TYPE_VECTOR)
 ));
-

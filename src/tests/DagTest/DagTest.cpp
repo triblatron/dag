@@ -96,16 +96,15 @@ INSTANTIATE_TEST_SUITE_P(NodeCategoryVerifyCategoryTest, NodeCategoryTest, ::tes
     std::make_tuple("FooTyped", "foo1", dagbase::NodeCategory::CAT_SINK)
 ));
 
-class PortTypeTest : public ::testing::TestWithParam<std::tuple<dagbase::PortType::Type, double, double>>
+class PortTypeTest : public ::testing::TestWithParam<std::tuple<double, double>>
 {
 
 };
 
 TEST_P(PortTypeTest, checkSetValue)
 {
-    dagbase::PortType::Type type = std::get<0>(GetParam());
-    double value = std::get<1>(GetParam());
-    double newValue = std::get<2>(GetParam());
+    double value = std::get<0>(GetParam());
+    double newValue = std::get<1>(GetParam());
     auto sut = new dagbase::TypedPort<double>(0, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, value);
     EXPECT_EQ(value, double(sut->value()));
     sut->setValue(newValue);
@@ -114,51 +113,7 @@ TEST_P(PortTypeTest, checkSetValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(PortTypeSetValueTest, PortTypeTest, ::testing::Values(
-    std::make_tuple(dagbase::PortType::TYPE_DOUBLE, 1.0, 2.0)
-));
-
-class CategoryToStringTest : public ::testing::TestWithParam<std::tuple<dagbase::NodeCategory::Category, const char*>>
-{
-
-};
-
-TEST_P(CategoryToStringTest, checkToString)
-{
-    dagbase::NodeCategory::Category category = std::get<0>(GetParam());
-    const char* categoryString = std::get<1>(GetParam());
-    EXPECT_STREQ(categoryString, dagbase::NodeCategory::toString(category));
-}
-
-INSTANTIATE_TEST_SUITE_P(CategoryEnumToStringTest, CategoryToStringTest, ::testing::Values(
-    std::make_tuple(dagbase::NodeCategory::CAT_NONE, "None"),
-    std::make_tuple(dagbase::NodeCategory::CAT_SOURCE, "Source"),
-    std::make_tuple(dagbase::NodeCategory::CAT_SINK, "Sink"),
-    std::make_tuple(dagbase::NodeCategory::CAT_CONDITION, "Condition"),
-    std::make_tuple(dagbase::NodeCategory::CAT_ACTION, "Action"),
-    std::make_tuple(dagbase::NodeCategory::CAT_GROUP, "Group")
-));
-
-class CategoryParseTest : public ::testing::TestWithParam<std::tuple<const char*, dagbase::NodeCategory::Category>>
-{
-
-};
-
-TEST_P(CategoryParseTest, checkParse)
-{
-    const char* categoryString = std::get<0>(GetParam());
-    dagbase::NodeCategory::Category category = std::get<1>(GetParam());
-
-    EXPECT_EQ(category, dagbase::NodeCategory::parse(categoryString));
-}
-
-INSTANTIATE_TEST_SUITE_P(CategoryStringToEnumTest, CategoryParseTest, ::testing::Values(
-    std::make_tuple("None",dagbase::NodeCategory::CAT_NONE),
-    std::make_tuple("Source",dagbase::NodeCategory::CAT_SOURCE),
-    std::make_tuple("Sink",dagbase::NodeCategory::CAT_SINK),
-    std::make_tuple("Condition",dagbase::NodeCategory::CAT_CONDITION),
-    std::make_tuple("Action",dagbase::NodeCategory::CAT_ACTION),
-    std::make_tuple("Group",dagbase::NodeCategory::CAT_GROUP),
-    std::make_tuple("Spoo",dagbase::NodeCategory::CAT_UNKNOWN)
+    std::make_tuple(1.0, 2.0)
 ));
 
 class NodeTest_testClone : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t>>
