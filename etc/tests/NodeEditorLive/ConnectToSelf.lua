@@ -4,8 +4,8 @@ root=
 	{
 		{
 			cmd="COMMAND_CREATE_NODE",
-			nodeClass="Final",
-			nodeName="final1",
+			nodeClass="GroupTyped",
+			nodeName="group1",
 			assertions=
 			{
 				{
@@ -17,38 +17,24 @@ root=
 			},
 		},
 		{
-			cmd="COMMAND_CREATE_NODE",
-			nodeClass="BarTyped",
-			nodeName="bar1",
-			assertions=
-			{
-				{
-					path="graph.numNodes",
-					value=2,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-			},
-		},
-		{
 			cmd="COMMAND_CONNECT",
-			fromPort=2,
+			fromPort=0,
 			toPort=1,
 			status=
 			{
-				statusCode="STATUS_SYNTAX_ERROR",
-				resultType="RESULT_PORT",
+				statusCode="STATUS_CYCLE_DETECTED",
+				resultType="RESULT_NODE",
 			},
 			assertions=
 			{
 				{
-					path="graph.ports[2].direction",
+					path="graph.ports[0].direction",
 					value=2,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
 				{
-					path="graph.ports[2].numOutgoingConnections",
+					path="graph.ports[0].numOutgoingConnections",
 					value=0,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
