@@ -12,6 +12,7 @@
 #include "SelectionInterface.h"
 #include "core/SignalPath.h"
 #include "core/Transfer.h"
+#include "core/GraphNode.h"
 
 namespace dag
 {
@@ -337,7 +338,7 @@ namespace dag
 
                 for (auto node : internals)
                 {
-                    // Avoid double-free of node in both orignal and child Graph.
+                    // Avoid double-free of node in both original and child Graph.
                     _activeGraph->removeNode(node);
 
                     child->addNode(node);
@@ -345,9 +346,28 @@ namespace dag
 
                 _activeGraph->addChild(child);
 
-                status.status = dagbase::Status::STATUS_OK;
-                status.resultType = dagbase::Status::RESULT_GRAPH;
-                status.result = child;
+                if (auto graphNode = _graph->createNode("GraphNode", "child" + std::to_string(_graph->numChildren())); graphNode)
+                {
+                    // Add the inputs of the Boundary input and the outputs of the Boundary output
+                    for (std::size_t i=0; i<boundaryInput->totalPorts(); ++i)
+                    {
+                        if (boundaryInput->dynamicPort(i)->dir() == dagbase::PortDirection::DIR_IN)
+                        {
+                            graphNode->addDynamicPort(boundaryInput->dynamicPort(i));
+                        }
+                    }
+                    for (std::size_t i=0; i<boundaryOutput->totalPorts(); ++i)
+                    {
+                        if (boundaryOutput->dynamicPort(i)->dir() == dagbase::PortDirection::DIR_OUT)
+                        {
+                            graphNode->addDynamicPort(boundaryOutput->dynamicPort(i));
+                        }
+                    }
+                    _activeGraph->addNode(graphNode);
+                    status.status = dagbase::Status::STATUS_OK;
+                    status.resultType = dagbase::Status::RESULT_NODE_ID;
+                    status.result = graphNode->id();
+                }
             }
 
             return status;

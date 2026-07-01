@@ -175,11 +175,27 @@ root=
 			status=
 			{
 				statusCode="STATUS_OK",
-				resultType="RESULT_GRAPH",
+				resultType="RESULT_NODE_ID",
+				nodeID=5,
 			},
 			assertions=
 			{
-				-- See assertions in CreateChild.lua
+				{
+					path="activeGraph.numNodes",
+					value=3,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[1].class",
+					value="FooTyped",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[2].class",
+					value="BarTyped",
+					op="RELOP_EQ",
+				},
 			},
 		},
 		{
@@ -206,7 +222,7 @@ root=
 			{
 				statusCode="STATUS_OK",
 				resultType="RESULT_NODE_ID",
-				nodeID=5,
+				nodeID=6,
 			},
 			assertions=
 			{
@@ -226,7 +242,7 @@ root=
 			{
 				statusCode="STATUS_OK",
 				resultType="RESULT_NODE_ID",
-				nodeID=6,
+				nodeID=7,
 			},
 			assertions=
 			{
@@ -246,7 +262,7 @@ root=
 			{
 				statusCode="STATUS_OK",
 				resultType="RESULT_NODE_ID",
- 				nodeID=7,
+ 				nodeID=8,
 			},
 			assertions=
 			{
@@ -314,7 +330,7 @@ root=
 			cmd="COMMAND_SELECT",
 			selection=
 			{
-				5,
+				6,
 			},
 			selectionMode="SELECTION_SET",
 			assertions=
@@ -338,32 +354,33 @@ root=
 			status=
 			{
 				statusCode="STATUS_OK",
-				resultType="RESULT_GRAPH",
+				resultType="RESULT_NODE_ID",
+				nodeID=11,
 			},
 			assertions=
 			{
                 {
-                    path="activeGraph.nodes[5].class",
+                    path="activeGraph.nodes[6].class",
                     value="GroupTyped",
                     op="RELOP_EQ",
                 },
                 {
-                    path="activeGraph.nodes[6].class",
+                    path="activeGraph.nodes[7].class",
                     value="FooTyped",
                     op="RELOP_EQ",
                 },
                 {
-                    path="activeGraph.nodes[7].class",
+                    path="activeGraph.nodes[8].class",
                     value="BarTyped",
                     op="RELOP_EQ",
                 },
                 {
-                    path="activeGraph.children[0].nodes[8].class",
+                    path="activeGraph.children[0].nodes[9].class",
                     value="Boundary",
                     op="RELOP_EQ",
                 },
                 {
-                    path="activeGraph.children[0].nodes[9].class",
+                    path="activeGraph.children[0].nodes[10].class",
                     value="Boundary",
                     op="RELOP_EQ",
                 },
@@ -429,7 +446,7 @@ root=
 				},
 				{
 					path="activeGraph.numNodes",
-					value=5,
+					value=6,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},

@@ -17,7 +17,7 @@ namespace dag
 
         Boundary(const Boundary& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen);
 
-        Boundary(Boundary&& other);
+        Boundary(Boundary&& other) noexcept = default;
 
         explicit Boundary(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
 

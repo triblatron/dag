@@ -142,10 +142,40 @@ root=
 			status=
 			{
 				statusCode="STATUS_OK",
-				resultType="RESULT_GRAPH",
+				resultType="RESULT_NODE_ID",
+				nodeID=5,
 			},
 			assertions=
 			{
+				{
+					path="activeGraph.numNodes",
+					value=3,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[5].class",
+					value="GraphNode",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[5].totalPorts",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[5].dynamicPort[0].direction",
+					value=1, -- IN
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[5].dynamicPort[1].direction",
+					value=2, -- OUT
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
                 {
                     path="graph.nodes[0].class",
                     value="GroupTyped",
@@ -228,12 +258,6 @@ root=
 				{
 					path="graph.children[0].ports[7].numOutgoingConnections",
 					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.numNodes",
-					value=2,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},

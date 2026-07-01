@@ -15,6 +15,8 @@
 
 #include <cstring>
 
+#include "core/GraphNode.h"
+
 namespace dag
 {
     MemoryNodeLibrary::MemoryNodeLibrary()
@@ -29,6 +31,7 @@ namespace dag
         _classes["Final"] = new Final(*this, "final1", dagbase::NodeCategory::CAT_GROUP);
         _classes["Boundary"] = new Boundary(*this, "b1", dagbase::NodeCategory::CAT_GROUP);
         _classes["MathsNode"] = new MathsNode(*this, "maths1", dagbase::NodeCategory::CAT_ACTION);
+        _classes["GraphNode"] = new dagbase::GraphNode(*this, "graph1", dagbase::NodeCategory::CAT_GROUP);
     }
 
     MemoryNodeLibrary::~MemoryNodeLibrary()

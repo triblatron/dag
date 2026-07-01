@@ -1143,7 +1143,6 @@ struct NodeEditorLiveScriptItem
 
             break;
         case COMMAND_CREATE_CHILD:
-            status.resultType = dagbase::Status::RESULT_GRAPH;
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             // No parameters.
             break;
