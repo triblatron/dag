@@ -6,6 +6,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="GroupTyped",
 			nodeName="group1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=0,
+			},
 			assertions=
 			{
 				{
@@ -20,6 +26,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="FooTyped",
 			nodeName="foo1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=1,
+			},
 			assertions=
 			{
 				{
@@ -34,6 +46,12 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=0,
 			toPort=2,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+				signalPathID=0,
+			},
 			assertions=
 			{
 				{

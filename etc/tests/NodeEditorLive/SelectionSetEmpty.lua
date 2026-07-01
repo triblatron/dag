@@ -6,6 +6,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="GroupTyped",
 			nodeName="group1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=0,
+			},
 			assertions=
 			{
 				{
@@ -20,6 +26,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="GroupTyped",
 			nodeName="group2",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=1,
+			},
 			assertions=
 			{
 				{
@@ -34,6 +46,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="GroupTyped",
 			nodeName="group3",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=2,
+			},
 			assertions=
 			{
 				{
@@ -48,6 +66,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="FooTyped",
 			nodeName="foo1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=3,
+			},
 			assertions=
 			{
 				{
@@ -62,6 +86,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="BarTyped",
 			nodeName="bar1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=4,
+			},
 			assertions=
 			{
 				{
@@ -76,6 +106,12 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=0,
 			toPort=3,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+ 				signalPathID=0,
+			},
 			assertions=
 			{
 				{
@@ -96,6 +132,12 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=2,
 			toPort=5,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+ 				signalPathID=1,
+			},
 			assertions=
 			{
 				{
@@ -116,6 +158,12 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=4,
 			toPort=6,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+ 				signalPathID=2,
+			},
 			assertions=
 			{
 				{
@@ -136,6 +184,12 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=7,
 			toPort=1,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+ 				signalPathID=3,
+			},
 			assertions=
 			{
 				{
@@ -147,6 +201,43 @@ root=
 				{
 					path="activeGraph.ports[1].numIncomingConnections",
 					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
+			cmd="COMMAND_SELECT",
+			selection=
+			{
+				0,
+				1,
+				2,
+			},
+			selectionMode="SELECTION_SET",
+			assertions=
+			{
+				{
+					path="numSelectedNodes",
+					value=3,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="selection.inputs.size",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="selection.outputs.size",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="selection.internals.size",
+					value=3,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},

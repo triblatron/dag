@@ -6,6 +6,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="GroupTyped",
 			nodeName="group1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=0,
+			},
 			assertions=
 			{
 				{
@@ -20,6 +26,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="FooTyped",
 			nodeName="foo1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=1,
+			},
 			assertions=
 			{
 				{
@@ -34,6 +46,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="BarTyped",
 			nodeName="bar1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=2,
+			},
 			assertions=
 			{
 				{
@@ -48,6 +66,12 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=3,
 			toPort=1,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+				signalPathID=0,
+			},
 			assertions=
 			{
 				{
@@ -68,6 +92,12 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=0,
 			toPort=2,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+				signalPathID=1,
+			},
 			assertions=
 			{
 				{
@@ -142,6 +172,11 @@ root=
 		},
 		{
 			cmd="COMMAND_CREATE_CHILD",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_GRAPH",
+			},
 			assertions=
 			{
 				-- See assertions in CreateChild.lua
@@ -167,6 +202,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="GroupTyped",
 			nodeName="group1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=5,
+			},
 			assertions=
 			{
 				{
@@ -181,6 +222,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="FooTyped",
 			nodeName="foo1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=6,
+			},
 			assertions=
 			{
 				{
@@ -195,6 +242,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="BarTyped",
 			nodeName="bar1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=7,
+			},
 			assertions=
 			{
 				{
@@ -209,6 +262,12 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=8+3,
 			toPort=8+1,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+				signalPathID=2,
+			},
 			assertions=
 			{
 				{
@@ -229,6 +288,12 @@ root=
 			cmd="COMMAND_CONNECT",
 			fromPort=8+0,
 			toPort=8+2,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+				signalPathID=3,
+			},
 			assertions=
 			{
 				{
@@ -270,6 +335,11 @@ root=
 		},
 		{
 			cmd="COMMAND_CREATE_CHILD",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_GRAPH",
+			},
 			assertions=
 			{
                 {

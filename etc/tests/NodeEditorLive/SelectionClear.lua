@@ -6,6 +6,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="GroupTyped",
 			nodeName="group1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=0,
+			},
 			assertions=
 			{
 				{
@@ -20,6 +26,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="GroupTyped",
 			nodeName="group2",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=1,
+			},
 			assertions=
 			{
 				{
@@ -34,6 +46,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="GroupTyped",
 			nodeName="group3",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=2,
+			},
 			assertions=
 			{
 				{
@@ -48,6 +66,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="FooTyped",
 			nodeName="foo1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=3,
+			},
 			assertions=
 			{
 				{
@@ -62,91 +86,17 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="BarTyped",
 			nodeName="bar1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=4,
+			},
 			assertions=
 			{
 				{
 					path="graph.numNodes",
 					value=5,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-			},
-		},
-		{
-			cmd="COMMAND_CONNECT",
-			fromPort=0,
-			toPort=3,
-			assertions=
-			{
-				{
-					path="activeGraph.ports[0].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.ports[3].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-			},
-		},
-		{
-			cmd="COMMAND_CONNECT",
-			fromPort=2,
-			toPort=5,
-			assertions=
-			{
-				{
-					path="activeGraph.ports[2].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.ports[5].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-			},
-		},
-		{
-			cmd="COMMAND_CONNECT",
-			fromPort=4,
-			toPort=6,
-			assertions=
-			{
-				{
-					path="activeGraph.ports[4].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.ports[6].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-			},
-		},
-		{
-			cmd="COMMAND_CONNECT",
-			fromPort=7,
-			toPort=1,
-			assertions=
-			{
-				{
-					path="activeGraph.ports[7].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.ports[1].numIncomingConnections",
-					value=1,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},

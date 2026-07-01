@@ -6,6 +6,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="Final",
 			nodeName="final1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=0,
+			},
 			assertions=
 			{
 				{
@@ -20,6 +26,12 @@ root=
 			cmd="COMMAND_CREATE_NODE",
 			nodeClass="BarTyped",
 			nodeName="bar1",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=1,
+			},
 			assertions=
 			{
 				{
@@ -38,6 +50,7 @@ root=
 			{
 				statusCode="STATUS_SYNTAX_ERROR",
 				resultType="RESULT_PORT_ID",
+				portID=2,
 			},
 			assertions=
 			{
