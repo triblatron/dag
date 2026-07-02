@@ -84,7 +84,7 @@ namespace dag
             }
         }
 
-        void debug(dagbase::DebugPrinter& printer) const;
+        void debug(dagbase::DebugPrinter& printer) const override;
     private:
         typedef std::vector<dagbase::MetaPort> MetaPortArray;
         MetaPortArray _dynamicMetaPorts;

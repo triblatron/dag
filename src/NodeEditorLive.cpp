@@ -346,8 +346,10 @@ namespace dag
 
                 _activeGraph->addChild(child);
 
-                if (auto graphNode = _graph->createNode("GraphNode", "child" + std::to_string(_graph->numChildren())); graphNode)
+                if (auto graphNode = dynamic_cast<dagbase::GraphNode*>(_graph->createNode("GraphNode", "child" + std::to_string(_graph->numChildren()))); graphNode)
                 {
+                    graphNode->setGraph(child);
+                    
                     // Add the inputs of the Boundary input and the outputs of the Boundary output
                     for (std::size_t i=0; i<boundaryInput->totalPorts(); ++i)
                     {
