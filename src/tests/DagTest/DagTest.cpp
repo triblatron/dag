@@ -1229,11 +1229,8 @@ struct NodeEditorLiveScriptItem
 
         ASSERT_EQ(status.status, actualStatus.status)  << commandToString(cmd) << ":Expected a status of " << dagbase::Status::statusCodeToString(status.status) << ", got " << dagbase::Status::statusCodeToString(actualStatus.status);
         ASSERT_EQ(status.resultType, actualStatus.resultType) << commandToString(cmd) << ":Expected a resultType of " << dagbase::Status::resultTypeToString(status.resultType) << ", got " << dagbase::Status::resultTypeToString(actualStatus.resultType);
-        if (status.resultType == dagbase::Status::RESULT_GRAPH && status.status == dagbase::Status::STATUS_OK)
-            ASSERT_NE(nullptr, std::get<dagbase::Graph*>(actualStatus.result.value()));
-        else
-            ASSERT_EQ(status.result, actualStatus.result) << commandToString(cmd);
-        for (auto a : assertions)
+        ASSERT_EQ(status.result, actualStatus.result) << commandToString(cmd);
+        for (const auto& a : assertions)
         {
             a.makeItSo(sut);
         }
