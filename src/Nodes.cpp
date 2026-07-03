@@ -11,22 +11,22 @@ namespace dag
 {
     std::array<dagbase::MetaPort,1> Base::ports =
             {
-                    dagbase::MetaPort{true}
+                    dagbase::MetaPort{dagbase::MetaPort::FLAGS_OWN_BIT}
             };
 
     std::array<dagbase::MetaPort, 1> Derived::ports =
             {
-                    dagbase::MetaPort(true)
+                    dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT)
             };
 
     std::array<dagbase::MetaPort, 1> Final::ports=
             {
-                    dagbase::MetaPort(true)
+                    dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT)
             };
 
     std::array<dagbase::MetaPort, 1> FooTyped::ports =
             {
-                    dagbase::MetaPort(true)
+                    dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT)
             };
 
     FooTyped *FooTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
@@ -107,7 +107,7 @@ namespace dag
 
     std::array<dagbase::MetaPort, 1> BarTyped::ports =
             {
-                    dagbase::MetaPort(true)
+                    dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT)
             };
 
     BarTyped *BarTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
@@ -186,8 +186,8 @@ namespace dag
 
     std::array<dagbase::MetaPort, 2> GroupTyped::ports =
             {
-                    dagbase::MetaPort(true),
-                    dagbase::MetaPort(true)
+                    dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT),
+                    dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT)
             };
 
     GroupTyped::GroupTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)

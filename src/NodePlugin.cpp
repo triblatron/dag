@@ -96,12 +96,12 @@ public:
         return nullptr;
     }
 
-    void addDynamicPort(dagbase::Port* port) override
+    void addDynamicPort(dagbase::Port* port, dagbase::MetaPort::Flags flags) override
     {
         if (port != nullptr)
         {
             _dynamicPorts.emplace_back(port);
-            _dynamicMetaPorts.emplace_back(true);
+            _dynamicMetaPorts.emplace_back(flags);
         }
     }
     

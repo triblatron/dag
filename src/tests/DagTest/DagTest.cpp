@@ -547,7 +547,7 @@ TEST(NodeTest, testDynamicsPortDescriptorsForFinal)
     dag::MemoryNodeLibrary nodeLib;
     auto const sut = dynamic_cast<dag::Final*>(nodeLib.instantiateNode(nodeLib, "Final", "final1"));
     ASSERT_NE(nullptr, sut);
-    sut->addDynamicPort(new dagbase::TypedPort<double>(0, "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0));
+    sut->addDynamicPort(new dagbase::TypedPort<double>(0, "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
     ASSERT_NE(nullptr, sut->dynamicMetaPort(2));
     ASSERT_EQ("int1", sut->dynamicPort(2)->name());
     ASSERT_TRUE(sut->dynamicMetaPort(2)->isOwned());
@@ -568,7 +568,7 @@ TEST_P(NodeTestDynamicPortsForNode, testDynamicPortsForFinal)
     dag::MemoryNodeLibrary nodeLib;
     auto const sut = nodeLib.instantiateNode(nodeLib, className, "node1");
     ASSERT_NE(nullptr, sut);
-    sut->addDynamicPort(new dagbase::TypedPort<double>(0, "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0));
+    sut->addDynamicPort(new dagbase::TypedPort<double>(0, "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
     auto const actualPort = sut->dynamicPort(index);
     ASSERT_NE(nullptr, actualPort);
     ASSERT_EQ(nodeName, actualPort->name());
@@ -1366,7 +1366,7 @@ TEST(BoundaryNode, testAddDynamicPort)
     dag::MemoryNodeLibrary nodeLib;
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
     auto input = new dagbase::TypedPort<double>(0, nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0, dagbase::Port::OWN_META_PORT_BIT);
-    ASSERT_NO_THROW(sut->addDynamicPort(input));
+    ASSERT_NO_THROW(sut->addDynamicPort(input, dagbase::MetaPort::FLAGS_OWN_BIT));
     ASSERT_EQ(sut, input->parent());
     ASSERT_EQ(size_t{1}, sut->totalPorts());
     ASSERT_EQ(input, sut->dynamicPort(0));
@@ -1380,7 +1380,7 @@ TEST(BoundaryNode, testClone)
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
     auto metaPort = new dagbase::MetaPort();
     auto input = new dagbase::TypedPort<double>(0, nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0, dagbase::Port::OWN_META_PORT_BIT);
-    ASSERT_NO_THROW(sut->addDynamicPort(input));
+    ASSERT_NO_THROW(sut->addDynamicPort(input, dagbase::MetaPort::FLAGS_OWN_BIT));
     dagbase::CloningFacility facility;
     auto clone = sut->clone(facility, dagbase::CopyOp{0}, nullptr);
     ASSERT_EQ(size_t{1},sut->totalPorts());

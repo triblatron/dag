@@ -68,13 +68,14 @@ namespace dag
             return _dynamicPorts.size();
         }
 
-        void addDynamicPort(dagbase::Port* port) override
+        void addDynamicPort(dagbase::Port* port, dagbase::MetaPort::Flags flags) override
         {
             if (port != nullptr)
             {
                 port->setParent(this);
                 _dynamicPorts.emplace_back(port);
                 dagbase::MetaPort desc;
+                desc.flags = flags;
                 _dynamicMetaPorts.emplace_back(desc);
             }
         }

@@ -11,9 +11,9 @@ namespace dag
 {
     std::array<dagbase::MetaPort,3> MathsNode::ports =
             {
-                    dagbase::MetaPort{true},
-                    dagbase::MetaPort(true),
-                    dagbase::MetaPort(true)
+                    dagbase::MetaPort{dagbase::MetaPort::FLAGS_OWN_BIT},
+                    dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT),
+                    dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT)
             };
 
     bool MathsNode::equals(const Node &other) const

@@ -513,7 +513,7 @@ static void BM_VirtualPortArray(benchmark::State& state)
     auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto sut = dynamic_cast<dag::Final*>(g->createNode("Final", "final1"));
-    sut->addDynamicPort(new dagbase::TypedPort<double>(nodeLib.nextPortID(), nullptr, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0));
+    sut->addDynamicPort(new dagbase::TypedPort<double>(nodeLib.nextPortID(), nullptr, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
 
     for (auto _ : state)
     {
@@ -532,7 +532,7 @@ static void BM_VirtualMetaPortArray(benchmark::State& state)
     auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto sut = dynamic_cast<dag::Final*>(g->createNode("Final", "final1"));
-    sut->addDynamicPort(new dagbase::TypedPort<double>(nodeLib.nextPortID(), nullptr, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0));
+    sut->addDynamicPort(new dagbase::TypedPort<double>(nodeLib.nextPortID(), nullptr, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
     std::int64_t i = 0;
 
     for (auto _ : state)

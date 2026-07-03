@@ -193,7 +193,7 @@ namespace dag
             return new Final(*this, facility, copyOp, keyGen);
         }
 
-        void addDynamicPort(dagbase::Port* port) override
+        void addDynamicPort(dagbase::Port* port, dagbase::MetaPort::Flags flags) override
         {
             if (port != nullptr)
             {

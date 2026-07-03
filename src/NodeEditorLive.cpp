@@ -349,20 +349,20 @@ namespace dag
                 if (auto graphNode = dynamic_cast<dagbase::GraphNode*>(_graph->createNode("GraphNode", "child" + std::to_string(_graph->numChildren()))); graphNode)
                 {
                     graphNode->setGraph(child);
-                    
+
                     // Add the inputs of the Boundary input and the outputs of the Boundary output
                     for (std::size_t i=0; i<boundaryInput->totalPorts(); ++i)
                     {
                         if (boundaryInput->dynamicPort(i)->dir() == dagbase::PortDirection::DIR_IN)
                         {
-                            graphNode->addDynamicPort(boundaryInput->dynamicPort(i));
+                            graphNode->addDynamicPort(boundaryInput->dynamicPort(i), dagbase::MetaPort::FLAGS_NONE);
                         }
                     }
                     for (std::size_t i=0; i<boundaryOutput->totalPorts(); ++i)
                     {
                         if (boundaryOutput->dynamicPort(i)->dir() == dagbase::PortDirection::DIR_OUT)
                         {
-                            graphNode->addDynamicPort(boundaryOutput->dynamicPort(i));
+                            graphNode->addDynamicPort(boundaryOutput->dynamicPort(i), dagbase::MetaPort::FLAGS_NONE);
                         }
                     }
                     _activeGraph->addNode(graphNode);
