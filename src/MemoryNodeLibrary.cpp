@@ -1,8 +1,9 @@
 #include "config/config.h"
 
 #include "MemoryNodeLibrary.h"
-#include "../thirdparty/dagbase/include/core/Node.h"
-#include "../thirdparty/dagbase/include/core/TypedPort.h"
+#include "core/Node.h"
+#include "core/TypedPort.h"
+#include "core/CloningFacility.h"
 
 #include <stdexcept>
 
@@ -11,7 +12,6 @@
 #include "Nodes.h"
 #include "Boundary.h"
 #include "MathNode.h"
-#include "../thirdparty/dagbase/include/core/CloningFacility.h"
 
 #include <cstring>
 

@@ -19,9 +19,9 @@ namespace dag
         :
         Node(keyGen, name, category)
         {
-            _angle = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 0.0);
-            _unit = new dagbase::TypedPort<std::int64_t>(keyGen.nextPortID(), this, &ports[1], 0);
-            _output = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[2], 0.0);
+            _angle = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, "angle", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0);
+            _unit = new dagbase::TypedPort<std::int64_t>(keyGen.nextPortID(), this, "unit", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL, 0);
+            _output = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, "output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 0.0);
         }
 
         MathsNode(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);

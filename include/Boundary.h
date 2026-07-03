@@ -77,9 +77,6 @@ namespace dag
                 port->setParent(this);
                 _dynamicPorts.emplace_back(port);
                 dagbase::MetaPort desc;
-                desc.name = port->name();
-                desc.type = port->type();
-                desc.direction = port->dir();
                 _dynamicMetaPorts.emplace_back(desc);
             }
         }

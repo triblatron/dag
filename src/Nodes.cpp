@@ -11,22 +11,22 @@ namespace dag
 {
     std::array<dagbase::MetaPort,1> Base::ports =
             {
-                    dagbase::MetaPort{"direction",dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT}
+                    dagbase::MetaPort{true}
             };
 
     std::array<dagbase::MetaPort, 1> Derived::ports =
             {
-                    dagbase::MetaPort("trigger", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_IN)
+                    dagbase::MetaPort(true)
             };
 
     std::array<dagbase::MetaPort, 1> Final::ports=
             {
-                    dagbase::MetaPort("int1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL)
+                    dagbase::MetaPort(true)
             };
 
     std::array<dagbase::MetaPort, 1> FooTyped::ports =
             {
-                    dagbase::MetaPort("in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN)
+                    dagbase::MetaPort(true)
             };
 
     FooTyped *FooTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
@@ -107,7 +107,7 @@ namespace dag
 
     std::array<dagbase::MetaPort, 1> BarTyped::ports =
             {
-                    dagbase::MetaPort("out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT)
+                    dagbase::MetaPort(true)
             };
 
     BarTyped *BarTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
@@ -186,8 +186,8 @@ namespace dag
 
     std::array<dagbase::MetaPort, 2> GroupTyped::ports =
             {
-                    dagbase::MetaPort("out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT),
-                    dagbase::MetaPort("in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN)
+                    dagbase::MetaPort(true),
+                    dagbase::MetaPort(true)
             };
 
     GroupTyped::GroupTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
@@ -283,12 +283,7 @@ namespace dag
         descriptor.id = id();
         descriptor.name = name();
         descriptor.category = category();
-        dagbase::MetaPort portDescriptor;
-        //portDescriptor.id = _direction.id();
-        portDescriptor.name = _direction->name();
-        portDescriptor.type = _direction->type();
-        portDescriptor.direction = _direction->dir();
-        descriptor.ports.emplace_back(portDescriptor);
+        descriptor.ports.emplace_back(true);
     }
 
     dagbase::Node *Base::create(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)

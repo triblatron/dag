@@ -29,7 +29,7 @@ namespace dag
                 :
                 Node(keyGen, name, category),
                 int1(0.0),
-                _direction(new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0))
+                _direction(new dagbase::TypedPort<double>(keyGen.nextPortID(), this, "direction", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0))
         {
             // Do nothing.
         }
@@ -101,7 +101,7 @@ namespace dag
         Derived(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Base(keyGen, name,category),
-                _trigger(new dagbase::TypedPort<bool>(keyGen.nextPortID(), this, &ports[0], true))
+                _trigger(new dagbase::TypedPort<bool>(keyGen.nextPortID(), this, "trigger", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_IN, true))
         {
             // Do nothing.
         }
@@ -171,7 +171,7 @@ namespace dag
         Final(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Derived(keyGen, name,category),
-                _int1(keyGen.nextPortID(), this, &ports[0], 1)
+                _int1(keyGen.nextPortID(), this, "int1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL, 1)
         {
             // Do nothing.
         }
@@ -179,7 +179,7 @@ namespace dag
         Final(const Final& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
                 Derived(other, facility, copyOp, keyGen),
-                _int1(other._int1.id(), this, &ports[0], other._int1.value())
+                _int1(other._int1.id(), this, other._int1.name(), other._int1.type(), other._int1.dir(), other._int1.value())
         {
             // Do nothing.
         }
@@ -203,9 +203,6 @@ namespace dag
             {
                 _dynamicPorts.emplace_back(port);
                 dagbase::MetaPort desc;
-                desc.name = port->name();
-                desc.type = port->type();
-                desc.direction = port->dir();
                 _dynamicMetaPorts.emplace_back(desc);
             }
         }
@@ -277,7 +274,7 @@ namespace dag
                 :
                 Node(keyGen, name, category)
         {
-            _in1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
+            _in1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0);
         }
 
         FooTyped(const FooTyped& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
@@ -319,7 +316,7 @@ namespace dag
         void describeNode(dagbase::NodeDescriptor& descriptor) const override
         {
             Node::describeNode(descriptor);
-            descriptor.ports.emplace_back(_in1->name(), _in1->type(), _in1->dir());
+            descriptor.ports.emplace_back(true);
         }
 
         dagbase::TypedPort<double>& in1()
@@ -374,7 +371,7 @@ namespace dag
                 :
                 Node(keyGen, name, category)
         {
-            _out1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
+            _out1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, "out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
         }
 
         BarTyped(const BarTyped& other,dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
@@ -418,7 +415,7 @@ namespace dag
             Node::describeNode(descriptor);
             if (_out1 != nullptr)
             {
-                descriptor.ports.emplace_back(_out1->name(), _out1->type(), _out1->dir());
+                descriptor.ports.emplace_back(true);
             }
         }
 
@@ -473,8 +470,8 @@ namespace dag
                 :
                 Node(keyGen, name, category)
         {
-            _out1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[0], 1.0);
-            _in1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, &ports[1], 2.0);
+            _out1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, "out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
+            _in1 = new dagbase::TypedPort<double>(keyGen.nextPortID(), this, "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
         }
 
         GroupTyped(const GroupTyped& other,dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
@@ -528,11 +525,11 @@ namespace dag
             dagbase::Node::describeNode(descriptor);
             if (_out1)
             {
-                descriptor.ports.emplace_back(_out1->name(), _out1->type(), _out1->dir());
+                descriptor.ports.emplace_back(true);
             }
             if (_in1)
             {
-                descriptor.ports.emplace_back(_in1->name(), _in1->type(), _in1->dir());
+                descriptor.ports.emplace_back(true);
             }
         }
 

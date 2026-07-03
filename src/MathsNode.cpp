@@ -11,9 +11,9 @@ namespace dag
 {
     std::array<dagbase::MetaPort,3> MathsNode::ports =
             {
-                    dagbase::MetaPort{"angle",dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN},
-                    dagbase::MetaPort("unit", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL),
-                    dagbase::MetaPort("output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT)
+                    dagbase::MetaPort{true},
+                    dagbase::MetaPort(true),
+                    dagbase::MetaPort(true)
             };
 
     bool MathsNode::equals(const Node &other) const
@@ -39,18 +39,9 @@ namespace dag
         descriptor.name = name();
         descriptor.category = category();
         dagbase::MetaPort portDescriptor;
-        portDescriptor.name = _angle->name();
-        portDescriptor.type = _angle->type();
-        portDescriptor.direction = _angle->dir();
-        descriptor.ports.emplace_back(portDescriptor);
-        portDescriptor.name = _unit->name();
-        portDescriptor.type = _unit->type();
-        portDescriptor.direction = _unit->dir();
-        descriptor.ports.emplace_back(portDescriptor);
-        portDescriptor.name = _output->name();
-        portDescriptor.type = _output->type();
-        portDescriptor.direction = _output->dir();
-        descriptor.ports.emplace_back(portDescriptor);
+        descriptor.ports.emplace_back(true);
+        descriptor.ports.emplace_back(true);
+        descriptor.ports.emplace_back(true);
     }
 
     const dagbase::MetaPort *MathsNode::dynamicMetaPort(size_t index) const
