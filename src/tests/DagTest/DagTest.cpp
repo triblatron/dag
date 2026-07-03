@@ -537,9 +537,9 @@ TEST(NodeTest, testDynamicPortDescriptorReturnsStaticPortsInRange)
     auto const sut = dynamic_cast<dag::Final*>(nodeLib.instantiateNode(nodeLib, "Final", "final1"));
     ASSERT_NE(nullptr, sut);
     ASSERT_NE(nullptr, sut->dynamicMetaPort(0));
-    ASSERT_TRUE(sut->dynamicMetaPort(0)->isOwned);
+    ASSERT_TRUE(sut->dynamicMetaPort(0)->isOwned());
     ASSERT_NE(nullptr, sut->dynamicMetaPort(1));
-    ASSERT_TRUE(sut->dynamicMetaPort(1)->isOwned);
+    ASSERT_TRUE(sut->dynamicMetaPort(1)->isOwned());
     delete sut;
 }
 
@@ -551,7 +551,7 @@ TEST(NodeTest, testDynamicsPortDescriptorsForFinal)
     sut->addDynamicPort(new dagbase::TypedPort<double>(0, "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0));
     ASSERT_NE(nullptr, sut->dynamicMetaPort(2));
     ASSERT_EQ("int1", sut->dynamicPort(2)->name());
-    ASSERT_TRUE(sut->dynamicMetaPort(2)->isOwned);
+    ASSERT_TRUE(sut->dynamicMetaPort(2)->isOwned());
     ASSERT_EQ(size_t{ 4 }, sut->totalPorts());
     delete sut;
 }
@@ -575,7 +575,7 @@ TEST_P(NodeTestDynamicPortsForNode, testDynamicPortsForFinal)
     ASSERT_EQ(nodeName, actualPort->name());
     auto const actualDescriptor = sut->dynamicMetaPort(index);
     ASSERT_NE(nullptr, actualDescriptor);
-    ASSERT_TRUE(actualDescriptor->isOwned);
+    ASSERT_TRUE(actualDescriptor->isOwned());
     delete sut;
 }
 
@@ -605,7 +605,7 @@ TEST_P(NodeTestDynamicPortDescriptorForNode, testDynamicPortDescriptor)
     ASSERT_EQ(nodeName, actualPort->name());
     auto const actualDescriptor = sut->dynamicMetaPort(index);
     ASSERT_NE(nullptr, actualDescriptor);
-    ASSERT_TRUE(actualDescriptor->isOwned);
+    ASSERT_TRUE(actualDescriptor->isOwned());
     delete sut;
 }
 

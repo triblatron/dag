@@ -556,7 +556,7 @@ static void BM_VirtualMetaPortArray(benchmark::State& state)
     {
         auto descriptor = sut->dynamicMetaPort(3);
 
-        i += descriptor->isOwned;
+        i += descriptor->isOwned();
     }
     delete g;
 }
