@@ -9,7 +9,6 @@
 #include "core/Types.h"
 #include "core/KeyGenerator.h"
 #include "core/CloningFacility.h"
-#include "core/Editable.h"
 
 #include <string>
 #include <array>
@@ -381,7 +380,7 @@ namespace dag
             std::uint64_t out1Id = 0;
             if (facility.putOrig(other._out1, &out1Id))
             {
-                _out1 = new dagbase::TypedPort<double>(*other._out1, facility, copyOp, keyGen);
+                _out1 = new dagbase::TypedPort(*other._out1, facility, copyOp, keyGen);
             }
             else
             {
