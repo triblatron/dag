@@ -37,9 +37,6 @@ namespace dag
         //! \return The name of the class without SWIG mangling
         [[nodiscard]]const char* className() const override;
 
-        //! Describe ourself
-        void describeNode(dagbase::NodeDescriptor& descriptor) const override;
-
         //! \return A MetaPort corresponding to a given index.
         //! \param[in] The index of the port, zero-based.
         [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override;

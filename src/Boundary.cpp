@@ -15,11 +15,6 @@ namespace dag
         // Do nothing.
     }
 
-    void Boundary::describeNode(dagbase::NodeDescriptor &descriptor) const
-    {
-
-    }
-
     Boundary::Boundary(const Boundary &other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
     :
     Node(other, facility, copyOp, keyGen)

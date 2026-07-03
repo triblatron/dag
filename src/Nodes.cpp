@@ -278,14 +278,6 @@ namespace dag
         printer.outdent();
     }
 
-    void Base::describeNode(dagbase::NodeDescriptor& descriptor) const
-    {
-        descriptor.id = id();
-        descriptor.name = name();
-        descriptor.category = category();
-        descriptor.ports.emplace_back(true);
-    }
-
     dagbase::Node *Base::create(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
     {
         return new Base(str, nodeLib, lua);

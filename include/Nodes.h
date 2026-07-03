@@ -4,7 +4,6 @@
 
 #include "core/Node.h"
 #include "core/TypedPort.h"
-#include "core/NodeDescriptor.h"
 #include "core/MetaPort.h"
 #include "core/Types.h"
 #include "core/KeyGenerator.h"
@@ -52,8 +51,6 @@ namespace dag
         dagbase::Node* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override;
 
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
-
-        void describeNode(dagbase::NodeDescriptor& descriptor) const override;
 
         double int1;
 
@@ -312,12 +309,6 @@ namespace dag
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
-        void describeNode(dagbase::NodeDescriptor& descriptor) const override
-        {
-            Node::describeNode(descriptor);
-            descriptor.ports.emplace_back(true);
-        }
-
         dagbase::TypedPort<double>& in1()
         {
             return *_in1;
@@ -408,15 +399,6 @@ namespace dag
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
-
-        void describeNode(dagbase::NodeDescriptor& descriptor) const override
-        {
-            Node::describeNode(descriptor);
-            if (_out1 != nullptr)
-            {
-                descriptor.ports.emplace_back(true);
-            }
-        }
 
         dagbase::TypedPort<double>* out1()
         {
@@ -518,19 +500,6 @@ namespace dag
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
-
-        void describeNode(dagbase::NodeDescriptor& descriptor) const override
-        {
-            dagbase::Node::describeNode(descriptor);
-            if (_out1)
-            {
-                descriptor.ports.emplace_back(true);
-            }
-            if (_in1)
-            {
-                descriptor.ports.emplace_back(true);
-            }
-        }
 
         dagbase::TypedPort<double>& out1()
         {

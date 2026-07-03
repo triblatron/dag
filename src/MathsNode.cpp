@@ -4,7 +4,7 @@
 #include "config/config.h"
 
 #include "MathNode.h"
-#include "../thirdparty/dagbase/include/core/NodeDescriptor.h"
+
 #include <cmath>
 
 namespace dag
@@ -31,17 +31,6 @@ namespace dag
     const char *MathsNode::className() const
     {
         return "MathsNode";
-    }
-
-    void MathsNode::describeNode(dagbase::NodeDescriptor &descriptor) const
-    {
-        descriptor.id = id();
-        descriptor.name = name();
-        descriptor.category = category();
-        dagbase::MetaPort portDescriptor;
-        descriptor.ports.emplace_back(true);
-        descriptor.ports.emplace_back(true);
-        descriptor.ports.emplace_back(true);
     }
 
     const dagbase::MetaPort *MathsNode::dynamicMetaPort(size_t index) const

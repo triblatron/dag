@@ -6,7 +6,6 @@
 
 #include "core/NodeLibrary.h"
 #include "core/Node.h"
-#include "core/NodeDescriptor.h"
 #include "io/InputStream.h"
 #include "io/OutputStream.h"
 #include "NodePlugin.h"
@@ -85,14 +84,6 @@ public:
     [[nodiscard]] const char* className() const override
     {
         return "NodePlugin.DynamicNode";
-    }
-
-    void describeNode(dagbase::NodeDescriptor& descriptor) const override
-    {
-        descriptor.id = id();
-        descriptor.category = category();
-        descriptor.name = name();
-        //descriptor.ports
     }
 
     [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override

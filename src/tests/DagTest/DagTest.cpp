@@ -7,7 +7,6 @@
 #include "MemoryNodeLibrary.h"
 #include "Nodes.h"
 #include "core/NodeCategory.h"
-#include "core/NodeDescriptor.h"
 #include "core/Graph.h"
 #include "SelectionLive.h"
 #include "NodeEditorLive.h"

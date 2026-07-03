@@ -4,7 +4,6 @@
 #include "core/Port.h"
 #include "MemoryNodeLibrary.h"
 #include "Nodes.h"
-#include "core/NodeDescriptor.h"
 #include "core/MetaPort.h"
 
 #include "core/TypedPort.h"
@@ -507,22 +506,6 @@ static void BM_PropertyTransfer(benchmark::State& state)
 }
 
 BENCHMARK(BM_PropertyTransfer);
-
-static void BM_NodeDescribe(benchmark::State& state)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    dag::FooTyped const* foo = new dag::FooTyped(nodeLib, "foo1", dagbase::NodeCategory::CAT_SINK);
-
-    for (auto _ : state)
-    {
-        dagbase::NodeDescriptor d;
-
-        foo->describeNode(d);
-    }
-    delete foo;
-}
-
-BENCHMARK(BM_NodeDescribe);
 
 static void BM_VirtualPortArray(benchmark::State& state)
 {
