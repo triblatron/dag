@@ -170,12 +170,22 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+                {
+                    path="activeGraph.nodes[5].dynamicPort[0].value",
+                    value=2.0,
+                    op="RELOP_EQ",
+                },
 				{
 					path="activeGraph.nodes[5].dynamicPort[1].direction",
 					value=2, -- OUT
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+                {
+                    path="activeGraph.nodes[5].dynamicPort[1].value",
+                    value=1.0,
+                    op="RELOP_EQ",
+                },
 				{
 					path="activeGraph.numSignalPaths",
 					value=2,
