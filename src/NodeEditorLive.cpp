@@ -328,6 +328,41 @@ namespace dag
                 auto boundaryInput = _graph->createNode("Boundary","boundaryInput");
                 auto boundaryOutput = _graph->createNode("Boundary", "boundaryOutput");
 
+                std::vector<dagbase::SignalPath*> toRemove;
+                const NodeArray& inputs = _selection->inputs();
+                for (auto input : inputs)
+                {
+                    _activeGraph->eachSignalPath([this, input, &internals, &toRemove](dagbase::SignalPath* signalPath) {
+                        // If the destination is an input and the source is not selected
+                        if (signalPath->destNode() == input && !_selection->isSelected(signalPath->sourceNode()))
+                        {
+                            signalPath->markRemoved();
+                            toRemove.emplace_back(signalPath);
+                        }
+                        return true;
+                    });
+
+                }
+
+                const auto& outputs = _selection->outputs();
+                for (auto output : outputs)
+                {
+                    _activeGraph->eachSignalPath([this, output, &internals, &toRemove](dagbase::SignalPath* signalPath) {
+                        // If the source is an output and the destination is not selected then remove it
+                        if (signalPath->sourceNode() == output && !_selection->isSelected(signalPath->destNode()))
+                        {
+                            signalPath->markRemoved();
+                            toRemove.emplace_back(signalPath);
+                        }
+                        return true;
+                    });
+                }
+
+                // Remove SignalPaths that have been marked removed.
+                for (auto signalPath : toRemove)
+                {
+                    _activeGraph->removeSignalPath(signalPath);
+                }
 
                 // Use the root Graph as the KeyGenerator for unique IDs
                 _selection->reconnectInputs(boundaryInput, *_graph);
@@ -353,16 +388,30 @@ namespace dag
                     // Add the inputs of the Boundary input and the outputs of the Boundary output
                     for (std::size_t i=0; i<boundaryInput->totalPorts(); ++i)
                     {
-                        if (boundaryInput->dynamicPort(i)->dir() == dagbase::PortDirection::DIR_IN)
+                        auto sharedPort = boundaryInput->dynamicPort(i);
+                        if (sharedPort->dir() == dagbase::PortDirection::DIR_IN)
                         {
-                            graphNode->addDynamicPort(boundaryInput->dynamicPort(i), dagbase::MetaPort::FLAGS_NONE);
+                            graphNode->addDynamicPort(sharedPort, dagbase::MetaPort::FLAGS_NONE);
+                            // Add a SignalPath from the incoming port to the shared Port.
+                            if (sharedPort->numIncomingConnections()>0)
+                            {
+                                _activeGraph->addSignalPath(
+                                    new dagbase::SignalPath(sharedPort->incomingConnections()[0], sharedPort));
+                            }
                         }
                     }
                     for (std::size_t i=0; i<boundaryOutput->totalPorts(); ++i)
                     {
-                        if (boundaryOutput->dynamicPort(i)->dir() == dagbase::PortDirection::DIR_OUT)
+                        auto sharedPort = boundaryOutput->dynamicPort(i);
+                        if (sharedPort->dir() == dagbase::PortDirection::DIR_OUT)
                         {
-                            graphNode->addDynamicPort(boundaryOutput->dynamicPort(i), dagbase::MetaPort::FLAGS_NONE);
+                            graphNode->addDynamicPort(sharedPort, dagbase::MetaPort::FLAGS_NONE);
+                            // Add a SignalPath from the shared Port to the outgoing Port
+                            if (sharedPort->numOutgoingConnections()>0)
+                            {
+                                _activeGraph->addSignalPath(
+                                    new dagbase::SignalPath(sharedPort, sharedPort->outgoingConnections()[0]));
+                            }
                         }
                     }
                     _activeGraph->addNode(graphNode);

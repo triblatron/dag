@@ -176,6 +176,32 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+				{
+					path="activeGraph.numSignalPaths",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[2].fromPort",
+					value=3,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[2].toPort",
+					value=5,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[3].fromPort",
+					value=7,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[3].toPort",
+					value=2,
+					op="RELOP_EQ",
+				},
                 {
                     path="graph.nodes[0].class",
                     value="GroupTyped",
@@ -224,6 +250,24 @@ root=
 					value=1,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
+				},
+				{
+					path="graph.ports[5].numIncomingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ"
+				},
+				{
+					path="graph.ports[2].numIncomingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ"
+				},
+				{
+					path="graph.ports[7].numOutgoingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ"
 				},
 				{
 					path="graph.children[0].ports[0].numOutgoingConnections",

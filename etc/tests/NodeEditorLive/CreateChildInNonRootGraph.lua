@@ -282,7 +282,7 @@ root=
 			{
 				statusCode="STATUS_OK",
 				resultType="RESULT_SIGNAL_PATH_ID",
-				signalPathID=2,
+				signalPathID=4,
 			},
 			assertions=
 			{
@@ -308,7 +308,7 @@ root=
 			{
 				statusCode="STATUS_OK",
 				resultType="RESULT_SIGNAL_PATH_ID",
-				signalPathID=3,
+				signalPathID=5,
 			},
 			assertions=
 			{
