@@ -77,6 +77,8 @@ namespace dag
         //! Create a Group from the selection
         dagbase::Status createChild() override;
 
+        dagbase::Status copyNode(dagbase::NodeID nodeID);
+
         //! Create a template from a Group
         dagbase::Status createTemplate(dagbase::NodeID id) override;
 

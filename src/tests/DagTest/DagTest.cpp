@@ -1071,7 +1071,8 @@ struct NodeEditorLiveScriptItem
         COMMAND_SELECT,
         COMMAND_CREATE_CHILD,
         COMMAND_SET_ACTIVE_GRAPH,
-        COMMAND_DELETE_NODE
+        COMMAND_DELETE_NODE,
+        COMMAND_COPY_NODE,
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1137,6 +1138,10 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "node", &node);
             break;
+        case COMMAND_COPY_NODE:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "node", &node);
+            break;
         default:
             FAIL() << "Creating unknown command";
             break;
@@ -1195,6 +1200,19 @@ struct NodeEditorLiveScriptItem
             actualStatus = sut.deleteNode(node);
 
             break;
+        case COMMAND_COPY_NODE:
+        {
+            actualStatus = sut.copyNode(node);
+            auto sourceNode = sut.activeGraph()->node(node);
+            if (sourceNode && actualStatus.status == dagbase::Status::STATUS_OK && actualStatus.resultType == dagbase::Status::RESULT_NODE_ID && actualStatus.result.has_value())
+            {
+                if (auto actualNode=sut.activeGraph()->node(std::get<dagbase::NodeID>(*status.result)); node)
+                {
+                    ASSERT_TRUE(actualNode->equals(*sourceNode));
+                }
+            }
+            break;
+        }
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1241,6 +1259,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_CREATE_CHILD)
             ENUM_NAME(COMMAND_SET_ACTIVE_GRAPH)
             ENUM_NAME(COMMAND_DELETE_NODE)
+            ENUM_NAME(COMMAND_COPY_NODE)
         }
 
         return "<error>";
@@ -1257,6 +1276,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_CREATE_CHILD, str);
         TEST_ENUM(COMMAND_SET_ACTIVE_GRAPH, str);
         TEST_ENUM(COMMAND_DELETE_NODE, str);
+        TEST_ENUM(COMMAND_COPY_NODE, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1335,6 +1355,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/CloneSimple.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChildFromEmptySelection.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua"),

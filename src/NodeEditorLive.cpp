@@ -13,6 +13,7 @@
 #include "core/SignalPath.h"
 #include "core/Transfer.h"
 #include "core/GraphNode.h"
+#include "core/CloningFacility.h"
 
 namespace dag
 {
@@ -451,6 +452,33 @@ namespace dag
         }
 
         return dagbase::Status{dagbase::Status::STATUS_OBJECT_NOT_FOUND};
+    }
+
+    dagbase::Status NodeEditorLive::copyNode(dagbase::NodeID nodeID)
+    {
+        if (_graph && _activeGraph)
+        {
+            if (auto node = _activeGraph->node(nodeID); node)
+            {
+                dagbase::CloningFacility facility;
+                auto copy = node->clone(facility, static_cast<dagbase::CopyOp>(dagbase::DEEP_COPY_INPUTS_BIT|dagbase::DEEP_COPY_OUTPUTS_BIT|dagbase::GENERATE_UNIQUE_ID_BIT), _graph);
+                _activeGraph->addNode(copy);
+                dagbase::Status status{dagbase::Status::STATUS_OK};
+                status.resultType = dagbase::Status::RESULT_NODE_ID;
+                status.result = copy->id();
+                return status;
+            }
+            else
+            {
+                dagbase::Status status{dagbase::Status::STATUS_OBJECT_NOT_FOUND};
+                status.resultType = dagbase::Status::RESULT_NODE_ID;
+                status.result = nodeID;
+
+                return status;
+            }
+        }
+
+        return dagbase::Status{dagbase::Status::STATUS_SYNTAX_ERROR};
     }
 
     dagbase::Status NodeEditorLive::createTemplate(dagbase::NodeID id)
