@@ -74,10 +74,11 @@ namespace dag
         //! Disconnect two ports
         dagbase::Status disconnect(dagbase::SignalPathID id) override;
 
-        //! Create a Group from the selection
+        //! Create a GraphNode from the selection
         dagbase::Status createChild() override;
 
-        dagbase::Status copyNode(dagbase::NodeID nodeID);
+        //! Copy the selection
+        dagbase::Status copyNodes();
 
         //! Create a template from a Group
         dagbase::Status createTemplate(dagbase::NodeID id) override;

@@ -454,28 +454,28 @@ namespace dag
         return dagbase::Status{dagbase::Status::STATUS_OBJECT_NOT_FOUND};
     }
 
-    dagbase::Status NodeEditorLive::copyNode(dagbase::NodeID nodeID)
+    dagbase::Status NodeEditorLive::copyNodes()
     {
         if (_graph && _activeGraph)
         {
-            if (auto node = _activeGraph->node(nodeID); node)
+            dagbase::Status status;
+
+            if (_selection->count() == 0)
             {
-                dagbase::CloningFacility facility;
-                auto copy = node->clone(facility, static_cast<dagbase::CopyOp>(dagbase::DEEP_COPY_INPUTS_BIT|dagbase::DEEP_COPY_OUTPUTS_BIT|dagbase::GENERATE_UNIQUE_ID_BIT), _graph);
-                _activeGraph->addNode(copy);
-                dagbase::Status status{dagbase::Status::STATUS_OK};
-                status.resultType = dagbase::Status::RESULT_NODE_ID;
-                status.result = copy->id();
-                return status;
+                status.status = dagbase::Status::STATUS_INVALID_SELECTION;
             }
             else
             {
-                dagbase::Status status{dagbase::Status::STATUS_OBJECT_NOT_FOUND};
-                status.resultType = dagbase::Status::RESULT_NODE_ID;
-                status.result = nodeID;
-
-                return status;
+                const NodeArray& internals = _selection->internals();
+                for (auto node : internals)
+                {
+                    dagbase::CloningFacility facility;
+                    auto copy = node->clone(facility, static_cast<dagbase::CopyOp>(dagbase::DEEP_COPY_INPUTS_BIT|dagbase::DEEP_COPY_OUTPUTS_BIT|dagbase::GENERATE_UNIQUE_ID_BIT), _graph);
+                    _activeGraph->addNode(copy);
+                }
+                status.status = dagbase::Status::STATUS_OK;
             }
+            return status;
         }
 
         return dagbase::Status{dagbase::Status::STATUS_SYNTAX_ERROR};

@@ -46,6 +46,9 @@ namespace dag
         //! \param[in] index The index of the Port, zero-based.
         dagbase::Port* dynamicPort(size_t index) override;
 
+        const dagbase::Port* dynamicPort(size_t index) const override;
+
+
         //! Create a Node of the same type as this from a stream.
         //! \param[in] str The stream from which to read the data required to create the Node.
         //! \param[in] nodeLib The NodeLibrary to create Ports

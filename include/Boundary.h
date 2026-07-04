@@ -52,6 +52,16 @@ namespace dag
             return nullptr;
         }
 
+        const dagbase::Port* dynamicPort(size_t index) const override
+        {
+            if (index<_dynamicPorts.size())
+            {
+                return _dynamicPorts[index];
+            }
+
+            return nullptr;
+        }
+
         Boundary* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Boundary(*this,facility,copyOp,keyGen);
