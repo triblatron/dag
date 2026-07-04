@@ -371,6 +371,27 @@ namespace dag
                 child->addNode(boundaryInput);
                 child->addNode(boundaryOutput);
 
+                // Add SignalPaths from outputs of BoundaryInput to internals
+                for (std::size_t i=0; i<boundaryInput->totalPorts(); ++i)
+                {
+                    auto port = boundaryInput->dynamicPort(i);
+                    if (port->dir() == dagbase::PortDirection::DIR_OUT && !port->outgoingConnections().empty())
+                    {
+                        child->addSignalPath(new dagbase::SignalPath(port, port->outgoingConnections()[0]));
+                    }
+                }
+
+                // Add SignalPaths from outputs of internals to inputs of BoundaryOutput
+                for (std::size_t i=0; i<boundaryOutput->totalPorts(); ++i)
+                {
+                    auto port = boundaryOutput->dynamicPort(i);
+
+                    if (port->dir() == dagbase::PortDirection::DIR_IN && !port->incomingConnections().empty())
+                    {
+                        child->addSignalPath(new dagbase::SignalPath(port->incomingConnections()[0], port));
+                    }
+                }
+
                 for (auto node : internals)
                 {
                     // Avoid double-free of node in both original and child Graph.

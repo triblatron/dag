@@ -282,7 +282,7 @@ root=
 			{
 				statusCode="STATUS_OK",
 				resultType="RESULT_SIGNAL_PATH_ID",
-				signalPathID=4,
+				signalPathID=6,
 			},
 			assertions=
 			{
@@ -308,7 +308,7 @@ root=
 			{
 				statusCode="STATUS_OK",
 				resultType="RESULT_SIGNAL_PATH_ID",
-				signalPathID=5,
+				signalPathID=7,
 			},
 			assertions=
 			{
@@ -396,6 +396,58 @@ root=
                     typeIndex="TYPE_UINT",
                     op="RELOP_EQ",
                 },
+				{
+					path="activeGraph.numSignalPaths",
+					value=4,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[10].fromPort",
+					value=11,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[10].toPort",
+					value=13,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[11].fromPort",
+					value=15,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[11].toPort",
+					value=10,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].numSignalPaths",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].signalPaths[8].fromPort",
+					value=12,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].signalPaths[8].toPort",
+					value=9,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].signalPaths[9].fromPort",
+					value=8,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].signalPaths[9].toPort",
+					value=14,
+					op="RELOP_EQ",
+				},
 				{
 					path="activeGraph.children[0].numPorts",
 					value=6,

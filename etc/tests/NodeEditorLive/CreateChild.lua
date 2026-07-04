@@ -183,23 +183,49 @@ root=
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[2].fromPort",
+					path="activeGraph.signalPaths[4].fromPort",
 					value=3,
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[2].toPort",
+					path="activeGraph.signalPaths[4].toPort",
 					value=5,
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[3].fromPort",
+					path="activeGraph.signalPaths[5].fromPort",
 					value=7,
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[3].toPort",
+					path="activeGraph.signalPaths[5].toPort",
 					value=2,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].numSignalPaths",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].signalPaths[2].fromPort",
+					value=4,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].signalPaths[2].toPort",
+					value=1,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].signalPaths[3].fromPort",
+					value=0,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.children[0].signalPaths[3].toPort",
+					value=6,
 					op="RELOP_EQ",
 				},
                 {
