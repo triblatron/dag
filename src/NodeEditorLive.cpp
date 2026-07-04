@@ -293,7 +293,7 @@ namespace dag
             if (path != nullptr)
             {
                 path->source()->disconnect(*path->dest());
-                _activeGraph->removeSignalPath(path);
+                _activeGraph->deleteSignalPath(path);
                 status.status = dagbase::Status::STATUS_OK;
             }
             else
@@ -361,7 +361,7 @@ namespace dag
                 // Remove SignalPaths that have been marked removed.
                 for (auto signalPath : toRemove)
                 {
-                    _activeGraph->removeSignalPath(signalPath);
+                    _activeGraph->deleteSignalPath(signalPath);
                 }
 
                 // Use the root Graph as the KeyGenerator for unique IDs
