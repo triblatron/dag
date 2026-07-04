@@ -61,6 +61,24 @@ namespace dag
         return nullptr;
     }
 
+    const dagbase::Port * MathsNode::dynamicPort(size_t index) const
+    {
+        if (index == firstPort)
+        {
+            return _angle;
+        }
+        else if (index == firstPort+1)
+        {
+            return _unit;
+        }
+        else if (index == firstPort+2)
+        {
+            return _output;
+        }
+
+        return nullptr;
+    }
+
     dagbase::Node *MathsNode::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
     {
         return new MathsNode(str, nodeLib, lua);

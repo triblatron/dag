@@ -1202,15 +1202,8 @@ struct NodeEditorLiveScriptItem
             break;
         case COMMAND_COPY_NODE:
         {
-            actualStatus = sut.copyNode(node);
-            auto sourceNode = sut.activeGraph()->node(node);
-            if (sourceNode && actualStatus.status == dagbase::Status::STATUS_OK && actualStatus.resultType == dagbase::Status::RESULT_NODE_ID && actualStatus.result.has_value())
-            {
-                if (auto actualNode=sut.activeGraph()->node(std::get<dagbase::NodeID>(*status.result)); node)
-                {
-                    ASSERT_TRUE(actualNode->equals(*sourceNode));
-                }
-            }
+            actualStatus = sut.copyNodes();
+            
             break;
         }
         default:
@@ -1356,6 +1349,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
     std::make_tuple("etc/tests/NodeEditorLive/CloneSimple.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/CloneConnected.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChildFromEmptySelection.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua"),

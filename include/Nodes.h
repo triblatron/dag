@@ -73,6 +73,15 @@ namespace dag
 
             return nullptr;
         }
+        const dagbase::Port* dynamicPort(size_t index) const override
+        {
+            if (index == 0)
+            {
+                return _direction;
+            }
+
+            return nullptr;
+        }
 
         static dagbase::MetaPort const* metaPort(size_t index)
         {
@@ -177,7 +186,13 @@ namespace dag
                 Derived(other, facility, copyOp, keyGen),
                 _int1(other._int1.id(), this, other._int1.name(), other._int1.type(), other._int1.dir(), other._int1.value())
         {
-            // Do nothing.
+            // for (std::size_t i = 0; i < other.totalPorts(); ++i)
+            // {
+            //     auto port = other.dynamicPort(i);
+            //
+            //     auto clonedPort = port->clone(facility, copyOp, keyGen);
+            //     addDynamicPort(clonedPort, dagbase::MetaPort::FLAGS_OWN_BIT);
+            // }
         }
 
         ~Final() override
@@ -329,6 +344,16 @@ namespace dag
             return nullptr;
         }
 
+        const dagbase::Port* dynamicPort(size_t index) const override
+        {
+            if (index == 0)
+            {
+                return _in1;
+            }
+
+            return nullptr;
+        }
+
         static dagbase::MetaPort const* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
@@ -409,7 +434,18 @@ namespace dag
         {
             return size_t{1};
         }
+
         dagbase::Port* dynamicPort(size_t index) override
+        {
+            if (index == 0)
+            {
+                return _out1;
+            }
+
+            return nullptr;
+        }
+
+        const dagbase::Port* dynamicPort(size_t index) const override
         {
             if (index == 0)
             {
@@ -479,6 +515,14 @@ namespace dag
                 _in1 = static_cast<dagbase::TypedPort<double>*>(facility.getClone(in1Id));
             }
             _in1->setParent(this);
+            // for (std::size_t portIndex = 0; portIndex < other.totalPorts(); ++portIndex)
+            // {
+            //     const dagbase::Port* p = other.dynamicPort(portIndex);
+            //
+            //     auto clonedPort = p->clone(facility, copyOp, keyGen);
+            //     GroupTyped::addDynamicPort(clonedPort, dagbase::MetaPort::FLAGS_OWN_BIT);
+            // }
+
         }
 
         explicit GroupTyped(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);
@@ -512,6 +556,20 @@ namespace dag
         }
 
         dagbase::Port* dynamicPort(size_t index) override
+        {
+            if (index == 0)
+            {
+                return _out1;
+            }
+            if (index == 1)
+            {
+                return _in1;
+            }
+
+            return nullptr;
+        }
+
+        const dagbase::Port* dynamicPort(size_t index) const override
         {
             if (index == 0)
             {

@@ -4,8 +4,8 @@ root=
 	{
 		{
 			cmd="COMMAND_CREATE_NODE",
-			nodeClass="GroupTyped",
-			nodeName="group1",
+			nodeClass="MathsNode",
+			nodeName="m1",
 			status=
 			{
 				statusCode="STATUS_OK",
@@ -23,17 +23,52 @@ root=
 			},
 		},
 		{
+			cmd="COMMAND_CREATE_NODE",
+			nodeClass="MathsNode",
+			nodeName="m2",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+ 				nodeID=1,
+			},
+			assertions=
+			{
+				{
+					path="activeGraph.numNodes",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
+			cmd="COMMAND_CONNECT",
+			fromPort=2,
+			toPort=3,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+				signalPathID=0,
+			},
+			assertions=
+			{
+			},
+		},
+		{
 			cmd="COMMAND_SELECT",
 			selection=
 			{
 				0,
+				1,
 			},
 			selectionMode="SELECTION_SET",
 			assertions=
 			{
 				{
 					path="numSelectedNodes",
-					value=1,
+					value=2,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
@@ -49,13 +84,13 @@ root=
 			{
 				{
 					path="activeGraph.numNodes",
-					value=2,
+					value=4,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
 				{
 					path="activeGraph.numPorts",
-					value=4,
+					value=12,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
