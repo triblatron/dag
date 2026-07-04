@@ -332,7 +332,7 @@ namespace dag
                 const NodeArray& inputs = _selection->inputs();
                 for (auto input : inputs)
                 {
-                    _activeGraph->eachSignalPath([this, input, &internals, &toRemove](dagbase::SignalPath* signalPath) {
+                    _activeGraph->eachSignalPath([this, input, &toRemove](dagbase::SignalPath* signalPath) {
                         // If the destination is an input and the source is not selected
                         if (signalPath->destNode() == input && !_selection->isSelected(signalPath->sourceNode()))
                         {
@@ -347,7 +347,7 @@ namespace dag
                 const auto& outputs = _selection->outputs();
                 for (auto output : outputs)
                 {
-                    _activeGraph->eachSignalPath([this, output, &internals, &toRemove](dagbase::SignalPath* signalPath) {
+                    _activeGraph->eachSignalPath([this, output, &toRemove](dagbase::SignalPath* signalPath) {
                         // If the source is an output and the destination is not selected then remove it
                         if (signalPath->sourceNode() == output && !_selection->isSelected(signalPath->destNode()))
                         {
@@ -392,12 +392,17 @@ namespace dag
                     }
                 }
 
+                // std::cerr << "Moving internals: activeGraph has " << _activeGraph->numNodes() << " nodes" << '\n';
+                // std::cerr << "Moving internals: activeGraph has " << _activeGraph->numPorts() << " ports" << '\n';
                 for (auto node : internals)
                 {
                     // Avoid double-free of node in both original and child Graph.
-                    _activeGraph->removeNode(node);
-
-                    child->addNode(node);
+                    _activeGraph->moveNode(node, child);
+                    // std::cerr << "After: activeGraph has " << _activeGraph->numNodes() << " nodes" << '\n';
+                    // std::cerr << "After: activeGraph has " << _activeGraph->numPorts() << " ports" << '\n';
+                    // _activeGraph->removeNode(node);
+                    //
+                    // child->addNode(node);
                 }
 
                 _activeGraph->addChild(child);

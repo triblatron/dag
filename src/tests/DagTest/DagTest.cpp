@@ -1052,10 +1052,10 @@ struct NodeEditorLiveAssertion
         dagbase::ConfigurationElement::readConfig<dagbase::ConfigurationElement::RelOp>(config, "op", &dagbase::ConfigurationElement::parseRelOp, &op);
     }
 
-    void makeItSo(dag::NodeEditorLive& sut) const
+    void makeItSo(dag::NodeEditorLive& sut, const std::string& cmd) const
     {
         auto actual = sut.find(path);
-        assertComparison(value, actual, tolerance, op, path.c_str());
+        assertComparison(value, actual, tolerance, op, (path + " " + cmd).c_str());
     }
 };
 
@@ -1206,7 +1206,7 @@ struct NodeEditorLiveScriptItem
         ASSERT_EQ(status.result, actualStatus.result) << commandToString(cmd);
         for (const auto& a : assertions)
         {
-            a.makeItSo(sut);
+            a.makeItSo(sut, commandToString(cmd));
         }
 
         done = true;
@@ -1347,6 +1347,7 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing:
     std::make_tuple("etc/tests/NodeEditorLive/CreateChildInNonRootGraph.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectMultipleInternals.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectMultipleWithAnOnlyInternal.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/CreateChildFromAnOnlyInternal.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/EmptySelection.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectionSetEmpty.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SelectionSetOne.lua"),
