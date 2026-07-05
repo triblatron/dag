@@ -1478,6 +1478,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
     std::make_tuple("etc/tests/NodeEditorLive/CloneSimple.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CloneConnected.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/CloneChild.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChildFromEmptySelection.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectThenDisconnect.lua"),
