@@ -115,34 +115,34 @@ INSTANTIATE_TEST_SUITE_P(PortTypeSetValueTest, PortTypeTest, ::testing::Values(
     std::make_tuple(1.0, 2.0)
 ));
 
-class NodeTest_testClone : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t>>
+class NodeTest_testClone : public ::testing::TestWithParam<std::tuple<const char*, const char*>>
 {
 
 };
+
 TEST_P(NodeTest_testClone, checkClone)
 {
     const char* className = std::get<0>(GetParam());
     const char* nodeName = std::get<1>(GetParam());
-    size_t index = std::get<2>(GetParam());
     dag::MemoryNodeLibrary nodeLib;
     dagbase::Node* node = nodeLib.instantiateNode(nodeLib, className, nodeName);
+    ASSERT_NE(nullptr, node);
+    ASSERT_TRUE(node->equals(*node));
     dagbase::CloningFacility facility;
     dagbase::Node* sut = node->clone(facility, dagbase::CopyOp{0}, nullptr);
-    ASSERT_EQ(node->totalPorts(), sut->totalPorts());
-    ASSERT_NE(node->dynamicPort(index), sut->dynamicPort(index));
-    ASSERT_NE(node->dynamicPort(index)->parent(), sut->dynamicPort(index)->parent());
+    ASSERT_TRUE(node->equals(*sut));
     delete sut;
     delete node;
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeTestClone, NodeTest_testClone, ::testing::Values(
-    std::make_tuple("Base", "base1", 0),
-    std::make_tuple("Derived", "derived1", 0),
-    std::make_tuple("Final", "final1", 0),
-    std::make_tuple("Final", "final1", 1),
-    std::make_tuple("Final", "final1", 2),
-    std::make_tuple("GroupTyped", "group1", 0),
-    std::make_tuple("GroupTyped", "group1", 1)
+    std::make_tuple("Base", "base1"),
+    std::make_tuple("Derived", "derived1"),
+    std::make_tuple("Final", "final1"),
+    std::make_tuple("GroupTyped", "group1"),
+    std::make_tuple("MathsNode", "m1"),
+    std::make_tuple("FooTyped", "foo1"),
+    std::make_tuple("BarTyped", "bar1")
 ));
 
 TEST(TypedTransferTest, checkMakeItSo)
