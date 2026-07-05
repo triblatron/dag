@@ -94,6 +94,12 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+				{
+					path="activeGraph.numSignalPaths",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
 			}
 		},
 	},

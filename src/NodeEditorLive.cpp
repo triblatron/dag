@@ -5,6 +5,9 @@
 #include "config/config.h"
 
 #include "NodeEditorLive.h"
+
+#include <set>
+
 #include "MemoryNodeLibrary.h"
 #include "core/Graph.h"
 #include "SelectionLive.h"
@@ -467,14 +470,97 @@ namespace dag
             else
             {
                 const NodeArray& internals = _selection->internals();
+
+                dagbase::CloningFacility facility;
+                auto copyOp = dagbase::GENERATE_UNIQUE_ID_BIT;
+                std::unordered_set<dagbase::SignalPath*> originalSignalPaths;
+                std::unordered_set<dagbase::SignalPath*> clonedSignalPaths;
+                std::vector<dagbase::Node*> clonedNodes;
                 for (auto node : internals)
                 {
-                    dagbase::CloningFacility facility;
-                    auto copy = node->clone(facility, static_cast<dagbase::CopyOp>(dagbase::DEEP_COPY_INPUTS_BIT|dagbase::DEEP_COPY_OUTPUTS_BIT|dagbase::GENERATE_UNIQUE_ID_BIT), _graph);
-                    _activeGraph->addNode(copy);
+                    std::uint64_t nodeId=0;
+                    bool shouldClone = facility.putOrig(node, &nodeId);
+                    dagbase::Node* cloned = nullptr;
+                    if (shouldClone)
+                    {
+                        cloned = node->clone(facility, copyOp, _graph);
+                        clonedNodes.emplace_back(cloned);
+                    }
+                    else
+                    {
+                        cloned = static_cast<dagbase::Node*>(facility.getClone(nodeId));
+                    }
+
+                    // Clone SignalPath we have not seen yet.
+                    _activeGraph->eachSignalPath([this, &clonedNodes, &originalSignalPaths, &clonedSignalPaths, &node, &facility, copyOp, &status](dagbase::SignalPath* signalPath) {
+                        if (signalPath->sourceNode() == node || signalPath->destNode() == node)
+                        {
+                            // Get the cloned nodes corresponding to source and destination
+                            dagbase::Node* fromOrig = signalPath->sourceNode();
+                            dagbase::Node* toOrig = signalPath->destNode();
+                            dagbase::Node* fromClone = nullptr;
+                            dagbase::Node* toClone = nullptr;
+                            std::uint64_t fromId = 0;
+                            std::uint64_t toId = 0;
+                            auto shouldCloneFrom = facility.putOrig(fromOrig, &fromId);
+                            if (!fromOrig || !toOrig)
+                            {
+                                status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
+                                return false;
+                            }
+                            auto fromIndex = fromOrig->indexOfPort(signalPath->source());
+                            auto toIndex = toOrig->indexOfPort(signalPath->dest());
+                            if (shouldCloneFrom)
+                            {
+                                fromClone = fromOrig->clone(facility, copyOp, _graph);
+                                clonedNodes.emplace_back(fromClone);
+                            }
+                            else
+                            {
+                                fromClone = static_cast<dagbase::Node*>(facility.getClone(fromId));
+                            }
+                            auto shouldCloneTo = facility.putOrig(toOrig, &toId);
+                            if (shouldCloneTo)
+                            {
+                                toClone = toOrig->clone(facility, copyOp, _graph);
+                                clonedNodes.emplace_back(toClone);
+                            }
+                            else
+                            {
+                                toClone = static_cast<dagbase::Node*>(facility.getClone(toId));
+                            }
+                            if (originalSignalPaths.find(signalPath) == originalSignalPaths.end())
+                            {
+                                originalSignalPaths.emplace(signalPath);
+                                auto clonedSignalPath = new dagbase::SignalPath(fromClone->dynamicPort(fromIndex), toClone->dynamicPort(toIndex));
+                                clonedSignalPaths.emplace(clonedSignalPath);
+                            }
+                        }
+                        return true;
+                    });
+                }
+
+                if (status.status != dagbase::Status::STATUS_OK)
+                {
+                    return status;
+                }
+
+                // Iterate over clones, adding them to the Graph.
+                for (auto node : clonedNodes)
+                {
+                    _activeGraph->addNode(node);
+                }
+
+                // This is necessary because we cannot modify the map of SignalPaths while traversing it
+                // since it based on a std::vector.
+                for (auto clonedSignalPath : clonedSignalPaths)
+                {
+                    clonedSignalPath->source()->connectTo(*clonedSignalPath->dest());
+                    _activeGraph->addSignalPath(clonedSignalPath);
                 }
                 status.status = dagbase::Status::STATUS_OK;
             }
+
             return status;
         }
 
