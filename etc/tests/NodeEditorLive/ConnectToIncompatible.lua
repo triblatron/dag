@@ -44,24 +44,24 @@ root=
 		},
 		{
 			cmd="COMMAND_CONNECT",
-			fromPort=2,
+			fromPort=3,
 			toPort=1,
 			status=
 			{
 				statusCode="STATUS_SYNTAX_ERROR",
 				resultType="RESULT_PORT_ID",
-				portID=2,
+				portID=3,
 			},
 			assertions=
 			{
 				{
-					path="graph.ports[2].direction",
+					path="graph.ports[3].direction",
 					value=2,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
 				{
-					path="graph.ports[2].numOutgoingConnections",
+					path="graph.ports[3].numOutgoingConnections",
 					value=0,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
