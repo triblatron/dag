@@ -368,6 +368,7 @@ namespace dag
                     _activeGraph->deleteSignalPath(signalPath);
                 }
 
+                // Add SignalPaths from
                 // Use the root Graph as the KeyGenerator for unique IDs
                 _selection->reconnectInputs(boundaryInput, *_graph);
                 _selection->reconnectOutputs(boundaryOutput, *_graph);
@@ -470,8 +471,8 @@ namespace dag
             else
             {
                 const NodeArray& internals = _selection->internals();
-
-                status = _activeGraph->cloneNodes(internals, *_graph);
+                dagbase::CloningFacility facility;
+                status = _activeGraph->cloneNodes(internals, *_activeGraph, facility, *_graph);
             }
 
             return status;

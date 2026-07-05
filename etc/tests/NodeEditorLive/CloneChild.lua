@@ -182,19 +182,19 @@ root=
 			{
 				{
 					path="activeGraph.numNodes",
-					value=4,
+					value=6,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
 				{
 					path="activeGraph.numPorts",
-					value=2,
+					value=4,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
 				{
 					path="activeGraph.numSignalPaths",
-					value=2,
+					value=4,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
