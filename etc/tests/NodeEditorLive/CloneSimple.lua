@@ -3,12 +3,59 @@ root=
 	cases=
 	{
 		{
+			name="Copying a Base Node",
 			subs=
 			{
 				{
-					index=0,
+					commandIndex=0,
+					name="nodeClass",
+					value="Base",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value=2,
+				},
+			},
+		},
+		{
+			name="Copying a Derived Node",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="nodeClass",
+					value="Derived",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value=4,
+				},
+			},			
+		},
+		{
+			name="Copying a GroupTyped Node",
+			subs=
+			{
+				{
+					commandIndex=0,
 					name="nodeClass",
 					value="GroupTyped",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value=4,
 				},
 			},
 		},

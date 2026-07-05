@@ -1033,13 +1033,15 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLiveTest, NodeEditorLiveTest_testCreateNodeIn
 
 struct NodeEditorLiveSub
 {
-    std::int32_t index{0};
+    std::uint32_t commandIndex{0};
+    std::uint32_t assertionIndex{0};
     std::string name;
     dagbase::Variant value;
 
     void configure(dagbase::ConfigurationElement& config)
     {
-        dagbase::ConfigurationElement::readConfig(config, "index", &index);
+        dagbase::ConfigurationElement::readConfig(config, "commandIndex", &commandIndex);
+        dagbase::ConfigurationElement::readConfig(config, "assertionIndex", &assertionIndex);
         dagbase::ConfigurationElement::readConfig(config, "name", &name);
         dagbase::ConfigurationElement::readConfig(config, "value", &value);
     }
@@ -1047,11 +1049,16 @@ struct NodeEditorLiveSub
 
 struct NodeEditorLiveCase
 {
-    std::vector<NodeEditorLiveSub> subs;
+    std::string name;
+    using SubArray = std::vector<NodeEditorLiveSub>;
+    SubArray subs;
+    SubArray assertions;
 
     void configure(dagbase::ConfigurationElement& config)
     {
+        dagbase::ConfigurationElement::readConfig(config, "name", &name);
         dagbase::ConfigurationElement::readConfigVector(config, "subs", &subs);
+        dagbase::ConfigurationElement::readConfigVector(config, "assertions", &assertions);
     }
 };
 
@@ -1074,6 +1081,18 @@ struct NodeEditorLiveAssertion
         }
         dagbase::ConfigurationElement::readConfig(config, "tolerance", &tolerance);
         dagbase::ConfigurationElement::readConfig<dagbase::ConfigurationElement::RelOp>(config, "op", &dagbase::ConfigurationElement::parseRelOp, &op);
+    }
+
+    void setValue(dagbase::Variant newValue)
+    {
+        if (typeIndex == dagbase::Variant::TYPE_UNKNOWN)
+        {
+            value = newValue;
+        }
+        else
+        {
+            value = newValue.cast(typeIndex);
+        }
     }
 
     void makeItSo(dag::NodeEditorLive& sut, const std::string& cmd) const
@@ -1179,7 +1198,7 @@ struct NodeEditorLiveScriptItem
         dagbase::ConfigurationElement::readConfigVector(config, "assertions", &assertions);
     }
 
-    void makeItSo(dag::NodeEditorLive& sut)
+    void makeItSo(dag::NodeEditorLive& sut, const std::string caseName)
     {
         done = true;
         dagbase::Status actualStatus{dagbase::Status::STATUS_UNKNOWN};
@@ -1248,12 +1267,12 @@ struct NodeEditorLiveScriptItem
             break;
         }
 
-        ASSERT_EQ(status.status, actualStatus.status)  << commandToString(cmd) << ":Expected a status of " << dagbase::Status::statusCodeToString(status.status) << ", got " << dagbase::Status::statusCodeToString(actualStatus.status);
-        ASSERT_EQ(status.resultType, actualStatus.resultType) << commandToString(cmd) << ":Expected a resultType of " << dagbase::Status::resultTypeToString(status.resultType) << ", got " << dagbase::Status::resultTypeToString(actualStatus.resultType);
-        ASSERT_EQ(status.result, actualStatus.result) << commandToString(cmd);
+        ASSERT_EQ(status.status, actualStatus.status)  << caseName << ':' << commandToString(cmd) << ":Expected a status of " << dagbase::Status::statusCodeToString(status.status) << ", got " << dagbase::Status::statusCodeToString(actualStatus.status);
+        ASSERT_EQ(status.resultType, actualStatus.resultType) << caseName << ':' << commandToString(cmd) << ":Expected a resultType of " << dagbase::Status::resultTypeToString(status.resultType) << ", got " << dagbase::Status::resultTypeToString(actualStatus.resultType);
+        ASSERT_EQ(status.result, actualStatus.result) << caseName << ':' << commandToString(cmd);
         for (const auto& a : assertions)
         {
-            a.makeItSo(sut, commandToString(cmd));
+            a.makeItSo(sut, caseName + ':' + commandToString(cmd));
         }
 
         done = true;
@@ -1359,40 +1378,61 @@ public:
         dagbase::ConfigurationElement::readConfigVector(config, "items", &_items);
     }
 
-    void makeItSo(dag::NodeEditorLive& sut);
+    void setUp()
+    {
+        dagbase::SignalPath::resetID();
+        _sut = new dag::NodeEditorLive();
+    }
+
+    void tearDown()
+    {
+        delete _sut;
+    }
+
+    void makeItSo();
 private:
     using CaseArray = std::vector<NodeEditorLiveCase>;
     CaseArray _cases;
     using ItemArray = std::vector<NodeEditorLiveScriptItem>;
     ItemArray _items;
+    dag::NodeEditorLive* _sut{nullptr};
 };
 
-void NodeEditorLiveScript::makeItSo(dag::NodeEditorLive& sut)
+void NodeEditorLiveScript::makeItSo()
 {
     if (!_cases.empty())
     {
-        
+
         for (const auto& currentCase : _cases)
         {
+            setUp();
             // Make the substitutions
-            for (auto sub : currentCase.subs)
+            for (const auto& sub : currentCase.subs)
             {
-                _items[sub.index].set(sub.name, sub.value);
+                _items[sub.commandIndex].set(sub.name, sub.value);
+            }
+
+            for (const auto& assertion : currentCase.assertions)
+            {
+                _items[assertion.commandIndex].assertions[assertion.assertionIndex].setValue(assertion.value);
             }
 
             for (auto item : _items)
             {
-                item.makeItSo(sut);
+                item.makeItSo(*_sut, currentCase.name);
             }
+            tearDown();
         }
     }
     else
     {
+        setUp();
         // Original pattern with no explicit cases, just an implicit one with no substitutions
         for (auto item : _items)
         {
-            item.makeItSo(sut);
+            item.makeItSo(*_sut, "<implicit>");
         }
+        tearDown();
     }
 
         // _currentItem->makeItSo(sut);
@@ -1414,19 +1454,16 @@ protected:
 
 void NodeEditorLive_testScripted::SetUp()
 {
-    dagbase::SignalPath::resetID();
     auto scriptFilename = std::get<0>(GetParam());
     dagbase::Lua lua;
     auto scriptConfig = dagbase::ConfigurationElement::fromFile(lua, scriptFilename);
     ASSERT_NE(nullptr, scriptConfig);
     _script.configure(*scriptConfig);
-    _sut = new dag::NodeEditorLive();
     delete scriptConfig;
 }
 
 void NodeEditorLive_testScripted::TearDown()
 {
-    delete _sut;
 }
 
 TEST_P(NodeEditorLive_testScripted, testExpectedValue)
@@ -1435,7 +1472,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
     //dagbase::Lua lua;
     //auto graphConfig = dagbase::ConfigurationElement::fromFile(lua, graphFilename);
     //ASSERT_NE(nullptr, graphConfig);
-    _script.makeItSo(*_sut);
+    _script.makeItSo();
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
