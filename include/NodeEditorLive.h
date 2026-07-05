@@ -80,6 +80,8 @@ namespace dag
         //! Copy the selection
         dagbase::Status copyNodes();
 
+        dagbase::Status compareNodes();
+
         //! Create a template from a Group
         dagbase::Status createTemplate(dagbase::NodeID id) override;
 

@@ -567,6 +567,36 @@ namespace dag
         return dagbase::Status{dagbase::Status::STATUS_SYNTAX_ERROR};
     }
 
+    dagbase::Status NodeEditorLive::compareNodes()
+    {
+        dagbase::Status status;
+
+        if (_selection->count() != 2)
+        {
+            status.status = dagbase::Status::STATUS_INVALID_SELECTION;
+        }
+        else
+        {
+            auto internals = _selection->internals();
+            dagbase::Node* op1 = internals.a[0];
+            dagbase::Node* op2 = internals.a[1];
+            bool equal = false;
+            if (op1 && op2)
+            {
+                equal = op1->equals(*op2);
+            }
+            if (equal)
+            {
+                status.status = dagbase::Status::STATUS_OK;
+            }
+            else
+            {
+                status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
+            }
+        }
+        return status;
+    }
+
     dagbase::Status NodeEditorLive::createTemplate(dagbase::NodeID id)
     {
         return {};

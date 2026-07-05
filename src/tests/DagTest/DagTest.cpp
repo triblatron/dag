@@ -1073,6 +1073,7 @@ struct NodeEditorLiveScriptItem
         COMMAND_SET_ACTIVE_GRAPH,
         COMMAND_DELETE_NODE,
         COMMAND_COPY_NODE,
+        COMMAND_COMPARE_NODES,
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1142,6 +1143,11 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "node", &node);
             break;
+        case COMMAND_COMPARE_NODES:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "node", &node);
+            dagbase::ConfigurationElement::readConfig(config, "otherNode", &otherNode);
+            break;
         default:
             FAIL() << "Creating unknown command";
             break;
@@ -1203,7 +1209,13 @@ struct NodeEditorLiveScriptItem
         case COMMAND_COPY_NODE:
         {
             actualStatus = sut.copyNodes();
-            
+
+            break;
+        }
+        case COMMAND_COMPARE_NODES:
+        {
+            actualStatus = sut.compareNodes();
+
             break;
         }
         default:
@@ -1235,6 +1247,7 @@ struct NodeEditorLiveScriptItem
     dagbase::PortID toPort{ dagbase::PortID::INVALID_ID };
     dagbase::SignalPathID signalPath{ dagbase::SignalPathID::INVALID_ID };
     dagbase::NodeID node;
+    dagbase::NodeID otherNode;
     dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
     dag::NodeEditorLive::GraphChildPath graphChildPath;
     bool done{ false };
@@ -1253,6 +1266,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_SET_ACTIVE_GRAPH)
             ENUM_NAME(COMMAND_DELETE_NODE)
             ENUM_NAME(COMMAND_COPY_NODE)
+            ENUM_NAME(COMMAND_COMPARE_NODES)
         }
 
         return "<error>";
@@ -1270,6 +1284,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_SET_ACTIVE_GRAPH, str);
         TEST_ENUM(COMMAND_DELETE_NODE, str);
         TEST_ENUM(COMMAND_COPY_NODE, str);
+        TEST_ENUM(COMMAND_COMPARE_NODES, str);
 
         return COMMAND_UNKNOWN;
     }

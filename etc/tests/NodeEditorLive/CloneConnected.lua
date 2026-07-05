@@ -102,5 +102,15 @@ root=
 				},
 			}
 		},
+		{
+			cmd="COMMAND_COMPARE_NODES",
+			status=
+			{
+				statusCode="STATUS_OK",
+			},
+			assertions=
+			{
+			},
+		},
 	},
 }
