@@ -59,6 +59,82 @@ root=
 				},
 			},
 		},
+		{
+			name="Copying a MathsNode",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="nodeClass",
+					value="MathsNode",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value=6,
+				},
+			},
+		},
+		{
+			name="Copying a Final Node",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="nodeClass",
+					value="Final",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value=6,
+				},
+			},
+		},
+		{
+			name="Copying a BarTyped Node",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="nodeClass",
+					value="BarTyped",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value=2,
+				},
+			},
+		},
+		{
+			name="Copying a FooTyped Node",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="nodeClass",
+					value="FooTyped",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value=2,
+				},
+			},
+		},
 	},
 	items=
 	{

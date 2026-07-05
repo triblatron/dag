@@ -177,17 +177,28 @@ namespace dag
     public:
         Final(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
-                Derived(keyGen, name,category),
-                _int1(keyGen.nextPortID(), this, "int1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL, 1)
+                Derived(keyGen, name,category)
+
         {
-            // Do nothing.
+            _int1 = new dagbase::TypedPort<std::int64_t>(keyGen.nextPortID(), this, "int1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL, 1);
         }
 
         Final(const Final& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
                 :
-                Derived(other, facility, copyOp, keyGen),
-                _int1(other._int1.id(), this, other._int1.name(), other._int1.type(), other._int1.dir(), other._int1.value())
+                Derived(other, facility, copyOp, keyGen)
         {
+            std::uint64_t int1Id = 0;
+            if (facility.putOrig(other._int1, &int1Id))
+            {
+                _int1 = new dagbase::TypedPort(*other._int1, facility, copyOp, keyGen);
+            }
+            else
+            {
+                _int1 = static_cast<dagbase::TypedPort<std::int64_t>*>(facility.getClone(int1Id));
+            }
+            _int1->setParent(this);
+
+            //_int1 = new TypedPort(other._int1.id(), this, other._int1.name(), other._int1.type(), other._int1.dir(), other._int1.value())
             // for (std::size_t i = 0; i < other.totalPorts(); ++i)
             // {
             //     auto port = other.dynamicPort(i);
@@ -259,7 +270,7 @@ namespace dag
 
             if (index == firstPort)
             {
-                return &_int1;
+                return _int1;
             }
 
             if (index < firstPort + numPorts + _dynamicPorts.size())
@@ -270,7 +281,7 @@ namespace dag
             return nullptr;
         }
     private:
-        dagbase::TypedPort<std::int64_t> _int1;
+        dagbase::TypedPort<std::int64_t>* _int1{nullptr};
         static std::array<dagbase::MetaPort, 1> ports;
         typedef std::vector<dagbase::MetaPort> MetaPortArray;
         MetaPortArray _dynamicMetaPorts;
