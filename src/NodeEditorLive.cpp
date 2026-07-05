@@ -540,7 +540,7 @@ namespace dag
                     });
                 }
 
-                if (status.status != dagbase::Status::STATUS_OK)
+                if (status.status != dagbase::Status::STATUS_UNKNOWN)
                 {
                     return status;
                 }
