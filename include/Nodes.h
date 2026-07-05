@@ -52,6 +52,8 @@ namespace dag
 
         [[nodiscard]]bool equals(const dagbase::Node& other) const override;
 
+        bool operator==(const Node &other) const;
+
         double int1;
 
         [[nodiscard]]size_t totalPorts() const override

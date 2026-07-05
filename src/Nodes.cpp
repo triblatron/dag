@@ -266,7 +266,7 @@ namespace dag
 
     bool GroupTyped::equals(const Node &other) const
     {
-        return false;
+        return *this == static_cast<const GroupTyped&>(other);
     }
 
     void GroupTyped::debug(dagbase::DebugPrinter& printer) const
@@ -333,7 +333,23 @@ namespace dag
 
     bool Base::equals(const Node &other) const
     {
-        return false;
+        return operator==(static_cast<const Base&>(other));
+    }
+
+    bool Base::operator==(const Node &other) const
+    {
+        if (this == &other)
+            return true;
+
+        if (!Node::operator==(other))
+            return false;
+
+        const Base& otherBase = static_cast<const Base&>(other);
+
+        if (!(*this->_direction == *otherBase._direction))
+            return false;
+
+        return true;
     }
 
     Derived::Derived(const Derived& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)

@@ -103,6 +103,52 @@ root=
 			}
 		},
 		{
+			cmd="COMMAND_SELECT",
+			selection=
+			{
+				0,
+				2,
+			},
+			selectionMode="SELECTION_SET",
+			assertions=
+			{
+				{
+					path="numSelectedNodes",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
+			cmd="COMMAND_COMPARE_NODES",
+			status=
+			{
+				statusCode="STATUS_OK",
+			},
+			assertions=
+			{
+			},
+		},
+		{
+			cmd="COMMAND_SELECT",
+			selection=
+			{
+				1,
+				3,
+			},
+			selectionMode="SELECTION_SET",
+			assertions=
+			{
+				{
+					path="numSelectedNodes",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
 			cmd="COMMAND_COMPARE_NODES",
 			status=
 			{
