@@ -1031,6 +1031,30 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLiveTest, NodeEditorLiveTest_testCreateNodeIn
     std::make_tuple("etc/tests/NodeEditorLive/OneFooTyped.lua", dagbase::PortID(1))
 ));
 
+struct NodeEditorLiveSub
+{
+    std::int32_t index{0};
+    std::string name;
+    dagbase::Variant value;
+
+    void configure(dagbase::ConfigurationElement& config)
+    {
+        dagbase::ConfigurationElement::readConfig(config, "index", &index);
+        dagbase::ConfigurationElement::readConfig(config, "name", &name);
+        dagbase::ConfigurationElement::readConfig(config, "value", &value);
+    }
+};
+
+struct NodeEditorLiveCase
+{
+    std::vector<NodeEditorLiveSub> subs;
+
+    void configure(dagbase::ConfigurationElement& config)
+    {
+        dagbase::ConfigurationElement::readConfigVector(config, "subs", &subs);
+    }
+};
+
 struct NodeEditorLiveAssertion
 {
     std::string path;
@@ -1252,6 +1276,42 @@ struct NodeEditorLiveScriptItem
     dag::NodeEditorLive::GraphChildPath graphChildPath;
     bool done{ false };
 
+    void set(std::string_view name, dagbase::Variant value)
+    {
+        if (name == "nodeClass")
+        {
+            nodeClass = value.asString();
+        }
+        else if (name == "nodeName")
+        {
+            nodeName = value.asString();
+        }
+        else if (name == "fromPort")
+        {
+            fromPort = value.asInteger();
+        }
+        else if (name == "toPort")
+        {
+            toPort = value.asInteger();
+        }
+        else if (name == "signalPath")
+        {
+            signalPath = value.asInteger();
+        }
+        else if (name == "node")
+        {
+            node = value.asInteger();
+        }
+        else if (name == "otherNode")
+        {
+            otherNode = value.asInteger();
+        }
+        else if (name == "selectionMode")
+        {
+            selectionMode = static_cast<dag::NodeEditorInterface::SelectionMode>(value.asUint32());
+        }
+    }
+
     static const char* commandToString(Command value)
     {
         switch (value)
@@ -1295,32 +1355,51 @@ class NodeEditorLiveScript
 public:
     void configure(dagbase::ConfigurationElement& config)
     {
+        dagbase::ConfigurationElement::readConfigVector(config, "cases", &_cases);
         dagbase::ConfigurationElement::readConfigVector(config, "items", &_items);
-        _currentItem = _items.begin();
-    }
-
-    bool done() const
-    {
-        return _currentItem == _items.end();
     }
 
     void makeItSo(dag::NodeEditorLive& sut);
 private:
+    using CaseArray = std::vector<NodeEditorLiveCase>;
+    CaseArray _cases;
     using ItemArray = std::vector<NodeEditorLiveScriptItem>;
     ItemArray _items;
-    ItemArray::iterator _currentItem;
 };
 
 void NodeEditorLiveScript::makeItSo(dag::NodeEditorLive& sut)
 {
-    if (!done())
+    if (!_cases.empty())
     {
-        _currentItem->makeItSo(sut);
-        if (_currentItem->done)
+        
+        for (const auto& currentCase : _cases)
         {
-            ++_currentItem;
+            // Make the substitutions
+            for (auto sub : currentCase.subs)
+            {
+                _items[sub.index].set(sub.name, sub.value);
+            }
+
+            for (auto item : _items)
+            {
+                item.makeItSo(sut);
+            }
         }
     }
+    else
+    {
+        // Original pattern with no explicit cases, just an implicit one with no substitutions
+        for (auto item : _items)
+        {
+            item.makeItSo(sut);
+        }
+    }
+
+        // _currentItem->makeItSo(sut);
+        // if (_currentItem->done)
+        // {
+        //     ++_currentItem;
+        // }
 }
 
 class NodeEditorLive_testScripted : public ::testing::TestWithParam<std::tuple<const char*>>
@@ -1356,10 +1435,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
     //dagbase::Lua lua;
     //auto graphConfig = dagbase::ConfigurationElement::fromFile(lua, graphFilename);
     //ASSERT_NE(nullptr, graphConfig);
-    while (!_script.done())
-    {
-        _script.makeItSo(*_sut);
-    }
+    _script.makeItSo(*_sut);
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(

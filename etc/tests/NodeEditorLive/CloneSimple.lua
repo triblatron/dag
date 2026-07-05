@@ -1,10 +1,23 @@
 root=
 {
+	cases=
+	{
+		{
+			subs=
+			{
+				{
+					index=0,
+					name="nodeClass",
+					value="GroupTyped",
+				},
+			},
+		},
+	},
 	items=
 	{
 		{
 			cmd="COMMAND_CREATE_NODE",
-			nodeClass="GroupTyped",
+			nodeClass="",
 			nodeName="group1",
 			status=
 			{
