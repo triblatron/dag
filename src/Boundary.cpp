@@ -118,9 +118,15 @@ namespace dag
     {
         Node::debug(printer);
         printer.indent();
-        for (auto port : _dynamicPorts)
+        for (const auto port : _dynamicPorts)
         {
             port->debug(printer);
+        }
+        printer.outdent();
+        printer.indent();
+        for (const auto& metaPort : _dynamicMetaPorts)
+        {
+            metaPort.debug(printer);
         }
         printer.outdent();
     }

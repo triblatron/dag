@@ -198,6 +198,31 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+				{
+					path="activeGraph.nodes[5].class",
+					value="GraphNode",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[6].class",
+					value="GraphNode",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[7].class",
+					value="BarTyped",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[8].class",
+					value="FooTyped",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.ports[8].parentClass",
+					value="BarTyped",
+					op="RELOP_EQ",
+				},
 			}
 		},
 	}

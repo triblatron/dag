@@ -98,6 +98,12 @@ namespace dag
         printer.indent();
         _in1->debug(printer);
         printer.outdent();
+        printer.indent();
+        for (std::size_t i = 0; i < totalPorts(); ++i)
+        {
+            dynamicMetaPort(i)->debug(printer);
+        }
+        printer.outdent();
     }
 
     FooTyped::~FooTyped()
@@ -159,6 +165,12 @@ namespace dag
         Node::debug(printer);
         printer.indent();
         _out1->debug(printer);
+        printer.outdent();
+        printer.indent();
+        for (std::size_t i = 0; i < totalPorts(); ++i)
+        {
+            dynamicMetaPort(i)->debug(printer);
+        }
         printer.outdent();
     }
 
@@ -275,6 +287,12 @@ namespace dag
         printer.indent();
         _out1->debug(printer);
         _in1->debug(printer);
+        printer.outdent();
+        printer.indent();
+        for (std::size_t i = 0; i < totalPorts(); ++i)
+        {
+            dynamicMetaPort(i)->debug(printer);
+        }
         printer.outdent();
     }
 
