@@ -223,10 +223,26 @@ root=
 					value="GroupTyped",
 					op="RELOP_EQ",
 				},
-				--~ {
-					--~ path="activeGraph.signalPaths[8].fromPort",
-					--~ value=
-				--~ },
+				{
+					path="activeGraph.signalPaths[4].fromPort",
+					value=3,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[4].toPort",
+					value=5,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[5].fromPort",
+					value=7,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[5].toPort",
+					value=2,
+					op="RELOP_EQ",
+				},
 			}
 		},
 		{
