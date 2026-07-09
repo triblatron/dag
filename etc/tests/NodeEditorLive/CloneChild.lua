@@ -210,20 +210,52 @@ root=
 				},
 				{
 					path="activeGraph.nodes[7].class",
-					value="BarTyped",
+					value="GroupTyped",
 					op="RELOP_EQ",
 				},
 				{
 					path="activeGraph.nodes[8].class",
-					value="FooTyped",
+					value="Boundary",
 					op="RELOP_EQ",
 				},
 				{
 					path="activeGraph.ports[8].parentClass",
-					value="BarTyped",
+					value="GroupTyped",
 					op="RELOP_EQ",
 				},
+				--~ {
+					--~ path="activeGraph.signalPaths[8].fromPort",
+					--~ value=
+				--~ },
 			}
+		},
+		{
+			cmd="COMMAND_SELECT",
+			selection=
+			{
+				5,
+				6,
+			},
+			selectionMode="SELECTION_SET",
+			assertions=
+			{
+				{
+					path="numSelectedNodes",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
+			cmd="COMMAND_COMPARE_NODES",
+			status=
+			{
+				statusCode="STATUS_OK",
+			},
+			assertions=
+			{
+			},
 		},
 	}
 }
