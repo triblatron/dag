@@ -9,6 +9,7 @@ graph=
             category="Group",
             ports=
             {
+                [1]=
                 {
                     name="foo",
                     class="TypedPort<bool>",
@@ -16,6 +17,7 @@ graph=
                     type="TYPE_BOOL",
                     value=true
                 },
+                [2]=
                 {
                     name="bar",
                     class="TypedPort<string>",
@@ -23,6 +25,7 @@ graph=
                     type="TYPE_STRING",
                     value="wibble"
                 },
+                [3]=
                 {
                     name="baz",
                     class="TypedPort<int64_t>",
@@ -30,6 +33,7 @@ graph=
                     type="TYPE_INT64",
                     value=1
                 },
+                [4]=
                 {
                     name="qux",
                     class="TypedPort<double>",
