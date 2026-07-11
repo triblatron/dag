@@ -42,22 +42,21 @@ namespace dag
 		}
 	}
 	
-    void MemoryNodeLibrary::eachNode(std::function<bool(dagbase::Node&)> f)
+    void MemoryNodeLibrary::eachNode(std::function<bool(const std::string&, dagbase::Node&)> f)
     {
-        for (auto c : _classes)
+        for (const auto& c : _classes)
         {
-            if (!f || !f(*c.second))
+            if (!f || !f(c.first, *c.second))
                 break;
         }
     }
 
     dagbase::Node* dag::MemoryNodeLibrary::instantiateNode(dagbase::KeyGenerator& keyGen, const std::string& className, const std::string& name)
     {
-        dagbase::CloningFacility facility;
-
-	    if (auto const it = _classes.m.find(className); it != _classes.end() )
+        if (auto const it = _classes.m.find(className); it != _classes.end() )
         {
-	        const auto copy = it->second->clone(facility, dagbase::GENERATE_UNIQUE_ID_BIT, &keyGen);
+            dagbase::CloningFacility facility;
+            const auto copy = it->second->clone(facility, dagbase::GENERATE_UNIQUE_ID_BIT, &keyGen);
             copy->setName(name);
 
             return copy;

@@ -37,7 +37,7 @@ namespace dag
             return _classes.size();
         }
 
-		void eachNode(std::function<bool(dagbase::Node&)> f);
+		void eachNode(std::function<bool(const std::string&, dagbase::Node&)> f);
 
 		dagbase::Node* instantiateNode(dagbase::KeyGenerator& keyGen, const std::string& className, const std::string& name) override;
 

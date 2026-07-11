@@ -44,7 +44,7 @@ namespace dag
 
         dagbase::Status load(const char* filename);
 
-        void eachClass(std::function<bool(dagbase::Node&)> f);
+        void eachClass(std::function<bool(const std::string&, dagbase::Node&)> f);
 
         void eachNode(std::function<bool(dagbase::Node*)> f);
 

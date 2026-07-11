@@ -73,7 +73,7 @@ namespace dag
         return status;
     }
 
-    void NodeEditorLive::eachClass(std::function<bool(dagbase::Node&)> f)
+    void NodeEditorLive::eachClass(std::function<bool(const std::string&, dagbase::Node&)> f)
     {
         if (_nodeLib)
             _nodeLib->eachNode(f);

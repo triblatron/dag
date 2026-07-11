@@ -1204,7 +1204,7 @@ struct NodeEditorLiveScriptItem
         dagbase::ConfigurationElement::readConfigVector(config, "assertions", &assertions);
     }
 
-    void makeItSo(dag::NodeEditorLive& sut, const std::string caseName)
+    void makeItSo(dag::NodeEditorLive& sut, const std::string &caseName)
     {
         done = true;
         dagbase::Status actualStatus{dagbase::Status::STATUS_UNKNOWN};
