@@ -511,9 +511,26 @@ namespace dag
         return status;
     }
 
-    dagbase::Status NodeEditorLive::createTemplate(dagbase::NodeID id)
+    dagbase::Status NodeEditorLive::createTemplate(std::string className)
     {
-        return {};
+        dagbase::Status status;
+
+        if (_selection->count() != 1)
+        {
+            status.status = dagbase::Status::STATUS_INVALID_SELECTION;
+            return status;
+        }
+
+        auto source = _selection->internals().a[0];
+        if (!_nodeLib)
+        {
+            status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
+            return status;
+        }
+        _nodeLib->registerTemplate(className, _selection->internals().a[0]);
+        status.status = dagbase::Status::STATUS_OK;
+
+        return status;
     }
 
     dagbase::Status NodeEditorLive::deleteTemplate(dagbase::TemplateID id)
@@ -546,6 +563,12 @@ namespace dag
         if (retval.has_value())
             return retval;
 
+        if (_nodeLib)
+        {
+            retval = dagbase::findInternal(path, "nodeLib", _nodeLib);
+            if (retval.has_value())
+                return retval;
+        }
         if (_graph)
         {
             retval = dagbase::findInternal(path, "graph", _graph);

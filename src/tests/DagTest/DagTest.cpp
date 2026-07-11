@@ -1117,6 +1117,7 @@ struct NodeEditorLiveScriptItem
         COMMAND_DELETE_NODE,
         COMMAND_COPY_NODE,
         COMMAND_COMPARE_NODES,
+        COMMAND_CREATE_TEMPLATE
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1191,6 +1192,11 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "node", &node);
             dagbase::ConfigurationElement::readConfig(config, "otherNode", &otherNode);
             break;
+        case COMMAND_CREATE_TEMPLATE:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "nodeClass", &nodeClass);
+
+            break;
         default:
             FAIL() << "Creating unknown command";
             break;
@@ -1258,6 +1264,12 @@ struct NodeEditorLiveScriptItem
         case COMMAND_COMPARE_NODES:
         {
             actualStatus = sut.compareNodes();
+
+            break;
+        }
+        case COMMAND_CREATE_TEMPLATE:
+        {
+            actualStatus = sut.createTemplate(nodeClass);
 
             break;
         }
@@ -1346,6 +1358,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_DELETE_NODE)
             ENUM_NAME(COMMAND_COPY_NODE)
             ENUM_NAME(COMMAND_COMPARE_NODES)
+            ENUM_NAME(COMMAND_CREATE_TEMPLATE)
         }
 
         return "<error>";
@@ -1364,6 +1377,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_DELETE_NODE, str);
         TEST_ENUM(COMMAND_COPY_NODE, str);
         TEST_ENUM(COMMAND_COMPARE_NODES, str);
+        TEST_ENUM(COMMAND_CREATE_TEMPLATE, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1478,6 +1492,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
     std::make_tuple("etc/tests/NodeEditorLive/CloneSimple.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CloneConnected.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/CreateTemplateOneNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CloneChild.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChildFromEmptySelection.lua"),

@@ -83,7 +83,7 @@ namespace dag
         dagbase::Status compareNodes();
 
         //! Create a template from a Group
-        dagbase::Status createTemplate(dagbase::NodeID id) override;
+        dagbase::Status createTemplate(std::string className) override;
 
         dagbase::Status deleteTemplate(dagbase::TemplateID id) override;
 

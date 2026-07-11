@@ -23,15 +23,15 @@ namespace dag
 	    :
     NodeLibrary()
     {
-        _classes["FooTyped"] = new FooTyped(*this, "footyped1", dagbase::NodeCategory::CAT_SINK);
-        _classes["BarTyped"] = new BarTyped(*this, "bartyped1", dagbase::NodeCategory::CAT_SOURCE);
-        _classes["GroupTyped"] = new GroupTyped(*this, "grouptyped1", dagbase::NodeCategory::CAT_GROUP);
-        _classes["Base"] = new Base(*this, "base1", dagbase::NodeCategory::CAT_SOURCE);
-        _classes["Derived"] = new Derived(*this, "derived1", dagbase::NodeCategory::CAT_CONDITION);
-        _classes["Final"] = new Final(*this, "final1", dagbase::NodeCategory::CAT_GROUP);
-        _classes["Boundary"] = new Boundary(*this, "b1", dagbase::NodeCategory::CAT_GROUP);
-        _classes["MathsNode"] = new MathsNode(*this, "maths1", dagbase::NodeCategory::CAT_ACTION);
-        _classes["GraphNode"] = new dagbase::GraphNode(*this, "graph1", dagbase::NodeCategory::CAT_GROUP);
+        _classes.emplace("FooTyped", new FooTyped(*this, "footyped1", dagbase::NodeCategory::CAT_SINK));
+        _classes.emplace("BarTyped", new BarTyped(*this, "bartyped1", dagbase::NodeCategory::CAT_SOURCE));
+        _classes.emplace("GroupTyped", new GroupTyped(*this, "grouptyped1", dagbase::NodeCategory::CAT_GROUP));
+        _classes.emplace("Base", new Base(*this, "base1", dagbase::NodeCategory::CAT_SOURCE));
+        _classes.emplace("Derived", new Derived(*this, "derived1", dagbase::NodeCategory::CAT_CONDITION));
+        _classes.emplace("Final", new Final(*this, "final1", dagbase::NodeCategory::CAT_GROUP));
+        _classes.emplace("Boundary", new Boundary(*this, "b1", dagbase::NodeCategory::CAT_GROUP));
+        _classes.emplace("MathsNode", new MathsNode(*this, "maths1", dagbase::NodeCategory::CAT_ACTION));
+        _classes.emplace("GraphNode", new dagbase::GraphNode(*this, "graph1", dagbase::NodeCategory::CAT_GROUP));
     }
 
     MemoryNodeLibrary::~MemoryNodeLibrary()
@@ -55,18 +55,15 @@ namespace dag
     {
         dagbase::CloningFacility facility;
 
-	    if (auto const it = _classes.find(className); it != _classes.end() )
+	    if (auto const it = _classes.m.find(className); it != _classes.end() )
         {
 	        const auto copy = it->second->clone(facility, dagbase::GENERATE_UNIQUE_ID_BIT, &keyGen);
             copy->setName(name);
 
             return copy;
         }
-        else
-        {
-            throw std::runtime_error("Unknown class \"" + className + "\"");
-        }
-        return nullptr;
+
+        throw std::runtime_error("Unknown class \"" + className + "\"");
     }
 
 //    OutputStream &MemoryNodeLibrary::write(OutputStream &str) const
@@ -89,7 +86,7 @@ namespace dag
         std::string fieldName;
         str.readField(&fieldName);
         str.readString(&className, true);
-        if (auto it=_classes.find(className); it!=_classes.end())
+        if (auto it=_classes.m.find(className); it!=_classes.end())
         {
             return it->second->create(str, *this, lua);
         }
@@ -170,6 +167,17 @@ namespace dag
         return nullptr;
     }
 
+    dagbase::Variant MemoryNodeLibrary::find(std::string_view path) const
+    {
+        dagbase::Variant retval;
+
+        retval = dagbase::findInternal(path, "classes", _classes);
+        if (retval.has_value())
+            return retval;
+
+        return {};
+    }
+
     dagbase::OutputStream &MemoryNodeLibrary::write(dagbase::OutputStream& str, dagbase::Node *node, dagbase::Lua &lua)
     {
         std::string className = node->className();
@@ -184,13 +192,28 @@ namespace dag
         if (node != nullptr)
         {
             std::string className = node->className();
-            if (_classes.find(className)==_classes.end())
+            if (_classes.m.find(className)==_classes.end())
             {
-                _classes.insert(PrototypeMap::value_type(className, node));
+                _classes.emplace(className, node);
             }
         }
     }
-/*
+
+    void MemoryNodeLibrary::registerTemplate(std::string className, dagbase::Node *source)
+    {
+        if (source && !className.empty())
+        {
+            if (_classes.m.find(className)==_classes.end())
+            {
+                dagbase::CloningFacility facility;
+                auto templ = source->clone(facility, dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT, this);
+                if (templ)
+                    _classes.emplace(className, templ);
+            }
+        }
+    }
+
+    /*
     MemoryNodeLibrary::MemoryNodeLibrary(InputStream &str)
     {
         size_t len = 0;

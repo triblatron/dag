@@ -3,15 +3,17 @@
 #include "config/Export.h"
 
 #include "core/NodeLibrary.h"
-#include "core/KeyGenerator.h"
 #include "core/LuaInterface.h"
 
 #include <string>
 #include <unordered_map>
 
+#include "util/SearchableMap.h"
+#include "util/VectorMap.h"
+
 namespace dag
 {
-	class DAG_API MemoryNodeLibrary final : public dagbase::NodeLibrary, public dagbase::KeyGenerator
+	class DAG_API MemoryNodeLibrary final : public dagbase::NodeLibrary
 	{
 	public:
 		MemoryNodeLibrary();
@@ -27,6 +29,8 @@ namespace dag
 		~MemoryNodeLibrary() override;
 
         void registerNode(dagbase::Node* node) override;
+
+	    void registerTemplate(std::string className, dagbase::Node* templ) override;
 
         [[nodiscard]]std::size_t numNodes() const override
         {
@@ -48,6 +52,8 @@ namespace dag
 
 		dagbase::Class* instantiate(const char* baseClassName, dagbase::InputStream& str, dagbase::Lua& lua) override;
 
+	    dagbase::Variant find(std::string_view path) const override;
+
 		dagbase::NodeID nextNodeID() override
 		{
 			return _nextNodeID++;
@@ -58,7 +64,7 @@ namespace dag
 			return _nextPortID++;
 		}
 	private:
-		typedef std::unordered_map<std::string, dagbase::Node*> PrototypeMap;
+		typedef dagbase::SearchableMap<dagbase::VectorMap<std::string, dagbase::Node*>> PrototypeMap;
 		PrototypeMap _classes;
 		dagbase::NodeID _nextNodeID{ 0 };
 		dagbase::PortID _nextPortID{ 0 };

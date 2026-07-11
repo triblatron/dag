@@ -73,7 +73,7 @@ public:
         virtual dagbase::Status createChild() = 0;
 
         //! Create a template from a Group
-        virtual dagbase::Status createTemplate(dagbase::NodeID id) = 0;
+        virtual dagbase::Status createTemplate(std::string className) = 0;
 
         virtual dagbase::Status deleteTemplate(dagbase::TemplateID id) = 0;
 
