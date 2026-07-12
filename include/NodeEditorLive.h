@@ -87,6 +87,10 @@ namespace dag
 
         dagbase::Status deleteTemplate(dagbase::TemplateID id) override;
 
+        dagbase::Status browseDown();
+
+        dagbase::Status browseUp();
+
         dagbase::Variant find(std::string_view path) const;
 
         void debug();

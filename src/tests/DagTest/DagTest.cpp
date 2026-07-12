@@ -1117,7 +1117,9 @@ struct NodeEditorLiveScriptItem
         COMMAND_DELETE_NODE,
         COMMAND_COPY_NODE,
         COMMAND_COMPARE_NODES,
-        COMMAND_CREATE_TEMPLATE
+        COMMAND_CREATE_TEMPLATE,
+        COMMAND_BROWSE_DOWN,
+        COMMAND_BROWSE_UP
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1197,6 +1199,14 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "nodeClass", &nodeClass);
 
             break;
+        case COMMAND_BROWSE_DOWN:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+
+            break;
+        case COMMAND_BROWSE_UP:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+
+            break;
         default:
             FAIL() << "Creating unknown command";
             break;
@@ -1270,6 +1280,18 @@ struct NodeEditorLiveScriptItem
         case COMMAND_CREATE_TEMPLATE:
         {
             actualStatus = sut.createTemplate(nodeClass);
+
+            break;
+        }
+        case COMMAND_BROWSE_DOWN:
+        {
+            actualStatus = sut.browseDown();
+
+            break;
+        }
+        case COMMAND_BROWSE_UP:
+        {
+            actualStatus = sut.browseUp();
 
             break;
         }
@@ -1359,6 +1381,8 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_COPY_NODE)
             ENUM_NAME(COMMAND_COMPARE_NODES)
             ENUM_NAME(COMMAND_CREATE_TEMPLATE)
+            ENUM_NAME(COMMAND_BROWSE_DOWN)
+            ENUM_NAME(COMMAND_BROWSE_UP)
         }
 
         return "<error>";
@@ -1378,6 +1402,8 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_COPY_NODE, str);
         TEST_ENUM(COMMAND_COMPARE_NODES, str);
         TEST_ENUM(COMMAND_CREATE_TEMPLATE, str);
+        TEST_ENUM(COMMAND_BROWSE_DOWN, str);
+        TEST_ENUM(COMMAND_BROWSE_UP, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1492,6 +1518,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
     std::make_tuple("etc/tests/NodeEditorLive/CloneSimple.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CloneConnected.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/BrowseGraphs.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateTemplateOneNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CloneChild.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChild.lua"),

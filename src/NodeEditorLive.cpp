@@ -538,6 +538,47 @@ namespace dag
         return {};
     }
 
+    dagbase::Status NodeEditorLive::browseDown()
+    {
+        dagbase::Status status;
+
+        if (_selection->count() == 1)
+        {
+            if (auto graphNode = dynamic_cast<dagbase::GraphNode*>(_selection->internals().a[0]); graphNode)
+            {
+                _activeGraph = graphNode->graph();
+
+                status.status = dagbase::Status::STATUS_OK;
+            }
+            else
+            {
+                status.status = dagbase::Status::STATUS_INVALID_SELECTION;
+            }
+        }
+        else
+        {
+            status.status = dagbase::Status::STATUS_INVALID_SELECTION;
+        }
+        return status;
+    }
+
+    dagbase::Status NodeEditorLive::browseUp()
+    {
+        dagbase::Status status;
+
+        if (_activeGraph->parent())
+        {
+            _activeGraph = _activeGraph->parent();
+            status.status = dagbase::Status::STATUS_OK;
+        }
+        else
+        {
+            status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
+        }
+
+        return status;
+    }
+
     void NodeEditorLive::debug()
     {
         if (_graph)
