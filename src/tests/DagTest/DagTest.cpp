@@ -30,6 +30,8 @@
 #include <algorithm>
 #include <filesystem>
 
+#include "util/PrettyPrinter.h"
+
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dagbase::PortDirection::Direction, double>>
 {
 };
@@ -2012,7 +2014,9 @@ TEST_P(GraphTest_toLuaRoundTrip, testRoundTrip)
     ASSERT_NE(nullptr, sut);
     std::string graphString;
     std::ostringstream graphStr;
-    sut->toLua(graphStr);
+    dagbase::DebugPrinter printer;
+    printer.setStr(&graphStr);
+    sut->toLua(printer);
     graphString = graphStr.str();
     std::cerr << graphString << '\n';
     auto actual = dagbase::Graph::fromString(nodeLib, graphString.c_str());
@@ -2164,8 +2168,11 @@ TEST(GraphTest, testPersistNodeFromPlugin)
     graph->addNode(node);
     ASSERT_EQ(size_t{1}, graph->numNodes());
     std::ostringstream  str;
-    graph->toLua(str);
+    dagbase::DebugPrinter printer;
+    printer.setStr(&str);
+    graph->toLua(printer);
     auto graph2 = dagbase::Graph::fromString(nodeLib, str.str().c_str());
+    ASSERT_NE(nullptr, graph2);
     EXPECT_EQ(*graph,*graph2);
     delete graph2;
     delete graph;
