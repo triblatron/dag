@@ -76,19 +76,19 @@ namespace dag
     void NodeEditorLive::eachClass(std::function<bool(const std::string&, dagbase::Node&)> f)
     {
         if (_nodeLib)
-            _nodeLib->eachNode(f);
+            _nodeLib->eachNode(std::move(f));
     }
 
     void NodeEditorLive::eachNode(std::function<bool(dagbase::Node*)> f)
     {
         if (_activeGraph)
-            _activeGraph->eachNode(f);
+            _activeGraph->eachNode(std::move(f));
     }
 
     void NodeEditorLive::eachSignalPath(std::function<bool(dagbase::SignalPath*)> f)
     {
         if (_activeGraph)
-            _activeGraph->eachSignalPath(f);
+            _activeGraph->eachSignalPath(std::move(f));
     }
 
     dagbase::Status NodeEditorLive::select(NodeEditorInterface::SelectionMode mode, SelectionInterface::Cont &a)
