@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <filesystem>
 
+#include "MetaOperation.h"
 #include "util/PrettyPrinter.h"
 
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dagbase::PortDirection::Direction, double>>
@@ -1121,7 +1122,10 @@ struct NodeEditorLiveScriptItem
         COMMAND_COMPARE_NODES,
         COMMAND_CREATE_TEMPLATE,
         COMMAND_BROWSE_DOWN,
-        COMMAND_BROWSE_UP
+        COMMAND_BROWSE_UP,
+        COMMAND_SET_POSITION,
+        COMMAND_SAVE,
+        COMMAND_LOAD
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1185,16 +1189,16 @@ struct NodeEditorLiveScriptItem
             break;
         case COMMAND_DELETE_NODE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
-            dagbase::ConfigurationElement::readConfig(config, "node", &node);
+            dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
             break;
         case COMMAND_COPY_NODE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
-            dagbase::ConfigurationElement::readConfig(config, "node", &node);
+            dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
             break;
         case COMMAND_COMPARE_NODES:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
-            dagbase::ConfigurationElement::readConfig(config, "node", &node);
-            dagbase::ConfigurationElement::readConfig(config, "otherNode", &otherNode);
+            dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
+            dagbase::ConfigurationElement::readConfig(config, "otherNode", &otherNodeId);
             break;
         case COMMAND_CREATE_TEMPLATE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
@@ -1206,6 +1210,17 @@ struct NodeEditorLiveScriptItem
 
             break;
         case COMMAND_BROWSE_UP:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+
+            break;
+        case COMMAND_SET_POSITION:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
+            dagbase::ConfigurationElement::readConfig(config, "x", &position[0]);
+            dagbase::ConfigurationElement::readConfig(config, "y", &position[1]);
+
+            break;
+        case COMMAND_SAVE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
 
             break;
@@ -1264,7 +1279,7 @@ struct NodeEditorLiveScriptItem
 
             break;
         case COMMAND_DELETE_NODE:
-            actualStatus = sut.deleteNode(node);
+            actualStatus = sut.deleteNode(nodeId);
 
             break;
         case COMMAND_COPY_NODE:
@@ -1297,6 +1312,31 @@ struct NodeEditorLiveScriptItem
 
             break;
         }
+        case COMMAND_SET_POSITION:
+        {
+            auto node = sut.activeGraph()->node(nodeId);
+            if (node)
+            {
+                node->setPosition(position[0], position[1]);
+                actualStatus.status = dagbase::Status::STATUS_OK;
+            }
+            break;
+        }
+        case COMMAND_SAVE:
+        {
+            dagbase::DebugPrinter printer;
+            std::ostringstream sstr;
+            printer.setStr(&sstr);
+            sut.activeGraph()->toLua(printer);
+            actualStatus = sut.save(printer);
+            dagbase::Lua lua;
+            dag::MemoryNodeLibrary nodeLib;
+            auto str = sstr.str();
+            auto restored = dagbase::Graph::fromString(nodeLib, str.c_str(), &actualStatus);
+            ASSERT_NE(nullptr, restored);
+            ASSERT_EQ(*sut.activeGraph(), *restored);
+            break;
+        }
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1325,10 +1365,11 @@ struct NodeEditorLiveScriptItem
     dagbase::PortID fromPort{ dagbase::PortID::INVALID_ID };
     dagbase::PortID toPort{ dagbase::PortID::INVALID_ID };
     dagbase::SignalPathID signalPath{ dagbase::SignalPathID::INVALID_ID };
-    dagbase::NodeID node;
-    dagbase::NodeID otherNode;
+    dagbase::NodeID nodeId;
+    dagbase::NodeID otherNodeId;
     dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
     dag::NodeEditorLive::GraphChildPath graphChildPath;
+    float position[2];
     bool done{ false };
 
     void set(std::string_view name, dagbase::Variant value)
@@ -1355,11 +1396,11 @@ struct NodeEditorLiveScriptItem
         }
         else if (name == "node")
         {
-            node = value.asInteger();
+            nodeId = value.asInteger();
         }
         else if (name == "otherNode")
         {
-            otherNode = value.asInteger();
+            otherNodeId = value.asInteger();
         }
         else if (name == "selectionMode")
         {
@@ -1385,6 +1426,9 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_CREATE_TEMPLATE)
             ENUM_NAME(COMMAND_BROWSE_DOWN)
             ENUM_NAME(COMMAND_BROWSE_UP)
+            ENUM_NAME(COMMAND_SET_POSITION)
+            ENUM_NAME(COMMAND_SAVE)
+            ENUM_NAME(COMMAND_LOAD)
         }
 
         return "<error>";
@@ -1406,6 +1450,9 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_CREATE_TEMPLATE, str);
         TEST_ENUM(COMMAND_BROWSE_DOWN, str);
         TEST_ENUM(COMMAND_BROWSE_UP, str);
+        TEST_ENUM(COMMAND_SET_POSITION, str);
+        TEST_ENUM(COMMAND_SAVE, str);
+        TEST_ENUM(COMMAND_LOAD, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1518,6 +1565,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/Save.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CloneSimple.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CloneConnected.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/BrowseGraphs.lua"),

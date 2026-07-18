@@ -603,6 +603,23 @@ namespace dag
         return status;
     }
 
+    dagbase::Status NodeEditorLive::save(dagbase::DebugPrinter &printer)
+    {
+        dagbase::Status status;
+
+        if (_activeGraph)
+        {
+            _activeGraph->toLua(printer);
+            status.status = dagbase::Status::STATUS_OK;
+        }
+        else
+        {
+            status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
+        }
+
+        return status;
+    }
+
     void NodeEditorLive::debug()
     {
         if (_graph)

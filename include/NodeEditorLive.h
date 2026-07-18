@@ -93,6 +93,8 @@ namespace dag
 
         dagbase::Status browseUp();
 
+        dagbase::Status save(dagbase::DebugPrinter& printer);
+
         dagbase::Variant find(std::string_view path) const;
 
         void debug();
