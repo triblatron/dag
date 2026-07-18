@@ -48,6 +48,16 @@ namespace dag
             return _internals;
         }
 
+        const NodeArray& externalInputs() const
+        {
+            return _externalInputs;
+        }
+
+        const NodeArray& externalOutputs() const
+        {
+            return _externalOutputs;
+        }
+
         void reconnectInputs(dagbase::Node* newSource, dagbase::KeyGenerator& keyGen) override;
 
         void reconnectOutputs(dagbase::Node* newSink, dagbase::KeyGenerator& keyGen) override;
@@ -59,6 +69,8 @@ namespace dag
         NodeArray _inputs;
         NodeArray _outputs;
         NodeArray _internals;
+        NodeArray _externalInputs;
+        NodeArray _externalOutputs;
     };
 
 }

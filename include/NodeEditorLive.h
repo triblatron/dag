@@ -74,6 +74,8 @@ namespace dag
         //! Disconnect two ports
         dagbase::Status disconnect(dagbase::SignalPathID id) override;
 
+        static void meanPosition(const SelectionInterface::NodeArray & nodes, float pos[2]);
+
         //! Create a GraphNode from the selection
         dagbase::Status createChild() override;
 

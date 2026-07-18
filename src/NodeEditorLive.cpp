@@ -313,6 +313,22 @@ namespace dag
         return dagbase::Status{dagbase::Status::STATUS_OBJECT_NOT_FOUND};
     }
 
+    void NodeEditorLive::meanPosition(const SelectionInterface::NodeArray &nodes, float pos[2])
+    {
+        float total[2]{};
+        for (auto node : nodes)
+        {
+            total[0] += node->position()[0];
+            total[1] += node->position()[1];
+        }
+
+        total[0] /= float(nodes.size());
+        total[1] /= float(nodes.size());
+
+        pos[0] = total[0];
+        pos[1] = total[1];
+    }
+
     dagbase::Status NodeEditorLive::createChild()
     {
         if (_graph && _activeGraph)
@@ -330,8 +346,14 @@ namespace dag
                 child->setNodeLibrary(_nodeLib);
                 // We create Nodes using the parent Graph for consistency of IDs.
                 auto boundaryInput = _graph->createNode("Boundary","boundaryInput");
-                auto boundaryOutput = _graph->createNode("Boundary", "boundaryOutput");
+                float meanInputPos[2]{};
+                meanPosition(_selection->externalInputs(), meanInputPos);
+                boundaryInput->setPosition(meanInputPos[0], meanInputPos[1]);
 
+                auto boundaryOutput = _graph->createNode("Boundary", "boundaryOutput");
+                float meanOutputPos[2]{};
+                meanPosition(_selection->externalOutputs(), meanOutputPos);
+                boundaryOutput->setPosition(meanOutputPos[0], meanOutputPos[1]);
                 std::vector<dagbase::SignalPath*> toRemove;
                 const NodeArray& inputs = _selection->inputs();
                 for (auto input : inputs)
@@ -415,7 +437,9 @@ namespace dag
                 if (auto graphNode = dynamic_cast<dagbase::GraphNode*>(_graph->createNode("GraphNode", "child" + std::to_string(_graph->numChildren()))); graphNode)
                 {
                     graphNode->setGraph(child);
-
+                    float meanInternalPos[2]{};
+                    meanPosition(_selection->internals(), meanInternalPos);
+                    graphNode->setPosition(meanInternalPos[0], meanInternalPos[1]);
                     // Add the inputs of the Boundary input and the outputs of the Boundary output
                     for (std::size_t i=0; i<boundaryInput->totalPorts(); ++i)
                     {

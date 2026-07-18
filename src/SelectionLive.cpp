@@ -89,6 +89,8 @@ namespace dag
             _inputs.clear();
             _outputs.clear();
             _internals.clear();
+            _externalInputs.clear();
+            _externalOutputs.clear();
 
             for (auto node : _selection)
             {
@@ -102,6 +104,7 @@ namespace dag
                             if (p->parent() != nullptr && !isSelected(p->parent()))
                             {
                                 isInput = true;
+                                _externalInputs.a.emplace_back(p->parent());
 
                                 return false;
                             }
@@ -123,6 +126,7 @@ namespace dag
                             if (p->parent() != nullptr && !isSelected(p->parent()))
                             {
                                 isOutput = true;
+                                _externalOutputs.a.emplace_back(p->parent());
 
                                 return false;
                             }
