@@ -3,12 +3,14 @@ graph=
     nodes=
     {
         {
+			id=0,
             name="foo1",
             class="FooTyped",
             category="CATEGORY_SINK",
             ports=
             {
                 {
+					id=0,
                     name="in1",
                     class="TypedPort<double>",
                     direction="DIR_IN",
@@ -18,12 +20,14 @@ graph=
             }
         },
         {
+			id=1,
             name="bar1",
             class="BarTyped",
             category="CATEGORY_SOURCE",
             ports=
             {
                 {
+					id=1,
                     name="out1",
                     class="TypedPort<double>",
                     direction="DIR_OUT",
@@ -36,9 +40,10 @@ graph=
     signalpaths=
     {
         {
-            sourceNode="bar1",
-            sourcePort=0,
-            destNode="foo1",
+			id=0,
+            sourceNode=1,
+            sourcePort=1,
+            destNode=0,
             destPort=0
         },
     }

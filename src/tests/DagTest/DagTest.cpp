@@ -130,10 +130,10 @@ TEST_P(NodeTest_testClone, checkClone)
     dag::MemoryNodeLibrary nodeLib;
     dagbase::Node* node = nodeLib.instantiateNode(nodeLib, className, nodeName);
     ASSERT_NE(nullptr, node);
-    ASSERT_TRUE(node->equals(*node));
+    ASSERT_TRUE(node->equals(*node, dagbase::CMP_NONE));
     dagbase::CloningFacility facility;
     dagbase::Node* sut = node->clone(facility, dagbase::CopyOp{0}, nullptr);
-    ASSERT_TRUE(node->equals(*sut));
+    ASSERT_TRUE(node->equals(*sut, dagbase::CMP_NONE));
     delete sut;
     delete node;
 }
@@ -350,7 +350,7 @@ TEST(GraphTest, testAfterAddingASignalPathCanQueryIt)
     auto n2 = sut->createNode("FooTyped","in1");
     sut->addNode(n1);
     sut->addNode(n2);
-    auto const path = new dagbase::SignalPath(n1->dynamicPort(0), n2->dynamicPort(0));
+    auto const path = new dagbase::SignalPath(nodeLib, n1->dynamicPort(0), n2->dynamicPort(0));
     sut->addSignalPath(path);
 
     ASSERT_EQ(path, sut->signalPath(path->id()));
@@ -656,7 +656,7 @@ TEST(GraphTest, testTopologicalSortSimpleDependency)
     auto t = b->out1()->connectTo(a->in1());
     sut->addNode(a);
     sut->addPort(&a->in1());
-    auto path = new dagbase::SignalPath(b->out1(), &a->in1());
+    auto path = new dagbase::SignalPath(nodeLib, b->out1(), &a->in1());
 /*    path->removed = false;
     path->source.node = b->id();
     path->source.port = b->out1()->id();
@@ -691,7 +691,7 @@ TEST(GraphTest, testTopologicalSortTransitiveDependency)
         sut->addNode(a);
         sut->addPort(&a->in1());
         sut->addPort(&a->out1());
-        auto path = new dagbase::SignalPath(&a->out1(), &b->in1());
+        auto path = new dagbase::SignalPath(nodeLib, &a->out1(), &b->in1());
         sut->addSignalPath(path);
     }
     {
@@ -699,7 +699,7 @@ TEST(GraphTest, testTopologicalSortTransitiveDependency)
         sut->addNode(b);
         sut->addPort(&b->in1());
         sut->addPort(&b->out1());
-        auto path = new dagbase::SignalPath(&b->out1(), &c->in1());
+        auto path = new dagbase::SignalPath(nodeLib, &b->out1(), &c->in1());
         sut->addSignalPath(path);
     }
     {
@@ -733,13 +733,13 @@ TEST(GraphTest, testTopologicalSortCyclicDependency)
     sut->addNode(a);
     sut->addPort(&a->in1());
     sut->addPort(&a->out1());
-    auto path = new dagbase::SignalPath(&b->out1(), &a->in1());
+    auto path = new dagbase::SignalPath(nodeLib, &b->out1(), &a->in1());
     sut->addSignalPath(path);
     auto t2 = a->out1().connectTo(b->in1());
     sut->addNode(b);
     sut->addPort(&b->out1());
     sut->addPort(&b->in1());
-    path = new dagbase::SignalPath(&a->out1(), &b->in1());
+    path = new dagbase::SignalPath(nodeLib, &a->out1(), &b->in1());
     sut->addSignalPath(path);
     dagbase::NodeArray actual;
     auto result = sut->topologicalSort(&actual);
@@ -863,7 +863,7 @@ TEST_P(Graph_testDeleteNode, testExpectedValue)
     auto nodeToDelete = sut->node(id);
     sut->deleteNode(nodeToDelete);
     auto actual = sut->find(path);
-    assertComparison(value, actual, tolerance, op);
+    assertComparison(value, actual, tolerance, op, path);
 }
 
 INSTANTIATE_TEST_SUITE_P(Graph, Graph_testDeleteNode, ::testing::Values(
@@ -1224,6 +1224,10 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
 
             break;
+        case COMMAND_LOAD:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
+            break;
         default:
             FAIL() << "Creating unknown command";
             break;
@@ -1334,7 +1338,12 @@ struct NodeEditorLiveScriptItem
             auto str = sstr.str();
             auto restored = dagbase::Graph::fromString(nodeLib, str.c_str(), &actualStatus);
             ASSERT_NE(nullptr, restored);
-            ASSERT_EQ(*sut.activeGraph(), *restored);
+            ASSERT_TRUE(sut.activeGraph()->equals(*restored, dagbase::CMP_IDENT_BIT));
+            break;
+        }
+        case COMMAND_LOAD:
+        {
+            actualStatus = sut.load(filename.c_str());
             break;
         }
         default:
@@ -1369,6 +1378,7 @@ struct NodeEditorLiveScriptItem
     dagbase::NodeID otherNodeId;
     dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
     dag::NodeEditorLive::GraphChildPath graphChildPath;
+    std::string filename;
     float position[2];
     bool done{ false };
 
@@ -1405,6 +1415,10 @@ struct NodeEditorLiveScriptItem
         else if (name == "selectionMode")
         {
             selectionMode = static_cast<dag::NodeEditorInterface::SelectionMode>(value.asUint32());
+        }
+        else if (name == "filename")
+        {
+            filename = value.asString();
         }
     }
 
@@ -1469,7 +1483,6 @@ public:
 
     void setUp()
     {
-        dagbase::SignalPath::resetID();
         _sut = new dag::NodeEditorLive();
     }
 
@@ -1566,6 +1579,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
     std::make_tuple("etc/tests/NodeEditorLive/SaveOneNode.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/LoadConnected.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CloneSimple.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CloneConnected.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/BrowseGraphs.lua"),
@@ -1996,11 +2010,11 @@ TEST_P(GraphTest_fromLua, testFromString)
 }
 
 INSTANTIATE_TEST_SUITE_P(GraphTest, GraphTest_fromLua, ::testing::Values(
-    std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"FooTyped\", category=\"CATEGORY_SINK\", ports={ { name=\"in1\", class=\"TypedPort<double>\", type=\"TYPE_DOUBLE\", dir=\"DIR_IN\", value=2.0 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{2.0} ),
-    std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { name=\"in1\", class=\"TypedPort<double>\", type=\"TYPE_DOUBLE\", dir=\"DIR_IN\", value=2.0 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{2.0} ),
-    std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { name=\"in1\", class=\"TypedPort<int64_t>\", type=\"TYPE_INTEGER\", dir=\"DIR_IN\", value=2 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{std::int64_t(2)} ),
-    std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { name=\"in1\", class=\"TypedPort<string>\", type=\"TYPE_STRING\", dir=\"DIR_IN\", value=\"wibble\" } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{std::string("wibble")} ),
-    std::make_tuple("graph={ nodes={ { name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { name=\"in1\", class=\"TypedPort<bool>\", type=\"TYPE_BOOL\", dir=\"DIR_IN\", value=true } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{true} )
+    std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"FooTyped\", category=\"CATEGORY_SINK\", ports={ { id=0, name=\"in1\", class=\"TypedPort<double>\", type=\"TYPE_DOUBLE\", dir=\"DIR_IN\", value=2.0 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{2.0} ),
+    std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { id=0, name=\"in1\", class=\"TypedPort<double>\", type=\"TYPE_DOUBLE\", dir=\"DIR_IN\", value=2.0 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{2.0} ),
+    std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { id=0, name=\"in1\", class=\"TypedPort<int64_t>\", type=\"TYPE_INTEGER\", dir=\"DIR_IN\", value=2 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{std::int64_t(2)} ),
+    std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { id=0, name=\"in1\", class=\"TypedPort<string>\", type=\"TYPE_STRING\", dir=\"DIR_IN\", value=\"wibble\" } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{std::string("wibble")} ),
+    std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { id=0, name=\"in1\", class=\"TypedPort<bool>\", type=\"TYPE_BOOL\", dir=\"DIR_IN\", value=true } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{true} )
 ));
 
 class GraphTest_fromLuaFile : public ::testing::TestWithParam<std::tuple<const char*, std::size_t, std::size_t, dagbase::NodeID, std::size_t, dagbase::Value, std::size_t, std::size_t, std::size_t>>
@@ -2236,7 +2250,7 @@ TEST(GraphTest, testLoadGraphWithNodesFromPlugin)
     ASSERT_NE(nullptr, graph);
     auto node = graph->node(0);
     ASSERT_NE(nullptr, node);
-    dagbase::TypedPort<double>* port = dynamic_cast<dagbase::TypedPort<double>*>(node->dynamicPort(0));
+    auto* port = dynamic_cast<dagbase::TypedPort<double>*>(node->dynamicPort(0));
     ASSERT_NE(nullptr, port);
     EXPECT_EQ(1.0, port->value());
     delete graph;
@@ -2348,21 +2362,19 @@ TEST_P(Graph_copy, testCopy)
     dagbase::CloningFacility facility;
     auto copy = sut->clone(facility, copyOp, &nodeLib);
     ASSERT_NE(nullptr, copy);
-    EXPECT_EQ(equal, *copy == *sut);
+    EXPECT_EQ(equal, sut->equals(*copy, dagbase::CMP_NONE));
     delete copy;
     delete sut;
 }
 
 INSTANTIATE_TEST_SUITE_P(Graph, Graph_copy, ::testing::Values(
-//        std::make_tuple("etc/tests/Graph/empty.lua", dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT, true),
-//        std::make_tuple("etc/tests/Graph/onenode.lua", dagbase::CopyOp{0}, true),
-//        std::make_tuple("etc/tests/Graph/onenode.lua", dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT, false),
-        std::make_tuple("etc/tests/Graph/connectednodes.lua", dagbase::CopyOp{dagbase::CopyOp::DEEP_COPY_INPUTS_BIT|dagbase::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true)
-//        std::make_tuple("etc/tests/Graph/connectednodes.lua", dagbase::CopyOp{dagbase::CopyOp::DEEP_COPY_INPUTS_BIT|dagbase::CopyOp::DEEP_COPY_OUTPUTS_BIT|dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT}, false),
-//        std::make_tuple("etc/tests/Graph/withchildgraph.lua", dagbase::CopyOp{dagbase::CopyOp::DEEP_COPY_INPUTS_BIT|dagbase::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true),
-//        std::make_tuple("etc/tests/Graph/withmultiplechildren.lua", dagbase::CopyOp{dagbase::CopyOp::DEEP_COPY_INPUTS_BIT|dagbase::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true),
-//        std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua", dagbase::CopyOp{dagbase::CopyOp::DEEP_COPY_INPUTS_BIT|dagbase::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true),
-//        std::make_tuple("etc/tests/Graph/connectednestedchildgraph.lua", dagbase::CopyOp{dagbase::CopyOp::DEEP_COPY_INPUTS_BIT|dagbase::CopyOp::DEEP_COPY_OUTPUTS_BIT}, true)
+        std::make_tuple("etc/tests/Graph/empty.lua", dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT, true),
+        std::make_tuple("etc/tests/Graph/onenode.lua", dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT, true),
+        std::make_tuple("etc/tests/Graph/connectednodes.lua", dagbase::CopyOp{dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT}, true),
+        std::make_tuple("etc/tests/Graph/withchildgraph.lua", dagbase::CopyOp{dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT}, true),
+        std::make_tuple("etc/tests/Graph/withmultiplechildren.lua", dagbase::CopyOp{dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT}, true),
+        std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua", dagbase::CopyOp{dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT}, true),
+        std::make_tuple("etc/tests/Graph/connectednestedchildgraph.lua", dagbase::CopyOp{dagbase::CopyOp::GENERATE_UNIQUE_ID_BIT}, true)
         ));
 
 TEST(CloningFacility, testPutNull)

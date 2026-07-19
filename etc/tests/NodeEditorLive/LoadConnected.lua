@@ -1,0 +1,44 @@
+root=
+{
+	cases=
+	{
+		{
+			name="Loading a set of connected Nodes",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="filename",
+					value="etc/tests/Graph/connectednodes.lua",
+				},
+			},
+			assertions=
+			{
+			},
+		},
+		{
+			name="Loading a set of nested connected Nodes",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="filename",
+					value="etc/tests/Graph/connectednestedchildgraph.lua",
+				},
+			},
+			assertions=
+			{
+			},
+		},
+	},
+	items=
+	{
+		{
+			cmd="COMMAND_LOAD",
+			filename="",
+		},
+		{
+			cmd="COMMAND_SAVE",
+		},
+	},
+}

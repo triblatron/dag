@@ -32,7 +32,7 @@ namespace dag
 
         //! Compare for equality with another Node.
         //! \note Typically downcasts to a concrete type to determine a result.
-        [[nodiscard]]bool equals(const Node& other) const override;
+        [[nodiscard]]bool equals(const Node& other, dagbase::ComparisonFlags flags) const override;
 
         //! \return The name of the class without SWIG mangling
         [[nodiscard]]const char* className() const override;

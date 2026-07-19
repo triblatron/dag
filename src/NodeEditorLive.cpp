@@ -224,7 +224,7 @@ namespace dag
                 if (fromPort->dir() == dagbase::PortDirection::DIR_OUT && toPort->dir() == dagbase::PortDirection::DIR_IN && isCompatible)
                 {
                     auto transfer = fromPort->connectTo(*toPort);
-                    auto signalPath = new dagbase::SignalPath(fromPort, toPort);
+                    auto signalPath = new dagbase::SignalPath(*_graph, fromPort, toPort);
 
                     _activeGraph->addSignalPath(signalPath);
 
@@ -404,7 +404,7 @@ namespace dag
                     auto port = boundaryInput->dynamicPort(i);
                     if (port->dir() == dagbase::PortDirection::DIR_OUT && !port->outgoingConnections().empty())
                     {
-                        child->addSignalPath(new dagbase::SignalPath(port, port->outgoingConnections()[0]));
+                        child->addSignalPath(new dagbase::SignalPath(*_graph, port, port->outgoingConnections()[0]));
                     }
                 }
 
@@ -415,7 +415,7 @@ namespace dag
 
                     if (port->dir() == dagbase::PortDirection::DIR_IN && !port->incomingConnections().empty())
                     {
-                        child->addSignalPath(new dagbase::SignalPath(port->incomingConnections()[0], port));
+                        child->addSignalPath(new dagbase::SignalPath(*_graph, port->incomingConnections()[0], port));
                     }
                 }
 
@@ -451,7 +451,7 @@ namespace dag
                             if (sharedPort->numIncomingConnections()>0)
                             {
                                 _activeGraph->addSignalPath(
-                                    new dagbase::SignalPath(sharedPort->incomingConnections()[0], sharedPort));
+                                    new dagbase::SignalPath(*_graph, sharedPort->incomingConnections()[0], sharedPort));
                             }
                         }
                     }
@@ -465,7 +465,7 @@ namespace dag
                             if (sharedPort->numOutgoingConnections()>0)
                             {
                                 _activeGraph->addSignalPath(
-                                    new dagbase::SignalPath(sharedPort, sharedPort->outgoingConnections()[0]));
+                                    new dagbase::SignalPath(*_graph, sharedPort, sharedPort->outgoingConnections()[0]));
                             }
                         }
                     }
@@ -521,7 +521,7 @@ namespace dag
             bool equal = false;
             if (op1 && op2)
             {
-                equal = op1->equals(*op2);
+                equal = op1->equals(*op2, dagbase::CMP_NONE);
             }
             if (equal)
             {

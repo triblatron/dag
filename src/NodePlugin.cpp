@@ -56,9 +56,9 @@ public:
 
     ~DynamicNode() override;
 
-    [[nodiscard]]bool equals(const Node& other) const override
+    [[nodiscard]]bool equals(const Node& other, dagbase::ComparisonFlags flags) const override
     {
-        if (!Node::operator==(other))
+        if (!Node::equals(other, flags))
         {
             return false;
         }
@@ -72,7 +72,7 @@ public:
 
         for (std::size_t index = 0; index<totalPorts(); ++index)
         {
-            if (!dynamicPort(index)->equals(*dynamic.dynamicPort(index)))
+            if (!dynamicPort(index)->equals(*dynamic.dynamicPort(index), flags))
             {
                 return false;
             }

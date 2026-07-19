@@ -101,9 +101,12 @@ namespace dag
         return str;
     }
 
-    bool Boundary::equals(const Node &other) const
+    bool Boundary::equals(const Node &other, dagbase::ComparisonFlags flags) const
     {
-        return Node::operator==(other);
+        if (!Node::equals(other, flags))
+            return false;
+
+        return operator==(other);
     }
 
     Boundary::~Boundary()

@@ -10,6 +10,7 @@ graph=
             ports=
             {
                 {
+					id=0,
                     name="in1",
                     class="TypedPort<double>",
                     direction="DIR_IN",
@@ -35,6 +36,7 @@ graph=
 					ports=
 					{
 						{
+							id=1,
 							name="out1",
 							class="TypedPort<double>",
 							direction="DIR_OUT",
@@ -49,13 +51,14 @@ graph=
 			nodes=
 			{
 				{
-					id=0,
+					id=1,
 					name="bound1",
 					class="Boundary",
 					category="CATEGORY_GROUP",
 					ports=
 					{
 						{
+							id=2,
 							name="foo",
 							class="TypedPort<bool>",
 							direction="DIR_OUT",
@@ -63,6 +66,7 @@ graph=
 							value=true
 						},
 						{
+							id=3,
 							name="bar",
 							class="TypedPort<int64_t>",
 							direction="DIR_IN",

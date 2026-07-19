@@ -3,12 +3,14 @@ graph=
     nodes=
     {
         {
+			id=0,
             name="foo1",
             class="FooTyped",
             category="Sink",
             ports=
             {
                 {
+					id=1,
                     name="in1",
                     class="TypedPort<double>",
                     direction="DIR_IN",

@@ -10,6 +10,7 @@ graph=
             ports=
             {
                 {
+					id=0,
                     name="angle",
                     class="TypedPort<double>",
                     direction="DIR_IN",
@@ -17,6 +18,7 @@ graph=
                     value=0.0,                    
                 },
                 {
+					id=1,
                     name="unit",
                     class="TypedPort<int64_t>",
                     direction="DIR_INTERNAL",
@@ -32,6 +34,7 @@ graph=
                     }
                 },
                 {
+					id=2,
                     name="output",
                     class="TypedPort<double>",
                     direction="DIR_OUT",
@@ -48,6 +51,7 @@ graph=
             ports=
             {
                 {
+					id=3,
                     name="out1",
                     class="TypedPort<double>",
                     direction="DIR_OUT",
@@ -60,10 +64,11 @@ graph=
     signalpaths=
     {
         {
-            sourceNode="angle",
-            sourcePort=0,
-            destNode="sine",
-            destPort=0
+			id=0,
+            sourceNode=1,
+            sourcePort=3,
+            destNode=0,
+            destPort=0,
         },
     }
 }

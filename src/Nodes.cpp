@@ -75,9 +75,9 @@ namespace dag
         return str;
     }
 
-    bool FooTyped::equals(const Node &other) const
+    bool FooTyped::equals(const Node &other, dagbase::ComparisonFlags flags) const
     {
-        if (!Node::operator==(other))
+        if (!Node::equals(other, flags))
         {
             return false;
         }
@@ -174,16 +174,16 @@ namespace dag
         printer.outdent();
     }
 
-    bool BarTyped::equals(const Node &other) const
+    bool BarTyped::equals(const Node &other, dagbase::ComparisonFlags flags) const
     {
-        if (!Node::operator==(other))
+        if (!Node::equals(other, flags))
         {
             return false;
         }
 
         auto const & bar = dynamic_cast<const BarTyped&>(other);
 
-        if (!_out1->equals(*bar._out1))
+        if (!_out1->equals(*bar._out1, flags))
         {
             return false;
         }
@@ -276,9 +276,12 @@ namespace dag
         // return str;
     }
 
-    bool GroupTyped::equals(const Node &other) const
+    bool GroupTyped::equals(const Node &other, dagbase::ComparisonFlags flags) const
     {
-        return *this == static_cast<const GroupTyped&>(other);
+        if (!Node::equals(other, flags))
+            return false;
+
+        return operator==(other);
     }
 
     void GroupTyped::debug(dagbase::DebugPrinter& printer) const
@@ -349,20 +352,20 @@ namespace dag
         return str;
     }
 
-    bool Base::equals(const Node &other) const
+    bool Base::equals(const Node &other, dagbase::ComparisonFlags flags) const
     {
+        if (!Node::equals(other, flags))
+            return false;
+
         return operator==(static_cast<const Base&>(other));
     }
 
-    bool Base::operator==(const Node &other) const
+    bool Base::operator==(const Base &other) const
     {
         if (this == &other)
             return true;
 
-        if (!Node::operator==(other))
-            return false;
-
-        const Base& otherBase = static_cast<const Base&>(other);
+        const Base& otherBase = other;
 
         if (!(*this->_direction == *otherBase._direction))
             return false;

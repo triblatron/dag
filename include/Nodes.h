@@ -50,9 +50,9 @@ namespace dag
 
         dagbase::Node* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override;
 
-        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other, dagbase::ComparisonFlags flags) const override;
 
-        bool operator==(const Node &other) const;
+        bool operator==(const Base &other) const;
 
         double int1;
 
@@ -333,7 +333,7 @@ namespace dag
 
         FooTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
-        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other, dagbase::ComparisonFlags flags) const override;
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
@@ -434,7 +434,7 @@ namespace dag
 
         BarTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
-        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other, dagbase::ComparisonFlags flags) const override;
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
@@ -554,7 +554,7 @@ namespace dag
 
         GroupTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
-        [[nodiscard]]bool equals(const dagbase::Node& other) const override;
+        [[nodiscard]]bool equals(const dagbase::Node& other, dagbase::ComparisonFlags flags) const override;
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 

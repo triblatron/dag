@@ -69,7 +69,7 @@ namespace dag
 
         Boundary* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
-        [[nodiscard]]bool equals(const Node& other) const override;
+        [[nodiscard]]bool equals(const Node& other, dagbase::ComparisonFlags flags) const override;
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 

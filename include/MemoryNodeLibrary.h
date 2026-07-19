@@ -63,10 +63,16 @@ namespace dag
 		{
 			return _nextPortID++;
 		}
+
+	    dagbase::SignalPathID nextSignalPathID() override
+		{
+		    return _nextSignalPathID++;
+		}
 	private:
 		typedef dagbase::SearchableMap<dagbase::VectorMap<std::string, dagbase::Node*>> PrototypeMap;
 		PrototypeMap _classes;
 		dagbase::NodeID _nextNodeID{ 0 };
 		dagbase::PortID _nextPortID{ 0 };
+	    dagbase::SignalPathID _nextSignalPathID{ 0 };
 	};
 }

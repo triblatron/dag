@@ -16,9 +16,9 @@ namespace dag
                     dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT)
             };
 
-    bool MathsNode::equals(const Node &other) const
+    bool MathsNode::equals(const Node &other, dagbase::ComparisonFlags flags) const
     {
-        if (!Node::operator==(other))
+        if (!Node::equals(other, flags))
         {
             return false;
         }
