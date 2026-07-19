@@ -96,6 +96,16 @@ public:
         return nullptr;
     }
 
+    [[nodiscard]]dagbase::MetaPort * dynamicMetaPort(size_t index) override
+    {
+        if (index < _dynamicMetaPorts.size())
+        {
+            return &_dynamicMetaPorts[index];
+        }
+
+        return nullptr;
+    }
+
     void addDynamicPort(dagbase::Port* port, dagbase::MetaPort::Flags flags) override
     {
         if (port != nullptr)

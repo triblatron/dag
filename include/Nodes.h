@@ -66,6 +66,11 @@ namespace dag
             return metaPort(index);
         }
 
+        [[nodiscard]]dagbase::MetaPort * dynamicMetaPort(size_t index) override
+        {
+            return metaPort(index);
+        }
+
         dagbase::Port* dynamicPort(size_t index) override
         {
             if (index == 0)
@@ -85,7 +90,7 @@ namespace dag
             return nullptr;
         }
 
-        static dagbase::MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -122,7 +127,7 @@ namespace dag
             return new Derived(*this, facility, copyOp, keyGen);
         }
 
-        [[nodiscard]]static const dagbase::MetaPort * metaPort(size_t index)
+        [[nodiscard]]static dagbase::MetaPort * metaPort(size_t index)
         {
             if (index < firstPort)
             {
@@ -142,6 +147,11 @@ namespace dag
         }
 
         [[nodiscard]]dagbase::MetaPort const* dynamicMetaPort(size_t index) const override
+        {
+            return metaPort(index);
+        }
+
+        [[nodiscard]]dagbase::MetaPort* dynamicMetaPort(size_t index) override
         {
             return metaPort(index);
         }
@@ -237,6 +247,26 @@ namespace dag
         }
 
         [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
+        {
+            if (index < firstPort)
+            {
+                return Derived::dynamicMetaPort(index);
+            }
+
+            if (index < firstPort + numPorts)
+            {
+                return &ports[index-firstPort];
+            }
+
+            if (index < firstPort + numPorts + _dynamicMetaPorts.size())
+            {
+                return &_dynamicMetaPorts[index - (firstPort+numPorts)];
+            }
+
+            return nullptr;
+        }
+
+        [[nodiscard]]dagbase::MetaPort * dynamicMetaPort(size_t index) override
         {
             if (index < firstPort)
             {
@@ -367,7 +397,7 @@ namespace dag
             return nullptr;
         }
 
-        static dagbase::MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -378,6 +408,11 @@ namespace dag
         }
 
         [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
+        {
+            return metaPort(index);
+        }
+
+        [[nodiscard]]dagbase::MetaPort * dynamicMetaPort(size_t index) override
         {
             return metaPort(index);
         }
@@ -468,7 +503,7 @@ namespace dag
             return nullptr;
         }
 
-        static dagbase::MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -479,6 +514,11 @@ namespace dag
         }
 
         [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
+        {
+            return metaPort(index);
+        }
+
+        [[nodiscard]]dagbase::MetaPort * dynamicMetaPort(size_t index) override
         {
             return metaPort(index);
         }
@@ -596,7 +636,7 @@ namespace dag
             return nullptr;
         }
 
-        static dagbase::MetaPort const* metaPort(size_t index)
+        static dagbase::MetaPort* metaPort(size_t index)
         {
             if (index < firstPort + numPorts)
             {
@@ -612,6 +652,11 @@ namespace dag
         }
 
         [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
+        {
+            return metaPort(index);
+        }
+
+        [[nodiscard]] dagbase::MetaPort * dynamicMetaPort(size_t index) override
         {
             return metaPort(index);
         }

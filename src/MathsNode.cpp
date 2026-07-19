@@ -43,6 +43,16 @@ namespace dag
         return nullptr;
     }
 
+    dagbase::MetaPort * MathsNode::dynamicMetaPort(size_t index)
+    {
+        if (index < firstPort + numPorts)
+        {
+            return &ports[index - firstPort];
+        }
+
+        return nullptr;
+    }
+
     dagbase::Port *MathsNode::dynamicPort(size_t index)
     {
         if (index == firstPort)

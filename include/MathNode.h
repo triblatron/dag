@@ -41,6 +41,8 @@ namespace dag
         //! \param[in] The index of the port, zero-based.
         [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override;
 
+        dagbase::MetaPort* dynamicMetaPort(size_t index) override;
+
         //! \return A Port corresponding to a given index
         //! \note The index includes both built-in and dynamically added Ports.
         //! \param[in] index The index of the Port, zero-based.

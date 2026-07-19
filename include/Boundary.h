@@ -41,6 +41,16 @@ namespace dag
 
             return nullptr;
         }
+fa
+        [[nodiscard]]dagbase::MetaPort* dynamicMetaPort(size_t index) override
+        {
+            if (index<_dynamicMetaPorts.size())
+            {
+                return &_dynamicMetaPorts[index];
+            }
+
+            return nullptr;
+        }
 
         dagbase::Port* dynamicPort(size_t index) override
         {
