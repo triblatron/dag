@@ -2362,7 +2362,7 @@ TEST_P(Graph_copy, testCopy)
     dagbase::CloningFacility facility;
     auto copy = sut->clone(facility, copyOp, &nodeLib);
     ASSERT_NE(nullptr, copy);
-    EXPECT_EQ(equal, sut->equals(*copy, dagbase::CMP_NONE));
+    EXPECT_EQ(equal, sut->equals(*copy, dagbase::CMP_NAME_BIT));
     delete copy;
     delete sut;
 }
