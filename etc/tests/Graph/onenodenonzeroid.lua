@@ -1,0 +1,26 @@
+graph=
+{
+    nodes=
+    {
+        {
+			id=1,
+            name="bound1",
+            class="Boundary",
+            category="Sink",
+            ports=
+            {
+                {
+					id=1,
+                    name="in1",
+                    class="TypedPort<double>",
+                    direction="DIR_IN",
+                    type="TYPE_DOUBLE",
+                    value=2.0
+                }
+            }
+        }
+    },
+    signalpaths=
+    {
+    }
+}
