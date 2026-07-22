@@ -54,6 +54,11 @@ root=
 					op="RELOP_EQ",
 				},
 				{
+					path="activeGraph.ports[1].name",
+					value="direction",
+					op="RELOP_EQ",
+				},
+				{
 					path="activeGraph.ports[1].value",
 					value=2.0,
 					op="RELOP_EQ",
@@ -61,6 +66,11 @@ root=
 				{
 					path="activeGraph.ports[2].parentClass",
 					value="Final",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.ports[2].name",
+					value="trigger",
 					op="RELOP_EQ",
 				},
 				{
@@ -74,13 +84,33 @@ root=
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.ports[3].value",
-					value=1,
+					path="activeGraph.ports[3].name",
+					value="int1",
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.ports[4].parentClass",
+					path="activeGraph.ports[3].value",
+					value=2,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.ports[4].name",
+					value="hybrid1",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.ports[4].value",
+					value=5.0,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.ports[5].parentClass",
 					value="BarTyped",
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.ports[5].name",
+					value="out1",
 					op="RELOP_EQ",
 				},
 			},

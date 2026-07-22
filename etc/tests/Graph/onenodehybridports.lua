@@ -23,10 +23,17 @@ graph=
                 },
                 {
 					id=3,
-					class="TypedPort<double>",
+					class="TypedPort<int64_t>",
 					name="int1",
-					value=1.0,
-                }
+					value=2,
+                },
+                {
+					id=4,
+					class="TypedPort<double>",
+					name="hybrid1",
+					type="TYPE_DOUBLE",
+					value=5.0,
+                },
             }
         }
     },
