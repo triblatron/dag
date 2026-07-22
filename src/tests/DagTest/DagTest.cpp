@@ -1338,7 +1338,7 @@ struct NodeEditorLiveScriptItem
             auto str = sstr.str();
             auto restored = dagbase::Graph::fromString(nodeLib, str.c_str(), &actualStatus);
             ASSERT_NE(nullptr, restored);
-            ASSERT_TRUE(sut.activeGraph()->equals(*restored, dagbase::CMP_IDENT_BIT));
+            ASSERT_TRUE(sut.activeGraph()->equals(*restored, static_cast<dagbase::ComparisonFlags>(dagbase::CMP_IDENT_BIT|dagbase::CMP_NAME_BIT)));
             break;
         }
         case COMMAND_LOAD:
