@@ -84,7 +84,7 @@ namespace dag
 
         auto const & foo = dynamic_cast<const FooTyped&>(other);
 
-        if (!_in1->operator==(*foo._in1))
+        if (!_in1->equals(*foo._in1, flags))
         {
             return false;
         }
@@ -281,6 +281,14 @@ namespace dag
         if (!Node::equals(other, flags))
             return false;
 
+        const auto& otherTyped = dynamic_cast<const GroupTyped&>(other);
+
+        if (!_out1->equals(*otherTyped._out1, flags))
+            return false;
+
+        if (!_in1->equals(*otherTyped._in1, flags))
+            return false;
+
         return operator==(other);
     }
 
@@ -321,10 +329,10 @@ namespace dag
         _direction->setParent(this);
     }
 
-    Base::Base(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
-            :
-            Node(str, nodeLib, lua),
-            int1(0.0)
+    Base::Base(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua)
+        :
+        Node(str, nodeLib, lua),
+        int1(0.0)
     {
         dagbase::Stream::ObjId directionId = 0;
         dagbase::Stream::Ref directionRef = str.readRef(&directionId);
@@ -343,7 +351,7 @@ namespace dag
         str.read(&int1);
     }
 
-    dagbase::OutputStream &Base::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const
+    dagbase::OutputStream& Base::writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) const
     {
         Node::writeToStream(str, nodeLib, lua);
         _direction->writeToStream(str, nodeLib, lua);
@@ -352,23 +360,24 @@ namespace dag
         return str;
     }
 
-    bool Base::equals(const Node &other, dagbase::ComparisonFlags flags) const
+    bool Base::equals(const Node& other, dagbase::ComparisonFlags flags) const
     {
         if (!Node::equals(other, flags))
+            return false;
+
+        const Base& otherBase = dynamic_cast<const Base&>(other);
+
+        if (!(this->_direction->equals(*otherBase._direction, flags)))
             return false;
 
         return operator==(static_cast<const Base&>(other));
     }
 
-    bool Base::operator==(const Base &other) const
+    bool Base::operator==(const Base& other) const
     {
         if (this == &other)
             return true;
 
-        const Base& otherBase = other;
-
-        if (!(*this->_direction == *otherBase._direction))
-            return false;
 
         return true;
     }
@@ -407,5 +416,32 @@ namespace dag
                 _trigger = dynamic_cast<dagbase::TypedPort<bool>*>(nodeLib.instantiatePort(str, lua));
             }
         }
+    }
+
+    bool Derived::equals(const Node& other, dagbase::ComparisonFlags flags) const
+    {
+        if (!Base::equals(other, flags))
+            return false;
+
+        const auto& otherTyped = dynamic_cast<const Derived&>(other);
+
+        if (!this->_trigger->equals(*otherTyped._trigger, flags))
+        {
+            return false;
+        }
+
+        return true;
+    }
+    bool Final::equals(const Node& other, dagbase::ComparisonFlags flags) const
+    {
+        if (!Derived::equals(other, flags))
+            return false;
+
+        const auto& otherTyped = dynamic_cast<const Final&>(other);
+
+        if (!_int1->equals(*otherTyped._int1, flags))
+            return false;
+
+        return true;
     }
 }

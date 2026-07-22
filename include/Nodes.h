@@ -127,6 +127,8 @@ namespace dag
             return new Derived(*this, facility, copyOp, keyGen);
         }
 
+        bool equals(const Node& other, dagbase::ComparisonFlags flags) const override;
+
         [[nodiscard]]static dagbase::MetaPort * metaPort(size_t index)
         {
             if (index < firstPort)
@@ -225,6 +227,8 @@ namespace dag
                 delete p;
             }
         }
+
+        bool equals(const Node& other, dagbase::ComparisonFlags flags) const override;
 
         Final* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
