@@ -14,6 +14,11 @@ root=
 			},
 			assertions=
 			{
+				{
+					commandIndex=1,
+					assertionIndex=0,
+					value=2,
+				},
 			},
 		},
 		{
@@ -28,6 +33,11 @@ root=
 			},
 			assertions=
 			{
+				{
+					commandIndex=1,
+					assertionIndex=0,
+					value=1,
+				},
 			},
 		},
 	},
@@ -39,6 +49,14 @@ root=
 		},
 		{
 			cmd="COMMAND_SAVE",
+			assertions=
+			{
+				{
+					path="activeGraph.numNodes",
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
 		},
 	},
 }
