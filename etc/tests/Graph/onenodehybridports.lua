@@ -1,0 +1,36 @@
+graph=
+{
+    nodes=
+    {
+        {
+			id=1,
+            name="final1",
+            class="Final",
+            category="Sink",
+            ports=
+            {
+                {
+					id=1,
+					class="TypedPort<double>",
+                    name="direction",
+                    value=2.0
+                },
+                {
+					id=2,
+					class="TypedPort<bool>",
+					name="trigger",
+					value=true,
+                },
+                {
+					id=3,
+					class="TypedPort<double>",
+					name="int1",
+					value=1.0,
+                }
+            }
+        }
+    },
+    signalpaths=
+    {
+    }
+}

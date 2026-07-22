@@ -9,7 +9,7 @@ root=
 				{
 					commandIndex=0,
 					name="filename",
-					value="etc/tests/Graph/onenodenonzeroid.lua",
+					value="etc/tests/Graph/onenodedynamicports.lua",
 				},
 			},
 			assertions=
