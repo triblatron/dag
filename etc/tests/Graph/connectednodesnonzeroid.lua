@@ -40,7 +40,7 @@ graph=
     signalpaths=
     {
         {
-			id=0,
+			id=1,
             sourceNode=2,
             sourcePort=2,
             destNode=1,

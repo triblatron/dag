@@ -92,7 +92,77 @@ root=
 					value="",
 					op="RELOP_EQ",
 				},
+				{
+					path="activeGraph.signalPaths[1].fromPort",
+					value=2,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[1].toPort",
+					value=1,
+					op="RELOP_EQ",
+				},
 			}
+		},
+		{
+			cmd="COMMAND_CREATE_NODE",
+			nodeClass="GroupTyped",
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_NODE_ID",
+				nodeID=4,
+			},
+			assertions=
+			{
+				{
+					path="activeGraph.nodes[4].class",
+					value="GroupTyped",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
+			cmd="COMMAND_CONNECT",
+			fromPort=5,
+			toPort=7,
+			status=
+			{
+				statusCode="STATUS_OK",
+				resultType="RESULT_SIGNAL_PATH_ID",
+				signalPathID=2,
+			},
+			assertions=
+			{
+				{
+					path="graph.ports[5].numOutgoingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.ports[7].numIncomingConnections",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+                {
+                    path="activeGraph.numSignalPaths",
+                    value=2,
+                    typeIndex="TYPE_UINT",
+                    op="RELOP_EQ",
+                },
+				{
+					path="activeGraph.signalPaths[2].fromPort",
+					value=5,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.signalPaths[2].toPort",
+					value=7,
+					op="RELOP_EQ",
+				},
+			},
 		},
 	},
 }
