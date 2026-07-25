@@ -3,7 +3,7 @@ root=
 	cases=
 	{
 		{
-			name="Loading a single Node with non-zero ID",
+			name="Loading a single Node with non-zero ID and hybrid Ports and then create a BarTyped",
 			subs=
 			{
 				{
@@ -11,9 +11,97 @@ root=
 					name="filename",
 					value="etc/tests/Graph/onenodehybridports.lua",
 				},
+				{
+					commandIndex=2,
+					name="nodeClass",
+					value="BarTyped",
+				},
 			},
 			assertions=
 			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value="BarTyped",
+				},
+				{
+					commandIndex=2,
+					assertionIndex=13,
+					value="BarTyped",
+				},
+				{
+					commandIndex=2,
+					assertionIndex=14,
+					value="out1",
+				},
+			},
+		},
+		{
+			name="Loading a single Node with non-zero ID and hybrid Ports and then create a FooTyped",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="filename",
+					value="etc/tests/Graph/onenodehybridports.lua",
+				},
+				{
+					commandIndex=2,
+					name="nodeClass",
+					value="FooTyped",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value="FooTyped",
+				},
+				{
+					commandIndex=2,
+					assertionIndex=13,
+					value="FooTyped",
+				},
+				{
+					commandIndex=2,
+					assertionIndex=14,
+					value="in1",
+				},
+			},
+		},
+		{
+			name="Loading a single Node with non-zero ID and hybrid Ports and then create a MathsNode",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="filename",
+					value="etc/tests/Graph/onenodehybridports.lua",
+				},
+				{
+					commandIndex=2,
+					name="nodeClass",
+					value="MathsNode",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value="MathsNode",
+				},
+				{
+					commandIndex=2,
+					assertionIndex=13,
+					value="MathsNode",
+				},
+				{
+					commandIndex=2,
+					assertionIndex=14,
+					value="angle",
+				},
 			},
 		},
 	},
@@ -28,7 +116,7 @@ root=
 		},
 		{
 			cmd="COMMAND_CREATE_NODE",
-			nodeClass="BarTyped",
+			nodeClass="",
 			nodeName="bar1",
 			status=
 			{
@@ -45,7 +133,7 @@ root=
 				},
 				{
 					path="activeGraph.nodes[2].class",
-					value="BarTyped",
+					value="",
 					op="RELOP_EQ",
 				},
 				{
@@ -105,12 +193,12 @@ root=
 				},
 				{
 					path="activeGraph.ports[5].parentClass",
-					value="BarTyped",
+					value="",
 					op="RELOP_EQ",
 				},
 				{
 					path="activeGraph.ports[5].name",
-					value="out1",
+					value="",
 					op="RELOP_EQ",
 				},
 			},

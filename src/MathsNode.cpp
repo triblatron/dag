@@ -25,7 +25,7 @@ namespace dag
 
         auto const & mathOther = dynamic_cast<MathsNode const&>(other);
 
-        return *this->_angle == *mathOther._angle && *this->_unit == *mathOther._unit && *this->_output == *mathOther._output;
+        return _angle->equals(*mathOther._angle, flags) && _unit->equals(*mathOther._unit, flags) && _output->equals(*mathOther._output, flags);
     }
 
     const char *MathsNode::className() const
