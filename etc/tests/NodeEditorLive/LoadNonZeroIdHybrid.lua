@@ -104,6 +104,40 @@ root=
 				},
 			},
 		},
+		{
+			name="Loading a single Node with non-zero ID and hybrid Ports and then create a Final",
+			subs=
+			{
+				{
+					commandIndex=0,
+					name="filename",
+					value="etc/tests/Graph/onenodehybridports.lua",
+				},
+				{
+					commandIndex=2,
+					name="nodeClass",
+					value="Final",
+				},
+			},
+			assertions=
+			{
+				{
+					commandIndex=2,
+					assertionIndex=1,
+					value="Final",
+				},
+				{
+					commandIndex=2,
+					assertionIndex=13,
+					value="Final",
+				},
+				{
+					commandIndex=2,
+					assertionIndex=14,
+					value="direction",
+				},
+			},
+		},
 	},
 	items=
 	{
