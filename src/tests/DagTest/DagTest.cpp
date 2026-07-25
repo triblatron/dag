@@ -1580,6 +1580,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
     std::make_tuple("etc/tests/NodeEditorLive/SaveOneNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnected.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedNonZeroIdThenCreateNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadNonZeroIdStatic.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadNonZeroIdDynamic.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadNonZeroIdHybrid.lua"),
