@@ -607,9 +607,9 @@ namespace dag
     {
         dagbase::Status status;
 
-        if (_activeGraph)
+        if (_graph)
         {
-            _activeGraph->toLua(printer);
+            _graph->toLua(printer);
             status.status = dagbase::Status::STATUS_OK;
         }
         else
