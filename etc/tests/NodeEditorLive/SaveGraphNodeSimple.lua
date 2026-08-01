@@ -23,6 +23,25 @@ root=
 			},
 		},
 		{
+			cmd="COMMAND_SET_POSITION",
+			node=0,
+			x=100.0,
+			y=200.0,
+			assertions=
+			{
+				{
+					path="activeGraph.nodes[0].x",
+					value=100.0,
+					op="RELOP_EQ",
+				},
+				{
+					path="activeGraph.nodes[0].y",
+					value=200.0,
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
 			cmd="COMMAND_SELECT",
 			selection=
 			{

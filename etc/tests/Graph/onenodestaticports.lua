@@ -7,6 +7,11 @@ graph=
             name="foo1",
             class="FooTyped",
             category="Sink",
+            position=
+            {
+				100.0,
+				200.0,
+            },
             ports=
             {
                 {
