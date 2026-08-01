@@ -15,6 +15,8 @@
 
 namespace dagbase
 {
+    class InputStream;
+    class OutputStream;
     class SignalPath;
     class Transfer;
 }
@@ -94,6 +96,10 @@ namespace dag
         dagbase::Status browseUp();
 
         dagbase::Status save(dagbase::DebugPrinter& printer);
+
+        dagbase::Status serialise(dagbase::OutputStream& str, dagbase::Lua& lua);
+
+        dagbase::Status deserialise(dagbase::InputStream& str);
 
         dagbase::Variant find(std::string_view path) const;
 

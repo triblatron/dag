@@ -172,6 +172,20 @@ namespace dag
             return nullptr;
         }
 
+        [[nodiscard]]const dagbase::Port* dynamicPort(size_t index) const override
+        {
+            if (index<firstPort)
+            {
+                return Base::dynamicPort(index);
+            }
+            if (index == 1)
+            {
+                return _trigger;
+            }
+
+            return nullptr;
+        }
+
         const char* className() const override
         {
             return "Derived";
@@ -296,6 +310,26 @@ namespace dag
         }
 
         [[nodiscard]]dagbase::Port* dynamicPort(size_t index) override
+        {
+            if (index<firstPort)
+            {
+                return Derived::dynamicPort(index);
+            }
+
+            if (index == firstPort)
+            {
+                return _int1;
+            }
+
+            if (index < firstPort + numPorts + _dynamicPorts.size())
+            {
+                return _dynamicPorts[index - (firstPort+numPorts)];
+            }
+
+            return nullptr;
+        }
+
+        [[nodiscard]]const dagbase::Port* dynamicPort(size_t index) const override
         {
             if (index<firstPort)
             {

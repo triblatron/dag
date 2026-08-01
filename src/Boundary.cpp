@@ -69,7 +69,21 @@ namespace dag
         str.readField(&fieldName);
         for (std::size_t i=0; i<numDynamicPorts; ++i)
         {
-            _dynamicPorts[i] = nodeLib.instantiatePort(str, lua);
+            dagbase::Stream::ObjId portId{~0U};
+            auto portRef = str.readRef(&portId);
+            if (portId != 0)
+            {
+                if (portRef != nullptr)
+                {
+                    _dynamicPorts[i] = static_cast<dagbase::Port*>(portRef);
+                }
+                else
+                {
+                    _dynamicPorts[i] = nodeLib.instantiatePort(str, lua);
+                }
+            }
+
+
         }
         str.readFooter();
     }
@@ -95,7 +109,8 @@ namespace dag
         str.writeField("dynamicPorts");
         for (auto p : _dynamicPorts)
         {
-            p->writeToStream(str, nodeLib, lua);
+            if (str.writeRef(p))
+                p->writeToStream(str, nodeLib, lua);
         }
         str.writeFooter();
         return str;

@@ -17,6 +17,9 @@
 #include "core/Transfer.h"
 #include "core/GraphNode.h"
 #include "core/CloningFacility.h"
+#include "io/OutputStream.h"
+#include "io/InputStream.h"
+#include "io/MemoryBackingStore.h"
 
 namespace dag
 {
@@ -322,8 +325,11 @@ namespace dag
             total[1] += node->position()[1];
         }
 
-        total[0] /= float(nodes.size());
-        total[1] /= float(nodes.size());
+        if (!nodes.empty())
+        {
+            total[0] /= float(nodes.size());
+            total[1] /= float(nodes.size());
+        }
 
         pos[0] = total[0];
         pos[1] = total[1];
@@ -348,6 +354,7 @@ namespace dag
                 auto boundaryInput = _graph->createNode("Boundary","boundaryInput");
                 float meanInputPos[2]{};
                 meanPosition(_selection->externalInputs(), meanInputPos);
+
                 boundaryInput->setPosition(meanInputPos[0], meanInputPos[1]);
 
                 auto boundaryOutput = _graph->createNode("Boundary", "boundaryOutput");
@@ -616,6 +623,28 @@ namespace dag
         {
             status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
         }
+
+        return status;
+    }
+
+    dagbase::Status NodeEditorLive::serialise(dagbase::OutputStream &str, dagbase::Lua& lua)
+    {
+        dagbase::Status status{dagbase::Status::STATUS_OK};
+
+        if (_graph)
+        {
+            if (str.writeRef(_graph))
+            {
+                _graph->write(str, *_nodeLib, lua);
+            }
+        }
+
+        return status;
+    }
+
+    dagbase::Status NodeEditorLive::deserialise(dagbase::InputStream &str)
+    {
+        dagbase::Status status;
 
         return status;
     }

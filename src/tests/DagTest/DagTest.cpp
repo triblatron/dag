@@ -1125,7 +1125,9 @@ struct NodeEditorLiveScriptItem
         COMMAND_BROWSE_UP,
         COMMAND_SET_POSITION,
         COMMAND_SAVE,
-        COMMAND_LOAD
+        COMMAND_LOAD,
+        COMMAND_SERIALISE,
+        COMMAND_DESERIALISE,
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1227,6 +1229,14 @@ struct NodeEditorLiveScriptItem
         case COMMAND_LOAD:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
+            break;
+        case COMMAND_SERIALISE:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+
+            break;
+        case COMMAND_DESERIALISE:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+
             break;
         default:
             FAIL() << "Creating unknown command";
@@ -1346,6 +1356,32 @@ struct NodeEditorLiveScriptItem
             actualStatus = sut.load(filename.c_str());
             break;
         }
+        case COMMAND_SERIALISE:
+        {
+            dagbase::MemoryBackingStore backingStore(dagbase::BackingStore::MODE_OUTPUT_BIT);
+            dagbase::TextOutputStream str(&backingStore);
+            dagbase::Lua lua;
+            actualStatus = sut.serialise(str, lua);
+            str.flush();
+            backingStore.open(dagbase::BackingStore::MODE_INPUT_BIT);
+            dagbase::TextInputStream istr(&backingStore);
+            dagbase::Stream::ObjId id{~0U};
+            auto ref = istr.readRef(&id);
+            dag::MemoryNodeLibrary nodeLib;
+            if (id == 0)
+                FAIL() << "Expected a Graph, got null";
+            else
+            {
+                auto restored = new dagbase::Graph(istr, nodeLib, lua);
+                ASSERT_TRUE(sut.activeGraph()->equals(*restored, static_cast<dagbase::ComparisonFlags>(/*dagbase::CMP_IDENT_BIT|*/dagbase::CMP_NAME_BIT/*|dagbase::CMP_CONNECTIONS_BIT*/)));
+            }
+            break;
+        }
+        case COMMAND_DESERIALISE:
+        {
+
+            break;
+        }
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1443,6 +1479,8 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_SET_POSITION)
             ENUM_NAME(COMMAND_SAVE)
             ENUM_NAME(COMMAND_LOAD)
+            ENUM_NAME(COMMAND_SERIALISE)
+            ENUM_NAME(COMMAND_DESERIALISE)
         }
 
         return "<error>";
@@ -1467,6 +1505,8 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_SET_POSITION, str);
         TEST_ENUM(COMMAND_SAVE, str);
         TEST_ENUM(COMMAND_LOAD, str);
+        TEST_ENUM(COMMAND_SERIALISE, str);
+        TEST_ENUM(COMMAND_DESERIALISE, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1578,6 +1618,8 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/SaveGraphNodeSimple.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/SaveGraphNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SaveOneNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnected.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedNonZeroIdThenCreateNode.lua"),

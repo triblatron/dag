@@ -204,7 +204,7 @@ namespace dag
 
     GroupTyped::GroupTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
-            Node(str, nodeLib, lua)
+            Node()
     {
         std::string className;
         std::string fieldName;
@@ -226,6 +226,7 @@ namespace dag
             }
         }
 
+        str.readField(&fieldName);
         dagbase::Stream::ObjId in1Id = 0;
         dagbase::Stream::Ref in1Ref = str.readRef(&in1Id);
 
@@ -263,6 +264,7 @@ namespace dag
         {
             _out1->writeToStream(str, nodeLib, lua);
         }
+        str.writeField("in1");
         if (str.writeRef(_in1))
         {
             _in1->writeToStream(str, nodeLib, lua);
