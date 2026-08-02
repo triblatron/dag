@@ -1358,12 +1358,13 @@ struct NodeEditorLiveScriptItem
         }
         case COMMAND_SERIALISE:
         {
-            dagbase::MemoryBackingStore backingStore(dagbase::BackingStore::MODE_OUTPUT_BIT);
+            dagbase::MemoryBackingStore backingStore;
+            backingStore.open(dagbase::MemoryBackingStore::MODE_OUTPUT_BIT, "");
             dagbase::TextOutputStream str(&backingStore);
             dagbase::Lua lua;
             actualStatus = sut.serialise(str, lua);
             str.flush();
-            backingStore.open(dagbase::BackingStore::MODE_INPUT_BIT);
+            backingStore.open(dagbase::BackingStore::MODE_INPUT_BIT, "");
             dagbase::TextInputStream istr(&backingStore);
             dagbase::Stream::ObjId id{~0U};
             auto ref = istr.readRef(&id);
@@ -1949,7 +1950,8 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
     auto formatClassName = std::get<0>(GetParam());
     auto graphFilename = std::get<1>(GetParam());
     //dagbase::StreamFormat* format = nullptr;
-    dagbase::MemoryBackingStore store(dagbase::BackingStore::MODE_OUTPUT_BIT);
+    dagbase::MemoryBackingStore  store;
+    store.open(dagbase::BackingStore::MODE_OUTPUT_BIT, "");
     dagbase::OutputStream* sut  = nullptr;
     if (formatClassName == "TextFormat")
     {
@@ -1972,7 +1974,7 @@ TEST_P(Graph_testSerialisation, testRoundTrip)
         g1->write(*sut, nodeLib, lua);
     }
     sut->flush();
-    store.open(dagbase::BackingStore::MODE_INPUT_BIT);
+    store.open(dagbase::BackingStore::MODE_INPUT_BIT, "");
     dagbase::InputStream* in = nullptr;
     if (formatClassName == "TextFormat")
     {
@@ -2014,7 +2016,8 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
     std::make_tuple("BinaryFormat", "etc/tests/Graph/onenode.lua"),
     std::make_tuple("TextFormat", "etc/tests/Graph/connectednodes.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/connectednodes.lua"),
-    std::make_tuple("TextFormat", "etc/tests/Graph/withchildgraph.lua"),
+    std::make_tuple("TextFormat",
+"etc/tests/Graph/withchildgraph.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/withchildgraph.lua"),
     std::make_tuple("TextFormat", "etc/tests/Graph/withmultiplechildren.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/withmultiplechildren.lua"),
@@ -2314,14 +2317,15 @@ TEST_P(GraphTest_testReadFromLuaThenSerialise, testSerialise)
     dag::MemoryNodeLibrary nodeLib;
     auto sut = dagbase::Graph::fromFile(nodeLib, graphFilename);
     ASSERT_NE(nullptr, sut);
-    auto* buf = new dagbase::MemoryBackingStore(dagbase::BackingStore::MODE_OUTPUT_BIT);
+    auto* buf = new dagbase::MemoryBackingStore();
+    buf->open(dagbase::BackingStore::MODE_OUTPUT_BIT, "");
     dagbase::BinaryOutputStream ostr(buf);
     if (ostr.writeRef(sut))
     {
         sut->write(ostr, nodeLib, lua);
     }
     ostr.flush();
-    buf->open(dagbase::BackingStore::MODE_INPUT_BIT);
+    buf->open(dagbase::BackingStore::MODE_INPUT_BIT, "");
     dagbase::BinaryInputStream istr(buf);
     dagbase::Stream::ObjId id{~0U};
     dagbase::Graph* actual = nullptr;
