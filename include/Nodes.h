@@ -103,6 +103,8 @@ namespace dag
         static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = ports.size();
+        Base() = default;
+        dagbase::InputStream& readFromStream(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
     private:
         dagbase::TypedPort<double>* _direction{ nullptr };
     };
@@ -122,10 +124,14 @@ namespace dag
 
         Derived(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
 
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
+
         Derived* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Derived(*this, facility, copyOp, keyGen);
         }
+
+        Derived* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         bool equals(const Node& other, dagbase::ComparisonFlags flags) const override;
 
@@ -194,6 +200,8 @@ namespace dag
         static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = Base::numPorts;
         static constexpr size_t numPorts = 1;
+        Derived() = default;
+        dagbase::InputStream& readFromStream(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
     private:
         dagbase::TypedPort<bool>* _trigger{ nullptr };
     };
@@ -234,6 +242,8 @@ namespace dag
             // }
         }
 
+        Final(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
+
         ~Final() override
         {
             for (auto p : _dynamicPorts)
@@ -244,10 +254,14 @@ namespace dag
 
         bool equals(const Node& other, dagbase::ComparisonFlags flags) const override;
 
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
+
         Final* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Final(*this, facility, copyOp, keyGen);
         }
+
+        Final* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         void addDynamicPort(dagbase::Port* port, dagbase::MetaPort::Flags flags) override
         {

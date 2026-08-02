@@ -207,6 +207,7 @@ namespace dag
             Node()
     {
         std::string className;
+
         std::string fieldName;
         str.readHeader(&className);
         Node::readFromStream(str, nodeLib, lua);
@@ -333,9 +334,19 @@ namespace dag
 
     Base::Base(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua)
         :
-        Node(str, nodeLib, lua),
+        Node(),
         int1(0.0)
     {
+        Base::readFromStream(str, nodeLib, lua);
+    }
+
+    dagbase::InputStream & Base::readFromStream(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
+    {
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        Node::readFromStream(str, nodeLib, lua);
+        str.readField(&fieldName);
         dagbase::Stream::ObjId directionId = 0;
         dagbase::Stream::Ref directionRef = str.readRef(&directionId);
 
@@ -350,15 +361,24 @@ namespace dag
                 _direction = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
             }
         }
-        str.read(&int1);
+        str.readField(&fieldName);
+        str.readDouble(&int1);
+        str.readFooter();
+        return str;
     }
 
     dagbase::OutputStream& Base::writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) const
     {
+        str.writeHeader("Base");
         Node::writeToStream(str, nodeLib, lua);
-        _direction->writeToStream(str, nodeLib, lua);
-        str.write(int1);
-
+        str.writeField("direction");
+        if (str.writeRef(_direction))
+        {
+            _direction->writeToStream(str, nodeLib, lua);
+        }
+        str.writeField("in1");
+        str.writeDouble(int1);
+        str.writeFooter();
         return str;
     }
 
@@ -402,8 +422,19 @@ namespace dag
 
     Derived::Derived(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua)
         :
-        Base(str, nodeLib, lua)
+        Base()
     {
+        Derived::readFromStream(str, nodeLib, lua);
+    }
+
+    dagbase::InputStream & Derived::readFromStream(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib,
+        dagbase::Lua &lua)
+    {
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        Base::readFromStream(str, nodeLib, lua);
+        str.readField(&fieldName);
         dagbase::Stream::ObjId directionId = 0;
         dagbase::Stream::Ref directionRef = str.readRef(&directionId);
 
@@ -418,6 +449,29 @@ namespace dag
                 _trigger = dynamic_cast<dagbase::TypedPort<bool>*>(nodeLib.instantiatePort(str, lua));
             }
         }
+        str.readFooter();
+
+        return str;
+    }
+
+    dagbase::OutputStream & Derived::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary &nodeLib,
+        dagbase::Lua &lua) const
+    {
+        str.writeHeader("Derived");
+        Base::writeToStream(str, nodeLib, lua);
+        str.writeField("trigger");
+        if (str.writeRef(_trigger))
+        {
+            _trigger->writeToStream(str, nodeLib, lua);
+        }
+        str.writeFooter();
+
+        return str;
+    }
+
+    Derived * Derived::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
+    {
+        return new Derived(str, nodeLib, lua);
     }
 
     bool Derived::equals(const Node& other, dagbase::ComparisonFlags flags) const
@@ -434,6 +488,32 @@ namespace dag
 
         return true;
     }
+
+    Final::Final(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
+        :
+    Derived()
+    {
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        Derived::readFromStream(str, nodeLib, lua);
+        str.readField(&fieldName);
+        dagbase::Stream::ObjId directionId = 0;
+        dagbase::Stream::Ref directionRef = str.readRef(&directionId);
+        if (directionId != 0)
+        {
+            if (directionRef != nullptr)
+            {
+                _int1 = static_cast<dagbase::TypedPort<std::int64_t>*>(directionRef);
+            }
+            else
+            {
+                _int1 = dynamic_cast<dagbase::TypedPort<std::int64_t>*>(nodeLib.instantiatePort(str, lua));
+            }
+        }
+        str.readFooter();
+    }
+
     bool Final::equals(const Node& other, dagbase::ComparisonFlags flags) const
     {
         if (!Derived::equals(other, flags))
@@ -445,5 +525,25 @@ namespace dag
             return false;
 
         return true;
+    }
+
+    dagbase::OutputStream & Final::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary &nodeLib,
+        dagbase::Lua &lua) const
+    {
+        str.writeHeader("Final");
+        Derived::writeToStream(str, nodeLib, lua);
+        str.writeField("int1");
+        if (str.writeRef(_int1))
+        {
+            _int1->writeToStream(str, nodeLib, lua);
+        }
+        str.writeFooter();
+
+        return str;
+    }
+
+    Final * Final::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
+    {
+        return new Final(str, nodeLib, lua);
     }
 }

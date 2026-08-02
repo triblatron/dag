@@ -127,5 +127,9 @@ root=
 		{
 			cmd="COMMAND_SAVE",
 		},
+        {
+            cmd="COMMAND_SERIALISE",
+            filename="scratch/SaveOneNode.txt",
+        },
 	},
 }
