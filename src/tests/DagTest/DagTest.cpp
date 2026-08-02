@@ -1360,13 +1360,12 @@ struct NodeEditorLiveScriptItem
         }
         case COMMAND_SERIALISE:
         {
-            auto backingStore = dagbase::createBackingStore("FileBackingStore", dagbase::BackingStore::MODE_BINARY_BIT, filename.c_str());
+            auto backingStore = dagbase::createBackingStore("FileBackingStore");
             ASSERT_NE(nullptr, backingStore);
             dagbase::OutputStream* ostr = dagbase::createOutputStream("TextFormat", *backingStore, filename.c_str());
             ASSERT_NE(nullptr, ostr);
             dagbase::Lua lua;
             actualStatus = sut.serialise(*ostr, lua);
-            ostr->flush();
             dagbase::InputStream* istr = dagbase::createInputStream("TextFormat", *backingStore, filename.c_str());
             dagbase::Stream::ObjId id{~0U};
             auto ref = istr->readRef(&id);
@@ -1376,7 +1375,7 @@ struct NodeEditorLiveScriptItem
             else
             {
                 auto restored = new dagbase::Graph(*istr, nodeLib, lua);
-                ASSERT_TRUE(sut.activeGraph()->equals(*restored, static_cast<dagbase::ComparisonFlags>(/*dagbase::CMP_IDENT_BIT|*/dagbase::CMP_NAME_BIT/*|dagbase::CMP_CONNECTIONS_BIT*/)));
+                ASSERT_TRUE(sut.activeGraph()->equals(*restored, static_cast<dagbase::ComparisonFlags>(dagbase::CMP_IDENT_BIT|dagbase::CMP_NAME_BIT/*|dagbase::CMP_CONNECTIONS_BIT*/)));
             }
             delete istr;
             delete ostr;

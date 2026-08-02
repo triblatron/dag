@@ -637,7 +637,9 @@ namespace dag
             {
                 _graph->write(str, *_nodeLib, lua);
             }
+            str.flush();
         }
+
 
         return status;
     }
