@@ -78,6 +78,7 @@ root=
 		},
 		{
 			cmd="COMMAND_SERIALISE",
+            filename="scratch/SaveGraphNodeSimple.txt",
 			status=
 			{
 				statusCode="STATUS_OK",

@@ -31,6 +31,7 @@
 #include <filesystem>
 
 #include "MetaOperation.h"
+#include "io/StreamFactory.h"
 #include "util/PrettyPrinter.h"
 
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dagbase::PortDirection::Direction, double>>
@@ -1232,6 +1233,7 @@ struct NodeEditorLiveScriptItem
             break;
         case COMMAND_SERIALISE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
 
             break;
         case COMMAND_DESERIALISE:
@@ -1358,24 +1360,27 @@ struct NodeEditorLiveScriptItem
         }
         case COMMAND_SERIALISE:
         {
-            dagbase::MemoryBackingStore backingStore;
-            backingStore.open(dagbase::MemoryBackingStore::MODE_OUTPUT_BIT, "");
-            dagbase::TextOutputStream str(&backingStore);
+            auto backingStore = dagbase::createBackingStore("FileBackingStore", dagbase::BackingStore::MODE_BINARY_BIT, filename.c_str());
+            ASSERT_NE(nullptr, backingStore);
+            dagbase::OutputStream* ostr = dagbase::createOutputStream("TextFormat", *backingStore, filename.c_str());
+            ASSERT_NE(nullptr, ostr);
             dagbase::Lua lua;
-            actualStatus = sut.serialise(str, lua);
-            str.flush();
-            backingStore.open(dagbase::BackingStore::MODE_INPUT_BIT, "");
-            dagbase::TextInputStream istr(&backingStore);
+            actualStatus = sut.serialise(*ostr, lua);
+            ostr->flush();
+            dagbase::InputStream* istr = dagbase::createInputStream("TextFormat", *backingStore, filename.c_str());
             dagbase::Stream::ObjId id{~0U};
-            auto ref = istr.readRef(&id);
+            auto ref = istr->readRef(&id);
             dag::MemoryNodeLibrary nodeLib;
             if (id == 0)
                 FAIL() << "Expected a Graph, got null";
             else
             {
-                auto restored = new dagbase::Graph(istr, nodeLib, lua);
+                auto restored = new dagbase::Graph(*istr, nodeLib, lua);
                 ASSERT_TRUE(sut.activeGraph()->equals(*restored, static_cast<dagbase::ComparisonFlags>(/*dagbase::CMP_IDENT_BIT|*/dagbase::CMP_NAME_BIT/*|dagbase::CMP_CONNECTIONS_BIT*/)));
             }
+            delete istr;
+            delete ostr;
+            delete backingStore;
             break;
         }
         case COMMAND_DESERIALISE:
