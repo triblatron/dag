@@ -121,7 +121,7 @@ namespace dag
         if (!Node::equals(other, flags))
             return false;
 
-        return operator==(other);
+        return true;
     }
 
     Boundary::~Boundary()

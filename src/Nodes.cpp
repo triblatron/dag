@@ -291,7 +291,7 @@ namespace dag
         if (!_in1->equals(*otherTyped._in1, flags))
             return false;
 
-        return operator==(other);
+        return true;
     }
 
     void GroupTyped::debug(dagbase::DebugPrinter& printer) const
@@ -372,7 +372,7 @@ namespace dag
         if (!(this->_direction->equals(*otherBase._direction, flags)))
             return false;
 
-        return operator==(static_cast<const Base&>(other));
+        return true;
     }
 
     bool Base::operator==(const Base& other) const

@@ -1375,7 +1375,7 @@ struct NodeEditorLiveScriptItem
             else
             {
                 auto restored = new dagbase::Graph(*istr, nodeLib, lua);
-                ASSERT_TRUE(sut.activeGraph()->equals(*restored, static_cast<dagbase::ComparisonFlags>(dagbase::CMP_IDENT_BIT|dagbase::CMP_NAME_BIT/*|dagbase::CMP_CONNECTIONS_BIT*/)));
+                ASSERT_TRUE(sut.activeGraph()->equals(*restored, static_cast<dagbase::ComparisonFlags>(dagbase::CMP_IDENT_BIT|dagbase::CMP_NAME_BIT|dagbase::CMP_CONNECTIONS_BIT)));
             }
             delete istr;
             delete ostr;
