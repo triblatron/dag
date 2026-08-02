@@ -55,6 +55,7 @@ root=
 				{
 					path="activeGraph.numNodes",
 					typeIndex="TYPE_UINT",
+                    value=0,
 					op="RELOP_EQ",
 				},
 				{
