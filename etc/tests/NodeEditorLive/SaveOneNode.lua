@@ -131,5 +131,9 @@ root=
             cmd="COMMAND_SERIALISE",
             filename="scratch/SaveOneNode.txt",
         },
+        {
+			cmd="COMMAND_DESERIALISE",
+			filename="scratch/SaveOneNode.txt",
+        },
 	},
 }

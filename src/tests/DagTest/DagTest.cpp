@@ -26,14 +26,11 @@
 #include "io/TextOutputStream.h"
 #include "test/TestUtils.h"
 #include "util/enums.h"
+#include "io/StreamFactory.h"
 
 #include <iostream>
 #include <algorithm>
 #include <filesystem>
-
-#include "MetaOperation.h"
-#include "io/StreamFactory.h"
-#include "util/PrettyPrinter.h"
 
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dagbase::PortDirection::Direction, double>>
 {
@@ -1239,6 +1236,7 @@ struct NodeEditorLiveScriptItem
             break;
         case COMMAND_DESERIALISE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
 
             break;
         default:
@@ -1385,7 +1383,15 @@ struct NodeEditorLiveScriptItem
         }
         case COMMAND_DESERIALISE:
         {
-
+            auto backingStore = dagbase::createBackingStore("FileBackingStore");
+            ASSERT_NE(nullptr, backingStore);
+            dagbase::Lua lua;
+            dagbase::CloningFacility facility;
+            auto clone = sut.rootGraph()->clone(facility, dagbase::DEEP_COPY_NODES_BIT, sut.rootGraph());
+            dagbase::InputStream* istr = dagbase::createInputStream("TextFormat", *backingStore, filename.c_str());
+            ASSERT_NE(nullptr, istr);
+            actualStatus = sut.deserialise(*istr, lua);
+            ASSERT_TRUE(clone->equals(*sut.rootGraph(), static_cast<dagbase::ComparisonFlags>(dagbase::CMP_NAME_BIT)));
             break;
         }
         default:

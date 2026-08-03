@@ -44,6 +44,11 @@ namespace dag
             return _activeGraph;
         }
 
+        dagbase::Graph* rootGraph()
+        {
+            return _graph;
+        }
+
         dagbase::Status load(const char* filename);
 
         void eachClass(std::function<bool(const std::string&, dagbase::Node&)> f);
@@ -99,7 +104,7 @@ namespace dag
 
         dagbase::Status serialise(dagbase::OutputStream& str, dagbase::Lua& lua);
 
-        dagbase::Status deserialise(dagbase::InputStream& str);
+        dagbase::Status deserialise(dagbase::InputStream& str, dagbase::Lua &lua);
 
         dagbase::Variant find(std::string_view path) const;
 

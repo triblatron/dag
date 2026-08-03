@@ -99,12 +99,12 @@ namespace dag
 
             return nullptr;
         }
+        dagbase::InputStream& readFromStream(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override;
     protected:
         static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = ports.size();
         Base() = default;
-        dagbase::InputStream& readFromStream(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
     private:
         dagbase::TypedPort<double>* _direction{ nullptr };
     };
@@ -196,12 +196,13 @@ namespace dag
         {
             return "Derived";
         }
+
+        dagbase::InputStream& readFromStream(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override;
     protected:
         static std::array<dagbase::MetaPort, 1> ports;
         static constexpr size_t firstPort = Base::numPorts;
         static constexpr size_t numPorts = 1;
         Derived() = default;
-        dagbase::InputStream& readFromStream(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
     private:
         dagbase::TypedPort<bool>* _trigger{ nullptr };
     };

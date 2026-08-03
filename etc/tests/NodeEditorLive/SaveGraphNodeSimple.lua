@@ -99,5 +99,9 @@ root=
 				},
 			},
 		},
+		{
+			cmd="COMMAND_DESERIALISE",
+			filename="scratch/SaveGraphNodeSimple.txt",
+		},
 	}
 }
