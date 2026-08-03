@@ -25,6 +25,7 @@
 #include "io/TextInputStream.h"
 #include "io/TextOutputStream.h"
 #include "test/TestUtils.h"
+#include "util/enums.h"
 
 #include <iostream>
 #include <algorithm>

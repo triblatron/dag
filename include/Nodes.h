@@ -267,7 +267,7 @@ namespace dag
         {
             if (port != nullptr)
             {
-                _dynamicPorts.emplace_back(port);
+                _dynamicPorts.a.emplace_back(port);
                 dagbase::MetaPort desc;
                 _dynamicMetaPorts.emplace_back(desc);
             }
@@ -337,7 +337,7 @@ namespace dag
 
             if (index < firstPort + numPorts + _dynamicPorts.size())
             {
-                return _dynamicPorts[index - (firstPort+numPorts)];
+                return _dynamicPorts.a[index - (firstPort+numPorts)];
             }
 
             return nullptr;
@@ -357,7 +357,7 @@ namespace dag
 
             if (index < firstPort + numPorts + _dynamicPorts.size())
             {
-                return _dynamicPorts[index - (firstPort+numPorts)];
+                return _dynamicPorts.a[index - (firstPort+numPorts)];
             }
 
             return nullptr;
@@ -365,9 +365,7 @@ namespace dag
     private:
         dagbase::TypedPort<std::int64_t>* _int1{nullptr};
         static std::array<dagbase::MetaPort, 1> ports;
-        typedef std::vector<dagbase::MetaPort> MetaPortArray;
         MetaPortArray _dynamicMetaPorts;
-        typedef std::vector<dagbase::Port*> PortArray;
         PortArray _dynamicPorts;
         static constexpr size_t firstPort = Derived::firstPort + Derived::numPorts;
         static constexpr size_t numPorts = 1;

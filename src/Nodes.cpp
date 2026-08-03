@@ -497,6 +497,7 @@ namespace dag
         std::string fieldName;
         str.readHeader(&className);
         Derived::readFromStream(str, nodeLib, lua);
+        readDynamicPorts(str, nodeLib, lua, _dynamicPorts, _dynamicMetaPorts);
         str.readField(&fieldName);
         dagbase::Stream::ObjId directionId = 0;
         dagbase::Stream::Ref directionRef = str.readRef(&directionId);
@@ -532,6 +533,7 @@ namespace dag
     {
         str.writeHeader("Final");
         Derived::writeToStream(str, nodeLib, lua);
+        writeDynamicPorts(str, nodeLib, lua, _dynamicPorts, _dynamicMetaPorts);
         str.writeField("int1");
         if (str.writeRef(_int1))
         {

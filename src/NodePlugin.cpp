@@ -31,24 +31,7 @@ public:
         std::string fieldName;
         str.readHeader(&className);
         Node::readFromStream(str, nodeLib, lua);
-        std::uint32_t numDynamicMetaPorts = 0;
-        str.readField(&fieldName);
-        str.readUInt32(&numDynamicMetaPorts);
-        _dynamicMetaPorts.resize(numDynamicMetaPorts);
-        str.readField(&fieldName);
-        for (std::size_t i=0; i<numDynamicMetaPorts; ++i)
-        {
-            _dynamicMetaPorts[i].read(str);
-        }
-        std::uint32_t numDynamicPorts = 0;
-        str.readField(&fieldName);
-        str.readUInt32(&numDynamicPorts);
-        _dynamicPorts.resize(numDynamicPorts);
-        str.readField(&fieldName);
-        for (std::size_t i=0; i<numDynamicPorts; ++i)
-        {
-            _dynamicPorts[i] = nodeLib.instantiatePort(str, lua);
-        }
+        readDynamicPorts(str, nodeLib, lua, _dynamicPorts, _dynamicMetaPorts);
         str.readFooter();
     }
 
@@ -110,7 +93,7 @@ public:
     {
         if (port != nullptr)
         {
-            _dynamicPorts.emplace_back(port);
+            _dynamicPorts.a.emplace_back(port);
             _dynamicMetaPorts.emplace_back(flags);
         }
     }
@@ -119,7 +102,7 @@ public:
     {
         if (index<_dynamicPorts.size())
         {
-            return _dynamicPorts[index];
+            return _dynamicPorts.a[index];
         }
 
         return nullptr;
@@ -129,7 +112,7 @@ public:
     {
         if (index<_dynamicPorts.size())
         {
-            return _dynamicPorts[index];
+            return _dynamicPorts.a[index];
         }
 
         return nullptr;
@@ -144,20 +127,7 @@ public:
     {
         str.writeHeader("NodePlugin.DynamicNode");
         Node::writeToStream(str, nodeLib, lua);
-        str.writeField("numDynamicMetaPorts");
-        str.writeUInt32(_dynamicMetaPorts.size());
-        str.writeField("dynamicMetaPorts");
-        for (auto const & p : _dynamicMetaPorts)
-        {
-            p.write(str);
-        }
-        str.writeField("numDynamicPorts");
-        str.writeUInt32(_dynamicPorts.size());
-        str.writeField("dynamicPorts");
-        for (auto p : _dynamicPorts)
-        {
-            p->writeToStream(str, nodeLib, lua);
-        }
+        writeDynamicPorts(str, nodeLib, lua, _dynamicPorts, _dynamicMetaPorts);
         str.writeFooter();
         return str;
     }
@@ -167,9 +137,7 @@ public:
         return new DynamicNode(*this,facility,copyOp,keyGen);
     }
 private:
-    typedef std::vector<dagbase::MetaPort> MetaPortArray;
     MetaPortArray _dynamicMetaPorts;
-    typedef std::vector<dagbase::Port*> PortArray;
     PortArray _dynamicPorts;
 };
 
@@ -181,7 +149,7 @@ Node(other, facility, copyOp, keyGen)
     {
         auto port = (*it)->clone(facility,copyOp,keyGen);
 
-        _dynamicPorts.emplace_back(port);
+        _dynamicPorts.a.emplace_back(port);
     }
 
     for (auto it=other._dynamicMetaPorts.begin(); it!=other._dynamicMetaPorts.end(); ++it)

@@ -56,7 +56,7 @@ namespace dag
         {
             if (index<_dynamicPorts.size())
             {
-                return _dynamicPorts[index];
+                return _dynamicPorts.a[index];
             }
 
             return nullptr;
@@ -66,7 +66,7 @@ namespace dag
         {
             if (index<_dynamicPorts.size())
             {
-                return _dynamicPorts[index];
+                return _dynamicPorts.a[index];
             }
 
             return nullptr;
@@ -93,7 +93,7 @@ namespace dag
             if (port != nullptr)
             {
                 port->setParent(this);
-                _dynamicPorts.emplace_back(port);
+                _dynamicPorts.a.emplace_back(port);
                 dagbase::MetaPort desc;
                 desc.flags = flags;
                 _dynamicMetaPorts.emplace_back(desc);
@@ -102,9 +102,7 @@ namespace dag
 
         void debug(dagbase::DebugPrinter& printer) const override;
     private:
-        typedef std::vector<dagbase::MetaPort> MetaPortArray;
         MetaPortArray _dynamicMetaPorts;
-        typedef std::vector<dagbase::Port*> PortArray;
         PortArray _dynamicPorts;
     };
 }
