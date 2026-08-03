@@ -1843,106 +1843,6 @@ TEST(ByteBufferTest, testBulkGet)
     ASSERT_EQ(i,actual);
 }
 
-class TestNode
-{
-public:
-    explicit TestNode(TestNode* parent)
-    :
-    _parent(parent)
-    {
-
-    }
-
-    explicit TestNode(dagbase::InputStream& str)
-    :
-    _parent(nullptr)
-    {
-        str.addObj(this);
-        dagbase::Stream::ObjId parentId{0};
-        auto parentRef = str.readRef<TestNode>(&parentId);
-
-        str.read(&_value);
-
-        std::size_t numChildren = 0;
-        str.read(&numChildren);
-
-        for (auto i=0; i<numChildren; ++i)
-        {
-            dagbase::Stream::ObjId childId = 0;
-            auto child = str.readRef<TestNode>(&childId);
-
-            addChild(child);
-        }
-    }
-
-    ~TestNode()
-    {
-        for (auto child : _children)
-        {
-            delete child;
-        }
-    }
-
-    dagbase::OutputStream& write(dagbase::OutputStream& str) const
-    {
-        if (str.writeRef(_parent))
-        {
-            _parent->write(str);
-        }
-
-        str.write(_value);
-        str.write(_children.size());
-
-        for (auto child : _children)
-        {
-            if (str.writeRef(child))
-            {
-                child->write(str);
-            }
-        }
-        return str;
-    }
-
-    void setValue(int value)
-    {
-        _value = value;
-    }
-
-    [[nodiscard]]int value() const
-    {
-        return _value;
-    }
-
-    void addChild(TestNode* child)
-    {
-        if (child!=nullptr)
-        {
-            _children.emplace_back(child);
-            child->_parent = this;
-        }
-    }
-
-    TestNode* child(std::size_t index)
-    {
-        if (index<_children.size())
-        {
-            return _children[index];
-        }
-
-        return nullptr;
-    }
-
-    [[nodiscard]]std::size_t numChildren() const
-    {
-        return _children.size();
-    }
-private:
-    TestNode* _parent;
-    typedef std::vector<TestNode*> TestNodeArray;
-    TestNodeArray _children;
-    int _value;
-};
-
 class Graph_testSerialisation : public ::testing::TestWithParam<std::tuple<std::string_view, const char*>>
 {
 
@@ -2020,8 +1920,7 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testSerialisation, ::testing::Values(
     std::make_tuple("BinaryFormat", "etc/tests/Graph/onenode.lua"),
     std::make_tuple("TextFormat", "etc/tests/Graph/connectednodes.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/connectednodes.lua"),
-    std::make_tuple("TextFormat",
-"etc/tests/Graph/withchildgraph.lua"),
+    std::make_tuple("TextFormat","etc/tests/Graph/withchildgraph.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/withchildgraph.lua"),
     std::make_tuple("TextFormat", "etc/tests/Graph/withmultiplechildren.lua"),
     std::make_tuple("BinaryFormat", "etc/tests/Graph/withmultiplechildren.lua"),
