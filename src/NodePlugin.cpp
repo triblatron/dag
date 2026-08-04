@@ -108,7 +108,7 @@ public:
         return nullptr;
     }
 
-    [[nodiscard]]const dagbase::Port* dynamicPort(size_t index) const
+    [[nodiscard]]const dagbase::Port* dynamicPort(size_t index) const override
     {
         if (index<_dynamicPorts.size())
         {

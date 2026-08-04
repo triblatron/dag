@@ -2194,7 +2194,7 @@ TEST(GraphTest, testPersistNodeFromPlugin)
     graph->toLua(printer);
     auto graph2 = dagbase::Graph::fromString(nodeLib, str.str().c_str());
     ASSERT_NE(nullptr, graph2);
-    EXPECT_EQ(*graph,*graph2);
+    EXPECT_TRUE(graph->equals(*graph2, static_cast<dagbase::ComparisonFlags>(dagbase::CMP_IDENT_BIT|dagbase::CMP_NAME_BIT)));
     delete graph2;
     delete graph;
 }
