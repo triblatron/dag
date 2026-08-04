@@ -649,12 +649,13 @@ namespace dag
         dagbase::Status status;
         dagbase::Stream::ObjId id{~0U};
         auto ref = str.readRef(&id);
-        dag::MemoryNodeLibrary nodeLib;
         if (id == 0)
             return dagbase::Status{dagbase::Status::STATUS_FAILED_TO_CREATE_GRAPH};
 
         delete _graph;
         _graph = new dagbase::Graph(str, *_nodeLib, lua);
+        _graph->adjustNextID();
+        _activeGraph = _graph;
         status.status = dagbase::Status::STATUS_OK;
 
         return status;

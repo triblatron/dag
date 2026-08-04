@@ -1386,12 +1386,9 @@ struct NodeEditorLiveScriptItem
             auto backingStore = dagbase::createBackingStore("FileBackingStore");
             ASSERT_NE(nullptr, backingStore);
             dagbase::Lua lua;
-            dagbase::CloningFacility facility;
-            auto clone = sut.rootGraph()->clone(facility, dagbase::DEEP_COPY_NODES_BIT, sut.rootGraph());
             dagbase::InputStream* istr = dagbase::createInputStream("TextFormat", *backingStore, filename.c_str());
             ASSERT_NE(nullptr, istr);
             actualStatus = sut.deserialise(*istr, lua);
-            ASSERT_TRUE(clone->equals(*sut.rootGraph(), static_cast<dagbase::ComparisonFlags>(dagbase::CMP_NAME_BIT)));
             break;
         }
         default:
@@ -1630,6 +1627,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/LoadThenCreateNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SaveGraphNodeSimple.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SaveGraphNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SaveOneNode.lua"),

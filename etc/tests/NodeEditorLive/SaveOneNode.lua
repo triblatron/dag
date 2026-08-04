@@ -134,6 +134,15 @@ root=
         {
 			cmd="COMMAND_DESERIALISE",
 			filename="scratch/SaveOneNode.txt",
+			assertions=
+			{
+				{
+					path="activeGraph.numNodes",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
         },
 	},
 }

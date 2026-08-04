@@ -1,0 +1,37 @@
+root=
+{
+	items=
+	{
+        {
+			cmd="COMMAND_DESERIALISE",
+			filename="scratch/SaveOneNode.txt",
+			assertions=
+			{
+				{
+					path="activeGraph.numNodes",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+        },
+        {
+			cmd="COMMAND_CREATE_NODE",
+			nodeClass="GroupTyped",
+			status=
+			{
+				statusCode="STATUS_OK",
+				nodeID=1,
+			},
+			assertions=
+			{
+				{
+					path="activeGraph.numNodes",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+        },
+	},
+}
