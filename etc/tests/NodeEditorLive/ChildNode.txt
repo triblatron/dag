@@ -1,0 +1,570 @@
+SerialId
+{
+  id : 1
+}
+Graph
+{
+  numNodes : 3
+  SerialId
+  {
+    id : 2
+  }
+  className : "FooTyped"
+  FooTyped
+  {
+    Node
+    {
+      Class
+      {
+        errod : 0
+      }
+      id : 1
+      name : "footyped1"
+      category : 2
+      flags : 0
+      x : 1896
+      y : 489
+    }
+    in1 :     SerialId
+    {
+      id : 3
+    }
+    className : "TypedPort<double>"
+    TypedPort<double>
+    {
+      Port
+      {
+        id : 2
+        name : "in1"
+        type : 9
+        direction : 1
+        parent :         SerialId
+        {
+          id : 2
+        }
+        sharedParent :         SerialId
+        {
+          id : 0
+        }
+        numOutgoingConnections : 0
+        numIncomingConnections : 1
+        incomingConnections :         SerialId
+        {
+          id : 4
+        }
+        className : "TypedPort<double>"
+        TypedPort<double>
+        {
+          Port
+          {
+            id : 7
+            name : "out1"
+            type : 9
+            direction : 2
+            parent :             SerialId
+            {
+              id : 5
+            }
+            className : "Boundary"
+            Boundary
+            {
+              Node
+              {
+                Class
+                {
+                  errod : 0
+                }
+                id : 4
+                name : "boundaryOutput"
+                category : 5
+                flags : 0
+                x : 1858
+                y : 491
+              }
+              numDynamicMetaPorts : 2
+              dynamicMetaPorts :               MetaPort
+              {
+                flags : 1
+              }
+              MetaPort
+              {
+                flags : 1
+              }
+              numDynamicPorts : 2
+              dynamicPorts :               SerialId
+              {
+                id : 6
+              }
+              className : "TypedPort<double>"
+              TypedPort<double>
+              {
+                Port
+                {
+                  id : 6
+                  name : "in1"
+                  type : 9
+                  direction : 1
+                  parent :                   SerialId
+                  {
+                    id : 5
+                  }
+                  sharedParent :                   SerialId
+                  {
+                    id : 0
+                  }
+                  numOutgoingConnections : 0
+                  numIncomingConnections : 1
+                  incomingConnections :                   SerialId
+                  {
+                    id : 7
+                  }
+                  className : "TypedPort<double>"
+                  TypedPort<double>
+                  {
+                    Port
+                    {
+                      id : 0
+                      name : "out1"
+                      type : 9
+                      direction : 2
+                      parent :                       SerialId
+                      {
+                        id : 8
+                      }
+                      className : "GroupTyped"
+                      GroupTyped
+                      {
+                        Node
+                        {
+                          Class
+                          {
+                            errod : 0
+                          }
+                          id : 0
+                          name : "grouptyped1"
+                          category : 5
+                          flags : 0
+                          x : 1607
+                          y : 469
+                        }
+                        out1 :                         SerialId
+                        {
+                          id : 7
+                        }
+                        in1 :                         SerialId
+                        {
+                          id : 9
+                        }
+                        className : "TypedPort<double>"
+                        TypedPort<double>
+                        {
+                          Port
+                          {
+                            id : 1
+                            name : "in1"
+                            type : 9
+                            direction : 1
+                            parent :                             SerialId
+                            {
+                              id : 8
+                            }
+                            sharedParent :                             SerialId
+                            {
+                              id : 0
+                            }
+                            numOutgoingConnections : 0
+                            numIncomingConnections : 1
+                            incomingConnections :                             SerialId
+                            {
+                              id : 10
+                            }
+                            className : "TypedPort<double>"
+                            TypedPort<double>
+                            {
+                              Port
+                              {
+                                id : 4
+                                name : "out1"
+                                type : 9
+                                direction : 2
+                                parent :                                 SerialId
+                                {
+                                  id : 11
+                                }
+                                className : "Boundary"
+                                Boundary
+                                {
+                                  Node
+                                  {
+                                    Class
+                                    {
+                                      errod : 0
+                                    }
+                                    id : 3
+                                    name : "boundaryInput"
+                                    category : 5
+                                    flags : 0
+                                    x : 1358
+                                    y : 486
+                                  }
+                                  numDynamicMetaPorts : 2
+                                  dynamicMetaPorts :                                   MetaPort
+                                  {
+                                    flags : 1
+                                  }
+                                  MetaPort
+                                  {
+                                    flags : 1
+                                  }
+                                  numDynamicPorts : 2
+                                  dynamicPorts :                                   SerialId
+                                  {
+                                    id : 10
+                                  }
+                                  SerialId
+                                  {
+                                    id : 12
+                                  }
+                                  className : "TypedPort<double>"
+                                  TypedPort<double>
+                                  {
+                                    Port
+                                    {
+                                      id : 5
+                                      name : "in1"
+                                      type : 9
+                                      direction : 1
+                                      parent :                                       SerialId
+                                      {
+                                        id : 11
+                                      }
+                                      sharedParent :                                       SerialId
+                                      {
+                                        id : 13
+                                      }
+                                      className : "GraphNode"
+                                      GraphNode
+                                      {
+                                        Node
+                                        {
+                                          Class
+                                          {
+                                            errod : 0
+                                          }
+                                          id : 5
+                                          name : "child1"
+                                          category : 5
+                                          flags : 0
+                                          x : 1607
+                                          y : 469
+                                        }
+                                        numDynamicMetaPorts : 2
+                                        dynamicMetaPorts :                                         MetaPort
+                                        {
+                                          flags : 0
+                                        }
+                                        MetaPort
+                                        {
+                                          flags : 0
+                                        }
+                                        numDynamicPorts : 2
+                                        dynamicPorts :                                         SerialId
+                                        {
+                                          id : 12
+                                        }
+                                        SerialId
+                                        {
+                                          id : 4
+                                        }
+                                        graph :                                         SerialId
+                                        {
+                                          id : 14
+                                        }
+                                        Graph
+                                        {
+                                          numNodes : 3
+                                          SerialId
+                                          {
+                                            id : 8
+                                          }
+                                          SerialId
+                                          {
+                                            id : 11
+                                          }
+                                          SerialId
+                                          {
+                                            id : 5
+                                          }
+                                          numPorts : 6
+                                          SerialId
+                                          {
+                                            id : 7
+                                          }
+                                          SerialId
+                                          {
+                                            id : 9
+                                          }
+                                          SerialId
+                                          {
+                                            id : 10
+                                          }
+                                          SerialId
+                                          {
+                                            id : 12
+                                          }
+                                          SerialId
+                                          {
+                                            id : 6
+                                          }
+                                          SerialId
+                                          {
+                                            id : 4
+                                          }
+                                          numSignalPaths : 2
+                                          SerialId
+                                          {
+                                            id : 15
+                                          }
+                                          SignalPath
+                                          {
+                                            id : 2
+                                            source :                                             SerialId
+                                            {
+                                              id : 10
+                                            }
+                                            dest :                                             SerialId
+                                            {
+                                              id : 9
+                                            }
+                                            flags : 0
+                                          }
+                                          SerialId
+                                          {
+                                            id : 16
+                                          }
+                                          SignalPath
+                                          {
+                                            id : 3
+                                            source :                                             SerialId
+                                            {
+                                              id : 7
+                                            }
+                                            dest :                                             SerialId
+                                            {
+                                              id : 6
+                                            }
+                                            flags : 0
+                                          }
+                                          numChildren : 0
+                                        }
+                                      }
+                                      numOutgoingConnections : 0
+                                      numIncomingConnections : 1
+                                      incomingConnections :                                       SerialId
+                                      {
+                                        id : 17
+                                      }
+                                      className : "TypedPort<double>"
+                                      TypedPort<double>
+                                      {
+                                        Port
+                                        {
+                                          id : 3
+                                          name : "out1"
+                                          type : 9
+                                          direction : 2
+                                          parent :                                           SerialId
+                                          {
+                                            id : 18
+                                          }
+                                          className : "BarTyped"
+                                          BarTyped
+                                          {
+                                            Node
+                                            {
+                                              Class
+                                              {
+                                                errod : 0
+                                              }
+                                              id : 2
+                                              name : "bartyped1"
+                                              category : 1
+                                              flags : 0
+                                              x : 1358
+                                              y : 486
+                                            }
+                                            out1 :                                             SerialId
+                                            {
+                                              id : 17
+                                            }
+                                          }
+                                          sharedParent :                                           SerialId
+                                          {
+                                            id : 0
+                                          }
+                                          numOutgoingConnections : 1
+                                          outgoingConnections :                                           SerialId
+                                          {
+                                            id : 12
+                                          }
+                                          numIncomingConnections : 0
+                                        }
+                                        value :                                         Variant
+                                        {
+                                          hasValue : true
+                                          type : 1
+                                          value : 1
+                                        }
+                                      }
+                                    }
+                                    value :                                     Variant
+                                    {
+                                      hasValue : true
+                                      type : 1
+                                      value : 2
+                                    }
+                                  }
+                                }
+                                sharedParent :                                 SerialId
+                                {
+                                  id : 0
+                                }
+                                numOutgoingConnections : 1
+                                outgoingConnections :                                 SerialId
+                                {
+                                  id : 9
+                                }
+                                numIncomingConnections : 0
+                              }
+                              value :                               Variant
+                              {
+                                hasValue : true
+                                type : 1
+                                value : 1
+                              }
+                            }
+                          }
+                          value :                           Variant
+                          {
+                            hasValue : true
+                            type : 1
+                            value : 2
+                          }
+                        }
+                      }
+                      sharedParent :                       SerialId
+                      {
+                        id : 0
+                      }
+                      numOutgoingConnections : 1
+                      outgoingConnections :                       SerialId
+                      {
+                        id : 6
+                      }
+                      numIncomingConnections : 0
+                    }
+                    value :                     Variant
+                    {
+                      hasValue : true
+                      type : 1
+                      value : 1
+                    }
+                  }
+                }
+                value :                 Variant
+                {
+                  hasValue : true
+                  type : 1
+                  value : 1
+                }
+              }
+              SerialId
+              {
+                id : 4
+              }
+            }
+            sharedParent :             SerialId
+            {
+              id : 13
+            }
+            numOutgoingConnections : 1
+            outgoingConnections :             SerialId
+            {
+              id : 3
+            }
+            numIncomingConnections : 0
+          }
+          value :           Variant
+          {
+            hasValue : true
+            type : 1
+            value : 1
+          }
+        }
+      }
+      value :       Variant
+      {
+        hasValue : true
+        type : 1
+        value : 1
+      }
+    }
+  }
+  SerialId
+  {
+    id : 18
+  }
+  SerialId
+  {
+    id : 13
+  }
+  numPorts : 2
+  SerialId
+  {
+    id : 3
+  }
+  SerialId
+  {
+    id : 17
+  }
+  numSignalPaths : 2
+  SerialId
+  {
+    id : 19
+  }
+  SignalPath
+  {
+    id : 4
+    source :     SerialId
+    {
+      id : 17
+    }
+    dest :     SerialId
+    {
+      id : 12
+    }
+    flags : 0
+  }
+  SerialId
+  {
+    id : 20
+  }
+  SignalPath
+  {
+    id : 5
+    source :     SerialId
+    {
+      id : 4
+    }
+    dest :     SerialId
+    {
+      id : 3
+    }
+    flags : 0
+  }
+  numChildren : 1
+  SerialId
+  {
+    id : 14
+  }
+}
