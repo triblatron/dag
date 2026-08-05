@@ -42,16 +42,35 @@ root=
 			{
 				{
 					path="activeGraph.numNodes",
-					value=4,
+					value=6,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
 				{
 					path="activeGraph.numPorts",
-					value=6,
+					value=4,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+			}
+		},
+		{
+			cmd="COMMAND_SELECT",
+			selection=
+			{
+				5,6
+			},
+			selectionMode="SELECTION_SET",
+		},
+		{
+			cmd="COMMAND_COMPARE_NODES",
+			comparisonFlags="CMP_NAME_BIT CMP_CONNECTIONS_COUNT_BIT",
+			status=
+			{
+				statusCode="STATUS_OK",
+			},
+			assertions=
+			{
 			}
 		},
 	},

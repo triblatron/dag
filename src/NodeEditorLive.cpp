@@ -512,7 +512,7 @@ namespace dag
         return dagbase::Status{dagbase::Status::STATUS_SYNTAX_ERROR};
     }
 
-    dagbase::Status NodeEditorLive::compareNodes()
+    dagbase::Status NodeEditorLive::compareNodes(dagbase::ComparisonFlags cmpFlags)
     {
         dagbase::Status status;
 
@@ -528,7 +528,7 @@ namespace dag
             bool equal = false;
             if (op1 && op2)
             {
-                equal = op1->equals(*op2, dagbase::CMP_NONE);
+                equal = op1->equals(*op2, cmpFlags);
             }
             if (equal)
             {

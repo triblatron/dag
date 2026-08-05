@@ -89,7 +89,7 @@ namespace dag
         //! Copy the selection
         dagbase::Status copyNodes();
 
-        dagbase::Status compareNodes();
+        dagbase::Status compareNodes(dagbase::ComparisonFlags cmpFlags);
 
         //! Create a template from a Group
         dagbase::Status createTemplate(std::string className) override;

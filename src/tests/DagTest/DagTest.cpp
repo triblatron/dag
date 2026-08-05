@@ -1200,6 +1200,7 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
             dagbase::ConfigurationElement::readConfig(config, "otherNode", &otherNodeId);
+            dagbase::ConfigurationElement::readConfig<dagbase::ComparisonFlags>(config, "comparisonFlags", &dagbase::parseComparisonFlags, &cmpFlags);
             break;
         case COMMAND_CREATE_TEMPLATE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
@@ -1305,7 +1306,7 @@ struct NodeEditorLiveScriptItem
         }
         case COMMAND_COMPARE_NODES:
         {
-            actualStatus = sut.compareNodes();
+            actualStatus = sut.compareNodes(cmpFlags);
 
             break;
         }
@@ -1425,6 +1426,7 @@ struct NodeEditorLiveScriptItem
     dag::NodeEditorLive::GraphChildPath graphChildPath;
     std::string filename;
     float position[2];
+    dagbase::ComparisonFlags cmpFlags{dagbase::CMP_NONE};
     bool done{ false };
 
     void set(std::string_view name, dagbase::Variant value)
