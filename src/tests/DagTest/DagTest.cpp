@@ -1629,6 +1629,9 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteGraphNodeThenSave.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedCreateTemplateThenSave.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/CreateTemplateThenConnect.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateTemplateThenBrowse.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadThenCopyNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadThenCreateNode.lua"),
