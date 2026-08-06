@@ -429,7 +429,7 @@ root=
             {
                 {
                     path="activeGraph.children.size",
-                    value=1,
+                    value=2,
                     typeIndex="TYPE_UINT",
                     op="RELOP_EQ",
                 },

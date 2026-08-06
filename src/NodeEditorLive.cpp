@@ -439,7 +439,7 @@ namespace dag
                     // child->addNode(node);
                 }
 
-                _activeGraph->addChild(child);
+                //_activeGraph->addChild(child);
 
                 if (auto graphNode = dynamic_cast<dagbase::GraphNode*>(_graph->createNode("GraphNode", "child" + std::to_string(_graph->numChildren()))); graphNode)
                 {
