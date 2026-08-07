@@ -8,6 +8,18 @@ root=
 			assertions=
 			{
 				{
+					path="graph.numNodes",
+					value=3,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.numPorts",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
 					path="graph.numSignalPaths",
 					value=2,
 					typeIndex="TYPE_UINT",
@@ -45,6 +57,12 @@ root=
 			{
 				{
 					path="graph.numNodes",
+					value=2,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.numPorts",
 					value=2,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
