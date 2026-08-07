@@ -44,6 +44,10 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+                {
+                    path="graph.nodes[1].class",
+                    value="FooTyped",                    
+                },
 				{
 					path="graph.numPorts",
 					value=1,
