@@ -1069,7 +1069,8 @@ struct NodeEditorLiveAssertion
     std::string path;
     dagbase::Variant value;
     double tolerance{ 0.0 };
-    dagbase::ConfigurationElement::RelOp op{ dagbase::ConfigurationElement::RELOP_UNKNOWN };
+    //! Provide a default value that is used in most cases to prevent errors
+    dagbase::ConfigurationElement::RelOp op{ dagbase::ConfigurationElement::RELOP_EQ };
     dagbase::Variant::Index typeIndex{ dagbase::Variant::TYPE_UNKNOWN };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1629,6 +1630,8 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteSinkNodeThenSave.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteSourceNodeThenSave.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteGraphNodeThenSave.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedCreateTemplateThenSave.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateTemplateInstantiateConnectThenDelete.lua"),
