@@ -1064,45 +1064,7 @@ struct NodeEditorLiveCase
     }
 };
 
-struct NodeEditorLiveAssertion
-{
-    std::string path;
-    dagbase::Variant value;
-    double tolerance{ 0.0 };
-    dagbase::ConfigurationElement::RelOp op{ dagbase::ConfigurationElement::RELOP_UNKNOWN };
-    dagbase::Variant::Index typeIndex{ dagbase::Variant::TYPE_UNKNOWN };
-
-    void configure(dagbase::ConfigurationElement& config)
-    {
-        dagbase::ConfigurationElement::readConfig(config, "path", &path);
-        dagbase::ConfigurationElement::readConfig(config, "value", &value);
-        dagbase::ConfigurationElement::readConfig<dagbase::Variant::Index>(config, "typeIndex", &dagbase::Variant::parseIndex, &typeIndex);
-        if (typeIndex != dagbase::Variant::TYPE_UNKNOWN)
-        {
-            value = value.cast(typeIndex);
-        }
-        dagbase::ConfigurationElement::readConfig(config, "tolerance", &tolerance);
-        dagbase::ConfigurationElement::readConfig<dagbase::ConfigurationElement::RelOp>(config, "op", &dagbase::ConfigurationElement::parseRelOp, &op);
-    }
-
-    void setValue(dagbase::Variant newValue)
-    {
-        if (typeIndex == dagbase::Variant::TYPE_UNKNOWN)
-        {
-            value = newValue;
-        }
-        else
-        {
-            value = newValue.cast(typeIndex);
-        }
-    }
-
-    void makeItSo(dag::NodeEditorLive& sut, const std::string& cmd) const
-    {
-        auto actual = sut.find(path);
-        assertComparison(value, actual, tolerance, op, (path + " " + cmd).c_str());
-    }
-};
+using NodeEditorLiveAssertion = Assertion<dag::NodeEditorLive>;
 
 struct NodeEditorLiveScriptItem
 {
@@ -1425,7 +1387,7 @@ struct NodeEditorLiveScriptItem
     dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
     dag::NodeEditorLive::GraphChildPath graphChildPath;
     std::string filename;
-    float position[2];
+    float position[2]{};
     dagbase::ComparisonFlags cmpFlags{dagbase::CMP_NONE};
     bool done{ false };
 
