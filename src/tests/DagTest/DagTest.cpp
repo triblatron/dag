@@ -1387,7 +1387,7 @@ struct NodeEditorLiveScriptItem
     dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
     dag::NodeEditorLive::GraphChildPath graphChildPath;
     std::string filename;
-    float position[2]{};
+    float position[2];
     dagbase::ComparisonFlags cmpFlags{dagbase::CMP_NONE};
     bool done{ false };
 
@@ -1591,6 +1591,8 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteSinkNodeThenSave.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteSourceNodeThenSave.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteGraphNodeThenSave.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedCreateTemplateThenSave.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateTemplateInstantiateConnectThenDelete.lua"),
