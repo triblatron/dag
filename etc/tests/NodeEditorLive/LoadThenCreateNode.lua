@@ -4,7 +4,7 @@ root=
 	{
         {
 			cmd="COMMAND_DESERIALISE",
-			filename="scratch/SaveOneNode.txt",
+			filename="etc/tests/NodeEditorLive/SaveOneNode.txt",
 			assertions=
 			{
 				{
