@@ -106,7 +106,7 @@ TEST_P(PortTypeTest, checkSetValue)
 {
     double value = std::get<0>(GetParam());
     double newValue = std::get<1>(GetParam());
-    auto sut = new dagbase::TypedPort<double>(0, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, value);
+    auto sut = new dagbase::TypedPort<double>(dagbase::PortID(0), "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, value);
     EXPECT_EQ(value, double(sut->value()));
     sut->setValue(newValue);
     EXPECT_EQ(newValue, double(sut->value()));
@@ -265,8 +265,8 @@ TEST(TableTraversalTest, testErrorInCallback)
 
 TEST(TypedPortTransfer, testConnectToDifferentTypes)
 {
-    auto* source = new dagbase::TypedPort(0, "out1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{ 1 });
-    auto* dest = new dagbase::TypedPort(1, "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0);
+    auto* source = new dagbase::TypedPort(dagbase::PortID(0), "out1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{ 1 });
+    auto* dest = new dagbase::TypedPort(dagbase::PortID(1), "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0);
     dagbase::Transfer const * transfer = source->connectTo(*dest);
     ASSERT_EQ(nullptr, transfer);
     delete transfer;
@@ -276,8 +276,8 @@ TEST(TypedPortTransfer, testConnectToDifferentTypes)
 
 TEST(TypedPortTransfer, testConnectToMatchingType)
 {
-    dagbase::TypedPort<std::int64_t>* source = new dagbase::TypedPort(0, "out1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{ 1 });
-    dagbase::TypedPort<std::int64_t>* dest = new dagbase::TypedPort(1, "in1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_IN, std::int64_t{ 0 });
+    dagbase::TypedPort<std::int64_t>* source = new dagbase::TypedPort(dagbase::PortID(0), "out1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{ 1 });
+    dagbase::TypedPort<std::int64_t>* dest = new dagbase::TypedPort(dagbase::PortID(1), "in1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_IN, std::int64_t{ 0 });
     dagbase::Transfer * transfer = source->connectTo(*dest);
     ASSERT_NE(nullptr, transfer);
     ASSERT_TRUE(transfer->valid());
@@ -311,7 +311,7 @@ TEST(GraphTest, testCannotAddANullNode)
 
     sut->addNode(nullptr);
     ASSERT_EQ(size_t{ 0 }, sut->numNodes());
-    ASSERT_EQ(nullptr, sut->node(0));
+    ASSERT_EQ(nullptr, sut->node(dagbase::NodeID(0)));
 
     delete sut;
 }
@@ -335,7 +335,7 @@ TEST(GraphTest, testCannotAddANullSignalPath)
 
     sut->addSignalPath(nullptr);
     ASSERT_EQ(size_t{ 0 }, sut->numSignalPaths());
-    ASSERT_EQ(nullptr, sut->signalPath(0));
+    ASSERT_EQ(nullptr, sut->signalPath(dagbase::SignalPathID(0)));
     
     delete sut;
 }
@@ -374,7 +374,7 @@ class TestNodeWithStringPort
 public:
     TestNodeWithStringPort()
 	    :
-    _str(0, "out1", dagbase::PortType::TYPE_STRING, dagbase::PortDirection::DIR_OUT, "test")
+    _str(dagbase::PortID(0), "out1", dagbase::PortType::TYPE_STRING, dagbase::PortDirection::DIR_OUT, "test")
     {
 	    // Do nothing.
     }
@@ -402,8 +402,8 @@ TEST(PortTest, testCannotConnectDifferentTypes)
 
 TEST(PortTestCompatibleTypes, testCompatibleTypesIntToDouble)
 {
-    auto output = new dagbase::TypedPort(0, "output", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{1});
-    auto input = new dagbase::TypedPort(1, "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
+    auto output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{1});
+    auto input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
     ASSERT_EQ(false, output->isCompatibleWith(*input));
     delete input;
     delete output;
@@ -411,8 +411,8 @@ TEST(PortTestCompatibleTypes, testCompatibleTypesIntToDouble)
 
 TEST(PortTestCompatibleTypes, testCompatibleExactMatch)
 {
-    dagbase::TypedPort<double> const* output = new dagbase::TypedPort(0, "output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
-    auto* input = new dagbase::TypedPort(1, "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
+    dagbase::TypedPort<double> const* output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
+    auto* input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
     ASSERT_EQ(true, output->isCompatibleWith(*input));
     delete input;
     delete output;
@@ -420,8 +420,8 @@ TEST(PortTestCompatibleTypes, testCompatibleExactMatch)
 
 TEST(PortTestCompatibleTypes, testCompatibleBoolToInt)
 {
-    auto const output = new dagbase::TypedPort(0, "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
-    auto input = new dagbase::TypedPort(1, "input", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_IN, std::int64_t{2});
+    auto const output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
+    auto input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_IN, std::int64_t{2});
     ASSERT_EQ(false, output->isCompatibleWith(*input));
     delete input;
     delete output;
@@ -429,8 +429,8 @@ TEST(PortTestCompatibleTypes, testCompatibleBoolToInt)
 
 TEST(PortTestCompatibleTypes, testCompatibleBoolToDouble)
 {
-    auto const * output = new dagbase::TypedPort(0, "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
-    auto input = new dagbase::TypedPort(1, "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
+    auto const * output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
+    auto input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
     ASSERT_EQ(false, output->isCompatibleWith(*input));
     delete input;
     delete output;
@@ -438,8 +438,8 @@ TEST(PortTestCompatibleTypes, testCompatibleBoolToDouble)
 
 TEST(PortTest, testDisconnectRemovesConnection)
 {
-    auto* output = new dagbase::TypedPort(0, "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
-    auto* input = new dagbase::TypedPort(1, "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
+    auto* output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
+    auto* input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
     auto t1 = output->connectTo(*input);
     output->disconnect(*input);
     ASSERT_EQ(size_t{ 0 }, output->numOutgoingConnections());
@@ -451,8 +451,8 @@ TEST(PortTest, testDisconnectRemovesConnection)
 
 TEST(TransferTest, testTransferToCompatiblePort)
 {
-    auto output = new dagbase::TypedPort<std::int64_t>(0, "output", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, 1);
-    auto* input = new dagbase::TypedPort(1, "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
+    auto output = new dagbase::TypedPort<std::int64_t>(dagbase::PortID(0), "output", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, 1);
+    auto* input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
     dagbase::Transfer* transfer = output->connectTo(*input);
     ASSERT_EQ(nullptr, transfer);
     delete transfer;
@@ -462,8 +462,8 @@ TEST(TransferTest, testTransferToCompatiblePort)
 
 TEST(PortTest, testEachOutgoingConnection)
 {
-    auto output = new dagbase::TypedPort<std::int64_t>(0, "output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
-    auto* input = new dagbase::TypedPort(1, "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
+    auto output = new dagbase::TypedPort<std::int64_t>(dagbase::PortID(0), "output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
+    auto* input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
     size_t outgoingCount = 0;
     size_t incomingCount = 0;
     auto t = output->connectTo(*input);
@@ -549,7 +549,7 @@ TEST(NodeTest, testDynamicsPortDescriptorsForFinal)
     dag::MemoryNodeLibrary nodeLib;
     auto const sut = dynamic_cast<dag::Final*>(nodeLib.instantiateNode(nodeLib, "Final", "final1"));
     ASSERT_NE(nullptr, sut);
-    sut->addDynamicPort(new dagbase::TypedPort<double>(0, "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
+    sut->addDynamicPort(new dagbase::TypedPort<double>(dagbase::PortID(0), "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
     ASSERT_NE(nullptr, sut->dynamicMetaPort(2));
     ASSERT_EQ("int1", sut->dynamicPort(2)->name());
     ASSERT_TRUE(sut->dynamicMetaPort(2)->isOwned());
@@ -570,7 +570,7 @@ TEST_P(NodeTestDynamicPortsForNode, testDynamicPortsForFinal)
     dag::MemoryNodeLibrary nodeLib;
     auto const sut = nodeLib.instantiateNode(nodeLib, className, "node1");
     ASSERT_NE(nullptr, sut);
-    sut->addDynamicPort(new dagbase::TypedPort<double>(0, "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
+    sut->addDynamicPort(new dagbase::TypedPort<double>(dagbase::PortID(0), "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
     auto const actualPort = sut->dynamicPort(index);
     ASSERT_NE(nullptr, actualPort);
     ASSERT_EQ(nodeName, actualPort->name());
@@ -880,8 +880,8 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testDeleteNode, ::testing::Values(
 
 TEST(PortTest, testConnectToExistingPortGivesTransfer)
 {
-    auto source = new dagbase::TypedPort<double>(0, nullptr, "out", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0, dagbase::Port::OWN_META_PORT_BIT);
-    auto dest = new dagbase::TypedPort<double>(1, nullptr, "in", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0, dagbase::Port::OWN_META_PORT_BIT);
+    auto source = new dagbase::TypedPort<double>(dagbase::PortID(0), nullptr, "out", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0, dagbase::Port::OWN_META_PORT_BIT);
+    auto dest = new dagbase::TypedPort<double>(dagbase::PortID(1), nullptr, "in", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0, dagbase::Port::OWN_META_PORT_BIT);
     auto* visitor = new dagbase::SetValueVisitor(dagbase::Value(2.0));
     source->accept(*visitor);
     auto transfer = source->connectTo(*dest);
@@ -896,8 +896,8 @@ TEST(PortTest, testConnectToExistingPortGivesTransfer)
 
 TEST(PortTest, testDisconnectPreventsTransfer)
 {
-    auto source = new dagbase::TypedPort<double>(0, nullptr, "out", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0, dagbase::Port::OWN_META_PORT_BIT);
-    auto dest = new dagbase::TypedPort<double>(1, nullptr, "in", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0, dagbase::Port::OWN_META_PORT_BIT);
+    auto source = new dagbase::TypedPort<double>(dagbase::PortID(0), nullptr, "out", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0, dagbase::Port::OWN_META_PORT_BIT);
+    auto dest = new dagbase::TypedPort<double>(dagbase::PortID(1), nullptr, "in", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0, dagbase::Port::OWN_META_PORT_BIT);
     auto transfer = source->connectTo(*dest);
     ASSERT_NE(nullptr, transfer);
     source->disconnect(*dest);
@@ -1644,7 +1644,7 @@ TEST(BoundaryNode, testAddDynamicPort)
 {
     dag::MemoryNodeLibrary nodeLib;
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
-    auto input = new dagbase::TypedPort<double>(0, nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0, dagbase::Port::OWN_META_PORT_BIT);
+    auto input = new dagbase::TypedPort<double>(dagbase::PortID(0), nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0, dagbase::Port::OWN_META_PORT_BIT);
     ASSERT_NO_THROW(sut->addDynamicPort(input, dagbase::MetaPort::FLAGS_OWN_BIT));
     ASSERT_EQ(sut, input->parent());
     ASSERT_EQ(size_t{1}, sut->totalPorts());
@@ -1658,7 +1658,7 @@ TEST(BoundaryNode, testClone)
     dag::MemoryNodeLibrary nodeLib;
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
     auto metaPort = new dagbase::MetaPort();
-    auto input = new dagbase::TypedPort<double>(0, nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0, dagbase::Port::OWN_META_PORT_BIT);
+    auto input = new dagbase::TypedPort<double>(dagbase::PortID(0), nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0, dagbase::Port::OWN_META_PORT_BIT);
     ASSERT_NO_THROW(sut->addDynamicPort(input, dagbase::MetaPort::FLAGS_OWN_BIT));
     dagbase::CloningFacility facility;
     auto clone = sut->clone(facility, dagbase::CopyOp{0}, nullptr);
@@ -2177,7 +2177,7 @@ TEST(GraphTest, testLoadGraphWithNodesFromPlugin)
     scanner.scan(nodeLib, nodeLib);
     auto graph = dagbase::Graph::fromFile(nodeLib, "etc/tests/Graph/nodesFromPlugin.lua");
     ASSERT_NE(nullptr, graph);
-    auto node = graph->node(0);
+    auto node = graph->node(dagbase::NodeID(0));
     ASSERT_NE(nullptr, node);
     auto* port = dynamic_cast<dagbase::TypedPort<double>*>(node->dynamicPort(0));
     ASSERT_NE(nullptr, port);

@@ -643,7 +643,7 @@ BENCHMARK(BM_SelectionLiveToggle);
 
 static void BM_DynamicCastPort(benchmark::State& state)
 {
-    dagbase::Port* p = new dagbase::TypedPort<double>(0, "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    dagbase::Port* p = new dagbase::TypedPort<double>(dagbase::PortID(0), "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL, 0.0, nullptr);
     for (auto _ : state)
     {
         auto typed = dynamic_cast<dagbase::TypedPort<double>*>(p);
@@ -656,7 +656,7 @@ BENCHMARK(BM_DynamicCastPort);
 
 static void BM_StaticCastPort(benchmark::State& state)
 {
-    dagbase::Port* p = new dagbase::TypedPort<double>(0, "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    dagbase::Port* p = new dagbase::TypedPort<double>(dagbase::PortID(0), "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL, 0.0, nullptr);
     for (auto _ : state)
     {
         auto typed = static_cast<dagbase::TypedPort<double>*>(p);
