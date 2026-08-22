@@ -72,6 +72,18 @@ root=
                     typeIndex="TYPE_UINT",
                     op="RELOP_EQ",
                 },
+                {
+					path="graph.signalPaths[0].id",
+					value=0,
+                },
+                {
+					path="graph.signalPaths[0].fromPort",
+					value=0,
+                },
+                {
+					path="graph.signalPaths[0].toPort",
+					value=2,
+                },
 			},
 		},
         {

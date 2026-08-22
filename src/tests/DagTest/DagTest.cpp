@@ -263,48 +263,6 @@ TEST(TableTraversalTest, testErrorInCallback)
     ASSERT_FALSE(foo);
 }
 
-TEST(TypedPortTransfer, testConnectToDifferentTypes)
-{
-    auto* source = new dagbase::TypedPort(dagbase::PortID(0), "out1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{ 1 });
-    auto* dest = new dagbase::TypedPort(dagbase::PortID(1), "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0);
-    dagbase::Transfer const * transfer = source->connectTo(*dest);
-    ASSERT_EQ(nullptr, transfer);
-    delete transfer;
-    delete dest;
-    delete source;
-}
-
-TEST(TypedPortTransfer, testConnectToMatchingType)
-{
-    dagbase::TypedPort<std::int64_t>* source = new dagbase::TypedPort(dagbase::PortID(0), "out1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{ 1 });
-    dagbase::TypedPort<std::int64_t>* dest = new dagbase::TypedPort(dagbase::PortID(1), "in1", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_IN, std::int64_t{ 0 });
-    dagbase::Transfer * transfer = source->connectTo(*dest);
-    ASSERT_NE(nullptr, transfer);
-    ASSERT_TRUE(transfer->valid());
-    transfer->makeItSo();
-    ASSERT_EQ(1, dest->value());
-    delete dest;
-    delete source;
-    delete transfer;
-}
-
-TEST(GraphTest, testGraphInitiallyHasNoNodes)
-{
-    auto* sut = new dagbase::Graph();
-
-    ASSERT_EQ(size_t{ 0 }, sut->numNodes());
-    delete sut;
-}
-
-TEST(GraphTest, testGraphInitiallyHasNoSignalPaths)
-{
-    auto* sut = new dagbase::Graph();
-
-    EXPECT_EQ(size_t{ 0 }, sut->numSignalPaths());
-
-    delete sut;
-}
-
 TEST(GraphTest, testCannotAddANullNode)
 {
     auto sut = new dagbase::Graph();
@@ -355,18 +313,6 @@ TEST(GraphTest, testAfterAddingASignalPathCanQueryIt)
     ASSERT_EQ(path, sut->signalPath(path->id()));
 
     delete sut;
-}
-
-TEST(PortTest, testCannotConnectTwoOutputs)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto output1 = dynamic_cast<dag::BarTyped*>(nodeLib.instantiateNode(nodeLib, "BarTyped", "bar1"));
-    auto output2 = dynamic_cast<dag::BarTyped*>(nodeLib.instantiateNode(nodeLib, "BarTyped", "bar2"));
-    auto t = output1->out1()->connectTo(*output2->out1());
-    ASSERT_EQ(nullptr, t);
-    ASSERT_EQ(size_t{ 0 }, output1->out1()->numOutgoingConnections());
-    delete output2;
-    delete output1;
 }
 
 class TestNodeWithStringPort
@@ -1591,6 +1537,9 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/GraphInitiallyEmpty.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/ConnectTwoOutputs.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/ConnectTwoInputs.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteSinkNodeThenSave.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteSourceNodeThenSave.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/LoadConnectedDeleteGraphNodeThenSave.lua"),

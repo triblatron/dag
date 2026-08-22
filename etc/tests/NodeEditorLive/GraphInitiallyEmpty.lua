@@ -1,0 +1,24 @@
+root=
+{
+	items=
+	{
+		{
+			cmd="COMMAND_NOP",
+			assertions=
+			{
+				{
+					path="graph.numNodes",
+					value=0,
+				},
+				{
+					path="graph.numPorts",
+					value=0,
+				},
+				{
+					path="graph.numSignalPaths",
+					value=0,
+				},
+			},
+		},
+	},
+}
