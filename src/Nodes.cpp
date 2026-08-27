@@ -43,22 +43,6 @@ namespace dag
         std::string fieldName;
         str.readHeader(&className);
         Node::readFromStream(str, nodeLib, lua);
-        str.readField(&fieldName);
-        dagbase::Stream::ObjId in1Id = 0;
-        dagbase::Stream::Ref in1Ref = str.readRef(&in1Id);
-
-
-        if (in1Id != 0)
-        {
-            if (in1Ref != nullptr)
-            {
-                _in1 = static_cast<dagbase::TypedPort<double>*>(in1Ref);
-            }
-            else
-            {
-                _in1 = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
-            }
-        }
         str.readFooter();
     }
 
@@ -66,11 +50,6 @@ namespace dag
     {
         str.writeHeader("FooTyped");
         Node::writeToStream(str, nodeLib, lua);
-        str.writeField("in1");
-        if (str.writeRef(_in1))
-        {
-            _in1->writeToStream(str, nodeLib, lua);
-        }
         str.writeFooter();
         return str;
     }
@@ -82,13 +61,6 @@ namespace dag
             return false;
         }
 
-        auto const & foo = dynamic_cast<const FooTyped&>(other);
-
-        if (!_in1->equals(*foo._in1, flags))
-        {
-            return false;
-        }
-
         return true;
     }
 
@@ -96,7 +68,6 @@ namespace dag
     {
         Node::debug(printer);
         printer.indent();
-        _in1->debug(printer);
         printer.outdent();
         printer.indent();
         for (std::size_t i = 0; i < totalPorts(); ++i)
@@ -108,7 +79,7 @@ namespace dag
 
     FooTyped::~FooTyped()
     {
-        delete _in1;
+        deleteDynamicPorts();
     }
 
     std::array<dagbase::MetaPort, 1> BarTyped::ports =
@@ -129,21 +100,6 @@ namespace dag
         std::string fieldName;
         str.readHeader(&className);
         Node::readFromStream(str, nodeLib, lua);
-        str.readField(&fieldName);
-        dagbase::Stream::ObjId out1Id = 0;
-        dagbase::Stream::Ref out1Ref = str.readRef(&out1Id);
-
-        if (out1Id != 0)
-        {
-            if (out1Ref != nullptr)
-            {
-                _out1 = static_cast<dagbase::TypedPort<double>*>(out1Ref);
-            }
-            else
-            {
-                _out1 = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
-            }
-        }
         str.readFooter();
     }
 
@@ -151,11 +107,6 @@ namespace dag
     {
         str.writeHeader("BarTyped");
         Node::writeToStream(str,  nodeLib, lua);
-        str.writeField("out1");
-        if (str.writeRef(_out1))
-        {
-            _out1->writeToStream(str, nodeLib, lua);
-        }
         str.writeFooter();
         return str;
     }
@@ -163,9 +114,6 @@ namespace dag
     void BarTyped::debug(dagbase::DebugPrinter &printer) const
     {
         Node::debug(printer);
-        printer.indent();
-        _out1->debug(printer);
-        printer.outdent();
         printer.indent();
         for (std::size_t i = 0; i < totalPorts(); ++i)
         {
@@ -181,19 +129,12 @@ namespace dag
             return false;
         }
 
-        auto const & bar = dynamic_cast<const BarTyped&>(other);
-
-        if (!_out1->equals(*bar._out1, flags))
-        {
-            return false;
-        }
-
         return true;
     }
 
     BarTyped::~BarTyped()
     {
-        delete _out1;
+        deleteDynamicPorts();
     }
 
     std::array<dagbase::MetaPort, 2> GroupTyped::ports =
@@ -211,44 +152,12 @@ namespace dag
         std::string fieldName;
         str.readHeader(&className);
         Node::readFromStream(str, nodeLib, lua);
-        str.readField(&fieldName);
-        dagbase::Stream::ObjId out1Id = 0;
-        dagbase::Stream::Ref out1Ref = str.readRef(&out1Id);
-
-        if (out1Id != 0)
-        {
-            if (out1Ref != nullptr)
-            {
-                _out1 = static_cast<dagbase::TypedPort<double>*>(out1Ref);
-            }
-            else
-            {
-                _out1 = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
-            }
-        }
-
-        str.readField(&fieldName);
-        dagbase::Stream::ObjId in1Id = 0;
-        dagbase::Stream::Ref in1Ref = str.readRef(&in1Id);
-
-        if (in1Id != 0)
-        {
-            if (in1Ref != nullptr)
-            {
-                _in1 = static_cast<dagbase::TypedPort<double>*>(in1Ref);
-            }
-            else
-            {
-                _in1 = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
-            }
-        }
         str.readFooter();
     }
 
     GroupTyped::~GroupTyped()
     {
-        delete _out1;
-        delete _in1;
+        deleteDynamicPorts();
     }
 
     GroupTyped *GroupTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
@@ -260,16 +169,6 @@ namespace dag
     {
         str.writeHeader("GroupTyped");
         Node::writeToStream(str,  nodeLib, lua);
-        str.writeField("out1");
-        if (str.writeRef(_out1))
-        {
-            _out1->writeToStream(str, nodeLib, lua);
-        }
-        str.writeField("in1");
-        if (str.writeRef(_in1))
-        {
-            _in1->writeToStream(str, nodeLib, lua);
-        }
         str.writeFooter();
         return str;
         // Node::writeToStream(str, nodeLib, lua);
@@ -284,30 +183,12 @@ namespace dag
         if (!Node::equals(other, flags))
             return false;
 
-        const auto& otherTyped = dynamic_cast<const GroupTyped&>(other);
-
-        if (!_out1->equals(*otherTyped._out1, flags))
-            return false;
-
-        if (!_in1->equals(*otherTyped._in1, flags))
-            return false;
-
         return true;
     }
 
     void GroupTyped::debug(dagbase::DebugPrinter& printer) const
     {
         Node::debug(printer);
-        printer.indent();
-        _out1->debug(printer);
-        _in1->debug(printer);
-        printer.outdent();
-        printer.indent();
-        for (std::size_t i = 0; i < totalPorts(); ++i)
-        {
-            dynamicMetaPort(i)->debug(printer);
-        }
-        printer.outdent();
     }
 
     dagbase::Node *Base::create(dagbase::InputStream &str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua)
@@ -320,16 +201,7 @@ namespace dag
         Node(other, facility, copyOp, keyGen),
         int1(other.int1)
     {
-        std::uint64_t directionId = 0;
-        if (facility.putOrig(other._direction, &directionId))
-        {
-            _direction = new dagbase::TypedPort(*other._direction, facility, copyOp, keyGen);
-        }
-        else
-        {
-            _direction = static_cast<dagbase::TypedPort<double>*>(facility.getClone(directionId));
-        }
-        _direction->setParent(this);
+        clonePorts(other, facility, copyOp, keyGen);
     }
 
     Base::Base(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua)
@@ -346,23 +218,6 @@ namespace dag
         std::string fieldName;
         str.readHeader(&className);
         Node::readFromStream(str, nodeLib, lua);
-        str.readField(&fieldName);
-        dagbase::Stream::ObjId directionId = 0;
-        dagbase::Stream::Ref directionRef = str.readRef(&directionId);
-
-        if (directionId != 0)
-        {
-            if (directionRef != nullptr)
-            {
-                _direction = static_cast<dagbase::TypedPort<double>*>(directionRef);
-            }
-            else
-            {
-                _direction = dynamic_cast<dagbase::TypedPort<double>*>(nodeLib.instantiatePort(str, lua));
-            }
-        }
-        str.readField(&fieldName);
-        str.readDouble(&int1);
         str.readFooter();
         return str;
     }
@@ -371,13 +226,6 @@ namespace dag
     {
         str.writeHeader("Base");
         Node::writeToStream(str, nodeLib, lua);
-        str.writeField("direction");
-        if (str.writeRef(_direction))
-        {
-            _direction->writeToStream(str, nodeLib, lua);
-        }
-        str.writeField("in1");
-        str.writeDouble(int1);
         str.writeFooter();
         return str;
     }
@@ -385,11 +233,6 @@ namespace dag
     bool Base::equals(const Node& other, dagbase::ComparisonFlags flags) const
     {
         if (!Node::equals(other, flags))
-            return false;
-
-        const Base& otherBase = dynamic_cast<const Base&>(other);
-
-        if (!(this->_direction->equals(*otherBase._direction, flags)))
             return false;
 
         return true;
@@ -408,16 +251,6 @@ namespace dag
         :
         Base(other, facility, copyOp, keyGen)
     {
-        std::uint64_t triggerId = 0;
-        if (facility.putOrig(other._trigger, &triggerId))
-        {
-            _trigger = new dagbase::TypedPort(*other._trigger, facility, copyOp, keyGen);
-        }
-        else
-        {
-            _trigger = static_cast<dagbase::TypedPort<bool>*>(facility.getClone(triggerId));
-        }
-        _trigger->setParent(this);
     }
 
     Derived::Derived(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua)
@@ -434,21 +267,6 @@ namespace dag
         std::string fieldName;
         str.readHeader(&className);
         Base::readFromStream(str, nodeLib, lua);
-        str.readField(&fieldName);
-        dagbase::Stream::ObjId directionId = 0;
-        dagbase::Stream::Ref directionRef = str.readRef(&directionId);
-
-        if (directionId != 0)
-        {
-            if (directionRef != nullptr)
-            {
-                _trigger = static_cast<dagbase::TypedPort<bool>*>(directionRef);
-            }
-            else
-            {
-                _trigger = dynamic_cast<dagbase::TypedPort<bool>*>(nodeLib.instantiatePort(str, lua));
-            }
-        }
         str.readFooter();
 
         return str;
@@ -459,11 +277,6 @@ namespace dag
     {
         str.writeHeader("Derived");
         Base::writeToStream(str, nodeLib, lua);
-        str.writeField("trigger");
-        if (str.writeRef(_trigger))
-        {
-            _trigger->writeToStream(str, nodeLib, lua);
-        }
         str.writeFooter();
 
         return str;
@@ -479,13 +292,6 @@ namespace dag
         if (!Base::equals(other, flags))
             return false;
 
-        const auto& otherTyped = dynamic_cast<const Derived&>(other);
-
-        if (!this->_trigger->equals(*otherTyped._trigger, flags))
-        {
-            return false;
-        }
-
         return true;
     }
 
@@ -497,32 +303,12 @@ namespace dag
         std::string fieldName;
         str.readHeader(&className);
         Derived::readFromStream(str, nodeLib, lua);
-        readDynamicPorts(str, nodeLib, lua, _dynamicPorts, _dynamicMetaPorts);
-        str.readField(&fieldName);
-        dagbase::Stream::ObjId directionId = 0;
-        dagbase::Stream::Ref directionRef = str.readRef(&directionId);
-        if (directionId != 0)
-        {
-            if (directionRef != nullptr)
-            {
-                _int1 = static_cast<dagbase::TypedPort<std::int64_t>*>(directionRef);
-            }
-            else
-            {
-                _int1 = dynamic_cast<dagbase::TypedPort<std::int64_t>*>(nodeLib.instantiatePort(str, lua));
-            }
-        }
         str.readFooter();
     }
 
     bool Final::equals(const Node& other, dagbase::ComparisonFlags flags) const
     {
         if (!Derived::equals(other, flags))
-            return false;
-
-        const auto& otherTyped = dynamic_cast<const Final&>(other);
-
-        if (!_int1->equals(*otherTyped._int1, flags))
             return false;
 
         return true;
@@ -533,12 +319,6 @@ namespace dag
     {
         str.writeHeader("Final");
         Derived::writeToStream(str, nodeLib, lua);
-        writeDynamicPorts(str, nodeLib, lua, _dynamicPorts, _dynamicMetaPorts);
-        str.writeField("int1");
-        if (str.writeRef(_int1))
-        {
-            _int1->writeToStream(str, nodeLib, lua);
-        }
         str.writeFooter();
 
         return str;

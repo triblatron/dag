@@ -472,8 +472,8 @@ root=
         },
         {
 			cmd="COMMAND_CONNECT",
-			fromPort=15,
-			toPort=11,
+			fromPort=13,
+			toPort=14,
 			status=
 			{
 				statusCode="STATUS_OK",

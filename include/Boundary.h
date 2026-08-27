@@ -21,7 +21,7 @@ namespace dag
 
         explicit Boundary(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua);
 
-        ~Boundary() override;
+        ~Boundary() override = default;
 
         Boundary& operator=(const Boundary& other);
 
@@ -30,46 +30,6 @@ namespace dag
         [[nodiscard]]const char* className() const override
         {
             return "Boundary";
-        }
-
-        [[nodiscard]]dagbase::MetaPort const* dynamicMetaPort(size_t index) const override
-        {
-            if (index<_dynamicMetaPorts.size())
-            {
-                return &_dynamicMetaPorts[index];
-            }
-
-            return nullptr;
-        }
-
-        [[nodiscard]]dagbase::MetaPort* dynamicMetaPort(size_t index) override
-        {
-            if (index<_dynamicMetaPorts.size())
-            {
-                return &_dynamicMetaPorts[index];
-            }
-
-            return nullptr;
-        }
-
-        dagbase::Port* dynamicPort(size_t index) override
-        {
-            if (index<_dynamicPorts.size())
-            {
-                return _dynamicPorts.a[index];
-            }
-
-            return nullptr;
-        }
-
-        const dagbase::Port* dynamicPort(size_t index) const override
-        {
-            if (index<_dynamicPorts.size())
-            {
-                return _dynamicPorts.a[index];
-            }
-
-            return nullptr;
         }
 
         Boundary* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
@@ -83,26 +43,7 @@ namespace dag
 
         dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
 
-        [[nodiscard]]size_t totalPorts() const override
-        {
-            return _dynamicPorts.size();
-        }
-
-        void addDynamicPort(dagbase::Port* port, dagbase::MetaPort::Flags flags) override
-        {
-            if (port != nullptr)
-            {
-                port->setParent(this);
-                _dynamicPorts.a.emplace_back(port);
-                dagbase::MetaPort desc;
-                desc.flags = flags;
-                _dynamicMetaPorts.emplace_back(desc);
-            }
-        }
-
         void debug(dagbase::DebugPrinter& printer) const override;
     private:
-        MetaPortArray _dynamicMetaPorts;
-        PortArray _dynamicPorts;
     };
 }

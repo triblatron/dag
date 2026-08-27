@@ -22,228 +22,190 @@ Graph
       name : "footyped1"
       category : 2
       flags : 0
-      x : 1896
-      y : 489
-    }
-    in1 :     SerialId
-    {
-      id : 3
-    }
-    className : "TypedPort<double>"
-    TypedPort<double>
-    {
-      Port
+      x : 1052
+      y : 509
+      numDynamicMetaPorts : 1
+      dynamicMetaPorts :       MetaPort
       {
-        id : 2
-        name : "in1"
-        type : 9
-        direction : 1
-        parent :         SerialId
+        flags : 1
+      }
+      numDynamicPorts : 1
+      dynamicPorts :       SerialId
+      {
+        id : 3
+      }
+      className : "TypedPort<double>"
+      TypedPort<double>
+      {
+        Port
         {
           id : 2
-        }
-        sharedParent :         SerialId
-        {
-          id : 0
-        }
-        numOutgoingConnections : 0
-        numIncomingConnections : 1
-        incomingConnections :         SerialId
-        {
-          id : 4
-        }
-        className : "TypedPort<double>"
-        TypedPort<double>
-        {
-          Port
+          name : "in1"
+          type : 9
+          direction : 1
+          parent :           SerialId
           {
-            id : 7
-            name : "out1"
-            type : 9
-            direction : 2
-            parent :             SerialId
+            id : 2
+          }
+          sharedParent :           SerialId
+          {
+            id : 0
+          }
+          numOutgoingConnections : 0
+          numIncomingConnections : 1
+          incomingConnections :           SerialId
+          {
+            id : 4
+          }
+          className : "TypedPort<double>"
+          TypedPort<double>
+          {
+            Port
             {
-              id : 5
-            }
-            className : "Boundary"
-            Boundary
-            {
-              Node
+              id : 7
+              name : "out1"
+              type : 9
+              direction : 2
+              parent :               SerialId
               {
-                Class
+                id : 5
+              }
+              className : "Boundary"
+              Boundary
+              {
+                Node
                 {
-                  errod : 0
-                }
-                id : 4
-                name : "boundaryOutput"
-                category : 5
-                flags : 0
-                x : 1858
-                y : 491
-              }
-              numDynamicMetaPorts : 2
-              dynamicMetaPorts :               MetaPort
-              {
-                flags : 1
-              }
-              MetaPort
-              {
-                flags : 1
-              }
-              numDynamicPorts : 2
-              dynamicPorts :               SerialId
-              {
-                id : 6
-              }
-              className : "TypedPort<double>"
-              TypedPort<double>
-              {
-                Port
-                {
-                  id : 6
-                  name : "in1"
-                  type : 9
-                  direction : 1
-                  parent :                   SerialId
+                  Class
                   {
-                    id : 5
+                    errod : 0
                   }
-                  sharedParent :                   SerialId
+                  id : 4
+                  name : "boundaryOutput"
+                  category : 5
+                  flags : 0
+                  x : 1052
+                  y : 509
+                  numDynamicMetaPorts : 2
+                  dynamicMetaPorts :                   MetaPort
                   {
-                    id : 0
+                    flags : 1
                   }
-                  numOutgoingConnections : 0
-                  numIncomingConnections : 1
-                  incomingConnections :                   SerialId
+                  MetaPort
                   {
-                    id : 7
+                    flags : 1
+                  }
+                  numDynamicPorts : 2
+                  dynamicPorts :                   SerialId
+                  {
+                    id : 6
                   }
                   className : "TypedPort<double>"
                   TypedPort<double>
                   {
                     Port
                     {
-                      id : 0
-                      name : "out1"
+                      id : 6
+                      name : "in1"
                       type : 9
-                      direction : 2
+                      direction : 1
                       parent :                       SerialId
                       {
-                        id : 8
+                        id : 5
                       }
-                      className : "GroupTyped"
-                      GroupTyped
+                      sharedParent :                       SerialId
                       {
-                        Node
+                        id : 0
+                      }
+                      numOutgoingConnections : 0
+                      numIncomingConnections : 1
+                      incomingConnections :                       SerialId
+                      {
+                        id : 7
+                      }
+                      className : "TypedPort<double>"
+                      TypedPort<double>
+                      {
+                        Port
                         {
-                          Class
-                          {
-                            errod : 0
-                          }
                           id : 0
-                          name : "grouptyped1"
-                          category : 5
-                          flags : 0
-                          x : 1607
-                          y : 469
-                        }
-                        out1 :                         SerialId
-                        {
-                          id : 7
-                        }
-                        in1 :                         SerialId
-                        {
-                          id : 9
-                        }
-                        className : "TypedPort<double>"
-                        TypedPort<double>
-                        {
-                          Port
+                          name : "out1"
+                          type : 9
+                          direction : 2
+                          parent :                           SerialId
                           {
-                            id : 1
-                            name : "in1"
-                            type : 9
-                            direction : 1
-                            parent :                             SerialId
+                            id : 8
+                          }
+                          className : "GroupTyped"
+                          GroupTyped
+                          {
+                            Node
                             {
-                              id : 8
-                            }
-                            sharedParent :                             SerialId
-                            {
-                              id : 0
-                            }
-                            numOutgoingConnections : 0
-                            numIncomingConnections : 1
-                            incomingConnections :                             SerialId
-                            {
-                              id : 10
-                            }
-                            className : "TypedPort<double>"
-                            TypedPort<double>
-                            {
-                              Port
+                              Class
                               {
-                                id : 4
-                                name : "out1"
-                                type : 9
-                                direction : 2
-                                parent :                                 SerialId
+                                errod : 0
+                              }
+                              id : 0
+                              name : "grouptyped1"
+                              category : 5
+                              flags : 0
+                              x : 874
+                              y : 493
+                              numDynamicMetaPorts : 2
+                              dynamicMetaPorts :                               MetaPort
+                              {
+                                flags : 1
+                              }
+                              MetaPort
+                              {
+                                flags : 1
+                              }
+                              numDynamicPorts : 2
+                              dynamicPorts :                               SerialId
+                              {
+                                id : 7
+                              }
+                              SerialId
+                              {
+                                id : 9
+                              }
+                              className : "TypedPort<double>"
+                              TypedPort<double>
+                              {
+                                Port
                                 {
-                                  id : 11
-                                }
-                                className : "Boundary"
-                                Boundary
-                                {
-                                  Node
+                                  id : 1
+                                  name : "in1"
+                                  type : 9
+                                  direction : 1
+                                  parent :                                   SerialId
                                   {
-                                    Class
-                                    {
-                                      errod : 0
-                                    }
-                                    id : 3
-                                    name : "boundaryInput"
-                                    category : 5
-                                    flags : 0
-                                    x : 1358
-                                    y : 486
+                                    id : 8
                                   }
-                                  numDynamicMetaPorts : 2
-                                  dynamicMetaPorts :                                   MetaPort
+                                  sharedParent :                                   SerialId
                                   {
-                                    flags : 1
+                                    id : 0
                                   }
-                                  MetaPort
-                                  {
-                                    flags : 1
-                                  }
-                                  numDynamicPorts : 2
-                                  dynamicPorts :                                   SerialId
+                                  numOutgoingConnections : 0
+                                  numIncomingConnections : 1
+                                  incomingConnections :                                   SerialId
                                   {
                                     id : 10
-                                  }
-                                  SerialId
-                                  {
-                                    id : 12
                                   }
                                   className : "TypedPort<double>"
                                   TypedPort<double>
                                   {
                                     Port
                                     {
-                                      id : 5
-                                      name : "in1"
+                                      id : 4
+                                      name : "out1"
                                       type : 9
-                                      direction : 1
+                                      direction : 2
                                       parent :                                       SerialId
                                       {
                                         id : 11
                                       }
-                                      sharedParent :                                       SerialId
-                                      {
-                                        id : 13
-                                      }
-                                      className : "GraphNode"
-                                      GraphNode
+                                      className : "Boundary"
+                                      Boundary
                                       {
                                         Node
                                         {
@@ -251,60 +213,23 @@ Graph
                                           {
                                             errod : 0
                                           }
-                                          id : 5
-                                          name : "child1"
+                                          id : 3
+                                          name : "boundaryInput"
                                           category : 5
                                           flags : 0
-                                          x : 1607
-                                          y : 469
-                                        }
-                                        numDynamicMetaPorts : 2
-                                        dynamicMetaPorts :                                         MetaPort
-                                        {
-                                          flags : 0
-                                        }
-                                        MetaPort
-                                        {
-                                          flags : 0
-                                        }
-                                        numDynamicPorts : 2
-                                        dynamicPorts :                                         SerialId
-                                        {
-                                          id : 12
-                                        }
-                                        SerialId
-                                        {
-                                          id : 4
-                                        }
-                                        graph :                                         SerialId
-                                        {
-                                          id : 14
-                                        }
-                                        Graph
-                                        {
-                                          numNodes : 3
-                                          SerialId
+                                          x : 682
+                                          y : 479
+                                          numDynamicMetaPorts : 2
+                                          dynamicMetaPorts :                                           MetaPort
                                           {
-                                            id : 8
+                                            flags : 1
                                           }
-                                          SerialId
+                                          MetaPort
                                           {
-                                            id : 11
+                                            flags : 1
                                           }
-                                          SerialId
-                                          {
-                                            id : 5
-                                          }
-                                          numPorts : 6
-                                          SerialId
-                                          {
-                                            id : 7
-                                          }
-                                          SerialId
-                                          {
-                                            id : 9
-                                          }
-                                          SerialId
+                                          numDynamicPorts : 2
+                                          dynamicPorts :                                           SerialId
                                           {
                                             id : 10
                                           }
@@ -312,156 +237,259 @@ Graph
                                           {
                                             id : 12
                                           }
-                                          SerialId
+                                          className : "TypedPort<double>"
+                                          TypedPort<double>
                                           {
-                                            id : 6
-                                          }
-                                          SerialId
-                                          {
-                                            id : 4
-                                          }
-                                          numSignalPaths : 2
-                                          SerialId
-                                          {
-                                            id : 15
-                                          }
-                                          SignalPath
-                                          {
-                                            id : 2
-                                            source :                                             SerialId
+                                            Port
                                             {
-                                              id : 10
-                                            }
-                                            dest :                                             SerialId
-                                            {
-                                              id : 9
-                                            }
-                                            flags : 0
-                                          }
-                                          SerialId
-                                          {
-                                            id : 16
-                                          }
-                                          SignalPath
-                                          {
-                                            id : 3
-                                            source :                                             SerialId
-                                            {
-                                              id : 7
-                                            }
-                                            dest :                                             SerialId
-                                            {
-                                              id : 6
-                                            }
-                                            flags : 0
-                                          }
-                                          numChildren : 0
-                                        }
-                                      }
-                                      numOutgoingConnections : 0
-                                      numIncomingConnections : 1
-                                      incomingConnections :                                       SerialId
-                                      {
-                                        id : 17
-                                      }
-                                      className : "TypedPort<double>"
-                                      TypedPort<double>
-                                      {
-                                        Port
-                                        {
-                                          id : 3
-                                          name : "out1"
-                                          type : 9
-                                          direction : 2
-                                          parent :                                           SerialId
-                                          {
-                                            id : 18
-                                          }
-                                          className : "BarTyped"
-                                          BarTyped
-                                          {
-                                            Node
-                                            {
-                                              Class
+                                              id : 5
+                                              name : "in1"
+                                              type : 9
+                                              direction : 1
+                                              parent :                                               SerialId
                                               {
-                                                errod : 0
+                                                id : 11
                                               }
-                                              id : 2
-                                              name : "bartyped1"
-                                              category : 1
-                                              flags : 0
-                                              x : 1358
-                                              y : 486
+                                              sharedParent :                                               SerialId
+                                              {
+                                                id : 13
+                                              }
+                                              className : "GraphNode"
+                                              GraphNode
+                                              {
+                                                Node
+                                                {
+                                                  Class
+                                                  {
+                                                    errod : 0
+                                                  }
+                                                  id : 5
+                                                  name : "child0"
+                                                  category : 5
+                                                  flags : 0
+                                                  x : 874
+                                                  y : 493
+                                                  numDynamicMetaPorts : 2
+                                                  dynamicMetaPorts :                                                   MetaPort
+                                                  {
+                                                    flags : 0
+                                                  }
+                                                  MetaPort
+                                                  {
+                                                    flags : 0
+                                                  }
+                                                  numDynamicPorts : 2
+                                                  dynamicPorts :                                                   SerialId
+                                                  {
+                                                    id : 12
+                                                  }
+                                                  SerialId
+                                                  {
+                                                    id : 4
+                                                  }
+                                                }
+                                                graph :                                                 SerialId
+                                                {
+                                                  id : 14
+                                                }
+                                                Graph
+                                                {
+                                                  numNodes : 3
+                                                  SerialId
+                                                  {
+                                                    id : 8
+                                                  }
+                                                  SerialId
+                                                  {
+                                                    id : 11
+                                                  }
+                                                  SerialId
+                                                  {
+                                                    id : 5
+                                                  }
+                                                  numPorts : 6
+                                                  SerialId
+                                                  {
+                                                    id : 7
+                                                  }
+                                                  SerialId
+                                                  {
+                                                    id : 9
+                                                  }
+                                                  SerialId
+                                                  {
+                                                    id : 10
+                                                  }
+                                                  SerialId
+                                                  {
+                                                    id : 12
+                                                  }
+                                                  SerialId
+                                                  {
+                                                    id : 6
+                                                  }
+                                                  SerialId
+                                                  {
+                                                    id : 4
+                                                  }
+                                                  numSignalPaths : 2
+                                                  SerialId
+                                                  {
+                                                    id : 15
+                                                  }
+                                                  SignalPath
+                                                  {
+                                                    id : 2
+                                                    source :                                                     SerialId
+                                                    {
+                                                      id : 10
+                                                    }
+                                                    dest :                                                     SerialId
+                                                    {
+                                                      id : 9
+                                                    }
+                                                    flags : 0
+                                                  }
+                                                  SerialId
+                                                  {
+                                                    id : 16
+                                                  }
+                                                  SignalPath
+                                                  {
+                                                    id : 3
+                                                    source :                                                     SerialId
+                                                    {
+                                                      id : 7
+                                                    }
+                                                    dest :                                                     SerialId
+                                                    {
+                                                      id : 6
+                                                    }
+                                                    flags : 0
+                                                  }
+                                                  numChildren : 0
+                                                }
+                                              }
+                                              numOutgoingConnections : 0
+                                              numIncomingConnections : 1
+                                              incomingConnections :                                               SerialId
+                                              {
+                                                id : 17
+                                              }
+                                              className : "TypedPort<double>"
+                                              TypedPort<double>
+                                              {
+                                                Port
+                                                {
+                                                  id : 3
+                                                  name : "out1"
+                                                  type : 9
+                                                  direction : 2
+                                                  parent :                                                   SerialId
+                                                  {
+                                                    id : 18
+                                                  }
+                                                  className : "BarTyped"
+                                                  BarTyped
+                                                  {
+                                                    Node
+                                                    {
+                                                      Class
+                                                      {
+                                                        errod : 0
+                                                      }
+                                                      id : 2
+                                                      name : "bartyped1"
+                                                      category : 1
+                                                      flags : 0
+                                                      x : 682
+                                                      y : 479
+                                                      numDynamicMetaPorts : 1
+                                                      dynamicMetaPorts :                                                       MetaPort
+                                                      {
+                                                        flags : 1
+                                                      }
+                                                      numDynamicPorts : 1
+                                                      dynamicPorts :                                                       SerialId
+                                                      {
+                                                        id : 17
+                                                      }
+                                                    }
+                                                  }
+                                                  sharedParent :                                                   SerialId
+                                                  {
+                                                    id : 0
+                                                  }
+                                                  numOutgoingConnections : 1
+                                                  outgoingConnections :                                                   SerialId
+                                                  {
+                                                    id : 12
+                                                  }
+                                                  numIncomingConnections : 0
+                                                }
+                                                value :                                                 Variant
+                                                {
+                                                  hasValue : true
+                                                  type : 1
+                                                  value : 1
+                                                }
+                                              }
                                             }
-                                            out1 :                                             SerialId
+                                            value :                                             Variant
                                             {
-                                              id : 17
+                                              hasValue : true
+                                              type : 1
+                                              value : 2
                                             }
                                           }
-                                          sharedParent :                                           SerialId
-                                          {
-                                            id : 0
-                                          }
-                                          numOutgoingConnections : 1
-                                          outgoingConnections :                                           SerialId
-                                          {
-                                            id : 12
-                                          }
-                                          numIncomingConnections : 0
-                                        }
-                                        value :                                         Variant
-                                        {
-                                          hasValue : true
-                                          type : 1
-                                          value : 1
                                         }
                                       }
+                                      sharedParent :                                       SerialId
+                                      {
+                                        id : 0
+                                      }
+                                      numOutgoingConnections : 1
+                                      outgoingConnections :                                       SerialId
+                                      {
+                                        id : 9
+                                      }
+                                      numIncomingConnections : 0
                                     }
                                     value :                                     Variant
                                     {
                                       hasValue : true
                                       type : 1
-                                      value : 2
+                                      value : 1
                                     }
                                   }
                                 }
-                                sharedParent :                                 SerialId
+                                value :                                 Variant
                                 {
-                                  id : 0
+                                  hasValue : true
+                                  type : 1
+                                  value : 2
                                 }
-                                numOutgoingConnections : 1
-                                outgoingConnections :                                 SerialId
-                                {
-                                  id : 9
-                                }
-                                numIncomingConnections : 0
-                              }
-                              value :                               Variant
-                              {
-                                hasValue : true
-                                type : 1
-                                value : 1
                               }
                             }
                           }
-                          value :                           Variant
+                          sharedParent :                           SerialId
                           {
-                            hasValue : true
-                            type : 1
-                            value : 2
+                            id : 0
                           }
+                          numOutgoingConnections : 1
+                          outgoingConnections :                           SerialId
+                          {
+                            id : 6
+                          }
+                          numIncomingConnections : 0
+                        }
+                        value :                         Variant
+                        {
+                          hasValue : true
+                          type : 1
+                          value : 1
                         }
                       }
-                      sharedParent :                       SerialId
-                      {
-                        id : 0
-                      }
-                      numOutgoingConnections : 1
-                      outgoingConnections :                       SerialId
-                      {
-                        id : 6
-                      }
-                      numIncomingConnections : 0
                     }
                     value :                     Variant
                     {
@@ -470,43 +498,37 @@ Graph
                       value : 1
                     }
                   }
-                }
-                value :                 Variant
-                {
-                  hasValue : true
-                  type : 1
-                  value : 1
+                  SerialId
+                  {
+                    id : 4
+                  }
                 }
               }
-              SerialId
+              sharedParent :               SerialId
               {
-                id : 4
+                id : 13
               }
+              numOutgoingConnections : 1
+              outgoingConnections :               SerialId
+              {
+                id : 3
+              }
+              numIncomingConnections : 0
             }
-            sharedParent :             SerialId
+            value :             Variant
             {
-              id : 13
+              hasValue : true
+              type : 1
+              value : 1
             }
-            numOutgoingConnections : 1
-            outgoingConnections :             SerialId
-            {
-              id : 3
-            }
-            numIncomingConnections : 0
-          }
-          value :           Variant
-          {
-            hasValue : true
-            type : 1
-            value : 1
           }
         }
-      }
-      value :       Variant
-      {
-        hasValue : true
-        type : 1
-        value : 1
+        value :         Variant
+        {
+          hasValue : true
+          type : 1
+          value : 1
+        }
       }
     }
   }

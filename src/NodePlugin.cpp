@@ -69,55 +69,6 @@ public:
         return "NodePlugin.DynamicNode";
     }
 
-    [[nodiscard]]const dagbase::MetaPort * dynamicMetaPort(size_t index) const override
-    {
-        if (index < _dynamicMetaPorts.size())
-        {
-            return &_dynamicMetaPorts[index];
-        }
-
-        return nullptr;
-    }
-
-    [[nodiscard]]dagbase::MetaPort * dynamicMetaPort(size_t index) override
-    {
-        if (index < _dynamicMetaPorts.size())
-        {
-            return &_dynamicMetaPorts[index];
-        }
-
-        return nullptr;
-    }
-
-    void addDynamicPort(dagbase::Port* port, dagbase::MetaPort::Flags flags) override
-    {
-        if (port != nullptr)
-        {
-            _dynamicPorts.a.emplace_back(port);
-            _dynamicMetaPorts.emplace_back(flags);
-        }
-    }
-    
-    dagbase::Port* dynamicPort(size_t index) override
-    {
-        if (index<_dynamicPorts.size())
-        {
-            return _dynamicPorts.a[index];
-        }
-
-        return nullptr;
-    }
-
-    [[nodiscard]]const dagbase::Port* dynamicPort(size_t index) const override
-    {
-        if (index<_dynamicPorts.size())
-        {
-            return _dynamicPorts.a[index];
-        }
-
-        return nullptr;
-    }
-
     Node* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override
     {
         return new DynamicNode(str, nodeLib, lua);
@@ -145,19 +96,7 @@ DynamicNode::DynamicNode(const DynamicNode &other, dagbase::CloningFacility& fac
 :
 Node(other, facility, copyOp, keyGen)
 {
-    for (auto it=other._dynamicPorts.begin(); it!=other._dynamicPorts.end(); ++it)
-    {
-        auto port = (*it)->clone(facility,copyOp,keyGen);
-
-        _dynamicPorts.a.emplace_back(port);
-    }
-
-    for (auto it=other._dynamicMetaPorts.begin(); it!=other._dynamicMetaPorts.end(); ++it)
-    {
-        const auto& metaPort(*it);
-
-        _dynamicMetaPorts.emplace_back(metaPort);
-    }
+    clonePorts(other, facility, copyOp, keyGen);
 }
 
 DynamicNode::~DynamicNode()

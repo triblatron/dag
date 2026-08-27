@@ -19,27 +19,14 @@ namespace dag
     :
     Node(other, facility, copyOp, keyGen)
     {
-        for (std::size_t i=0; i<other.totalPorts(); ++i)
-        {
-            auto* p = other._dynamicPorts.a[i];
-            auto portClone = p->clone(facility, copyOp, keyGen);
-
-            Boundary::addDynamicPort(portClone, other._dynamicMetaPorts[i].flags);
-        }
+        clonePorts(other, facility, copyOp, keyGen);
     }
 
     Boundary &Boundary::operator=(const Boundary &other)
     {
         if (this != &other)
         {
-            dagbase::CloningFacility facility;
             Node::operator=(other);
-
-            for (std::size_t i=0; i<other.totalPorts(); ++i)
-            {
-                auto* p = other._dynamicPorts.a[i];
-                addDynamicPort(p->clone(facility, dagbase::CopyOp{0}, nullptr), other._dynamicMetaPorts[i].flags);
-            }
         }
 
         return *this;
@@ -52,7 +39,6 @@ namespace dag
         std::string className;
         str.readHeader(&className);
         Node::readFromStream(str, nodeLib, lua);
-        readDynamicPorts(str, nodeLib, lua, _dynamicPorts, _dynamicMetaPorts);
         str.readFooter();
     }
 
@@ -65,7 +51,6 @@ namespace dag
     {
         str.writeHeader("Boundary");
         Node::writeToStream(str, nodeLib, lua);
-        writeDynamicPorts(str, nodeLib, lua, _dynamicPorts, _dynamicMetaPorts);
         str.writeFooter();
         return str;
     }
@@ -78,28 +63,8 @@ namespace dag
         return true;
     }
 
-    Boundary::~Boundary()
-    {
-        for (auto p : _dynamicPorts)
-        {
-            delete p;
-        }
-    }
-
     void Boundary::debug(dagbase::DebugPrinter& printer) const
     {
         Node::debug(printer);
-        printer.indent();
-        for (const auto port : _dynamicPorts)
-        {
-            port->debug(printer);
-        }
-        printer.outdent();
-        printer.indent();
-        for (const auto& metaPort : _dynamicMetaPorts)
-        {
-            metaPort.debug(printer);
-        }
-        printer.outdent();
     }
 }
