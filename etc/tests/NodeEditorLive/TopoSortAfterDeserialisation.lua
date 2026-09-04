@@ -1,0 +1,45 @@
+root=
+{
+	items=
+	{
+		{
+			cmd="COMMAND_DESERIALISE",
+			filename="etc/tests/NodeEditorLive/TopoSort.txt",
+			assertions=
+			{
+				{
+					path="graph.numNodes",
+					value=4,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.numPorts",
+					value=4,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+				{
+					path="graph.numSignalPaths",
+					value=3,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+				},
+			},
+		},
+		{
+			cmd="COMMAND_TOPO_SORT",
+			status=
+			{
+				statusCode="STATUS_OK",
+			},
+			order=
+			{
+				{0,1},
+				{0,2},
+				{0,3},
+			},
+		},
+	}
+}
+    

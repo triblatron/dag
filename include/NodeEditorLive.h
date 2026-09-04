@@ -13,6 +13,8 @@
 #include <functional>
 #include <string_view>
 
+#include "core/Graph.h"
+
 namespace dagbase
 {
     class InputStream;
@@ -105,6 +107,8 @@ namespace dag
         dagbase::Status serialise(dagbase::OutputStream& str, dagbase::Lua& lua);
 
         dagbase::Status deserialise(dagbase::InputStream& str, dagbase::Lua &lua);
+
+        dagbase::Status topologicalSort(dagbase::NodeArray* order);
 
         dagbase::Variant find(std::string_view path) const;
 

@@ -1,0 +1,334 @@
+SerialId
+{
+  id : 1
+}
+Graph
+{
+  numNodes : 4
+  SerialId
+  {
+    id : 2
+  }
+  className : "BarTyped"
+  BarTyped
+  {
+    Node
+    {
+      Class
+      {
+        errod : 0
+      }
+      id : 0
+      name : "bartyped1"
+      category : 1
+      flags : 0
+      x : 702
+      y : 476
+      numDynamicMetaPorts : 1
+      dynamicMetaPorts :       MetaPort
+      {
+        flags : 1
+      }
+      numDynamicPorts : 1
+      dynamicPorts :       SerialId
+      {
+        id : 3
+      }
+      className : "TypedPort<double>"
+      TypedPort<double>
+      {
+        Port
+        {
+          id : 0
+          name : "out1"
+          type : 9
+          direction : 2
+          parent :           SerialId
+          {
+            id : 2
+          }
+          sharedParent :           SerialId
+          {
+            id : 0
+          }
+          numOutgoingConnections : 3
+          outgoingConnections :           SerialId
+          {
+            id : 4
+          }
+          className : "TypedPort<double>"
+          TypedPort<double>
+          {
+            Port
+            {
+              id : 1
+              name : "in1"
+              type : 9
+              direction : 1
+              parent :               SerialId
+              {
+                id : 5
+              }
+              className : "FooTyped"
+              FooTyped
+              {
+                Node
+                {
+                  Class
+                  {
+                    errod : 0
+                  }
+                  id : 1
+                  name : "footyped1"
+                  category : 2
+                  flags : 0
+                  x : 1022
+                  y : 383
+                  numDynamicMetaPorts : 1
+                  dynamicMetaPorts :                   MetaPort
+                  {
+                    flags : 1
+                  }
+                  numDynamicPorts : 1
+                  dynamicPorts :                   SerialId
+                  {
+                    id : 4
+                  }
+                }
+              }
+              sharedParent :               SerialId
+              {
+                id : 0
+              }
+              numOutgoingConnections : 0
+              numIncomingConnections : 1
+              incomingConnections :               SerialId
+              {
+                id : 3
+              }
+            }
+            value :             Variant
+            {
+              hasValue : true
+              type : 1
+              value : 1
+            }
+          }
+          SerialId
+          {
+            id : 6
+          }
+          className : "TypedPort<double>"
+          TypedPort<double>
+          {
+            Port
+            {
+              id : 2
+              name : "in1"
+              type : 9
+              direction : 1
+              parent :               SerialId
+              {
+                id : 7
+              }
+              className : "FooTyped"
+              FooTyped
+              {
+                Node
+                {
+                  Class
+                  {
+                    errod : 0
+                  }
+                  id : 2
+                  name : "footyped1"
+                  category : 2
+                  flags : 0
+                  x : 1023
+                  y : 548
+                  numDynamicMetaPorts : 1
+                  dynamicMetaPorts :                   MetaPort
+                  {
+                    flags : 1
+                  }
+                  numDynamicPorts : 1
+                  dynamicPorts :                   SerialId
+                  {
+                    id : 6
+                  }
+                }
+              }
+              sharedParent :               SerialId
+              {
+                id : 0
+              }
+              numOutgoingConnections : 0
+              numIncomingConnections : 1
+              incomingConnections :               SerialId
+              {
+                id : 3
+              }
+            }
+            value :             Variant
+            {
+              hasValue : true
+              type : 1
+              value : 1
+            }
+          }
+          SerialId
+          {
+            id : 8
+          }
+          className : "TypedPort<double>"
+          TypedPort<double>
+          {
+            Port
+            {
+              id : 3
+              name : "in1"
+              type : 9
+              direction : 1
+              parent :               SerialId
+              {
+                id : 9
+              }
+              className : "FooTyped"
+              FooTyped
+              {
+                Node
+                {
+                  Class
+                  {
+                    errod : 0
+                  }
+                  id : 3
+                  name : "footyped1"
+                  category : 2
+                  flags : 0
+                  x : 1032
+                  y : 731
+                  numDynamicMetaPorts : 1
+                  dynamicMetaPorts :                   MetaPort
+                  {
+                    flags : 1
+                  }
+                  numDynamicPorts : 1
+                  dynamicPorts :                   SerialId
+                  {
+                    id : 8
+                  }
+                }
+              }
+              sharedParent :               SerialId
+              {
+                id : 0
+              }
+              numOutgoingConnections : 0
+              numIncomingConnections : 1
+              incomingConnections :               SerialId
+              {
+                id : 3
+              }
+            }
+            value :             Variant
+            {
+              hasValue : true
+              type : 1
+              value : 1
+            }
+          }
+          numIncomingConnections : 0
+        }
+        value :         Variant
+        {
+          hasValue : true
+          type : 1
+          value : 1
+        }
+      }
+    }
+  }
+  SerialId
+  {
+    id : 5
+  }
+  SerialId
+  {
+    id : 7
+  }
+  SerialId
+  {
+    id : 9
+  }
+  numPorts : 4
+  SerialId
+  {
+    id : 3
+  }
+  SerialId
+  {
+    id : 4
+  }
+  SerialId
+  {
+    id : 6
+  }
+  SerialId
+  {
+    id : 8
+  }
+  numSignalPaths : 3
+  SerialId
+  {
+    id : 10
+  }
+  SignalPath
+  {
+    id : 0
+    source :     SerialId
+    {
+      id : 3
+    }
+    dest :     SerialId
+    {
+      id : 4
+    }
+    flags : 0
+  }
+  SerialId
+  {
+    id : 11
+  }
+  SignalPath
+  {
+    id : 1
+    source :     SerialId
+    {
+      id : 3
+    }
+    dest :     SerialId
+    {
+      id : 6
+    }
+    flags : 0
+  }
+  SerialId
+  {
+    id : 12
+  }
+  SignalPath
+  {
+    id : 2
+    source :     SerialId
+    {
+      id : 3
+    }
+    dest :     SerialId
+    {
+      id : 8
+    }
+    flags : 0
+  }
+  numChildren : 0
+}
