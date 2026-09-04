@@ -661,6 +661,22 @@ namespace dag
         return status;
     }
 
+    dagbase::Status NodeEditorLive::topologicalSort(dagbase::NodeArray* order)
+    {
+        dagbase::Status status{dagbase::Status::STATUS_UNKNOWN};
+        if (_graph)
+        {
+            _graph->topologicalSort(order);
+            status.status = dagbase::Status::STATUS_OK;
+        }
+        else
+        {
+            status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
+        }
+
+        return status;
+    }
+
     void NodeEditorLive::debug()
     {
         if (_graph)

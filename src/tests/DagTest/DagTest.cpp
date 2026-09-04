@@ -304,7 +304,7 @@ TEST(GraphTest, testAfterAddingASignalPathCanQueryIt)
     auto const sut = new dagbase::Graph();
     sut->setNodeLibrary(&nodeLib);
     auto n1 = sut->createNode("BarTyped","out1");
-    auto n2 = sut->createNode("FooTyped","in1");
+     auto n2 = sut->createNode("FooTyped","in1");
     sut->addNode(n1);
     sut->addNode(n2);
     auto const path = new dagbase::SignalPath(sut, nodeLib, n1->dynamicPort(0), n2->dynamicPort(0));
@@ -1035,6 +1035,7 @@ struct NodeEditorLiveScriptItem
         COMMAND_LOAD,
         COMMAND_SERIALISE,
         COMMAND_DESERIALISE,
+        COMMAND_TOPO_SORT
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1147,6 +1148,21 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
 
+            break;
+        case COMMAND_TOPO_SORT:
+            if (auto element = config.findElement("order"); element)
+            {
+                element->eachChild([this](dagbase::ConfigurationElement& child) {
+                    if (child.numChildren() == 2)
+                    {
+                        decltype(order)::value_type entry;
+                        entry.first = child.child(0)->asInteger(-1);
+                        entry.second = child.child(1)->asInteger(-1);
+                        order.emplace_back(entry);
+                    }
+                    return true;
+                });
+            }
             break;
         default:
             FAIL() << "Creating unknown command";
@@ -1300,6 +1316,29 @@ struct NodeEditorLiveScriptItem
             actualStatus = sut.deserialise(*istr, lua);
             break;
         }
+        case COMMAND_TOPO_SORT:
+        {
+            dagbase::NodeArray actualOrder;
+            actualStatus = sut.topologicalSort(&actualOrder);
+            for (std::size_t i=0; i<order.size(); ++i)
+            {
+                auto first = order[i].first;
+                auto second = order[i].second;
+
+                // Assert that first comes before second in the actual order.
+
+                auto itFirst = std::find_if(actualOrder.begin(), actualOrder.end(), [first](dagbase::Node* node) {
+                    return node && node->id() == first;
+                });
+                auto itSecond = std::find_if(actualOrder.begin(), actualOrder.end(), [second](dagbase::Node* node) {
+                    return node && node->id() == second;
+                });
+                ASSERT_NE(actualOrder.end(), itFirst);
+                ASSERT_NE(actualOrder.end(), itSecond);
+                ASSERT_LT(itFirst, itSecond);
+            }
+            break;
+        }
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1333,6 +1372,7 @@ struct NodeEditorLiveScriptItem
     dag::NodeEditorInterface::SelectionMode selectionMode{ dag::NodeEditorInterface::SELECTION_UNKNOWN };
     dag::NodeEditorLive::GraphChildPath graphChildPath;
     std::string filename;
+    std::vector<std::pair<dagbase::NodeID, dagbase::NodeID>> order;
     float position[2];
     dagbase::ComparisonFlags cmpFlags{dagbase::CMP_NONE};
     bool done{ false };
@@ -1400,6 +1440,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_LOAD)
             ENUM_NAME(COMMAND_SERIALISE)
             ENUM_NAME(COMMAND_DESERIALISE)
+            ENUM_NAME(COMMAND_TOPO_SORT)
         }
 
         return "<error>";
@@ -1426,6 +1467,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_LOAD, str);
         TEST_ENUM(COMMAND_SERIALISE, str);
         TEST_ENUM(COMMAND_DESERIALISE, str);
+        TEST_ENUM(COMMAND_TOPO_SORT, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1537,6 +1579,8 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/TopoSortAfterDeserialisation.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/TopoSort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/GraphInitiallyEmpty.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectTwoOutputs.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/ConnectTwoInputs.lua"),
