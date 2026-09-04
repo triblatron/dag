@@ -307,7 +307,7 @@ TEST(GraphTest, testAfterAddingASignalPathCanQueryIt)
     auto n2 = sut->createNode("FooTyped","in1");
     sut->addNode(n1);
     sut->addNode(n2);
-    auto const path = new dagbase::SignalPath(nodeLib, n1->dynamicPort(0), n2->dynamicPort(0));
+    auto const path = new dagbase::SignalPath(sut, nodeLib, n1->dynamicPort(0), n2->dynamicPort(0));
     sut->addSignalPath(path);
 
     ASSERT_EQ(path, sut->signalPath(path->id()));
@@ -601,7 +601,7 @@ TEST(GraphTest, testTopologicalSortSimpleDependency)
     auto t = b->out1()->connectTo(a->in1());
     sut->addNode(a);
     sut->addPort(&a->in1());
-    auto path = new dagbase::SignalPath(nodeLib, b->out1(), &a->in1());
+    auto path = new dagbase::SignalPath(sut, nodeLib, b->out1(), &a->in1());
 /*    path->removed = false;
     path->source.node = b->id();
     path->source.port = b->out1()->id();
@@ -636,7 +636,7 @@ TEST(GraphTest, testTopologicalSortTransitiveDependency)
         sut->addNode(a);
         sut->addPort(&a->in1());
         sut->addPort(&a->out1());
-        auto path = new dagbase::SignalPath(nodeLib, &a->out1(), &b->in1());
+        auto path = new dagbase::SignalPath(sut, nodeLib, &a->out1(), &b->in1());
         sut->addSignalPath(path);
     }
     {
@@ -644,7 +644,7 @@ TEST(GraphTest, testTopologicalSortTransitiveDependency)
         sut->addNode(b);
         sut->addPort(&b->in1());
         sut->addPort(&b->out1());
-        auto path = new dagbase::SignalPath(nodeLib, &b->out1(), &c->in1());
+        auto path = new dagbase::SignalPath(sut, nodeLib, &b->out1(), &c->in1());
         sut->addSignalPath(path);
     }
     {
@@ -678,13 +678,13 @@ TEST(GraphTest, testTopologicalSortCyclicDependency)
     sut->addNode(a);
     sut->addPort(&a->in1());
     sut->addPort(&a->out1());
-    auto path = new dagbase::SignalPath(nodeLib, &b->out1(), &a->in1());
+    auto path = new dagbase::SignalPath(sut, nodeLib, &b->out1(), &a->in1());
     sut->addSignalPath(path);
     auto t2 = a->out1().connectTo(b->in1());
     sut->addNode(b);
     sut->addPort(&b->out1());
     sut->addPort(&b->in1());
-    path = new dagbase::SignalPath(nodeLib, &a->out1(), &b->in1());
+    path = new dagbase::SignalPath(sut, nodeLib, &a->out1(), &b->in1());
     sut->addSignalPath(path);
     dagbase::NodeArray actual;
     auto result = sut->topologicalSort(&actual);
@@ -1588,6 +1588,264 @@ INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing:
     std::make_tuple("etc/tests/NodeEditorLive/DeleteValid.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/DeleteInvalid.lua")
 ));
+
+using SignalPathAssertion = Assertion<dagbase::SignalPathTable, dagbase::SignalPathTable::FindResultFrom>;
+
+struct SignalPathScriptItem
+{
+    enum Command
+    {
+        COMMAND_UNKNOWN,
+        COMMAND_ADD,
+        COMMAND_FIND_FROM,
+        COMMAND_FIND_TO,
+        COMMAND_FIND_FULL,
+        COMMAND_FIND_ID,
+        COMMAND_REMOVE,
+        COMMAND_ERASE_IF,
+        COMMAND_DESERIALISE
+    };
+
+    void configure(dagbase::ConfigurationElement& config)
+    {
+        dagbase::ConfigurationElement::readConfig(config, "status", &status);
+        dagbase::ConfigurationElement::readConfig<Command>(config, "command", &parseCommand, &cmd);
+        dagbase::ConfigurationElement::readConfig(config, "from", &from);
+        dagbase::ConfigurationElement::readConfig(config, "to", &to);
+        if (auto element = config.findElement("id"); element)
+        {
+            if (element->value().has_value() && element->value().index() == dagbase::Variant::TYPE_INTEGER)
+            {
+                id.configure(*element);
+            }
+            else if (element->numChildren() > 0)
+            {
+                element->eachChild([this](dagbase::ConfigurationElement& child) {
+                    dagbase::SignalPathID entry;
+                    entry.configure(child);
+                    idRange.emplace_back(entry);
+                    return true;
+                    });
+            }
+        }
+        dagbase::ConfigurationElement::readConfig<dagbase::ConfigurationElement::RelOp>(config, "op", &dagbase::ConfigurationElement::parseRelOp, &op);
+        dagbase::ConfigurationElement::readConfig(config, "removed", &removed);
+        dagbase::ConfigurationElement::readConfigVector(config, "assertions", &assertions);
+        dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
+    }
+
+    void makeItSo(dagbase::SignalPathTable& sut, dagbase::Graph& keyGen, dagbase::NodeLibrary& nodeLib, const std::string& caseName, dagbase::Graph** graph)
+    {
+        dagbase::Status actualStatus;
+        dagbase::SignalPathTable::FindResultFrom result;
+
+        switch (cmd)
+        {
+        case COMMAND_ADD:
+        {
+            if (!*graph)
+            {
+                FAIL() << "Expected a valid Graph";
+            }
+            auto* signalPath = new dagbase::SignalPath(*graph, keyGen, from, to);
+            if (removed)
+            {
+                signalPath->markRemoved();
+            }
+            actualStatus = sut.add(signalPath);
+
+            break;
+        }
+        case COMMAND_FIND_FROM:
+        {
+            sut.findBySource(from, &result);
+
+            break;
+        }
+        case COMMAND_FIND_TO:
+        {
+            sut.findByDest(to, &result);
+
+            break;
+        }
+        case COMMAND_FIND_FULL:
+        {
+            sut.findFull(from, to, &result);
+
+            break;
+        }
+        case COMMAND_FIND_ID:
+        {
+            dagbase::SignalPath* retval = sut.findByID(id);
+            switch (op)
+            {
+            case dagbase::ConfigurationElement::RELOP_NOT_NULL:
+                ASSERT_NE(nullptr, retval);
+                break;
+            case dagbase::ConfigurationElement::RELOP_NULL:
+                ASSERT_EQ(nullptr, retval);
+                break;
+            default:
+                FAIL() << "Unexpected op " << dagbase::ConfigurationElement::relOpToString(op);
+                break;
+            }
+            break;
+        }
+        case COMMAND_REMOVE:
+        {
+            actualStatus = sut.remove(id);
+            break;
+        }
+        case COMMAND_ERASE_IF:
+        {
+            auto r = std::remove_if(sut.begin(), sut.end(), [this](const dagbase::SignalPathTable::LookupTableId::value_type& p) {
+                return std::find(idRange.begin(), idRange.end(), p.first) != idRange.end();
+                });
+            sut.erase(r, sut.end());
+            break;
+        }
+        case COMMAND_DESERIALISE:
+        {
+            auto backingStore = dagbase::createBackingStore("FileBackingStore");
+            ASSERT_NE(nullptr, backingStore);
+            dagbase::Lua lua;
+            dagbase::InputStream* istr = dagbase::createInputStream("TextFormat", *backingStore, filename.c_str());
+            ASSERT_NE(nullptr, istr);
+            dagbase::Stream::ObjId id{ ~0U };
+            auto ref = istr->readRef(&id);
+            if (id == 0)
+                FAIL() << "Got unexpected null Graph from stream";
+
+            *graph = new dagbase::Graph(*istr, nodeLib, lua);
+            (*graph)->adjustNextID();
+            sut.setParent(*graph);
+            actualStatus.status = dagbase::Status::STATUS_OK;
+            break;
+        }
+        default:
+            FAIL() << "Handling unknown command";
+            break;
+        }
+
+        ASSERT_EQ(status.status, actualStatus.status) << caseName << ':' << commandToString(cmd) << ":Expected a status of " << dagbase::Status::statusCodeToString(status.status) << ", got " << dagbase::Status::statusCodeToString(actualStatus.status);
+        ASSERT_EQ(status.resultType, actualStatus.resultType) << caseName << ':' << commandToString(cmd) << ":Expected a resultType of " << dagbase::Status::resultTypeToString(status.resultType) << ", got " << dagbase::Status::resultTypeToString(actualStatus.resultType);
+        ASSERT_EQ(status.result, actualStatus.result) << caseName << ':' << commandToString(cmd);
+
+        for (const auto& a : assertions)
+        {
+            a.makeItSo(sut, result, caseName + ':' + commandToString(cmd));
+        }
+    }
+
+    static const char* commandToString(Command value)
+    {
+        switch (value)
+        {
+            ENUM_NAME(COMMAND_UNKNOWN)
+                ENUM_NAME(COMMAND_ADD)
+                ENUM_NAME(COMMAND_FIND_FROM)
+                ENUM_NAME(COMMAND_FIND_TO)
+                ENUM_NAME(COMMAND_FIND_FULL)
+                ENUM_NAME(COMMAND_FIND_ID)
+                ENUM_NAME(COMMAND_REMOVE)
+                ENUM_NAME(COMMAND_ERASE_IF)
+                ENUM_NAME(COMMAND_DESERIALISE)
+        }
+
+        return "<error>";
+    }
+
+    static Command parseCommand(const char* str)
+    {
+        TEST_ENUM(COMMAND_ADD, str);
+        TEST_ENUM(COMMAND_FIND_FROM, str);
+        TEST_ENUM(COMMAND_FIND_TO, str);
+        TEST_ENUM(COMMAND_FIND_FULL, str);
+        TEST_ENUM(COMMAND_FIND_ID, str);
+        TEST_ENUM(COMMAND_REMOVE, str);
+        TEST_ENUM(COMMAND_ERASE_IF, str);
+        TEST_ENUM(COMMAND_DESERIALISE, str);
+
+        return COMMAND_UNKNOWN;
+    }
+
+    std::string filename;
+    Command cmd{ COMMAND_UNKNOWN };
+    dagbase::SignalPathID id{ dagbase::SignalPathID::INVALID_ID };
+    std::vector<dagbase::SignalPathID> idRange;
+    dagbase::PortID from{ dagbase::SignalPathID::INVALID_ID };
+    dagbase::PortID to{ dagbase::SignalPathID::INVALID_ID };
+    dagbase::Status status{ dagbase::Status::STATUS_UNKNOWN };
+    dagbase::ConfigurationElement::RelOp op{ dagbase::ConfigurationElement::RELOP_UNKNOWN };
+    bool removed{ false };
+    using AssertionArray = std::vector<SignalPathAssertion>;
+    AssertionArray assertions;
+};
+
+class SignalPathScript
+{
+public:
+    using ItemArray = std::vector<SignalPathScriptItem>;
+
+    void configure(dagbase::ConfigurationElement& config)
+    {
+        dagbase::ConfigurationElement::readConfigVector(config, "items", &_items);
+    }
+
+    void setUp()
+    {
+        _keyGen = new dagbase::Graph();
+        _sut = new dagbase::SignalPathTable(_keyGen);
+    }
+
+    void tearDown()
+    {
+        delete _sut;
+        delete _keyGen;
+    }
+
+    void makeItSo()
+    {
+        setUp();
+        // Original pattern with no explicit cases, just an implicit one with no substitutions
+        for (auto item : _items)
+        {
+            item.makeItSo(*_sut, *_keyGen, _nodeLib, "<implicit>", &_graph);
+        }
+        tearDown();
+    }
+private:
+    dag::MemoryNodeLibrary _nodeLib;
+    ItemArray _items;
+    dagbase::SignalPathTable* _sut{ nullptr };
+    dagbase::Graph* _keyGen{ nullptr };
+    dagbase::Graph* _graph{ nullptr };
+};
+
+class SignalPathTable_testScripted : public ::testing::TestWithParam<std::tuple<const char*>>
+{
+
+};
+
+TEST_P(SignalPathTable_testScripted, testExpectedValue)
+{
+    auto filename = std::get<0>(GetParam());
+    dagbase::Lua lua;
+    auto config = dagbase::ConfigurationElement::fromFile(lua, filename);
+    ASSERT_NE(nullptr, config);
+    SignalPathScript script;
+    script.configure(*config);
+    script.makeItSo();
+}
+
+INSTANTIATE_TEST_SUITE_P(SignalPathTable, SignalPathTable_testScripted, ::testing::Values(
+    std::make_tuple("data/tests/SignalPathTable/InsertInvalid.lua"),
+    std::make_tuple("data/tests/SignalPathTable/InsertValid.lua"),
+    std::make_tuple("data/tests/SignalPathTable/Query.lua"),
+    std::make_tuple("data/tests/SignalPathTable/QueryRemoved.lua"),
+    std::make_tuple("data/tests/SignalPathTable/Erase.lua")
+));
+
 
 TEST(BoundaryNode, testAddDynamicPort)
 {

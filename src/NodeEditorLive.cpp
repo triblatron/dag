@@ -227,7 +227,7 @@ namespace dag
                 if (fromPort->dir() == dagbase::PortDirection::DIR_OUT && toPort->dir() == dagbase::PortDirection::DIR_IN && isCompatible)
                 {
                     auto transfer = fromPort->connectTo(*toPort);
-                    auto signalPath = new dagbase::SignalPath(*_graph, fromPort, toPort);
+                    auto signalPath = new dagbase::SignalPath(_activeGraph, *_graph, fromPort, toPort);
 
                     _activeGraph->addSignalPath(signalPath);
 
@@ -411,7 +411,7 @@ namespace dag
                     auto port = boundaryInput->dynamicPort(i);
                     if (port->dir() == dagbase::PortDirection::DIR_OUT && !port->outgoingConnections().empty())
                     {
-                        child->addSignalPath(new dagbase::SignalPath(*_graph, port, port->outgoingConnections()[0]));
+                        child->addSignalPath(new dagbase::SignalPath(child, *_graph, port, port->outgoingConnections()[0]));
                     }
                 }
 
@@ -422,7 +422,7 @@ namespace dag
 
                     if (port->dir() == dagbase::PortDirection::DIR_IN && !port->incomingConnections().empty())
                     {
-                        child->addSignalPath(new dagbase::SignalPath(*_graph, port->incomingConnections()[0], port));
+                        child->addSignalPath(new dagbase::SignalPath(child, *_graph, port->incomingConnections()[0], port));
                     }
                 }
 
@@ -458,7 +458,7 @@ namespace dag
                             if (sharedPort->numIncomingConnections()>0)
                             {
                                 _activeGraph->addSignalPath(
-                                    new dagbase::SignalPath(*_graph, sharedPort->incomingConnections()[0], sharedPort));
+                                    new dagbase::SignalPath(_activeGraph, *_graph, sharedPort->incomingConnections()[0], sharedPort));
                             }
                         }
                     }
@@ -472,7 +472,7 @@ namespace dag
                             if (sharedPort->numOutgoingConnections()>0)
                             {
                                 _activeGraph->addSignalPath(
-                                    new dagbase::SignalPath(*_graph, sharedPort, sharedPort->outgoingConnections()[0]));
+                                    new dagbase::SignalPath(_activeGraph, *_graph, sharedPort, sharedPort->outgoingConnections()[0]));
                             }
                         }
                     }
