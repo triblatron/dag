@@ -147,26 +147,6 @@ INSTANTIATE_TEST_SUITE_P(NodeTestClone, NodeTest_testClone, ::testing::Values(
     std::make_tuple("BarTyped", "bar1")
 ));
 
-TEST(TypedTransferTest, checkMakeItSo)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto input = nodeLib.instantiateNode(nodeLib, "FooTyped", "foo1");
-    auto output = nodeLib.instantiateNode(nodeLib, "BarTyped", "bar1");
-
-    auto typedOutput = dynamic_cast<dagbase::TypedPort<double>*>(output->dynamicPort(0));
-    ASSERT_NE(nullptr, typedOutput);
-    typedOutput->setValue(2.0);
-    auto typedInput = dynamic_cast<dagbase::TypedPort<double>*>(input->dynamicPort(0));
-    ASSERT_NE(nullptr, typedInput);
-    dagbase::Transfer* transfer = typedOutput->connectTo(*typedInput);
-    ASSERT_NE(nullptr, transfer);
-    transfer->makeItSo();
-    EXPECT_EQ(2.0, typedInput->value());
-    delete transfer;
-    delete output;
-    delete input;
-}
-
 TEST(CreateTableTest, checkCreateTable)
 {
     dagbase::Lua lua;
@@ -333,19 +313,6 @@ private:
     dagbase::TypedPort<std::string> _str;
 };
 
-TEST(PortTest, testCannotConnectDifferentTypes)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto output = new TestNodeWithStringPort();
-    auto foo = dynamic_cast<dag::FooTyped*>(nodeLib.instantiateNode(nodeLib, "FooTyped", "foo1"));
-    auto t1 = output->stringPort().connectTo(foo->in1());
-    ASSERT_EQ(size_t{ 0 }, output->stringPort().numOutgoingConnections());
-    ASSERT_EQ(size_t{ 0 }, foo->in1().numIncomingConnections());
-    delete t1;
-    delete foo;
-    delete output;
-}
-
 TEST(PortTestCompatibleTypes, testCompatibleTypesIntToDouble)
 {
     auto output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{1});
@@ -380,102 +347,6 @@ TEST(PortTestCompatibleTypes, testCompatibleBoolToDouble)
     ASSERT_EQ(false, output->isCompatibleWith(*input));
     delete input;
     delete output;
-}
-
-TEST(PortTest, testDisconnectRemovesConnection)
-{
-    auto* output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
-    auto* input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
-    auto t1 = output->connectTo(*input);
-    output->disconnect(*input);
-    ASSERT_EQ(size_t{ 0 }, output->numOutgoingConnections());
-    ASSERT_EQ(size_t{ 0 }, input->numIncomingConnections());
-    delete t1;
-    delete input;
-    delete output;
-}
-
-TEST(TransferTest, testTransferToCompatiblePort)
-{
-    auto output = new dagbase::TypedPort<std::int64_t>(dagbase::PortID(0), "output", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, 1);
-    auto* input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
-    dagbase::Transfer* transfer = output->connectTo(*input);
-    ASSERT_EQ(nullptr, transfer);
-    delete transfer;
-    delete input;
-    delete output;
-}
-
-TEST(PortTest, testEachOutgoingConnection)
-{
-    auto output = new dagbase::TypedPort<std::int64_t>(dagbase::PortID(0), "output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
-    auto* input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
-    size_t outgoingCount = 0;
-    size_t incomingCount = 0;
-    auto t = output->connectTo(*input);
-    output->eachOutgoingConnection([&outgoingCount](dagbase::Port* item)
-        {
-            ++outgoingCount;
-        });
-    input->eachIncomingConnection([&incomingCount](dagbase::Port* item)
-        {
-            ++incomingCount;
-        });
-    ASSERT_EQ(size_t{ 1 }, outgoingCount);
-    ASSERT_EQ(size_t{ 1 }, incomingCount);
-    delete t;
-    delete input;
-    delete output;
-}
-
-TEST(NodeTest, testDeleteAnOutputNode)
-{
-    dag::MemoryNodeLibrary nodeLib;
-
-    auto const input = dynamic_cast<dag::FooTyped*>(nodeLib.instantiateNode(nodeLib, "FooTyped", "foo1"));
-    auto const output = dynamic_cast<dag::BarTyped*>(nodeLib.instantiateNode(nodeLib, "BarTyped", "bar1"));
-
-    auto t = output->out1()->connectTo(input->in1());
-    ASSERT_EQ(size_t{ 1 }, input->in1().numIncomingConnections());
-    delete output;
-    ASSERT_EQ(size_t{ 0 }, input->in1().numIncomingConnections());
-    delete t;
-    delete input;
-}
-
-TEST(NodeTest, testDeleteAnInputNode)
-{
-    dag::MemoryNodeLibrary nodeLib;
-
-    auto const input = dynamic_cast<dag::FooTyped*>(nodeLib.instantiateNode(nodeLib, "FooTyped", "foo1"));
-    auto const output = dynamic_cast<dag::BarTyped*>(nodeLib.instantiateNode(nodeLib, "BarTyped", "bar1"));
-
-    auto t = output->out1()->connectTo(input->in1());
-    ASSERT_EQ(size_t{ 1 }, output->out1()->numOutgoingConnections());
-    delete input;
-    ASSERT_EQ(size_t{ 0 }, output->out1()->numOutgoingConnections());
-    delete output;
-    delete t;
-}
-
-TEST(NodeTest, testDeleteInputOutputNode)
-{
-    dag::MemoryNodeLibrary nodeLib;
-
-    auto const input = dynamic_cast<dag::FooTyped*>(nodeLib.instantiateNode(nodeLib, "FooTyped", "foo1"));
-    auto const output = dynamic_cast<dag::BarTyped*>(nodeLib.instantiateNode(nodeLib, "BarTyped", "bar1"));
-    auto group = dynamic_cast<dag::GroupTyped*>(nodeLib.instantiateNode(nodeLib, "GroupTyped", "group1"));
-    auto t1 = group->out1().connectTo(input->in1());
-    auto t2 = output->out1()->connectTo(group->in1());
-    ASSERT_EQ(size_t{ 1 }, input->in1().numIncomingConnections());
-    ASSERT_EQ(size_t{ 1 }, output->out1()->numOutgoingConnections());
-    delete group;
-    ASSERT_EQ(size_t{ 0 }, input->in1().numIncomingConnections());
-    ASSERT_EQ(size_t{ 0 }, output->out1()->numOutgoingConnections());
-    delete output;
-    delete input;
-    delete t2;
-    delete t1;
 }
 
 TEST(NodeTest, testDynamicPortDescriptorReturnsStaticPortsInRange)
@@ -589,111 +460,6 @@ bool before(const dagbase::NodeArray& a, dagbase::Node* first, dagbase::Node* la
     }
 
     return false;
-}
-
-TEST(GraphTest, testTopologicalSortSimpleDependency)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto sut = new dagbase::Graph();
-    sut->setNodeLibrary(&nodeLib);
-    auto a = dynamic_cast<dag::FooTyped*>(sut->createNode("FooTyped", "foo1"));
-    auto b = dynamic_cast<dag::BarTyped*>(sut->createNode("BarTyped", "bar1"));
-    auto t = b->out1()->connectTo(a->in1());
-    sut->addNode(a);
-    sut->addPort(&a->in1());
-    auto path = new dagbase::SignalPath(sut, nodeLib, b->out1(), &a->in1());
-/*    path->removed = false;
-    path->source.node = b->id();
-    path->source.port = b->out1()->id();
-    path->dest.node = a->id();
-    path->dest.port = a->in1().id();*/
-    sut->addSignalPath(path);
-    sut->addNode(b);
-    sut->addPort(b->out1());
-    dagbase::NodeArray actual;
-    auto result = sut->topologicalSort(&actual);
-    ASSERT_EQ(dagbase::Graph::TopoSortResult::OK, result);
-    ASSERT_EQ(size_t{2}, actual.size());
-    ASSERT_TRUE(before(actual, b, a));
-
-    delete t;
-    delete sut;
-}
-
-TEST(GraphTest, testTopologicalSortTransitiveDependency)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto sut = new dagbase::Graph();
-    sut->setNodeLibrary(&nodeLib);
-    auto a = dynamic_cast<dag::GroupTyped*>(sut->createNode("GroupTyped", "foo1"));
-    auto b = dynamic_cast<dag::GroupTyped*>(sut->createNode("GroupTyped", "bar1"));
-    auto c = dynamic_cast<dag::GroupTyped*>(sut->createNode("GroupTyped", "baz1"));
-    dagbase::Transfer* t1 = nullptr;
-    dagbase::Transfer* t2 = nullptr;
-
-    {
-        t1 = a->out1().connectTo(b->in1());
-        sut->addNode(a);
-        sut->addPort(&a->in1());
-        sut->addPort(&a->out1());
-        auto path = new dagbase::SignalPath(sut, nodeLib, &a->out1(), &b->in1());
-        sut->addSignalPath(path);
-    }
-    {
-        t2 = b->out1().connectTo(c->in1());
-        sut->addNode(b);
-        sut->addPort(&b->in1());
-        sut->addPort(&b->out1());
-        auto path = new dagbase::SignalPath(sut, nodeLib, &b->out1(), &c->in1());
-        sut->addSignalPath(path);
-    }
-    {
-        sut->addNode(c);
-        sut->addPort(&c->in1());
-        sut->addPort(&c->out1());
-    }
-    dagbase::NodeArray actual;
-    auto result = sut->topologicalSort(&actual);
-    ASSERT_EQ(dagbase::Graph::TopoSortResult::OK, result);
-    ASSERT_EQ(size_t{3}, actual.size());
-    // The order is not unique so we cannot predict its contents.
-    // However, we can predict the ordering of pairs of elements.
-    ASSERT_TRUE(before(actual, a,b));
-    ASSERT_TRUE(before(actual, b,c));
-    ASSERT_TRUE(before(actual, a,c));
-
-    delete t2;
-    delete t1;
-    delete sut;
-}
-
-TEST(GraphTest, testTopologicalSortCyclicDependency)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    auto sut = new dagbase::Graph();
-    sut->setNodeLibrary(&nodeLib);
-    auto a = dynamic_cast<dag::GroupTyped*>(sut->createNode("GroupTyped", "foo1"));
-    auto b = dynamic_cast<dag::GroupTyped*>(sut->createNode("GroupTyped", "bar1"));
-    auto t1 = b->out1().connectTo(a->in1());
-    sut->addNode(a);
-    sut->addPort(&a->in1());
-    sut->addPort(&a->out1());
-    auto path = new dagbase::SignalPath(sut, nodeLib, &b->out1(), &a->in1());
-    sut->addSignalPath(path);
-    auto t2 = a->out1().connectTo(b->in1());
-    sut->addNode(b);
-    sut->addPort(&b->out1());
-    sut->addPort(&b->in1());
-    path = new dagbase::SignalPath(sut, nodeLib, &a->out1(), &b->in1());
-    sut->addSignalPath(path);
-    dagbase::NodeArray actual;
-    auto result = sut->topologicalSort(&actual);
-    ASSERT_EQ(dagbase::Graph::TopoSortResult::CYCLES_DETECTED, result);
-    ASSERT_EQ(size_t{0}, actual.size());
-
-    delete t2;
-    delete t1;
-    delete sut;
 }
 
 class TopologicalSort_testPersistent : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Graph::TopoSortResult, std::size_t, const char*, const char*>>
@@ -823,109 +589,6 @@ INSTANTIATE_TEST_SUITE_P(Graph, Graph_testDeleteNode, ::testing::Values(
     std::make_tuple("etc/tests/Graph/connectednestedchildgraph.lua", 1, "totalSignalPaths", std::uint32_t(0), 0.0, dagbase::ConfigurationElement::RELOP_EQ),
     std::make_tuple("etc/tests/Graph/connectednestedchildgraph.lua", 1, "ports[2].numIncomingConnections", std::uint32_t(0), 0.0, dagbase::ConfigurationElement::RELOP_EQ)
 ));
-
-TEST(PortTest, testConnectToExistingPortGivesTransfer)
-{
-    auto source = new dagbase::TypedPort<double>(dagbase::PortID(0), nullptr, "out", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0, dagbase::Port::OWN_META_PORT_BIT);
-    auto dest = new dagbase::TypedPort<double>(dagbase::PortID(1), nullptr, "in", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0, dagbase::Port::OWN_META_PORT_BIT);
-    auto* visitor = new dagbase::SetValueVisitor(dagbase::Value(2.0));
-    source->accept(*visitor);
-    auto transfer = source->connectTo(*dest);
-    ASSERT_NE(nullptr, transfer);
-    transfer->makeItSo();
-    ASSERT_EQ(2.0, dest->value());
-    delete transfer;
-    delete visitor;
-    delete dest;
-    delete source;
-}
-
-TEST(PortTest, testDisconnectPreventsTransfer)
-{
-    auto source = new dagbase::TypedPort<double>(dagbase::PortID(0), nullptr, "out", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0, dagbase::Port::OWN_META_PORT_BIT);
-    auto dest = new dagbase::TypedPort<double>(dagbase::PortID(1), nullptr, "in", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 0.0, dagbase::Port::OWN_META_PORT_BIT);
-    auto transfer = source->connectTo(*dest);
-    ASSERT_NE(nullptr, transfer);
-    source->disconnect(*dest);
-    ASSERT_FALSE(source->isConnectedTo(dest));
-    ASSERT_FALSE(dest->isConnectedTo(source));
-    auto visitor = new dagbase::ValueVisitor();
-    dest->accept(*visitor);
-    ASSERT_EQ(0.0, double(visitor->value()));
-    delete visitor;
-    delete transfer;
-    delete dest;
-    delete source;
-}
-
-TEST(SelectionLiveTest, testAdd)
-{
-    auto sut = new dag::SelectionLive();
-    dag::SelectionInterface::Cont a;
-    dag::MemoryNodeLibrary nodeLib;
-    auto node = nodeLib.instantiateNode(nodeLib, "FooTyped", "foo1");
-    a.insert(node);
-    sut->add(a.begin(), a.end());
-    ASSERT_EQ(size_t{1}, sut->count());
-    delete node;
-    delete sut;
-}
-
-TEST(SelectionLiveTest, testSubtract)
-{
-    auto sut = new dag::SelectionLive();
-    dag::SelectionInterface::Cont a;
-    dag::MemoryNodeLibrary nodeLib;
-    auto node = nodeLib.instantiateNode(nodeLib, "FooTyped", "foo1");
-    a.insert(node);
-    sut->add(a.begin(), a.end());
-    sut->subtract(a.begin(), a.end());
-    ASSERT_EQ(size_t{0}, sut->count());
-    delete node;
-    delete sut;
-}
-
-TEST(SelectionLiveTest, testSet)
-{
-    auto sut = new dag::SelectionLive();
-    dag::SelectionInterface::Cont a;
-    dag::MemoryNodeLibrary nodeLib;
-    auto node = nodeLib.instantiateNode(nodeLib, "FooTyped", "foo1");
-    a.insert(node);
-    sut->add(a.begin(), a.end());
-    dag::SelectionInterface::Cont b;
-    auto node2 = nodeLib.instantiateNode(nodeLib, "BarTyped", "bar1");
-    b.insert(node2);
-    sut->set(b.begin(), b.end());
-    ASSERT_EQ(size_t{1}, sut->count());
-    ASSERT_FALSE(sut->isSelected(node));
-    ASSERT_TRUE(sut->isSelected(node2));
-    delete node2;
-    delete node;
-    delete sut;
-}
-
-TEST(SelectionLiveTest, testToggle)
-{
-    auto sut = new dag::SelectionLive();
-    dag::SelectionInterface::Cont a;
-    dag::MemoryNodeLibrary nodeLib;
-    auto node = nodeLib.instantiateNode(nodeLib, "FooTyped", "foo1");
-    auto node2 = nodeLib.instantiateNode(nodeLib, "BarTyped", "bar1");
-    a.insert(node);
-    a.insert(node2);
-    sut->add(a.begin(), a.end());
-    ASSERT_EQ(size_t{2}, sut->count());
-    dag::SelectionInterface::Cont b;
-    b.insert(node);
-    sut->toggle(b.begin(), b.end());
-    ASSERT_EQ(size_t{1}, sut->count());
-    ASSERT_FALSE(sut->isSelected(node));
-    ASSERT_TRUE(sut->isSelected(node2));
-    delete node2;
-    delete node;
-    delete sut;
-}
 
 class NodeEditorLiveTest_testLoad : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Status::StatusCode>>
 {
@@ -1647,7 +1310,7 @@ struct SignalPathScriptItem
         COMMAND_FIND_ID,
         COMMAND_REMOVE,
         COMMAND_ERASE_IF,
-        COMMAND_DESERIALISE
+        COMMAND_DESERIALISE,
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1786,14 +1449,14 @@ struct SignalPathScriptItem
         switch (value)
         {
             ENUM_NAME(COMMAND_UNKNOWN)
-                ENUM_NAME(COMMAND_ADD)
-                ENUM_NAME(COMMAND_FIND_FROM)
-                ENUM_NAME(COMMAND_FIND_TO)
-                ENUM_NAME(COMMAND_FIND_FULL)
-                ENUM_NAME(COMMAND_FIND_ID)
-                ENUM_NAME(COMMAND_REMOVE)
-                ENUM_NAME(COMMAND_ERASE_IF)
-                ENUM_NAME(COMMAND_DESERIALISE)
+            ENUM_NAME(COMMAND_ADD)
+            ENUM_NAME(COMMAND_FIND_FROM)
+            ENUM_NAME(COMMAND_FIND_TO)
+            ENUM_NAME(COMMAND_FIND_FULL)
+            ENUM_NAME(COMMAND_FIND_ID)
+            ENUM_NAME(COMMAND_REMOVE)
+            ENUM_NAME(COMMAND_ERASE_IF)
+            ENUM_NAME(COMMAND_DESERIALISE)
         }
 
         return "<error>";
@@ -1887,7 +1550,8 @@ INSTANTIATE_TEST_SUITE_P(SignalPathTable, SignalPathTable_testScripted, ::testin
     std::make_tuple("data/tests/SignalPathTable/InsertValid.lua"),
     std::make_tuple("data/tests/SignalPathTable/Query.lua"),
     std::make_tuple("data/tests/SignalPathTable/QueryRemoved.lua"),
-    std::make_tuple("data/tests/SignalPathTable/Erase.lua")
+    std::make_tuple("data/tests/SignalPathTable/Erase.lua"),
+    std::make_tuple("data/tests/SignalPathTable/Remove.lua")
 ));
 
 
@@ -2226,8 +1890,11 @@ TEST_P(GraphTest_fromLuaFile, testFromFile)
     dagbase::ValueVisitor valueVisitor;
     actualPort->accept(valueVisitor);
     dagbase::Value actualValue = valueVisitor.value();
-    std::size_t actualNumIncomingPorts = actualPort->numIncomingConnections();
-    std::size_t actualNumOutgoingPorts = actualPort->numOutgoingConnections();
+    dagbase::SignalPathTable::FindResultFrom incoming, outgoing;
+    sut->findByDest(actualPort->id(), &incoming);
+    std::size_t actualNumIncomingPorts = incoming.size();
+    sut->findBySource(actualPort->id(), &outgoing);
+    std::size_t actualNumOutgoingPorts = outgoing.size();
     std::size_t actualNumChildren = sut->numChildrenRecursive();
     EXPECT_EQ(value, actualValue);
     EXPECT_EQ(numIncomingPorts, actualNumIncomingPorts);

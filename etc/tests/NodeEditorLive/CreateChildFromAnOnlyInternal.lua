@@ -430,12 +430,12 @@ root=
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[5].fromPort",
+					path="activeGraph.signalPaths[6].fromPort",
 					value=4,
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[5].toPort",
+					path="activeGraph.signalPaths[6].toPort",
 					value=10,
 					op="RELOP_EQ",
 				},
@@ -446,12 +446,12 @@ root=
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[6].fromPort",
+					path="activeGraph.signalPaths[5].fromPort",
 					value=7,
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[6].toPort",
+					path="activeGraph.signalPaths[5].toPort",
 					value=9,
 					op="RELOP_EQ",
 				},

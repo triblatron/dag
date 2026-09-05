@@ -118,7 +118,5 @@ namespace dag
         dagbase::Graph* _graph{nullptr};
         dagbase::Graph* _activeGraph{nullptr};
         SelectionLive* _selection{nullptr};
-        typedef std::vector<dagbase::Transfer*> TransferArray;
-        TransferArray _transfers;
     };
 }

@@ -10,6 +10,9 @@
 
 #include <algorithm>
 
+#include "core/Graph.h"
+#include "core/SignalPathTable.h"
+
 namespace dag
 {
     std::size_t SelectionLive::count()
@@ -95,21 +98,24 @@ namespace dag
             for (auto node : _selection)
             {
                 bool isInput = false, isOutput = false;
+
                 if (node->hasInputs())
                 {
+
                     for (std::size_t index=0; index<node->totalPorts(); ++index)
                     {
-                        node->dynamicPort(index)->eachIncomingConnection([this,&isInput](dagbase::Port* p)
-                                                                         {
+                        dagbase::SignalPathTable::FindResultFrom result;
+                        node->parent()->findByDest(node->dynamicPort(index)->id(), &result);
+                        for (auto it=result.p.first; it!=result.p.second; ++it)
+                        {
+                            auto signalPath = *it;
+                            auto p = signalPath->source();
                             if (p->parent() != nullptr && !isSelected(p->parent()))
                             {
                                 isInput = true;
                                 _externalInputs.a.emplace_back(p->parent());
-
-                                return false;
                             }
-                            return true;
-                                                                         });
+                        }
                     }
                     if (isInput)
                     {
@@ -121,17 +127,18 @@ namespace dag
                 {
                     for (std::size_t index=0; index<node->totalPorts(); ++index)
                     {
-                        node->dynamicPort(index)->eachOutgoingConnection([this,&isOutput](dagbase::Port* p)
-                                                                         {
+                        dagbase::SignalPathTable::FindResultFrom result;
+                        node->parent()->findBySource(node->dynamicPort(index)->id(), &result);
+                        for (auto it=result.p.first; it!=result.p.second; ++it)
+                        {
+                            auto signalPath = *it;
+                            auto p = signalPath->dest();
                             if (p->parent() != nullptr && !isSelected(p->parent()))
                             {
                                 isOutput = true;
                                 _externalOutputs.a.emplace_back(p->parent());
-
-                                return false;
                             }
-                            return true;
-                                                                         });
+                        }
                     }
                     if (isOutput)
                     {

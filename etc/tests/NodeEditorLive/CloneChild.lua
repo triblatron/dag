@@ -224,12 +224,12 @@ root=
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[4].fromPort",
+					path="activeGraph.signalPaths[3].fromPort",
 					value=3,
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.signalPaths[4].toPort",
+					path="activeGraph.signalPaths[3].toPort",
 					value=5,
 					op="RELOP_EQ",
 				},

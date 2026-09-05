@@ -439,23 +439,6 @@ public:
     dagbase::TypedPort<double> out1;
 };
 
-static void BM_TypedPortTransfer(benchmark::State& state)
-{
-    dag::MemoryNodeLibrary nodeLib;
-    InputNode foo(nodeLib);
-    OutputNode bar(nodeLib);
-    dagbase::Transfer* transfer = bar.out1.connectTo(foo.in1);
-
-    for (auto _ : state)
-    {
-        transfer->makeItSo();
-    }
-    
-    delete transfer;
-}
-
-BENCHMARK(BM_TypedPortTransfer);
-
 class FooSource
 {
 public:
