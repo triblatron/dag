@@ -30,21 +30,35 @@ root=
 					},
 					to=
 					{
-						parentClass="GroupTyped",
-					},
-				},
-				{
-					class="SignalPath",
-					from=
-					{
-						parentClass="GroupTyped",
-					},
-					to=
-					{
-						parentClass="Boundary",
+						parentClass="FooTyped",
 					},
 					count=3,
 				},
+                {
+                    path={0},
+                    class="SignalPath",
+                    from=
+                    {
+                        parentClass="Boundary",
+                    },
+                    to=
+                    {
+                        parentClass="GroupTyped",
+                    },
+                },
+                {
+                    path={0},
+                    class="SignalPath",
+                    from=
+                    {
+                        parentClass="GroupTyped",
+                    },
+                    to=
+                    {
+                        parentClass="Boundary",
+                    },
+                    count=3,
+                },
 			},
 		},
 	}

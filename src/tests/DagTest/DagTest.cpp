@@ -675,6 +675,105 @@ struct NodeEditorLiveCase
 
 using NodeEditorLiveAssertion = Assertion<dag::NodeEditorLive>;
 
+struct Existing
+{
+    using PropertyMap = dagbase::VectorMap<std::string, dagbase::Variant>;
+
+    void configure(dagbase::ConfigurationElement& config)
+    {
+        dagbase::ConfigurationElement::readConfig(config, "class", &className);
+        dagbase::ConfigurationElement::readConfig(config, "count", &count);
+
+        if (auto element=config.findElement("path"); element)
+        {
+            element->eachChild([this](dagbase::ConfigurationElement& child)
+            {
+                auto entry = child.value().cast(dagbase::Variant::TYPE_UINT);
+                if (entry.has_value())
+                {
+                    path.emplace_back(entry.asUint32(~0U));
+                }
+                return true;
+            });
+            ASSERT_EQ(element->numChildren(), path.size()) << "Expected all children of path element to be added";
+        }
+
+        if (auto element = config.findElement("from"); element)
+        {
+            element->eachChild([this](dagbase::ConfigurationElement& child)
+            {
+                from.emplace(child.name(), child.value());
+                return true;
+            });
+        }
+        if (auto element = config.findElement("to"); element)
+        {
+            element->eachChild([this](dagbase::ConfigurationElement& child)
+            {
+                to.emplace(child.name(), child.value());
+                return true;
+            });
+        }
+    }
+
+    static bool areAllTrue(const PropertyMap& properties, const dagbase::Port* port)
+    {
+        bool allTrue = true;
+        for (auto p : properties)
+        {
+            auto actual = port->find(p.first);
+            if (actual != p.second)
+            {
+                allTrue = false;
+            }
+        }
+
+        return allTrue;
+    }
+
+    void makeItSo(dag::NodeEditorLive& sut) const
+    {
+        auto graph = sut.graph(path);
+        ASSERT_NE(nullptr, graph);
+        std::uint32_t actualCount{0};
+        if (graph)
+        {
+            if (className == "SignalPath")
+            {
+                // Dispatch a search on SignalPaths in the specified Graph
+                graph->eachSignalPath([this, &actualCount](const dagbase::SignalPath* signalPath)
+                {
+                    bool allTrue = true;
+                    bool checked = false;
+                    if (!from.empty())
+                    {
+                        checked = true;
+                        allTrue = allTrue && areAllTrue(from, signalPath->source());
+                    }
+                    if (!to.empty())
+                    {
+                        checked = true;
+                        allTrue = allTrue && areAllTrue(to, signalPath->dest());
+                    }
+                    if (checked && allTrue)
+                    {
+                        ++actualCount;
+                    }
+                    return true;
+                });
+            }
+            ASSERT_EQ(count, actualCount);
+        }
+    }
+
+    std::string className;
+    dag::NodeEditorLive::GraphChildPath path;
+
+    PropertyMap from;
+    PropertyMap to;
+    std::uint32_t count{1};
+};
+
 struct NodeEditorLiveScriptItem
 {
     enum Command : std::uint32_t
@@ -831,6 +930,7 @@ struct NodeEditorLiveScriptItem
             FAIL() << "Creating unknown command";
             break;
         }
+        dagbase::ConfigurationElement::readConfigVector(config, "existing", &existing);
         dagbase::ConfigurationElement::readConfigVector(config, "assertions", &assertions);
     }
 
@@ -1011,6 +1111,11 @@ struct NodeEditorLiveScriptItem
         ASSERT_EQ(status.status, actualStatus.status)  << caseName << ':' << commandToString(cmd) << ":Expected a status of " << dagbase::Status::statusCodeToString(status.status) << ", got " << dagbase::Status::statusCodeToString(actualStatus.status);
         ASSERT_EQ(status.resultType, actualStatus.resultType) << caseName << ':' << commandToString(cmd) << ":Expected a resultType of " << dagbase::Status::resultTypeToString(status.resultType) << ", got " << dagbase::Status::resultTypeToString(actualStatus.resultType);
         ASSERT_EQ(status.result, actualStatus.result) << caseName << ':' << commandToString(cmd);
+
+        for (const auto& a : existing)
+        {
+            a.makeItSo(sut);
+        }
         for (const auto& a : assertions)
         {
             a.makeItSo(sut, caseName + ':' + commandToString(cmd));
@@ -1023,6 +1128,8 @@ struct NodeEditorLiveScriptItem
     dagbase::Status status{dagbase::Status::STATUS_OK};
     using NodeIDArray = std::vector<dagbase::NodeID>;
     NodeIDArray selection;
+    using ExistingArray = std::vector<Existing>;
+    ExistingArray existing;
     using AssertionArray = std::vector<NodeEditorLiveAssertion>;
     AssertionArray assertions;
     std::string nodeClass;

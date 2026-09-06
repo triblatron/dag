@@ -39,6 +39,8 @@ namespace dag
 
         ~NodeEditorLive() override;
 
+        const dagbase::Graph* graph(const GraphChildPath& path) const;
+
         dagbase::Status setActiveGraph(const GraphChildPath& path);
 
         dagbase::Graph* activeGraph()

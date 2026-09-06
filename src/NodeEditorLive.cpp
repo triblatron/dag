@@ -40,6 +40,21 @@ namespace dag
         delete _selection;
     }
 
+    const dagbase::Graph * NodeEditorLive::graph(const GraphChildPath &path) const
+    {
+        const dagbase::Graph* retval = _graph;
+
+        if (retval)
+        {
+            for (auto childIndex : path)
+            {
+                retval = retval->child(childIndex);
+            }
+        }
+
+        return retval;
+    }
+
     dagbase::Status NodeEditorLive::setActiveGraph(const GraphChildPath &path)
     {
         if (_graph)
