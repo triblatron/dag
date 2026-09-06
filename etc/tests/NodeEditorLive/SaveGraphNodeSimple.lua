@@ -83,17 +83,25 @@ root=
 			{
 				statusCode="STATUS_OK",
 			},
+            existing=
+            {
+                {
+                    class="Node",
+                    properties=
+                    {
+                        class="GraphNode",
+                    },
+                    graph=
+                    {
+                        numNodes=3,
+                    },
+                },
+            },
 			assertions=
 			{
 				{
 					path="activeGraph.children.size",
 					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.nodes[3].graph.numNodes",
-					value=3,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},

@@ -32,6 +32,8 @@
 #include <algorithm>
 #include <filesystem>
 
+#include "core/GraphNode.h"
+
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dagbase::PortDirection::Direction, double>>
 {
 };
@@ -714,6 +716,14 @@ struct Existing
                 return true;
             });
         }
+        if (auto element = config.findElement("graph"); element)
+        {
+            element->eachChild([this](dagbase::ConfigurationElement& child)
+            {
+                nestedGraph.emplace(child.name(), child.value());
+                return true;
+            });
+        }
         if (auto element = config.findElement("properties"); element)
         {
             element->eachChild([this](dagbase::ConfigurationElement& child)
@@ -807,6 +817,12 @@ struct Existing
                     bool allTrue = true;
                     bool checked = false;
 
+                    if (const auto* graphNode = dynamic_cast<const dagbase::GraphNode*>(node); graphNode && !nestedGraph.empty())
+                    {
+                        checked = true;
+                        allTrue = allTrue && areAllTrue(to, graphNode->graph());
+                    }
+
                     if (!properties.empty())
                     {
                         checked = true;
@@ -835,6 +851,7 @@ struct Existing
 
     PropertyMap from;
     PropertyMap to;
+    PropertyMap nestedGraph;
     PropertyMap properties;
     std::uint32_t count{1};
 };
