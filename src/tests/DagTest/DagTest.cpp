@@ -714,15 +714,25 @@ struct Existing
                 return true;
             });
         }
+        if (auto element = config.findElement("properties"); element)
+        {
+            element->eachChild([this](dagbase::ConfigurationElement& child)
+            {
+                properties.emplace(child.name(), child.value());
+                return true;
+            });
+        }
     }
 
-    static bool areAllTrue(const PropertyMap& properties, const dagbase::Port* port)
+    template<typename Obj>
+    static bool areAllTrue(const PropertyMap& properties, const Obj* obj)
     {
         bool allTrue = true;
         for (auto p : properties)
         {
-            auto actual = port->find(p.first);
-            if (actual != p.second)
+            auto actual = obj->find(p.first);
+            auto casted = p.second.cast(actual.index());
+            if (actual.has_value() != casted.has_value() ||  (actual.has_value() && actual != casted))
             {
                 allTrue = false;
             }
@@ -755,6 +765,13 @@ struct Existing
                         checked = true;
                         allTrue = allTrue && areAllTrue(to, signalPath->dest());
                     }
+
+                    if (!properties.empty())
+                    {
+                        checked = true;
+                        allTrue = allTrue && areAllTrue(properties, signalPath);
+                    }
+
                     if (checked && allTrue)
                     {
                         ++actualCount;
@@ -762,7 +779,54 @@ struct Existing
                     return true;
                 });
             }
+            else if (className == "Port")
+            {
+                graph->eachPort([this, &actualCount](const dagbase::Port* port)
+                {
+                    bool allTrue = true;
+                    bool checked = false;
+
+                    if (!properties.empty())
+                    {
+                        checked = true;
+                        allTrue = allTrue && areAllTrue(properties, port);
+                    }
+
+                    if (checked && allTrue)
+                    {
+                        ++actualCount;
+                    }
+
+                    return true;
+                });
+            }
+            else if (className == "Node")
+            {
+                graph->eachNode([this, &actualCount](const dagbase::Node* node)
+                {
+                    bool allTrue = true;
+                    bool checked = false;
+
+                    if (!properties.empty())
+                    {
+                        checked = true;
+                        allTrue = allTrue && areAllTrue(properties, node);
+                    }
+
+                    if (checked && allTrue)
+                    {
+                        ++actualCount;
+                    }
+
+                    return true;
+                });
+            }
+
             ASSERT_EQ(count, actualCount);
+        }
+        else
+        {
+            FAIL() << "Expected a valid Graph";
         }
     }
 
@@ -771,6 +835,7 @@ struct Existing
 
     PropertyMap from;
     PropertyMap to;
+    PropertyMap properties;
     std::uint32_t count{1};
 };
 

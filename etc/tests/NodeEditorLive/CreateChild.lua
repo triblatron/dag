@@ -72,21 +72,36 @@ root=
 				resultType="RESULT_SIGNAL_PATH_ID",
 				signalPathID=0,
 			},
-			assertions=
-			{
-				{
-					path="graph.ports[3].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.ports[1].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-			},
+            existing=
+            {
+                {
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="BarTyped",
+                        numOutgoingConnections=1,
+                    },
+                },
+                {
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="GroupTyped",
+                        numIncomingConnections=1,
+                    },
+                },
+                {
+                    class="SignalPath",
+                    from=
+                    {
+                        parentClass="BarTyped",                        
+                    },
+                    to=
+                    {
+                        parentClass="GroupTyped",
+                    },
+                },
+            },
 		},
 		{
 			cmd="COMMAND_CONNECT",
@@ -98,21 +113,36 @@ root=
 				resultType="RESULT_SIGNAL_PATH_ID",
 				signalPathID=1,
 			},
-			assertions=
-			{
-				{
-					path="graph.ports[0].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.ports[2].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-			},
+            existing=
+            {
+                {
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="GroupTyped",
+                        numOutgoingConnections=1,
+                    },
+                },
+                {
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="FooTyped",
+                        numIncomingConnections=1,
+                    },
+                },
+                {
+                    class="SignalPath",
+                    from=
+                    {
+                        parentClass="GroupTyped",
+                    },
+                    to=
+                    {
+                        parentClass="FooTyped",
+                    },
+                },                
+            },
 		},
 		{
 			cmd="COMMAND_SELECT",
@@ -145,6 +175,216 @@ root=
 				resultType="RESULT_NODE_ID",
 				nodeID=5,
 			},
+            existing=
+            {
+                {
+                    class="Node",
+                    properties=
+                    {
+                        class="GraphNode",
+                        totalPorts=2,
+                    },
+                },
+                {
+                    path={0},
+                    class="Port",
+                    properties=
+                    {
+                        sharedParentClass="GraphNode",
+                        direction=1,
+                        value=2.0,
+                    },
+                },
+                {
+                    path={0},
+                    class="Port",
+                    properties=
+                    {
+                        sharedParentClass="GraphNode",
+                        direction=2,
+                        value=1.0,
+                    },
+                },
+                {
+                    class="SignalPath",
+                    from=
+                    {
+                        parentClass="BarTyped",
+                    },
+                    to=
+                    {
+                        parentClass="Boundary",
+                    },
+                },
+                {
+                    class="SignalPath",
+                    from=
+                    {
+                        parentClass="Boundary",
+                    },
+                    to=
+                    {
+                        parentClass="FooTyped",
+                    },
+                },
+                {
+                    path={0},
+                    class="SignalPath",
+                    from=
+                    {
+                        parentClass="Boundary",
+                    },
+                    to=
+                    {
+                        parentClass="GroupTyped",
+                    },
+                },
+                {
+                    path={0},
+                    class="SignalPath",
+                    from=
+                    {
+                        parentClass="GroupTyped",
+                    },
+                    to=
+                    {
+                        parentClass="Boundary",
+                    },
+                },
+                {
+                    path={0},
+                    class="Node",
+                    properties=
+                    {
+                        class="GroupTyped",
+                    },
+                },
+                {
+                    class="Node",
+                    properties=
+                    {
+                        class="FooTyped",
+                    },
+                },
+                {
+                    class="Node",
+                    properties=
+                    {
+                        class="BarTyped",
+                    },
+                },
+                {
+                    path={0},
+                    class="Node",
+                    properties=
+                    {
+                        class="Boundary",
+                        name="boundaryInput",
+                    },
+                },
+                {
+                    path={0},
+                    class="Node",
+                    properties=
+                    {
+                        class="Boundary",
+                        name="boundaryOutput",
+                    },
+                },
+                {
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="BarTyped",
+                        direction=2,
+                        numOutgoingConnections=1,                
+                    },
+                },
+                {
+                    path={0},
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="Boundary",
+                        parentName="boundaryInput",
+                        direction=1,
+                        numIncomingConnections=1,                
+                    },
+                },
+                {
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="FooTyped",
+                        direction=1,
+                        numIncomingConnections=1,
+                    },
+                },
+                {
+                    path={0},
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="Boundary",
+                        parentName="boundaryOutput",
+                        direction=2,
+                        numOutgoingConnections=1,
+                    },
+                },
+                {
+                    path={0},
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="GroupTyped",
+                        direction=2,
+                        numOutgoingConnections=1,
+                    },
+                },
+                {
+                    path={0},
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="GroupTyped",
+                        direction=1,
+                        numIncomingConnections=1,
+                    },
+                },
+                {
+                    path={0},
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="Boundary",
+                        parentName="boundaryInput",
+                        direction=2,
+                        numOutgoingConnections=1,
+                    },
+                },
+                {
+                    path={0},
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="Boundary",
+                        parentName="boundaryOutput",
+                        direction=1,
+                        numIncomingConnections=1,
+                    },
+                },
+                {
+                    path={0},
+                    class="Port",
+                    properties=
+                    {
+                        parentClass="Boundary",
+                        parentName="boundaryOutput",
+                        direction=2,
+                        numOutgoingConnections=1,
+                    },
+                },
+            },
 			assertions=
 			{
 				{
@@ -154,62 +394,9 @@ root=
 					op="RELOP_EQ",
 				},
 				{
-					path="activeGraph.nodes[5].class",
-					value="GraphNode",
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.nodes[5].totalPorts",
-					value=2,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.nodes[5].dynamicPort[0].direction",
-					value=1, -- IN
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-                {
-                    path="activeGraph.nodes[5].dynamicPort[0].value",
-                    value=2.0,
-                    op="RELOP_EQ",
-                },
-				{
-					path="activeGraph.nodes[5].dynamicPort[1].direction",
-					value=2, -- OUT
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-                {
-                    path="activeGraph.nodes[5].dynamicPort[1].value",
-                    value=1.0,
-                    op="RELOP_EQ",
-                },
-				{
 					path="activeGraph.numSignalPaths",
 					value=2,
 					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.signalPaths[3].fromPort",
-					value=3,
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.signalPaths[3].toPort",
-					value=5,
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.signalPaths[5].fromPort",
-					value=7,
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.signalPaths[5].toPort",
-					value=2,
 					op="RELOP_EQ",
 				},
 				{
@@ -218,51 +405,6 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
-				{
-					path="activeGraph.children[0].signalPaths[2].fromPort",
-					value=4,
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.children[0].signalPaths[2].toPort",
-					value=1,
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.children[0].signalPaths[4].fromPort",
-					value=0,
-					op="RELOP_EQ",
-				},
-				{
-					path="activeGraph.children[0].signalPaths[4].toPort",
-					value=6,
-					op="RELOP_EQ",
-				},
-                {
-                    path="graph.nodes[0].class",
-                    value="GroupTyped",
-                    op="RELOP_EQ",
-                },
-                {
-                    path="graph.nodes[1].class",
-                    value="FooTyped",
-                    op="RELOP_EQ",
-                },
-                {
-                    path="graph.nodes[2].class",
-                    value="BarTyped",
-                    op="RELOP_EQ",
-                },
-                {
-                    path="graph.children[0].nodes[3].class",
-                    value="Boundary",
-                    op="RELOP_EQ",
-                },
-                {
-                    path="graph.children[0].nodes[4].class",
-                    value="Boundary",
-                    op="RELOP_EQ",
-                },
 				{
 					path="graph.children[0].numNodes",
 					value=3,
@@ -281,120 +423,7 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
-				{
-					path="graph.ports[3].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.ports[5].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ"
-				},
-				{
-					path="graph.ports[2].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ"
-				},
-				{
-					path="graph.ports[7].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ"
-				},
-				{
-					path="graph.children[0].ports[0].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.children[0].ports[1].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.children[0].ports[4].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.children[0].ports[5].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.children[0].ports[6].numIncomingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
-				{
-					path="graph.children[0].ports[7].numOutgoingConnections",
-					value=1,
-					typeIndex="TYPE_UINT",
-					op="RELOP_EQ",
-				},
 			},
-			--~ existing=
-			--~ {
-				--~ {
-					--~ id="{barOutput}"
-					--~ class="Port",
-					--~ assertions=
-					--~ {
-						--~ {
-							--~ path="dir"
-							--~ value=2,
-						--~ },
-						--~ {
-							--~ path="parentClass",
-							--~ value="BarTyped",
-						--~ },
-						--~ {
-							--~ path="numOutgoingConnections",
-							--~ value=1,
-						--~ },
-					--~ },
-				--~ },
-				--~ {
-					--~ id="{barInput}",
-					--~ class="Port",
-					--~ assertions=
-					--~ {
-						--~ {
-							--~ path="dir",
-							--~ value=1,
-						--~ },
-						--~ {
-							--~ path="parentClass",
-							--~ value="Boundary",
-						--~ },
-						--~ {
-							--~ path="numIncomingConnections",
-							--~ value=1,
-						--~ },
-					--~ },
-				--~ },
-			--~ },
 		},
-		--~ {
-			--~ cmd="COMMAND_FIND_SIGNAL_PATH",
-			--~ from="{barOutput}",
-			--~ to="{barInput}",
-			--~ assertions=
-			--~ {
-				--~ {
-					--~ path="result.size",
-					--~ value=1,
-				--~ },
-			--~ },
-		--~ },
 	}
 }
