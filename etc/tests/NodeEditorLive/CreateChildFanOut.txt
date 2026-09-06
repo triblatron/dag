@@ -1,0 +1,896 @@
+SerialId
+{
+  id : 1
+}
+Graph
+{
+  numNodes : 5
+  SerialId
+  {
+    id : 2
+  }
+  className : "FooTyped"
+  FooTyped
+  {
+    Node
+    {
+      Class
+      {
+        errod : 0
+      }
+      id : 1
+      name : "footyped1"
+      category : 2
+      flags : 0
+      x : 1045
+      y : 334
+      numDynamicMetaPorts : 1
+      dynamicMetaPorts :       MetaPort
+      {
+        flags : 1
+      }
+      numDynamicPorts : 1
+      dynamicPorts :       SerialId
+      {
+        id : 3
+      }
+      className : "TypedPort<double>"
+      TypedPort<double>
+      {
+        Port
+        {
+          id : 2
+          name : "in1"
+          type : 9
+          direction : 1
+          parent :           SerialId
+          {
+            id : 2
+          }
+          sharedParent :           SerialId
+          {
+            id : 0
+          }
+        }
+        value :         Variant
+        {
+          hasValue : true
+          type : 1
+          value : 1
+        }
+      }
+    }
+  }
+  SerialId
+  {
+    id : 4
+  }
+  className : "FooTyped"
+  FooTyped
+  {
+    Node
+    {
+      Class
+      {
+        errod : 0
+      }
+      id : 2
+      name : "footyped1"
+      category : 2
+      flags : 0
+      x : 1046
+      y : 506
+      numDynamicMetaPorts : 1
+      dynamicMetaPorts :       MetaPort
+      {
+        flags : 1
+      }
+      numDynamicPorts : 1
+      dynamicPorts :       SerialId
+      {
+        id : 5
+      }
+      className : "TypedPort<double>"
+      TypedPort<double>
+      {
+        Port
+        {
+          id : 3
+          name : "in1"
+          type : 9
+          direction : 1
+          parent :           SerialId
+          {
+            id : 4
+          }
+          sharedParent :           SerialId
+          {
+            id : 0
+          }
+        }
+        value :         Variant
+        {
+          hasValue : true
+          type : 1
+          value : 1
+        }
+      }
+    }
+  }
+  SerialId
+  {
+    id : 6
+  }
+  className : "FooTyped"
+  FooTyped
+  {
+    Node
+    {
+      Class
+      {
+        errod : 0
+      }
+      id : 3
+      name : "footyped1"
+      category : 2
+      flags : 0
+      x : 1052
+      y : 695
+      numDynamicMetaPorts : 1
+      dynamicMetaPorts :       MetaPort
+      {
+        flags : 1
+      }
+      numDynamicPorts : 1
+      dynamicPorts :       SerialId
+      {
+        id : 7
+      }
+      className : "TypedPort<double>"
+      TypedPort<double>
+      {
+        Port
+        {
+          id : 4
+          name : "in1"
+          type : 9
+          direction : 1
+          parent :           SerialId
+          {
+            id : 6
+          }
+          sharedParent :           SerialId
+          {
+            id : 0
+          }
+        }
+        value :         Variant
+        {
+          hasValue : true
+          type : 1
+          value : 1
+        }
+      }
+    }
+  }
+  SerialId
+  {
+    id : 8
+  }
+  className : "BarTyped"
+  BarTyped
+  {
+    Node
+    {
+      Class
+      {
+        errod : 0
+      }
+      id : 4
+      name : "bartyped1"
+      category : 1
+      flags : 0
+      x : 661
+      y : 437
+      numDynamicMetaPorts : 1
+      dynamicMetaPorts :       MetaPort
+      {
+        flags : 1
+      }
+      numDynamicPorts : 1
+      dynamicPorts :       SerialId
+      {
+        id : 9
+      }
+      className : "TypedPort<double>"
+      TypedPort<double>
+      {
+        Port
+        {
+          id : 5
+          name : "out1"
+          type : 9
+          direction : 2
+          parent :           SerialId
+          {
+            id : 8
+          }
+          sharedParent :           SerialId
+          {
+            id : 0
+          }
+        }
+        value :         Variant
+        {
+          hasValue : true
+          type : 1
+          value : 1
+        }
+      }
+    }
+  }
+  SerialId
+  {
+    id : 10
+  }
+  className : "GraphNode"
+  GraphNode
+  {
+    Node
+    {
+      Class
+      {
+        errod : 0
+      }
+      id : 7
+      name : "child0"
+      category : 5
+      flags : 0
+      x : 843
+      y : 432
+      numDynamicMetaPorts : 4
+      dynamicMetaPorts :       MetaPort
+      {
+        flags : 0
+      }
+      MetaPort
+      {
+        flags : 0
+      }
+      MetaPort
+      {
+        flags : 0
+      }
+      MetaPort
+      {
+        flags : 0
+      }
+      numDynamicPorts : 4
+      dynamicPorts :       SerialId
+      {
+        id : 11
+      }
+      className : "TypedPort<double>"
+      TypedPort<double>
+      {
+        Port
+        {
+          id : 7
+          name : "in1"
+          type : 9
+          direction : 1
+          parent :           SerialId
+          {
+            id : 12
+          }
+          className : "Boundary"
+          Boundary
+          {
+            Node
+            {
+              Class
+              {
+                errod : 0
+              }
+              id : 5
+              name : "boundaryInput"
+              category : 5
+              flags : 0
+              x : 661
+              y : 437
+              numDynamicMetaPorts : 2
+              dynamicMetaPorts :               MetaPort
+              {
+                flags : 1
+              }
+              MetaPort
+              {
+                flags : 1
+              }
+              numDynamicPorts : 2
+              dynamicPorts :               SerialId
+              {
+                id : 13
+              }
+              className : "TypedPort<double>"
+              TypedPort<double>
+              {
+                Port
+                {
+                  id : 6
+                  name : "out1"
+                  type : 9
+                  direction : 2
+                  parent :                   SerialId
+                  {
+                    id : 12
+                  }
+                  sharedParent :                   SerialId
+                  {
+                    id : 0
+                  }
+                }
+                value :                 Variant
+                {
+                  hasValue : true
+                  type : 1
+                  value : 1
+                }
+              }
+              SerialId
+              {
+                id : 11
+              }
+            }
+          }
+          sharedParent :           SerialId
+          {
+            id : 10
+          }
+        }
+        value :         Variant
+        {
+          hasValue : true
+          type : 1
+          value : 2
+        }
+      }
+      SerialId
+      {
+        id : 14
+      }
+      className : "TypedPort<double>"
+      TypedPort<double>
+      {
+        Port
+        {
+          id : 9
+          name : "out1"
+          type : 9
+          direction : 2
+          parent :           SerialId
+          {
+            id : 15
+          }
+          className : "Boundary"
+          Boundary
+          {
+            Node
+            {
+              Class
+              {
+                errod : 0
+              }
+              id : 6
+              name : "boundaryOutput"
+              category : 5
+              flags : 0
+              x : 1047.67
+              y : 511.667
+              numDynamicMetaPorts : 6
+              dynamicMetaPorts :               MetaPort
+              {
+                flags : 1
+              }
+              MetaPort
+              {
+                flags : 1
+              }
+              MetaPort
+              {
+                flags : 1
+              }
+              MetaPort
+              {
+                flags : 1
+              }
+              MetaPort
+              {
+                flags : 1
+              }
+              MetaPort
+              {
+                flags : 1
+              }
+              numDynamicPorts : 6
+              dynamicPorts :               SerialId
+              {
+                id : 16
+              }
+              className : "TypedPort<double>"
+              TypedPort<double>
+              {
+                Port
+                {
+                  id : 8
+                  name : "in1"
+                  type : 9
+                  direction : 1
+                  parent :                   SerialId
+                  {
+                    id : 15
+                  }
+                  sharedParent :                   SerialId
+                  {
+                    id : 0
+                  }
+                }
+                value :                 Variant
+                {
+                  hasValue : true
+                  type : 1
+                  value : 1
+                }
+              }
+              SerialId
+              {
+                id : 14
+              }
+              SerialId
+              {
+                id : 17
+              }
+              className : "TypedPort<double>"
+              TypedPort<double>
+              {
+                Port
+                {
+                  id : 10
+                  name : "in1"
+                  type : 9
+                  direction : 1
+                  parent :                   SerialId
+                  {
+                    id : 15
+                  }
+                  sharedParent :                   SerialId
+                  {
+                    id : 0
+                  }
+                }
+                value :                 Variant
+                {
+                  hasValue : true
+                  type : 1
+                  value : 1
+                }
+              }
+              SerialId
+              {
+                id : 18
+              }
+              className : "TypedPort<double>"
+              TypedPort<double>
+              {
+                Port
+                {
+                  id : 11
+                  name : "out1"
+                  type : 9
+                  direction : 2
+                  parent :                   SerialId
+                  {
+                    id : 15
+                  }
+                  sharedParent :                   SerialId
+                  {
+                    id : 10
+                  }
+                }
+                value :                 Variant
+                {
+                  hasValue : true
+                  type : 1
+                  value : 1
+                }
+              }
+              SerialId
+              {
+                id : 19
+              }
+              className : "TypedPort<double>"
+              TypedPort<double>
+              {
+                Port
+                {
+                  id : 12
+                  name : "in1"
+                  type : 9
+                  direction : 1
+                  parent :                   SerialId
+                  {
+                    id : 15
+                  }
+                  sharedParent :                   SerialId
+                  {
+                    id : 0
+                  }
+                }
+                value :                 Variant
+                {
+                  hasValue : true
+                  type : 1
+                  value : 1
+                }
+              }
+              SerialId
+              {
+                id : 20
+              }
+              className : "TypedPort<double>"
+              TypedPort<double>
+              {
+                Port
+                {
+                  id : 13
+                  name : "out1"
+                  type : 9
+                  direction : 2
+                  parent :                   SerialId
+                  {
+                    id : 15
+                  }
+                  sharedParent :                   SerialId
+                  {
+                    id : 10
+                  }
+                }
+                value :                 Variant
+                {
+                  hasValue : true
+                  type : 1
+                  value : 1
+                }
+              }
+            }
+          }
+          sharedParent :           SerialId
+          {
+            id : 10
+          }
+        }
+        value :         Variant
+        {
+          hasValue : true
+          type : 1
+          value : 1
+        }
+      }
+      SerialId
+      {
+        id : 18
+      }
+      SerialId
+      {
+        id : 20
+      }
+    }
+    graph :     SerialId
+    {
+      id : 21
+    }
+    Graph
+    {
+      numNodes : 3
+      SerialId
+      {
+        id : 22
+      }
+      className : "GroupTyped"
+      GroupTyped
+      {
+        Node
+        {
+          Class
+          {
+            errod : 0
+          }
+          id : 0
+          name : "grouptyped1"
+          category : 5
+          flags : 0
+          x : 843
+          y : 432
+          numDynamicMetaPorts : 2
+          dynamicMetaPorts :           MetaPort
+          {
+            flags : 1
+          }
+          MetaPort
+          {
+            flags : 1
+          }
+          numDynamicPorts : 2
+          dynamicPorts :           SerialId
+          {
+            id : 23
+          }
+          className : "TypedPort<double>"
+          TypedPort<double>
+          {
+            Port
+            {
+              id : 0
+              name : "out1"
+              type : 9
+              direction : 2
+              parent :               SerialId
+              {
+                id : 22
+              }
+              sharedParent :               SerialId
+              {
+                id : 0
+              }
+            }
+            value :             Variant
+            {
+              hasValue : true
+              type : 1
+              value : 1
+            }
+          }
+          SerialId
+          {
+            id : 24
+          }
+          className : "TypedPort<double>"
+          TypedPort<double>
+          {
+            Port
+            {
+              id : 1
+              name : "in1"
+              type : 9
+              direction : 1
+              parent :               SerialId
+              {
+                id : 22
+              }
+              sharedParent :               SerialId
+              {
+                id : 0
+              }
+            }
+            value :             Variant
+            {
+              hasValue : true
+              type : 1
+              value : 2
+            }
+          }
+        }
+      }
+      SerialId
+      {
+        id : 12
+      }
+      SerialId
+      {
+        id : 15
+      }
+      numPorts : 10
+      SerialId
+      {
+        id : 23
+      }
+      SerialId
+      {
+        id : 24
+      }
+      SerialId
+      {
+        id : 13
+      }
+      SerialId
+      {
+        id : 11
+      }
+      SerialId
+      {
+        id : 16
+      }
+      SerialId
+      {
+        id : 14
+      }
+      SerialId
+      {
+        id : 17
+      }
+      SerialId
+      {
+        id : 18
+      }
+      SerialId
+      {
+        id : 19
+      }
+      SerialId
+      {
+        id : 20
+      }
+      numSignalPaths : 4
+      SerialId
+      {
+        id : 25
+      }
+      SignalPath
+      {
+        id : 4
+        source :         SerialId
+        {
+          id : 13
+        }
+        dest :         SerialId
+        {
+          id : 24
+        }
+        flags : 0
+      }
+      SerialId
+      {
+        id : 26
+      }
+      SignalPath
+      {
+        id : 6
+        source :         SerialId
+        {
+          id : 23
+        }
+        dest :         SerialId
+        {
+          id : 16
+        }
+        flags : 0
+      }
+      SerialId
+      {
+        id : 27
+      }
+      SignalPath
+      {
+        id : 8
+        source :         SerialId
+        {
+          id : 23
+        }
+        dest :         SerialId
+        {
+          id : 17
+        }
+        flags : 0
+      }
+      SerialId
+      {
+        id : 28
+      }
+      SignalPath
+      {
+        id : 10
+        source :         SerialId
+        {
+          id : 23
+        }
+        dest :         SerialId
+        {
+          id : 19
+        }
+        flags : 0
+      }
+      numChildren : 0
+    }
+  }
+  numPorts : 4
+  SerialId
+  {
+    id : 3
+  }
+  SerialId
+  {
+    id : 5
+  }
+  SerialId
+  {
+    id : 7
+  }
+  SerialId
+  {
+    id : 9
+  }
+  numSignalPaths : 4
+  SerialId
+  {
+    id : 29
+  }
+  SignalPath
+  {
+    id : 5
+    source :     SerialId
+    {
+      id : 9
+    }
+    dest :     SerialId
+    {
+      id : 11
+    }
+    flags : 0
+  }
+  SerialId
+  {
+    id : 30
+  }
+  SignalPath
+  {
+    id : 7
+    source :     SerialId
+    {
+      id : 14
+    }
+    dest :     SerialId
+    {
+      id : 3
+    }
+    flags : 0
+  }
+  SerialId
+  {
+    id : 31
+  }
+  SignalPath
+  {
+    id : 9
+    source :     SerialId
+    {
+      id : 18
+    }
+    dest :     SerialId
+    {
+      id : 5
+    }
+    flags : 0
+  }
+  SerialId
+  {
+    id : 32
+  }
+  SignalPath
+  {
+    id : 11
+    source :     SerialId
+    {
+      id : 20
+    }
+    dest :     SerialId
+    {
+      id : 7
+    }
+    flags : 0
+  }
+  numChildren : 1
+  SerialId
+  {
+    id : 21
+  }
+}

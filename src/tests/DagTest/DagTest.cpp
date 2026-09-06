@@ -1242,6 +1242,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/CreateChildFanOut.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/TopoSortAfterDeserialisation.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/TopoSort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/GraphInitiallyEmpty.lua"),

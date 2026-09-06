@@ -342,6 +342,59 @@ root=
 					op="RELOP_EQ",
 				},
 			},
+			--~ existing=
+			--~ {
+				--~ {
+					--~ id="{barOutput}"
+					--~ class="Port",
+					--~ assertions=
+					--~ {
+						--~ {
+							--~ path="dir"
+							--~ value=2,
+						--~ },
+						--~ {
+							--~ path="parentClass",
+							--~ value="BarTyped",
+						--~ },
+						--~ {
+							--~ path="numOutgoingConnections",
+							--~ value=1,
+						--~ },
+					--~ },
+				--~ },
+				--~ {
+					--~ id="{barInput}",
+					--~ class="Port",
+					--~ assertions=
+					--~ {
+						--~ {
+							--~ path="dir",
+							--~ value=1,
+						--~ },
+						--~ {
+							--~ path="parentClass",
+							--~ value="Boundary",
+						--~ },
+						--~ {
+							--~ path="numIncomingConnections",
+							--~ value=1,
+						--~ },
+					--~ },
+				--~ },
+			--~ },
 		},
+		--~ {
+			--~ cmd="COMMAND_FIND_SIGNAL_PATH",
+			--~ from="{barOutput}",
+			--~ to="{barInput}",
+			--~ assertions=
+			--~ {
+				--~ {
+					--~ path="result.size",
+					--~ value=1,
+				--~ },
+			--~ },
+		--~ },
 	}
 }
