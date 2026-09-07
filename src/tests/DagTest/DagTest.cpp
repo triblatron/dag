@@ -1598,13 +1598,14 @@ struct SignalPathScriptItem
         case COMMAND_ERASE_IF:
         {
             std::vector<dagbase::SignalPath*> toRemove;
-            auto r = std::remove_if(sut.begin(), sut.end(), [this, &toRemove](const dagbase::SignalPathTable::LookupTableId::value_type& p) {
+            auto r = sut.begin();
+            std::for_each(sut.begin(), sut.end(), [this, &toRemove](const dagbase::SignalPathTable::LookupTableId::value_type& p) {
                 auto remove = std::find(idRange.begin(), idRange.end(), p.first) != idRange.end();
                 if (remove)
-                    toRemove.emplace_back(p.second);
+                    p.second->markRemoved();
                 return remove;
                 });
-            sut.erase(toRemove, r, sut.end());
+            sut.eraseRemoved();
             break;
         }
         case COMMAND_DESERIALISE:
