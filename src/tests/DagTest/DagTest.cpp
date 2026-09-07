@@ -74,8 +74,8 @@ TEST(MemoryNodeLibraryTest_testClassNotFound, checkClassNotFound)
 TEST(ValueTest_testIncrement, checkValueChanges)
 {
     dagbase::Value sut;
-    sut += std::int64_t(1);
-    EXPECT_EQ(1, std::int64_t(sut));
+    sut += std::uint8_t(1);
+    EXPECT_EQ(1, std::uint8_t(sut));
 }
 
 class NodeCategoryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, dagbase::NodeCategory::Category>>
