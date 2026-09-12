@@ -202,7 +202,7 @@ static void BM_VariantSetString(benchmark::State& state)
     
     for (auto _ : state)
     {
-        v = std::string("foo");
+        v = new std::string("foo");
     }
 }
 
@@ -214,7 +214,7 @@ static void BM_VariantSetVector(benchmark::State& state)
 
     for (auto _ : state)
     {
-        v = std::vector<VariantValue>{dagbase::Value(std::int64_t(1)),dagbase::Value(std::int64_t(2)),dagbase::Value(std::int64_t(3))};
+        v = new std::vector{dagbase::Value(std::int64_t(1)),dagbase::Value(std::int64_t(2)),dagbase::Value(std::int64_t(3))};
     }
 }
 
@@ -286,18 +286,6 @@ static void BM_VariantModifyInt(benchmark::State& state)
 
 BENCHMARK(BM_VariantModifyInt);
 
-static void BM_VariantModifyString(benchmark::State& state)
-{
-    for (auto _ : state)
-    {
-        VariantValue v{ std::string("Hello") };
-        
-        v += std::string(" World");
-    }
-}
-
-BENCHMARK(BM_VariantModifyString);
-
 static void BM_UnionModify(benchmark::State& state)
 {
     Value v;
@@ -339,7 +327,7 @@ static void BM_ModifyArrayChangeTypeFromString(benchmark::State& state)
 {
     for ( auto _ : state )
     {
-        VariantValue v{ "Hello" };
+        VariantValue v(new std::string{ "Hello" });
         
         v.push_back(VariantValue{ std::int64_t(2) });
     }

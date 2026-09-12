@@ -301,7 +301,7 @@ class TestNodeWithStringPort
 public:
     TestNodeWithStringPort()
 	    :
-    _str(dagbase::PortID(0), nullptr, "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value("test"))
+    _str(dagbase::PortID(0), nullptr, "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(new std::string("test")))
     {
 	    // Do nothing.
     }
@@ -2076,7 +2076,7 @@ INSTANTIATE_TEST_SUITE_P(GraphTest, GraphTest_fromLua, ::testing::Values(
     std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"FooTyped\", category=\"CATEGORY_SINK\", ports={ { id=0, name=\"in1\", class=\"TypedPort<double>\", type=\"TYPE_DOUBLE\", dir=\"DIR_IN\", value=2.0 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{2.0} ),
     std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { id=0, name=\"in1\", class=\"TypedPort<double>\", type=\"TYPE_DOUBLE\", dir=\"DIR_IN\", value=2.0 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{2.0} ),
     std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { id=0, name=\"in1\", class=\"TypedPort<int64_t>\", type=\"TYPE_INTEGER\", dir=\"DIR_IN\", value=2 } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{std::int64_t(2)} ),
-    std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { id=0, name=\"in1\", class=\"TypedPort<string>\", type=\"TYPE_STRING\", dir=\"DIR_IN\", value=\"wibble\" } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{std::string("wibble")} ),
+    std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { id=0, name=\"in1\", class=\"TypedPort<string>\", type=\"TYPE_STRING\", dir=\"DIR_IN\", value=\"wibble\" } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{new std::string("wibble")} ),
     std::make_tuple("graph={ nodes={ { id=0, name=\"foo\", class=\"Boundary\", category=\"CATEGORY_GROUP\", ports={ { id=0, name=\"in1\", class=\"TypedPort<bool>\", type=\"TYPE_BOOL\", dir=\"DIR_IN\", value=true } } } } }", std::size_t{ 1 }, std::size_t{ 0 }, dagbase::NodeID{ 0 }, std::size_t{ 0 }, dagbase::Value{true} )
 ));
 
