@@ -6,6 +6,7 @@
 #include "MathNode.h"
 
 #include <cmath>
+#include <array>
 
 namespace dag
 {
