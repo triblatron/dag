@@ -684,12 +684,12 @@ namespace dag
         return status;
     }
 
-    dagbase::Status NodeEditorLive::topologicalSort(dagbase::NodeArray* order)
+    dagbase::Status NodeEditorLive::topologicalSort(dagbase::NodeArray* order, dagbase::NodeArray* cycle)
     {
         dagbase::Status status{dagbase::Status::STATUS_UNKNOWN};
         if (_graph)
         {
-            _graph->topologicalSort(order);
+            _graph->topologicalSort(order, cycle);
             status.status = dagbase::Status::STATUS_OK;
         }
         else

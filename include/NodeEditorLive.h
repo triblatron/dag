@@ -110,7 +110,7 @@ namespace dag
 
         dagbase::Status deserialise(dagbase::InputStream& str, dagbase::Lua &lua);
 
-        dagbase::Status topologicalSort(dagbase::NodeArray* order);
+        dagbase::Status topologicalSort(dagbase::NodeArray* order, dagbase::NodeArray* cycle);
 
         dagbase::Variant find(std::string_view path) const;
 

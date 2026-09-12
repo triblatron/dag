@@ -469,9 +469,11 @@ TEST(GraphTest, testTopologicalSortEmptyGraphReturnsEmptyArray)
     auto sut = new dagbase::Graph();
 
     dagbase::NodeArray actual;
-    sut->topologicalSort(&actual);
+    dagbase::NodeArray cycle;
+    sut->topologicalSort(&actual, &cycle);
 
     ASSERT_TRUE(actual.empty());
+    ASSERT_TRUE(cycle.empty());
 
     delete sut;
 }
@@ -505,7 +507,8 @@ TEST_P(TopologicalSort_testPersistent, testSort)
     auto sut = dagbase::Graph::fromFile(nodeLib, graphFilename);
     ASSERT_NE(nullptr, sut);
     dagbase::NodeArray order;
-    dagbase::Graph::TopoSortResult actualResult = sut->topologicalSort(&order);
+    dagbase::NodeArray cycle;
+    dagbase::Graph::TopoSortResult actualResult = sut->topologicalSort(&order, &cycle);
     EXPECT_EQ(result, actualResult);
     EXPECT_EQ(numNodesInResult, order.size());
     if (lhsPath.empty()==false && rhsPath.empty()==false)
@@ -1017,7 +1020,7 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
 
             break;
-        case COMMAND_TOPO_SORT:
+            case COMMAND_TOPO_SORT:
             if (auto element = config.findElement("order"); element)
             {
                 element->eachChild([this](dagbase::ConfigurationElement& child) {
@@ -1031,6 +1034,8 @@ struct NodeEditorLiveScriptItem
                     return true;
                 });
             }
+            dagbase::ConfigurationElement::readConfigVector(config, "cycle", &cycle);
+
             break;
         default:
             FAIL() << "Creating unknown command";
@@ -1188,7 +1193,8 @@ struct NodeEditorLiveScriptItem
         case COMMAND_TOPO_SORT:
         {
             dagbase::NodeArray actualOrder;
-            actualStatus = sut.topologicalSort(&actualOrder);
+            dagbase::NodeArray actualCycle;
+            actualStatus = sut.topologicalSort(&actualOrder, &actualCycle);
             for (std::size_t i=0; i<order.size(); ++i)
             {
                 auto first = order[i].first;
@@ -1205,6 +1211,12 @@ struct NodeEditorLiveScriptItem
                 ASSERT_NE(actualOrder.end(), itFirst);
                 ASSERT_NE(actualOrder.end(), itSecond);
                 ASSERT_LT(itFirst, itSecond);
+            }
+            ASSERT_EQ(cycle.empty(), actualCycle.empty());
+            ASSERT_EQ(cycle.size(), actualCycle.size());
+            for (std::size_t i=0; i<cycle.size(); ++i)
+            {
+                EXPECT_EQ(cycle[i], actualCycle.a[i]->id());
             }
             break;
         }
@@ -1249,6 +1261,7 @@ struct NodeEditorLiveScriptItem
     dag::NodeEditorLive::GraphChildPath graphChildPath;
     std::string filename;
     std::vector<std::pair<dagbase::NodeID, dagbase::NodeID>> order;
+    std::vector<dagbase::NodeID> cycle;
     float position[2];
     dagbase::ComparisonFlags cmpFlags{dagbase::CMP_NONE};
     bool done{ false };
@@ -2394,8 +2407,8 @@ TEST_P(GraphTest_testEvaluate, testEvaluate)
 
     _sut = dagbase::Graph::fromFile(_nodeLib, graphFilename);
     ASSERT_NE(nullptr, _sut);
-    dagbase::NodeArray order;
-    _sut->topologicalSort(&order);
+    dagbase::NodeArray order, cycle;
+    _sut->topologicalSort(&order, &cycle);
     _sut->evaluate(order);
     dagbase::Node* actualNode = _sut->node(nodeId);
     ASSERT_NE(nullptr, actualNode);
