@@ -10,36 +10,36 @@
     // DEEP_COPY_OUTPUTS_BIT   = 1<<2,
     // GENERATE_UNIQUE_ID_BIT  = 1<<3,
     // DEEP_COPY_PARENT_BIT    = 1<<4
-class PortType_testRoundTrip : public ::testing::TestWithParam<std::tuple<const char*, dagbase::PortType::Type>>
+class ValueType_testRoundTrip : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Value::Type>>
 {
 
 };
 
-TEST_P(PortType_testRoundTrip, testRoundTrip)
+TEST_P(ValueType_testRoundTrip, testRoundTrip)
 {
     const char* str = std::get<0>(GetParam());
-    dagbase::PortType::Type type = std::get<1>(GetParam());
-    auto actualType = dagbase::PortType::parseFromString(str);
-    EXPECT_STREQ(str, dagbase::PortType::toString(type));
+    dagbase::Value::Type type = std::get<1>(GetParam());
+    auto actualType = dagbase::Value::parseType(str);
+    EXPECT_STREQ(str, dagbase::Value::typeString(type));
     EXPECT_EQ(type, actualType);
 }
 
-INSTANTIATE_TEST_SUITE_P(PortType, PortType_testRoundTrip, ::testing::Values(
-    std::make_tuple("TYPE_UNKNOWN", dagbase::PortType::TYPE_UNKNOWN),
-    std::make_tuple("TYPE_UINT8", dagbase::PortType::TYPE_UINT8),
-    std::make_tuple("TYPE_INT8", dagbase::PortType::TYPE_INT8),
-    std::make_tuple("TYPE_UINT16", dagbase::PortType::TYPE_UINT16),
-    std::make_tuple("TYPE_INT16", dagbase::PortType::TYPE_INT16),
-    std::make_tuple("TYPE_UINT32", dagbase::PortType::TYPE_UINT32),
-    std::make_tuple("TYPE_INT32", dagbase::PortType::TYPE_INT32),
-    std::make_tuple("TYPE_UINT64", dagbase::PortType::TYPE_UINT64),
-    std::make_tuple("TYPE_INT64", dagbase::PortType::TYPE_INT64),
-    std::make_tuple("TYPE_DOUBLE", dagbase::PortType::TYPE_DOUBLE),
-    std::make_tuple("TYPE_STRING", dagbase::PortType::TYPE_STRING),
-    std::make_tuple("TYPE_BOOL", dagbase::PortType::TYPE_BOOL),
-    std::make_tuple("TYPE_VEC2", dagbase::PortType::TYPE_VEC2),
-    std::make_tuple("TYPE_OPAQUE", dagbase::PortType::TYPE_OPAQUE),
-    std::make_tuple("TYPE_VECTOR", dagbase::PortType::TYPE_VECTOR)
+INSTANTIATE_TEST_SUITE_P(ValueType, ValueType_testRoundTrip, ::testing::Values(
+    std::make_tuple("TYPE_UNKNOWN", dagbase::Value::Type::TYPE_UNKNOWN),
+    std::make_tuple("TYPE_UINT8", dagbase::Value::Type::TYPE_UINT8),
+    std::make_tuple("TYPE_INT8", dagbase::Value::Type::TYPE_INT8),
+    std::make_tuple("TYPE_UINT16", dagbase::Value::Type::TYPE_UINT16),
+    std::make_tuple("TYPE_INT16", dagbase::Value::Type::TYPE_INT16),
+    std::make_tuple("TYPE_UINT32", dagbase::Value::Type::TYPE_UINT32),
+    std::make_tuple("TYPE_INT32", dagbase::Value::Type::TYPE_INT32),
+    std::make_tuple("TYPE_UINT64", dagbase::Value::Type::TYPE_UINT64),
+    std::make_tuple("TYPE_INT64", dagbase::Value::Type::TYPE_INT64),
+    std::make_tuple("TYPE_DOUBLE", dagbase::Value::Type::TYPE_DOUBLE),
+    std::make_tuple("TYPE_STRING", dagbase::Value::Type::TYPE_STRING),
+    std::make_tuple("TYPE_BOOL", dagbase::Value::Type::TYPE_BOOL),
+    std::make_tuple("TYPE_VEC2", dagbase::Value::Type::TYPE_VEC2),
+    std::make_tuple("TYPE_OPAQUE", dagbase::Value::Type::TYPE_OPAQUE),
+    std::make_tuple("TYPE_VECTOR", dagbase::Value::Type::TYPE_VECTOR)
 ));
 
 class SelectionMode_testRoundTrip : public ::testing::TestWithParam<std::tuple<const char*, dag::NodeEditorInterface::SelectionMode>>

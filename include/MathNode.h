@@ -26,9 +26,9 @@ namespace dag
         :
         Node(keyGen, name, category)
         {
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "angle", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(0.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "unit", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_INTERNAL,  dagbase::Port::FLAGS_NONE, dagbase::Value(std::int64_t{0})), dagbase::MetaPort::FLAGS_OWN_BIT);
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(0.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "angle", dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(0.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "unit", dagbase::PortDirection::DIR_INTERNAL,  dagbase::Port::FLAGS_NONE, dagbase::Value(std::int64_t{0})), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "output", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(0.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
         }
 
         MathsNode(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);

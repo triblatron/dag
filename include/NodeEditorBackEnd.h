@@ -22,7 +22,7 @@ namespace dag
 
         virtual void deleteNode(const std::string& name) = 0;
 
-        virtual void addPort(const std::string& nodeName, const std::string& portClass, dagbase::PortType type, dagbase::PortDirection direction) = 0;
+        virtual void addPort(const std::string& nodeName, const std::string& portClass, dagbase::PortDirection direction) = 0;
 
         virtual void deletePort(const std::string& nodeName, size_t portIndex) = 0;
     };

@@ -92,12 +92,12 @@ namespace dag
     }
 
     dagbase::Port *
-    MemoryNodeLibrary::instantiatePort(const std::string &className, const std::string& name, dagbase::PortType::Type type, dagbase::PortDirection::Direction dir,
+    MemoryNodeLibrary::instantiatePort(const std::string &className, const std::string& name, dagbase::PortDirection::Direction dir,
                                        dagbase::Value value)
     {
         if (className == "TypedPort")
         {
-            return new dagbase::Port(nextPortID(), nullptr, name, type, dir, dagbase::Port::FLAGS_NONE, value);
+            return new dagbase::Port(nextPortID(), nullptr, name, dir, dagbase::Port::FLAGS_NONE, value);
         }
 
         return nullptr;

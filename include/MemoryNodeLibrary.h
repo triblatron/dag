@@ -46,7 +46,7 @@ namespace dag
         //! \note Delegates to Node::create() to get the exact type of the node.
         dagbase::Node* instantiateNode(dagbase::InputStream& str, dagbase::Lua& lua) override;
 
-        dagbase::Port* instantiatePort(const std::string& className, const std::string& name, dagbase::PortType::Type type, dagbase::PortDirection::Direction, dagbase::Value value) override;
+        dagbase::Port* instantiatePort(const std::string& className, const std::string& name, dagbase::PortDirection::Direction, dagbase::Value value) override;
 
         dagbase::Port* instantiatePort(dagbase::InputStream& str, dagbase::Lua &lua) override;
 
