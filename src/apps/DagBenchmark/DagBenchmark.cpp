@@ -6,10 +6,9 @@
 #include "Nodes.h"
 #include "core/MetaPort.h"
 
-#include "core/TypedPort.h"
 #include "SelectionLive.h"
 #include "core/Graph.h"
-
+#include "core/Transfer.h"
 #include <benchmark/benchmark.h>
 
 class DataSink
@@ -363,11 +362,11 @@ BENCHMARK(BM_ModifyArrayChangeTypeFromNumeric);
 static void BM_GetTypedPortValueStatic(benchmark::State& state)
 {
     dag::MemoryNodeLibrary nodeLib;
-    dagbase::TypedPort<double> port(nodeLib.nextPortID(), nullptr, "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0);
+    dagbase::Port port(nodeLib.nextPortID(), nullptr, "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0));
 
     for (auto _ : state)
     {
-        double value = port.value();
+        auto value = port.value();
 
         value += 1.0;
 
@@ -419,11 +418,11 @@ class InputNode
 public:
     InputNode(dagbase::NodeLibrary& nodeLib)
         :
-        in1(nodeLib.nextPortID(), nullptr, "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0)
+        in1(nodeLib.nextPortID(), nullptr, "in1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0))
     {
         // Do nothing.
     }
-    dagbase::TypedPort<double> in1;
+    dagbase::Port in1;
 };
 
 class OutputNode
@@ -431,12 +430,12 @@ class OutputNode
 public:
     OutputNode(dagbase::NodeLibrary& nodeLib)
         :
-        out1(nodeLib.nextPortID(), nullptr, "_out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0)
+        out1(nodeLib.nextPortID(), nullptr, "_out1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0))
     {
         // Do nothing.
     }
 
-    dagbase::TypedPort<double> out1;
+    dagbase::Port out1;
 };
 
 class FooSource
@@ -496,13 +495,13 @@ static void BM_VirtualPortArray(benchmark::State& state)
     auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto sut = dynamic_cast<dag::Final*>(g->createNode("Final", "final1"));
-    sut->addDynamicPort(new dagbase::TypedPort<double>(nodeLib.nextPortID(), nullptr, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
+    sut->addDynamicPort(new dagbase::Port(nodeLib.nextPortID(), nullptr, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
 
     for (auto _ : state)
     {
-        auto port = static_cast<dagbase::TypedPort<double>*>(sut->dynamicPort(0));
+        auto port = sut->dynamicPort(0);
 
-        port->setValue(2.0);
+        port->setValue(dagbase::Value(2.0));
     }
     delete g;
 }
@@ -515,7 +514,7 @@ static void BM_VirtualMetaPortArray(benchmark::State& state)
     auto g = new dagbase::Graph();
     g->setNodeLibrary(&nodeLib);
     auto sut = dynamic_cast<dag::Final*>(g->createNode("Final", "final1"));
-    sut->addDynamicPort(new dagbase::TypedPort<double>(nodeLib.nextPortID(), nullptr, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
+    sut->addDynamicPort(new dagbase::Port(nodeLib.nextPortID(), nullptr, "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
     std::int64_t i = 0;
 
     for (auto _ : state)
@@ -626,12 +625,11 @@ BENCHMARK(BM_SelectionLiveToggle);
 
 static void BM_DynamicCastPort(benchmark::State& state)
 {
-    dagbase::Port* p = new dagbase::TypedPort<double>(dagbase::PortID(0), "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    dagbase::Port* p = new dagbase::Port(dagbase::PortID(0), nullptr, "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL, dagbase::Port::FLAGS_NONE, dagbase::Value(0.0));
     for (auto _ : state)
     {
-        auto typed = dynamic_cast<dagbase::TypedPort<double>*>(p);
         // Avoid optimising out the cast.
-        typed->setValue(1.0);
+        p->setValue(dagbase::Value(1.0));
     }
 }
 
@@ -639,11 +637,10 @@ BENCHMARK(BM_DynamicCastPort);
 
 static void BM_StaticCastPort(benchmark::State& state)
 {
-    dagbase::Port* p = new dagbase::TypedPort<double>(dagbase::PortID(0), "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL, 0.0, nullptr);
+    dagbase::Port* p = new dagbase::Port(dagbase::PortID(0), nullptr, "port1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_INTERNAL,  dagbase::Port::FLAGS_NONE, dagbase::Value(0.0));
     for (auto _ : state)
     {
-        auto typed = static_cast<dagbase::TypedPort<double>*>(p);
-        typed->setValue(1.0);
+        p->setValue(dagbase::Value(1.0));
     }
 }
 

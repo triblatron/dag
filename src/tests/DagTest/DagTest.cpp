@@ -3,7 +3,6 @@
 #include "gtest/gtest.h"
 #include "core/LuaInterface.h"
 #include "core/Node.h"
-#include "core/TypedPort.h"
 #include "MemoryNodeLibrary.h"
 #include "Nodes.h"
 #include "core/NodeCategory.h"
@@ -51,7 +50,7 @@ TEST_P(MemoryNodeLibraryTest, checkInstantiate)
     ASSERT_NE(nullptr, actualNode);
     EXPECT_STREQ(name, actualNode->name().c_str());
     EXPECT_GT(actualNode->totalPorts(), portIndex);
-    auto actualPort = dynamic_cast<dagbase::TypedPort<double>*>(actualNode->dynamicPort(portIndex));
+    auto actualPort = actualNode->dynamicPort(portIndex);
     ASSERT_NE(nullptr, actualPort);
     EXPECT_STREQ(portName, actualPort->name().c_str());
     EXPECT_EQ(portDir, actualPort->dir());
@@ -108,9 +107,9 @@ TEST_P(PortTypeTest, checkSetValue)
 {
     double value = std::get<0>(GetParam());
     double newValue = std::get<1>(GetParam());
-    auto sut = new dagbase::TypedPort<double>(dagbase::PortID(0), "test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, value);
+    auto sut = new dagbase::Port(dagbase::PortID(0), nullptr,"test1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(value));
     EXPECT_EQ(value, double(sut->value()));
-    sut->setValue(newValue);
+    sut->setValue(dagbase::Value(newValue));
     EXPECT_EQ(newValue, double(sut->value()));
     delete sut;
 }
@@ -302,54 +301,82 @@ class TestNodeWithStringPort
 public:
     TestNodeWithStringPort()
 	    :
-    _str(dagbase::PortID(0), "out1", dagbase::PortType::TYPE_STRING, dagbase::PortDirection::DIR_OUT, "test")
+    _str(dagbase::PortID(0), nullptr, "out1", dagbase::PortType::TYPE_STRING, dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value("test"))
     {
 	    // Do nothing.
     }
 
-    dagbase::TypedPort<std::string>& stringPort()
+    dagbase::Port& stringPort()
     {
         return _str;
     }
 private:
-    dagbase::TypedPort<std::string> _str;
+    dagbase::Port _str;
 };
 
-TEST(PortTestCompatibleTypes, testCompatibleTypesIntToDouble)
+class Port_testCompatibility : public ::testing::TestWithParam<std::tuple<dagbase::PortType::Type, dagbase::Value, dagbase::PortType::Type, dagbase::Value, bool>>
 {
-    auto output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, std::int64_t{1});
-    auto input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
-    ASSERT_EQ(false, output->isCompatibleWith(*input));
+
+};
+
+TEST_P(Port_testCompatibility, testExpected)
+{
+    auto outputType = std::get<0>(GetParam());
+    auto outputValue = std::get<1>(GetParam());
+    auto inputType = std::get<2>(GetParam());
+    auto inputValue = std::get<3>(GetParam());
+    auto compatible = std::get<4>(GetParam());
+
+    auto output = new dagbase::Port(dagbase::PortID(0), nullptr, "output", outputType, dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, outputValue);
+    auto input = new dagbase::Port(dagbase::PortID(1), nullptr, "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, inputValue);
+    ASSERT_EQ(compatible, output->isCompatibleWith(*input));
     delete input;
     delete output;
+
 }
 
-TEST(PortTestCompatibleTypes, testCompatibleExactMatch)
-{
-    dagbase::TypedPort<double> const* output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
-    auto* input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
-    ASSERT_EQ(true, output->isCompatibleWith(*input));
-    delete input;
-    delete output;
-}
+INSTANTIATE_TEST_SUITE_P(Port, Port_testCompatibility, ::testing::Values(
+    std::make_tuple(dagbase::PortType::TYPE_INT64, dagbase::Value(std::int64_t{1}), dagbase::PortType::TYPE_DOUBLE, dagbase::Value(2.0), false),
+    std::make_tuple(dagbase::PortType::TYPE_DOUBLE, dagbase::Value(1.0), dagbase::PortType::TYPE_DOUBLE, dagbase::Value(2.0), true),
+    std::make_tuple(dagbase::PortType::TYPE_BOOL, dagbase::Value(true), dagbase::PortType::TYPE_INT64, dagbase::Value(std::int64_t{2}), false),
+    std::make_tuple(dagbase::PortType::TYPE_BOOL, dagbase::Value(true), dagbase::PortType::TYPE_DOUBLE, dagbase::Value(2.0), false)
+    ));
 
-TEST(PortTestCompatibleTypes, testCompatibleBoolToInt)
-{
-    auto const output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
-    auto input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_IN, std::int64_t{2});
-    ASSERT_EQ(false, output->isCompatibleWith(*input));
-    delete input;
-    delete output;
-}
-
-TEST(PortTestCompatibleTypes, testCompatibleBoolToDouble)
-{
-    auto const * output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
-    auto input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
-    ASSERT_EQ(false, output->isCompatibleWith(*input));
-    delete input;
-    delete output;
-}
+// TEST(PortTestCompatibleTypes, testCompatibleTypesIntToDouble)
+// {
+//     auto output = new dagbase::Port(dagbase::PortID(0), nullptr, "output", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(std::int64_t{1}));
+//     auto input = new dagbase::Port(dagbase::PortID(1), nullptr, "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(2.0));
+//     ASSERT_EQ(false, output->isCompatibleWith(*input));
+//     delete input;
+//     delete output;
+// }
+//
+// TEST(PortTestCompatibleTypes, testCompatibleExactMatch)
+// {
+//     dagbase::Port const* output = new dagbase::Port(dagbase::PortID(0), nullptr, "output", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0);
+//     auto* input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
+//     ASSERT_EQ(true, output->isCompatibleWith(*input));
+//     delete input;
+//     delete output;
+// }
+//
+// TEST(PortTestCompatibleTypes, testCompatibleBoolToInt)
+// {
+//     auto const output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
+//     auto input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_INT64, dagbase::PortDirection::DIR_IN, std::int64_t{2});
+//     ASSERT_EQ(false, output->isCompatibleWith(*input));
+//     delete input;
+//     delete output;
+// }
+//
+// TEST(PortTestCompatibleTypes, testCompatibleBoolToDouble)
+// {
+//     auto const * output = new dagbase::TypedPort(dagbase::PortID(0), "output", dagbase::PortType::TYPE_BOOL, dagbase::PortDirection::DIR_OUT, true);
+//     auto input = new dagbase::TypedPort(dagbase::PortID(1), "input", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 2.0);
+//     ASSERT_EQ(false, output->isCompatibleWith(*input));
+//     delete input;
+//     delete output;
+// }
 
 TEST(NodeTest, testDynamicPortDescriptorReturnsStaticPortsInRange)
 {
@@ -368,7 +395,7 @@ TEST(NodeTest, testDynamicsPortDescriptorsForFinal)
     dag::MemoryNodeLibrary nodeLib;
     auto const sut = dynamic_cast<dag::Final*>(nodeLib.instantiateNode(nodeLib, "Final", "final1"));
     ASSERT_NE(nullptr, sut);
-    sut->addDynamicPort(new dagbase::TypedPort<double>(dagbase::PortID(0), "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
+    sut->addDynamicPort(new dagbase::Port(dagbase::PortID(0), nullptr, "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
     ASSERT_NE(nullptr, sut->dynamicMetaPort(2));
     ASSERT_EQ("int1", sut->dynamicPort(2)->name());
     ASSERT_TRUE(sut->dynamicMetaPort(2)->isOwned());
@@ -389,7 +416,7 @@ TEST_P(NodeTestDynamicPortsForNode, testDynamicPortsForFinal)
     dag::MemoryNodeLibrary nodeLib;
     auto const sut = nodeLib.instantiateNode(nodeLib, className, "node1");
     ASSERT_NE(nullptr, sut);
-    sut->addDynamicPort(new dagbase::TypedPort<double>(dagbase::PortID(0), "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, 1.0), dagbase::MetaPort::FLAGS_OWN_BIT);
+    sut->addDynamicPort(new dagbase::Port(dagbase::PortID(0), nullptr, "output1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
     auto const actualPort = sut->dynamicPort(index);
     ASSERT_NE(nullptr, actualPort);
     ASSERT_EQ(nodeName, actualPort->name());
@@ -1756,7 +1783,7 @@ TEST(BoundaryNode, testAddDynamicPort)
 {
     dag::MemoryNodeLibrary nodeLib;
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
-    auto input = new dagbase::TypedPort<double>(dagbase::PortID(0), nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0, dagbase::Port::OWN_META_PORT_BIT);
+    auto input = new dagbase::Port(dagbase::PortID(0), nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN,  dagbase::Port::OWN_META_PORT_BIT, dagbase::Value(1.0));
     ASSERT_NO_THROW(sut->addDynamicPort(input, dagbase::MetaPort::FLAGS_OWN_BIT));
     ASSERT_EQ(sut, input->parent());
     ASSERT_EQ(size_t{1}, sut->totalPorts());
@@ -1770,7 +1797,7 @@ TEST(BoundaryNode, testClone)
     dag::MemoryNodeLibrary nodeLib;
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
     auto metaPort = new dagbase::MetaPort();
-    auto input = new dagbase::TypedPort<double>(dagbase::PortID(0), nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN, 1.0, dagbase::Port::OWN_META_PORT_BIT);
+    auto input = new dagbase::Port(dagbase::PortID(0), nullptr, "input1", dagbase::PortType::TYPE_DOUBLE, dagbase::PortDirection::DIR_IN,  dagbase::Port::OWN_META_PORT_BIT, dagbase::Value(1.0));
     ASSERT_NO_THROW(sut->addDynamicPort(input, dagbase::MetaPort::FLAGS_OWN_BIT));
     dagbase::CloningFacility facility;
     auto clone = sut->clone(facility, dagbase::CopyOp{0}, nullptr);
@@ -2042,9 +2069,7 @@ TEST_P(GraphTest_fromLua, testFromString)
     ASSERT_NE(nullptr, actualNode);
     auto actualPort = actualNode->dynamicPort(portIndex);
     ASSERT_NE(nullptr, actualPort);
-    dagbase::ValueVisitor valueVisitor;
-    actualPort->accept(valueVisitor);
-    dagbase::Value actualValue = valueVisitor.value();
+    dagbase::Value actualValue = actualPort->value();
 
     EXPECT_EQ(value, actualValue);
     delete sut;
@@ -2084,9 +2109,7 @@ TEST_P(GraphTest_fromLuaFile, testFromFile)
     ASSERT_NE(nullptr, actualNode);
     auto actualPort = actualNode->dynamicPort(portIndex);
     ASSERT_NE(nullptr, actualPort);
-    dagbase::ValueVisitor valueVisitor;
-    actualPort->accept(valueVisitor);
-    dagbase::Value actualValue = valueVisitor.value();
+    dagbase::Value actualValue = actualPort->value();
     dagbase::SignalPathTable::FindResultFrom incoming, outgoing;
     sut->findByDest(actualPort->id(), &incoming);
     std::size_t actualNumIncomingPorts = incoming.size();
@@ -2294,9 +2317,9 @@ TEST(GraphTest, testLoadGraphWithNodesFromPlugin)
     ASSERT_NE(nullptr, graph);
     auto node = graph->node(dagbase::NodeID(0));
     ASSERT_NE(nullptr, node);
-    auto* port = dynamic_cast<dagbase::TypedPort<double>*>(node->dynamicPort(0));
+    auto* port = node->dynamicPort(0);
     ASSERT_NE(nullptr, port);
-    EXPECT_EQ(1.0, port->value());
+    EXPECT_EQ(1.0, port->value().operator double());
     delete graph;
 }
 
@@ -2381,10 +2404,8 @@ TEST_P(GraphTest_testEvaluate, testEvaluate)
     ASSERT_NE(nullptr, actualNode);
     dagbase::Port* actualPort = actualNode->dynamicPort(portIndex);
     ASSERT_NE(nullptr, actualPort);
-    dagbase::ValueVisitor visitor;
     ASSERT_EQ(dagbase::PortType::TYPE_DOUBLE, actualPort->type());
-    actualPort->accept(visitor);
-    EXPECT_EQ(value, visitor.value().operator double());
+    EXPECT_EQ(value, actualPort->value().operator double());
 }
 
 INSTANTIATE_TEST_SUITE_P(Graph, GraphTest_testEvaluate, ::testing::Values(

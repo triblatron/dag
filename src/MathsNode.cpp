@@ -61,7 +61,8 @@ namespace dag
 
     void MathsNode::update()
     {
-        static_cast<dagbase::TypedPort<double>*>(dynamicPort(PORT_OUTPUT))->setValue(std::sin(static_cast<dagbase::TypedPort<double>*>(dynamicPort(PORT_ANGLE))->value()));
+        dynamicPort(PORT_OUTPUT)->value() = (std::sin(double(dynamicPort(PORT_ANGLE)->value())));
+        //static_cast<dagbase::TypedPort<double>*>(dynamicPort(PORT_OUTPUT))->setValue(std::sin(static_cast<dagbase::TypedPort<double>*>(dynamicPort(PORT_ANGLE))->value()));
     }
 
     MathsNode::~MathsNode()

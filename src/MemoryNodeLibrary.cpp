@@ -2,7 +2,6 @@
 
 #include "MemoryNodeLibrary.h"
 #include "core/Node.h"
-#include "core/TypedPort.h"
 #include "core/CloningFacility.h"
 
 #include <stdexcept>
@@ -98,19 +97,7 @@ namespace dag
     {
         if (className == "TypedPort")
         {
-            switch (type)
-            {
-                case dagbase::PortType::TYPE_INT64:
-                    return new dagbase::TypedPort<std::int64_t>(nextPortID(), name, type, dir, static_cast<std::int64_t>(value));
-                case dagbase::PortType::TYPE_DOUBLE:
-                    return new dagbase::TypedPort<double>(nextPortID(), name, type, dir, static_cast<double>(value));
-                case dagbase::PortType::TYPE_STRING:
-                    return new dagbase::TypedPort<std::string>(nextPortID(), name, type, dir, value.operator std::string());
-                case dagbase::PortType::TYPE_BOOL:
-                    return new dagbase::TypedPort<bool>(nextPortID(), name, type, dir, static_cast<bool>(value));
-                default:
-                    assert(false);
-            }
+            return new dagbase::Port(nextPortID(), nullptr, name, type, dir, dagbase::Port::FLAGS_NONE, value);
         }
 
         return nullptr;
@@ -118,29 +105,12 @@ namespace dag
 
     dagbase::Port *MemoryNodeLibrary::instantiatePort(dagbase::InputStream &str, dagbase::Lua &lua)
     {
-        std::string className;
-        std::string fieldName;
-        str.readField(&fieldName);
-        str.readString(&className, true);
+        // std::string className;
+        // std::string fieldName;
+        // str.readField(&fieldName);
+        // str.readString(&className, true);
 
-        if (className == "TypedPort<int64_t>")
-        {
-            return new dagbase::TypedPort<std::int64_t>(str, *this, lua);
-        }
-        else if (className == "TypedPort<double>")
-        {
-            return new dagbase::TypedPort<double>(str, *this, lua);
-        }
-        else if (className == "TypedPort<string>")
-        {
-            return new dagbase::TypedPort<std::string>(str, *this, lua);
-        }
-        else if (className == "TypedPort<bool>")
-        {
-            return new dagbase::TypedPort<bool>(str, *this, lua);
-        }
-
-        return nullptr;
+        return new dagbase::Port(str, *this, lua);
 //        std::string name;
 //        str.read(&name);
 //        PortType::Type type = PortType::TYPE_UNKNOWN;

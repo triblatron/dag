@@ -22,8 +22,8 @@ Graph
       name : "bartyped1"
       category : 1
       flags : 0
-      x : 688
-      y : 386
+      x : 694
+      y : 460
       numDynamicMetaPorts : 1
       dynamicMetaPorts :       MetaPort
       {
@@ -34,28 +34,23 @@ Graph
       {
         id : 3
       }
-      className : "TypedPort<double>"
-      TypedPort<double>
+      Port
       {
-        Port
+        id : 0
+        name : "out1"
+        type : 9
+        direction : 2
+        parent :         SerialId
+        {
+          id : 2
+        }
+        sharedParent :         SerialId
         {
           id : 0
-          name : "out1"
-          type : 9
-          direction : 2
-          parent :           SerialId
-          {
-            id : 2
-          }
-          sharedParent :           SerialId
-          {
-            id : 0
-          }
         }
-        value :         Variant
+        value :         Value
         {
-          hasValue : true
-          type : 1
+          type : 9
           value : 1
         }
       }
@@ -78,8 +73,8 @@ Graph
       name : "footyped1"
       category : 2
       flags : 0
-      x : 990
-      y : 283
+      x : 1005
+      y : 371
       numDynamicMetaPorts : 1
       dynamicMetaPorts :       MetaPort
       {
@@ -90,28 +85,23 @@ Graph
       {
         id : 5
       }
-      className : "TypedPort<double>"
-      TypedPort<double>
+      Port
       {
-        Port
+        id : 1
+        name : "in1"
+        type : 9
+        direction : 1
+        parent :         SerialId
         {
-          id : 1
-          name : "in1"
-          type : 9
-          direction : 1
-          parent :           SerialId
-          {
-            id : 4
-          }
-          sharedParent :           SerialId
-          {
-            id : 0
-          }
+          id : 4
         }
-        value :         Variant
+        sharedParent :         SerialId
         {
-          hasValue : true
-          type : 1
+          id : 0
+        }
+        value :         Value
+        {
+          type : 9
           value : 1
         }
       }
@@ -134,8 +124,8 @@ Graph
       name : "footyped1"
       category : 2
       flags : 0
-      x : 996
-      y : 490
+      x : 1010
+      y : 571
       numDynamicMetaPorts : 1
       dynamicMetaPorts :       MetaPort
       {
@@ -146,28 +136,23 @@ Graph
       {
         id : 7
       }
-      className : "TypedPort<double>"
-      TypedPort<double>
+      Port
       {
-        Port
+        id : 2
+        name : "in1"
+        type : 9
+        direction : 1
+        parent :         SerialId
         {
-          id : 2
-          name : "in1"
-          type : 9
-          direction : 1
-          parent :           SerialId
-          {
-            id : 6
-          }
-          sharedParent :           SerialId
-          {
-            id : 0
-          }
+          id : 6
         }
-        value :         Variant
+        sharedParent :         SerialId
         {
-          hasValue : true
-          type : 1
+          id : 0
+        }
+        value :         Value
+        {
+          type : 9
           value : 1
         }
       }
@@ -190,8 +175,8 @@ Graph
       name : "footyped1"
       category : 2
       flags : 0
-      x : 996
-      y : 686
+      x : 1005
+      y : 741
       numDynamicMetaPorts : 1
       dynamicMetaPorts :       MetaPort
       {
@@ -202,28 +187,23 @@ Graph
       {
         id : 9
       }
-      className : "TypedPort<double>"
-      TypedPort<double>
+      Port
       {
-        Port
+        id : 3
+        name : "in1"
+        type : 9
+        direction : 1
+        parent :         SerialId
         {
-          id : 3
-          name : "in1"
-          type : 9
-          direction : 1
-          parent :           SerialId
-          {
-            id : 8
-          }
-          sharedParent :           SerialId
-          {
-            id : 0
-          }
+          id : 8
         }
-        value :         Variant
+        sharedParent :         SerialId
         {
-          hasValue : true
-          type : 1
+          id : 0
+        }
+        value :         Value
+        {
+          type : 9
           value : 1
         }
       }
