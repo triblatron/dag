@@ -1013,11 +1013,13 @@ struct NodeEditorLiveScriptItem
         case COMMAND_SERIALISE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
+            dagbase::ConfigurationElement::readConfig<dag::NodeEditorLive::SerialiseFormat>(config, "serialiseFormat", &dag::NodeEditorLive::parseSerialiseFormat, &serialiseFormat);
 
             break;
         case COMMAND_DESERIALISE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
+            dagbase::ConfigurationElement::readConfig<dag::NodeEditorLive::SerialiseFormat>(config, "serialiseFormat", &dag::NodeEditorLive::parseSerialiseFormat, &serialiseFormat);
 
             break;
             case COMMAND_TOPO_SORT:
@@ -1163,18 +1165,37 @@ struct NodeEditorLiveScriptItem
             dagbase::OutputStream* ostr = dagbase::createOutputStream("TextFormat", *backingStore, filename.c_str());
             ASSERT_NE(nullptr, ostr);
             dagbase::Lua lua;
-            actualStatus = sut.serialise(*ostr, lua);
+            actualStatus = sut.serialise(serialiseFormat,*ostr, lua);
             dagbase::InputStream* istr = dagbase::createInputStream("TextFormat", *backingStore, filename.c_str());
-            dagbase::Stream::ObjId id{~0U};
-            auto ref = istr->readRef(&id);
             dag::MemoryNodeLibrary nodeLib;
-            if (id == 0)
-                FAIL() << "Expected a Graph, got null";
-            else
+            dagbase::Graph* restored = nullptr;
+            switch (serialiseFormat)
             {
-                auto restored = new dagbase::Graph(*istr, nodeLib, lua);
-                ASSERT_TRUE(sut.activeGraph()->equals(*restored, static_cast<dagbase::ComparisonFlags>(dagbase::CMP_IDENT_BIT|dagbase::CMP_NAME_BIT|dagbase::CMP_CONNECTIONS_BIT))) << caseName;
+                case dag::NodeEditorLive::SERIALISE_OBJECT_GRAPH:
+                {
+                    dagbase::Stream::ObjId id{~0U};
+                    auto ref = istr->readRef(&id);
+                    if (id == 0)
+                        FAIL() << "Expected a Graph, got null";
+                    else
+                    {
+                        restored = new dagbase::Graph(*istr, nodeLib, lua);
+                    }
+                    break;
+                }
+                case dag::NodeEditorLive::SERIALISE_FLAT:
+                {
+                    restored = new dagbase::Graph();
+                    restored->setNodeLibrary(&nodeLib);
+                    restored->readFlat(*istr, nodeLib, lua);
+                    break;
+                }
+                default:
+                    FAIL() << "Cannot deserialise unknown format";
+                    break;
             }
+            ASSERT_NE(nullptr, restored);
+            ASSERT_TRUE(sut.activeGraph()->equals(*restored, static_cast<dagbase::ComparisonFlags>(dagbase::CMP_IDENT_BIT|dagbase::CMP_NAME_BIT|dagbase::CMP_CONNECTIONS_BIT))) << caseName;
             delete istr;
             delete ostr;
             delete backingStore;
@@ -1187,7 +1208,7 @@ struct NodeEditorLiveScriptItem
             dagbase::Lua lua;
             dagbase::InputStream* istr = dagbase::createInputStream("TextFormat", *backingStore, filename.c_str());
             ASSERT_NE(nullptr, istr);
-            actualStatus = sut.deserialise(*istr, lua);
+            actualStatus = sut.deserialise(serialiseFormat, *istr, lua);
             break;
         }
         case COMMAND_TOPO_SORT:
@@ -1264,6 +1285,7 @@ struct NodeEditorLiveScriptItem
     std::vector<dagbase::NodeID> cycle;
     float position[2];
     dagbase::ComparisonFlags cmpFlags{dagbase::CMP_NONE};
+    dag::NodeEditorLive::SerialiseFormat serialiseFormat{dag::NodeEditorLive::SERIALISE_OBJECT_GRAPH};
     bool done{ false };
 
     void set(std::string_view name, dagbase::Variant value)
@@ -1468,6 +1490,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/SerialiseSingleNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/TopoSortCyclicDependency.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/TopoSortTransitiveDependency.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateChildFanOut.lua"),

@@ -19,7 +19,7 @@
 #include "core/CloningFacility.h"
 #include "io/OutputStream.h"
 #include "io/InputStream.h"
-#include "io/MemoryBackingStore.h"
+#include "util/enums.h"
 
 namespace dag
 {
@@ -650,15 +650,29 @@ namespace dag
         return status;
     }
 
-    dagbase::Status NodeEditorLive::serialise(dagbase::OutputStream &str, dagbase::Lua& lua)
+    dagbase::Status NodeEditorLive::serialise(SerialiseFormat format, dagbase::OutputStream &str, dagbase::Lua& lua)
     {
         dagbase::Status status{dagbase::Status::STATUS_OK};
 
         if (_graph)
         {
-            if (str.writeRef(_graph))
+            switch (format)
             {
-                _graph->write(str, *_nodeLib, lua);
+                case SERIALISE_OBJECT_GRAPH:
+                    if (str.writeRef(_graph))
+                    {
+                        _graph->write(str, *_nodeLib, lua);
+                    }
+
+                    break;
+                case SERIALISE_FLAT:
+                    _graph->writeFlat(str, *_nodeLib, lua);
+
+                    break;
+                default:
+                    status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
+
+                    break;
             }
             str.flush();
         }
@@ -667,16 +681,33 @@ namespace dag
         return status;
     }
 
-    dagbase::Status NodeEditorLive::deserialise(dagbase::InputStream &str, dagbase::Lua &lua)
+    dagbase::Status NodeEditorLive::deserialise(SerialiseFormat format, dagbase::InputStream &str, dagbase::Lua &lua)
     {
         dagbase::Status status;
         dagbase::Stream::ObjId id{~0U};
-        auto ref = str.readRef(&id);
-        if (id == 0)
-            return dagbase::Status{dagbase::Status::STATUS_FAILED_TO_CREATE_GRAPH};
+        switch (format)
+        {
+            case SERIALISE_OBJECT_GRAPH:
+            {
+                auto ref = str.readRef(&id);
+                if (id == 0)
+                    return dagbase::Status{dagbase::Status::STATUS_FAILED_TO_CREATE_GRAPH};
 
-        delete _graph;
-        _graph = new dagbase::Graph(str, *_nodeLib, lua);
+                delete _graph;
+                _graph = new dagbase::Graph(str, *_nodeLib, lua);
+
+                break;
+            }
+            case SERIALISE_FLAT:
+                delete _graph;
+                _graph = new dagbase::Graph();
+                _graph->setNodeLibrary(_nodeLib);
+                _graph->readFlat(str, *_nodeLib, lua);
+
+                break;
+            case SERIALISE_UNKNOWN:
+                return dagbase::Status{ dagbase::Status::STATUS_SYNTAX_ERROR};
+        }
         _graph->adjustNextID();
         _activeGraph = _graph;
         status.status = dagbase::Status::STATUS_OK;
@@ -706,6 +737,26 @@ namespace dag
         {
             _graph->debug();
         }
+    }
+
+    const char * NodeEditorLive::serialiseFormatToString(SerialiseFormat value)
+    {
+        switch (value)
+        {
+            ENUM_NAME(SERIALISE_UNKNOWN)
+            ENUM_NAME(SERIALISE_OBJECT_GRAPH)
+            ENUM_NAME(SERIALISE_FLAT)
+        }
+
+        return "<error>";
+    }
+
+    NodeEditorLive::SerialiseFormat NodeEditorLive::parseSerialiseFormat(const char *str)
+    {
+        TEST_ENUM(SERIALISE_OBJECT_GRAPH, str)
+        TEST_ENUM(SERIALISE_FLAT, str)
+
+        return SERIALISE_UNKNOWN;
     }
 
     size_t NodeEditorLive::selectionCount()

@@ -34,6 +34,12 @@ namespace dag
     public:
         using GraphChildPath = std::vector<std::uint32_t>;
 
+        enum SerialiseFormat : std::uint32_t
+        {
+            SERIALISE_UNKNOWN,
+            SERIALISE_OBJECT_GRAPH,
+            SERIALISE_FLAT
+        };
     public:
         NodeEditorLive();
 
@@ -106,15 +112,19 @@ namespace dag
 
         dagbase::Status save(dagbase::DebugPrinter& printer);
 
-        dagbase::Status serialise(dagbase::OutputStream& str, dagbase::Lua& lua);
+        dagbase::Status serialise(SerialiseFormat format, dagbase::OutputStream& str, dagbase::Lua& lua);
 
-        dagbase::Status deserialise(dagbase::InputStream& str, dagbase::Lua &lua);
+        dagbase::Status deserialise(SerialiseFormat format, dagbase::InputStream& str, dagbase::Lua &lua);
 
         dagbase::Status topologicalSort(dagbase::NodeArray* order, dagbase::NodeArray* cycle);
 
         dagbase::Variant find(std::string_view path) const;
 
         void debug();
+
+        static const char* serialiseFormatToString(SerialiseFormat value);
+
+        static SerialiseFormat parseSerialiseFormat(const char* str);
     private:
         MemoryNodeLibrary *_nodeLib{nullptr};
         dagbase::Graph* _graph{nullptr};

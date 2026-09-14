@@ -3,6 +3,8 @@
 //
 
 #include "core/Types.h"
+#include "NodeEditorLive.h"
+
 #include <gtest/gtest.h>
 
 #include "NodeEditorInterface.h"
@@ -63,4 +65,24 @@ INSTANTIATE_TEST_SUITE_P(SelectionMode, SelectionMode_testRoundTrip, ::testing::
     std::make_tuple("SELECTION_CLEAR", dag::NodeEditorInterface::SELECTION_CLEAR),
     std::make_tuple("SELECTION_ALL", dag::NodeEditorInterface::SELECTION_ALL),
     std::make_tuple("SELECTION_UNKNOWN", dag::NodeEditorInterface::SELECTION_UNKNOWN)
+    ));
+
+class SerialiseFormat_testRoundTrip : public ::testing::TestWithParam<std::tuple<const char*, dag::NodeEditorLive::SerialiseFormat>>
+{
+
+};
+
+TEST_P(SerialiseFormat_testRoundTrip, testRoundTrip)
+{
+    auto str = std::get<0>(GetParam());
+    auto value = std::get<1>(GetParam());
+
+    EXPECT_STREQ(str, dag::NodeEditorLive::serialiseFormatToString(value));
+    EXPECT_EQ(value, dag::NodeEditorLive::parseSerialiseFormat(str));
+}
+
+INSTANTIATE_TEST_SUITE_P(NodeEditorLive, SerialiseFormat_testRoundTrip, ::testing::Values(
+    std::make_tuple("SERIALISE_UNKNOWN", dag::NodeEditorLive::SERIALISE_UNKNOWN),
+    std::make_tuple("SERIALISE_OBJECT_GRAPH", dag::NodeEditorLive::SERIALISE_OBJECT_GRAPH),
+    std::make_tuple("SERIALISE_FLAT", dag::NodeEditorLive::SERIALISE_FLAT)
     ));
