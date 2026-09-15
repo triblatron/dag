@@ -16,6 +16,8 @@
 class DynamicNode : public dagbase::Node
 {
 public:
+    DynamicNode() = default;
+
     DynamicNode(dagbase::KeyGenerator& keyGen, const std::string& name)
     :
     Node(keyGen, name, dagbase::NodeCategory::CAT_GROUP)
@@ -72,6 +74,11 @@ public:
     Node* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override
     {
         return new DynamicNode(str, nodeLib, lua);
+    }
+
+    DynamicNode* instantiate() override
+    {
+        return new DynamicNode();
     }
 
     dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override

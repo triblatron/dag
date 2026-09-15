@@ -55,9 +55,16 @@ namespace dag
         if (auto const it = _classes.m.find(className); it != _classes.end() )
         {
             dagbase::CloningFacility facility;
-            const auto copy = it->second->clone(facility, dagbase::GENERATE_UNIQUE_ID_BIT, &keyGen);
-            copy->setName(name);
-
+            dagbase::Node* copy = nullptr;
+            if (!name.empty())
+            {
+                copy = it->second->clone(facility, dagbase::GENERATE_UNIQUE_ID_BIT, &keyGen);
+                copy->setName(name);
+            }
+            else
+            {
+                copy = it->second->instantiate();
+            }
             return copy;
         }
 

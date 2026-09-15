@@ -46,6 +46,11 @@ namespace dag
             return new Base(*this, facility, copyOp, keyGen);
         }
 
+        Base* instantiate() override
+        {
+            return new Base();
+        }
+
         dagbase::Node* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua& lua) override;
 
         [[nodiscard]]bool equals(const dagbase::Node& other, dagbase::ComparisonFlags flags) const override;
@@ -170,6 +175,8 @@ namespace dag
     class DAG_API FooTyped : public dagbase::Node
     {
     public:
+        FooTyped() = default;
+
         FooTyped(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Node(keyGen, name, category)
@@ -196,6 +203,11 @@ namespace dag
         FooTyped* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new FooTyped(*this,facility,copyOp,keyGen);
+        }
+
+        FooTyped* instantiate() override
+        {
+            return new FooTyped();
         }
 
         FooTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
@@ -230,6 +242,7 @@ namespace dag
     {
     public:
         BarTyped() = default;
+
         BarTyped(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Node(keyGen, name, category)
@@ -259,6 +272,11 @@ namespace dag
             return new BarTyped(*this,facility,copyOp,keyGen);
         }
 
+        BarTyped* instantiate() override
+        {
+            return new BarTyped();
+        }
+
         BarTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const dagbase::Node& other, dagbase::ComparisonFlags flags) const override;
@@ -280,6 +298,8 @@ namespace dag
     class DAG_API GroupTyped : public dagbase::Node
     {
     public:
+        GroupTyped() = default;
+
         GroupTyped(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
                 :
                 Node(keyGen, name, category)
@@ -319,6 +339,10 @@ namespace dag
             return new GroupTyped(*this, facility, copyOp, keyGen);
         }
 
+        GroupTyped* instantiate() override
+        {
+            return new GroupTyped();
+        }
         GroupTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
 
         [[nodiscard]]bool equals(const dagbase::Node& other, dagbase::ComparisonFlags flags) const override;

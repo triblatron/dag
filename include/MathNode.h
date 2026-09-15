@@ -22,6 +22,8 @@ namespace dag
             PORT_OUTPUT
         };
     public:
+        MathsNode() = default;
+
         MathsNode(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
         :
         Node(keyGen, name, category)
@@ -60,6 +62,11 @@ namespace dag
         Node* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new MathsNode(*this, facility, copyOp, keyGen);
+        }
+
+        MathsNode* instantiate() override
+        {
+            return new MathsNode();
         }
 
         void update() override;

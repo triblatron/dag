@@ -13,6 +13,8 @@ namespace dag
     class DAG_API Boundary final : public dagbase::Node
     {
     public:
+        Boundary() = default;
+
         explicit Boundary(dagbase::KeyGenerator& keyGen, std::string name, dagbase::NodeCategory::Category category=dagbase::NodeCategory::CAT_NONE);
 
         Boundary(const Boundary& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen);
@@ -35,6 +37,11 @@ namespace dag
         Boundary* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
         {
             return new Boundary(*this,facility,copyOp,keyGen);
+        }
+
+        Boundary* instantiate() override
+        {
+            return new Boundary();
         }
 
         Boundary* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
