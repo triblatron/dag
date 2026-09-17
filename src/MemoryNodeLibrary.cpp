@@ -56,22 +56,26 @@ namespace dag
         {
             dagbase::CloningFacility facility;
             dagbase::Node* copy = nullptr;
-            if (!name.empty())
-            {
-                copy = it->second->clone(facility, dagbase::GENERATE_UNIQUE_ID_BIT, &keyGen);
-                copy->setName(name);
-            }
-            else
-            {
-                copy = it->second->instantiate();
-            }
+            copy = it->second->clone(facility, dagbase::GENERATE_UNIQUE_ID_BIT, &keyGen);
+            copy->setName(name);
+
             return copy;
         }
 
         throw std::runtime_error("Unknown class \"" + className + "\"");
     }
 
-//    OutputStream &MemoryNodeLibrary::write(OutputStream &str) const
+    dagbase::Node * MemoryNodeLibrary::instantiateEmptyNode(dagbase::KeyGenerator &keyGen, const std::string &className)
+    {
+        if (auto const it = _classes.m.find(className); it != _classes.end() )
+        {
+            return it->second->instantiate();
+        }
+
+        return nullptr;
+    }
+
+    //    OutputStream &MemoryNodeLibrary::write(OutputStream &str) const
 //    {
 //        str.write(_classes.size());
 //        for (auto p : _classes)

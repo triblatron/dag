@@ -22,8 +22,8 @@ Graph
       name : "footyped1"
       category : 2
       flags : 0
-      x : 1054
-      y : 492
+      x : 1048
+      y : 502
       numDynamicMetaPorts : 1
       dynamicMetaPorts :       MetaPort
       {
@@ -73,8 +73,8 @@ Graph
       name : "bartyped1"
       category : 1
       flags : 0
-      x : 661
-      y : 440
+      x : 664
+      y : 448
       numDynamicMetaPorts : 1
       dynamicMetaPorts :       MetaPort
       {
@@ -125,7 +125,7 @@ Graph
       category : 5
       flags : 0
       x : 864
-      y : 455
+      y : 445
       numDynamicMetaPorts : 2
       dynamicMetaPorts :       MetaPort
       {
@@ -163,8 +163,8 @@ Graph
             name : "boundaryInput"
             category : 5
             flags : 0
-            x : 661
-            y : 440
+            x : 664
+            y : 448
             numDynamicMetaPorts : 2
             dynamicMetaPorts :             MetaPort
             {
@@ -242,8 +242,8 @@ Graph
             name : "boundaryOutput"
             category : 5
             flags : 0
-            x : 1054
-            y : 492
+            x : 1048
+            y : 502
             numDynamicMetaPorts : 2
             dynamicMetaPorts :             MetaPort
             {
@@ -320,7 +320,7 @@ Graph
           category : 5
           flags : 0
           x : 864
-          y : 455
+          y : 445
           numDynamicMetaPorts : 2
           dynamicMetaPorts :           MetaPort
           {

@@ -41,6 +41,8 @@ namespace dag
 
 		dagbase::Node* instantiateNode(dagbase::KeyGenerator& keyGen, const std::string& className, const std::string& name) override;
 
+	    dagbase::Node* instantiateEmptyNode(dagbase::KeyGenerator& keyGen, const std::string& className) override;
+
         dagbase::OutputStream& write(dagbase::OutputStream& str, dagbase::Node* node, dagbase::Lua &lua) override;
 
         //! \note Delegates to Node::create() to get the exact type of the node.

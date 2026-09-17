@@ -1490,6 +1490,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/SerialiseChildGraph.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SerialiseConnectedNodes.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SerialiseSingleNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/TopoSortCyclicDependency.lua"),
