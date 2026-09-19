@@ -755,7 +755,14 @@ struct Existing
         {
             element->eachChild([this](dagbase::ConfigurationElement& child)
             {
-                properties.emplace(child.name(), child.value());
+                if (child.numChildren()==0)
+                    properties.emplace(child.name(), child.value());
+                else if (child.name() == "value")
+                {
+                    dagbase::Variant value;
+                    dagbase::ConfigurationElement::readConfig(*child.parent(), "value", &value);
+                    properties.emplace(child.name(), value);
+                }
                 return true;
             });
         }
@@ -906,7 +913,8 @@ struct NodeEditorLiveScriptItem
         COMMAND_LOAD,
         COMMAND_SERIALISE,
         COMMAND_DESERIALISE,
-        COMMAND_TOPO_SORT
+        COMMAND_TOPO_SORT,
+        COMMAND_ADD_PORT
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1022,7 +1030,7 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig<dag::NodeEditorLive::SerialiseFormat>(config, "serialiseFormat", &dag::NodeEditorLive::parseSerialiseFormat, &serialiseFormat);
 
             break;
-            case COMMAND_TOPO_SORT:
+        case COMMAND_TOPO_SORT:
             if (auto element = config.findElement("order"); element)
             {
                 element->eachChild([this](dagbase::ConfigurationElement& child) {
@@ -1037,6 +1045,15 @@ struct NodeEditorLiveScriptItem
                 });
             }
             dagbase::ConfigurationElement::readConfigVector(config, "cycle", &cycle);
+
+            break;
+        case COMMAND_ADD_PORT:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
+            dagbase::ConfigurationElement::readConfig(config, "name", &portName);
+            dagbase::ConfigurationElement::readConfig<dagbase::PortDirection::Direction>(config, "direction", &dagbase::PortDirection::parseFromString, &portDirection);
+            dagbase::ConfigurationElement::readConfig<dagbase::Port::PortFlags>(config, "portFlags", &dagbase::Port::parsePortFlags, &portFlags);
+            dagbase::ConfigurationElement::readConfig(config, "value", &portValue);
 
             break;
         default:
@@ -1241,6 +1258,12 @@ struct NodeEditorLiveScriptItem
             }
             break;
         }
+        case COMMAND_ADD_PORT:
+        {
+            actualStatus = sut.addPort(nodeId, portName, portDirection, portFlags, portValue.as<dagbase::Value>());
+
+            break;
+        }
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1286,6 +1309,11 @@ struct NodeEditorLiveScriptItem
     float position[2];
     dagbase::ComparisonFlags cmpFlags{dagbase::CMP_NONE};
     dag::NodeEditorLive::SerialiseFormat serialiseFormat{dag::NodeEditorLive::SERIALISE_OBJECT_GRAPH};
+    std::string portName;
+    dagbase::PortDirection::Direction portDirection{dagbase::PortDirection::DIR_UNKNOWN};
+    dagbase::Port::PortFlags portFlags{dagbase::Port::FLAGS_NONE};
+    dagbase::Variant portValue;
+
     bool done{ false };
 
     void set(std::string_view name, dagbase::Variant value)
@@ -1352,6 +1380,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_SERIALISE)
             ENUM_NAME(COMMAND_DESERIALISE)
             ENUM_NAME(COMMAND_TOPO_SORT)
+            ENUM_NAME(COMMAND_ADD_PORT)
         }
 
         return "<error>";
@@ -1379,6 +1408,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_SERIALISE, str);
         TEST_ENUM(COMMAND_DESERIALISE, str);
         TEST_ENUM(COMMAND_TOPO_SORT, str);
+        TEST_ENUM(COMMAND_ADD_PORT, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1490,6 +1520,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/AddPort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SerialiseChildGraph.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SerialiseConnectedNodes.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SerialiseSingleNode.lua"),

@@ -731,6 +731,36 @@ namespace dag
         return status;
     }
 
+    dagbase::Status NodeEditorLive::addPort(dagbase::NodeID nodeId, const std::string& name, dagbase::PortDirection::Direction direction, dagbase::Port::PortFlags flags, dagbase::Value value)
+    {
+        dagbase::Status status{dagbase::Status::STATUS_UNKNOWN};
+
+        if (_graph && _activeGraph)
+        {
+            if (auto node = _activeGraph->node(nodeId); node)
+            {
+                auto port = new dagbase::Port(_graph->nextPortID(), node, name, direction, flags, std::move(value));
+                node->addDynamicPort(port, dagbase::MetaPort::FLAGS_OWN_BIT);
+                _activeGraph->addPort(port);
+                status.status = dagbase::Status::STATUS_OK;
+                status.resultType = dagbase::Status::RESULT_PORT_ID;
+                status.result.emplace(port->id());
+            }
+            else
+            {
+                status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
+                status.resultType = dagbase::Status::RESULT_NODE_ID;
+                status.result.emplace(nodeId);
+            }
+        }
+        else
+        {
+            status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
+        }
+
+        return status;
+    }
+
     void NodeEditorLive::debug()
     {
         if (_graph)
