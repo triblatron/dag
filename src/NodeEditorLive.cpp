@@ -761,6 +761,22 @@ namespace dag
         return status;
     }
 
+    dagbase::Status NodeEditorLive::deletePort(dagbase::PortID portId)
+    {
+        dagbase::Status status{dagbase::Status::STATUS_UNKNOWN};
+
+        if (_activeGraph)
+        {
+            status = _activeGraph->deletePort(portId);
+        }
+        else
+        {
+            status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
+        }
+
+        return status;
+    }
+
     void NodeEditorLive::debug()
     {
         if (_graph)

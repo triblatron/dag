@@ -120,6 +120,8 @@ namespace dag
 
         dagbase::Status addPort(dagbase::NodeID nodeId, const std::string& name, dagbase::PortDirection::Direction direction, dagbase::Port::PortFlags flags, dagbase::Value value);
 
+        dagbase::Status deletePort(dagbase::PortID portId);
+
         dagbase::Variant find(std::string_view path) const;
 
         void debug();

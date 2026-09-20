@@ -914,7 +914,8 @@ struct NodeEditorLiveScriptItem
         COMMAND_SERIALISE,
         COMMAND_DESERIALISE,
         COMMAND_TOPO_SORT,
-        COMMAND_ADD_PORT
+        COMMAND_ADD_PORT,
+        COMMAND_DELETE_PORT
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1054,6 +1055,11 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig<dagbase::PortDirection::Direction>(config, "direction", &dagbase::PortDirection::parseFromString, &portDirection);
             dagbase::ConfigurationElement::readConfig<dagbase::Port::PortFlags>(config, "portFlags", &dagbase::Port::parsePortFlags, &portFlags);
             dagbase::ConfigurationElement::readConfig(config, "value", &portValue);
+
+            break;
+        case COMMAND_DELETE_PORT:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "port", &portId);
 
             break;
         default:
@@ -1264,6 +1270,11 @@ struct NodeEditorLiveScriptItem
 
             break;
         }
+        case COMMAND_DELETE_PORT:
+        {
+            actualStatus = sut.deletePort(portId);
+            break;
+        }
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1309,6 +1320,7 @@ struct NodeEditorLiveScriptItem
     float position[2];
     dagbase::ComparisonFlags cmpFlags{dagbase::CMP_NONE};
     dag::NodeEditorLive::SerialiseFormat serialiseFormat{dag::NodeEditorLive::SERIALISE_OBJECT_GRAPH};
+    dagbase::PortID portId{dagbase::PortID::INVALID_ID};
     std::string portName;
     dagbase::PortDirection::Direction portDirection{dagbase::PortDirection::DIR_UNKNOWN};
     dagbase::Port::PortFlags portFlags{dagbase::Port::FLAGS_NONE};
@@ -1381,6 +1393,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_DESERIALISE)
             ENUM_NAME(COMMAND_TOPO_SORT)
             ENUM_NAME(COMMAND_ADD_PORT)
+            ENUM_NAME(COMMAND_DELETE_PORT)
         }
 
         return "<error>";
@@ -1409,6 +1422,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_DESERIALISE, str);
         TEST_ENUM(COMMAND_TOPO_SORT, str);
         TEST_ENUM(COMMAND_ADD_PORT, str);
+        TEST_ENUM(COMMAND_DELETE_PORT, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1520,6 +1534,8 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/DeleteFirstPort.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/DeleteLastPort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/AddPort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SerialiseChildGraph.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SerialiseConnectedNodes.lua"),
