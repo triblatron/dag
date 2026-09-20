@@ -1534,6 +1534,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/DeleteConnectedPort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/DeleteFirstPort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/DeleteLastPort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/AddPort.lua"),
