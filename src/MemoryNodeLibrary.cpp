@@ -108,7 +108,7 @@ namespace dag
     {
         if (className == "TypedPort")
         {
-            return new dagbase::Port(nextPortID(), nullptr, name, dir, dagbase::Port::FLAGS_NONE, value);
+            return new dagbase::Port(nextPortID(), name, dir, dagbase::Port::FLAGS_NONE, value);
         }
 
         return nullptr;

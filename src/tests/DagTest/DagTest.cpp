@@ -107,7 +107,7 @@ TEST_P(PortTypeTest, checkSetValue)
 {
     double value = std::get<0>(GetParam());
     double newValue = std::get<1>(GetParam());
-    auto sut = new dagbase::Port(dagbase::PortID(0), nullptr,"test1", dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(value));
+    auto sut = new dagbase::Port(dagbase::PortID(0),"test1", dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(value));
     EXPECT_EQ(value, double(sut->value()));
     sut->setValue(dagbase::Value(newValue));
     EXPECT_EQ(newValue, double(sut->value()));
@@ -301,7 +301,7 @@ class TestNodeWithStringPort
 public:
     TestNodeWithStringPort()
 	    :
-    _str(dagbase::PortID(0), nullptr, "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(new std::string("test")))
+    _str(dagbase::PortID(0), "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(new std::string("test")))
     {
 	    // Do nothing.
     }
@@ -325,8 +325,8 @@ TEST_P(Port_testCompatibility, testExpected)
     auto inputValue = std::get<1>(GetParam());
     auto compatible = std::get<2>(GetParam());
 
-    auto output = new dagbase::Port(dagbase::PortID(0), nullptr, "output", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, outputValue);
-    auto input = new dagbase::Port(dagbase::PortID(1), nullptr, "input", dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, inputValue);
+    auto output = new dagbase::Port(dagbase::PortID(0), "output", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, outputValue);
+    auto input = new dagbase::Port(dagbase::PortID(1), "input", dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, inputValue);
     ASSERT_EQ(compatible, output->isCompatibleWith(*input));
     delete input;
     delete output;
@@ -393,7 +393,7 @@ TEST(NodeTest, testDynamicsPortDescriptorsForFinal)
     dag::MemoryNodeLibrary nodeLib;
     auto const sut = dynamic_cast<dag::Final*>(nodeLib.instantiateNode(nodeLib, "Final", "final1"));
     ASSERT_NE(nullptr, sut);
-    sut->addDynamicPort(new dagbase::Port(dagbase::PortID(0), nullptr, "output1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
+    sut->addDynamicPort(new dagbase::Port(dagbase::PortID(0), "output1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
     ASSERT_NE(nullptr, sut->dynamicMetaPort(2));
     ASSERT_EQ("int1", sut->dynamicPort(2)->name());
     ASSERT_TRUE(sut->dynamicMetaPort(2)->isOwned());
@@ -414,7 +414,7 @@ TEST_P(NodeTestDynamicPortsForNode, testDynamicPortsForFinal)
     dag::MemoryNodeLibrary nodeLib;
     auto const sut = nodeLib.instantiateNode(nodeLib, className, "node1");
     ASSERT_NE(nullptr, sut);
-    sut->addDynamicPort(new dagbase::Port(dagbase::PortID(0), nullptr, "output1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
+    sut->addDynamicPort(new dagbase::Port(dagbase::PortID(0), "output1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
     auto const actualPort = sut->dynamicPort(index);
     ASSERT_NE(nullptr, actualPort);
     ASSERT_EQ(nodeName, actualPort->name());
@@ -1866,7 +1866,7 @@ TEST(BoundaryNode, testAddDynamicPort)
 {
     dag::MemoryNodeLibrary nodeLib;
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
-    auto input = new dagbase::Port(dagbase::PortID(0), nullptr, "input1", dagbase::PortDirection::DIR_IN,  dagbase::Port::OWN_META_PORT_BIT, dagbase::Value(1.0));
+    auto input = new dagbase::Port(dagbase::PortID(0), "input1", dagbase::PortDirection::DIR_IN,  dagbase::Port::OWN_META_PORT_BIT, dagbase::Value(1.0));
     ASSERT_NO_THROW(sut->addDynamicPort(input, dagbase::MetaPort::FLAGS_OWN_BIT));
     ASSERT_EQ(sut, input->parent());
     ASSERT_EQ(size_t{1}, sut->totalPorts());
@@ -1880,7 +1880,7 @@ TEST(BoundaryNode, testClone)
     dag::MemoryNodeLibrary nodeLib;
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
     auto metaPort = new dagbase::MetaPort();
-    auto input = new dagbase::Port(dagbase::PortID(0), nullptr, "input1", dagbase::PortDirection::DIR_IN,  dagbase::Port::OWN_META_PORT_BIT, dagbase::Value(1.0));
+    auto input = new dagbase::Port(dagbase::PortID(0), "input1", dagbase::PortDirection::DIR_IN,  dagbase::Port::OWN_META_PORT_BIT, dagbase::Value(1.0));
     ASSERT_NO_THROW(sut->addDynamicPort(input, dagbase::MetaPort::FLAGS_OWN_BIT));
     dagbase::CloningFacility facility;
     auto clone = sut->clone(facility, dagbase::CopyOp{0}, nullptr);

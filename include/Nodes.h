@@ -27,7 +27,7 @@ namespace dag
                 Node(keyGen, name, category),
                 int1(0.0)
         {
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "direction", dagbase::PortDirection::DIR_OUT, dagbase::Port::PortFlags::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), "direction", dagbase::PortDirection::DIR_OUT, dagbase::Port::PortFlags::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
         }
 
         Base(const Base& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen);
@@ -84,7 +84,7 @@ namespace dag
                 :
                 Base(keyGen, name,category)
         {
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "trigger", dagbase::PortDirection::DIR_IN, dagbase::Port::PortFlags::FLAGS_NONE, dagbase::Value(true)), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), "trigger", dagbase::PortDirection::DIR_IN, dagbase::Port::PortFlags::FLAGS_NONE, dagbase::Value(true)), dagbase::MetaPort::FLAGS_OWN_BIT);
         }
 
         Derived(const Derived& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen);
@@ -137,7 +137,7 @@ namespace dag
                 Derived(keyGen, name,category)
 
         {
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "int1", dagbase::PortDirection::DIR_INTERNAL, dagbase::Port::PortFlags::FLAGS_NONE, dagbase::Value(std::int64_t{1})), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), "int1", dagbase::PortDirection::DIR_INTERNAL, dagbase::Port::PortFlags::FLAGS_NONE, dagbase::Value(std::int64_t{1})), dagbase::MetaPort::FLAGS_OWN_BIT);
         }
 
         Final(const Final& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
@@ -181,7 +181,7 @@ namespace dag
                 :
                 Node(keyGen, name, category)
         {
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "in1", dagbase::PortDirection::DIR_IN, dagbase::Port::PortFlags::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), "in1", dagbase::PortDirection::DIR_IN, dagbase::Port::PortFlags::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
         }
 
         FooTyped(const FooTyped& other, dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
@@ -247,7 +247,7 @@ namespace dag
                 :
                 Node(keyGen, name, category)
         {
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
         }
 
         BarTyped(const BarTyped& other,dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
@@ -304,8 +304,8 @@ namespace dag
                 :
                 Node(keyGen, name, category)
         {
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
-            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), this, "in1", dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(2.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(1.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), "in1", dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(2.0)), dagbase::MetaPort::FLAGS_OWN_BIT);
         }
 
         GroupTyped(const GroupTyped& other,dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)

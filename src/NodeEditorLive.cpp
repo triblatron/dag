@@ -739,7 +739,7 @@ namespace dag
         {
             if (auto node = _activeGraph->node(nodeId); node)
             {
-                auto port = new dagbase::Port(_graph->nextPortID(), node, name, direction, flags, std::move(value));
+                auto port = new dagbase::Port(_graph->nextPortID(), name, direction, flags, std::move(value));
                 node->addDynamicPort(port, dagbase::MetaPort::FLAGS_OWN_BIT);
                 _activeGraph->addPort(port);
                 status.status = dagbase::Status::STATUS_OK;
