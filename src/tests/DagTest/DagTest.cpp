@@ -2656,25 +2656,29 @@ TEST(Class, testRaiseError)
     EXPECT_EQ("TypeNotFound:Test",sut->errorMessage());
 }
 
-class Node_testComment : public ::testing::TestWithParam<std::tuple<dagbase::Node::Comment>>
+class Node_testComment : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Node::Comment, dagbase::Node::Comment>>
 {
 
 };
 
 TEST_P(Node_testComment, testExpectedValue)
 {
-    auto comment = std::get<0>(GetParam());
+    auto nodeClass = std::get<0>(GetParam());
+    auto comment = std::get<1>(GetParam());
+    auto expected = std::get<2>(GetParam());
     dag::MemoryNodeLibrary nodeLib;
-    auto sut = nodeLib.instantiateEmptyNode(nodeLib, "GroupTyped");
+    auto sut = nodeLib.instantiateNode(nodeLib, nodeClass, "test");
     ASSERT_NE(nullptr, sut);
     sut->setFlags(dagbase::Node::NODE_VISITED_BIT);
     sut->setCommented(comment);
-    EXPECT_EQ(comment, sut->commented());
+    EXPECT_EQ(expected, sut->commented());
     EXPECT_TRUE(sut->isVisited());
 }
 
 INSTANTIATE_TEST_SUITE_P(Node, Node_testComment, ::testing::Values(
-    std::make_tuple(dagbase::Node::COMMENT_NONE),
-    std::make_tuple(dagbase::Node::COMMENT_OUT),
-    std::make_tuple(dagbase::Node::COMMENT_THROUGH)
+    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_NONE, dagbase::Node::COMMENT_NONE),
+    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_OUT, dagbase::Node::COMMENT_OUT),
+    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_THROUGH),
+    std::make_tuple("FooTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_NONE),
+    std::make_tuple("BarTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_NONE)
     ));
