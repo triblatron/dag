@@ -777,6 +777,34 @@ namespace dag
         return status;
     }
 
+    dagbase::Status NodeEditorLive::setPortValue(dagbase::PortID portId, dagbase::Value value)
+    {
+        dagbase::Status status{dagbase::Status::STATUS_UNKNOWN};
+
+        if (_activeGraph)
+        {
+            auto port = _activeGraph->port(portId);
+
+            if (port)
+            {
+                port->setValue(std::move(value));
+                status.status = dagbase::Status::STATUS_OK;
+            }
+            else
+            {
+                status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
+                status.resultType = dagbase::Status::RESULT_PORT_ID;
+                status.result = portId;
+            }
+        }
+        else
+        {
+            status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
+        }
+
+        return status;
+    }
+
     void NodeEditorLive::debug()
     {
         if (_graph)

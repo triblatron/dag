@@ -65,6 +65,31 @@ root=
 			},
         },
         {
+			cmd="COMMAND_SET_PORT_VALUE",
+			node=0,
+			port=0,
+			value=
+			{
+				typeIndex="TYPE_VALUE",
+				value=5.0,
+			},
+			existing=
+			{
+				{
+					class="Port",
+					properties=
+					{
+						name="test",
+						value=
+						{
+							typeIndex="TYPE_VALUE",
+							value=5.0,
+						},
+					},
+				},
+			},
+        },
+        {
 			cmd="COMMAND_ADD_PORT",
 			node=0,
 			name="test",
@@ -134,7 +159,7 @@ root=
 						value=
 						{
 							typeIndex="TYPE_VALUE",
-							value=1.0,
+							value=5.0,
 						},
 					},
 				},
@@ -172,7 +197,7 @@ root=
 						value=
 						{
 							typeIndex="TYPE_VALUE",
-							value=1.0,
+							value=5.0,
 						},
 					},
 				},

@@ -450,6 +450,7 @@ TEST_P(NodeTestDynamicPortDescriptorForNode, testDynamicPortDescriptor)
     auto const actualPort = sut->dynamicPort(index);
     ASSERT_NE(nullptr, actualPort);
     ASSERT_EQ(nodeName, actualPort->name());
+    ASSERT_EQ(dir, actualPort->dir());
     auto const actualDescriptor = sut->dynamicMetaPort(index);
     ASSERT_NE(nullptr, actualDescriptor);
     ASSERT_TRUE(actualDescriptor->isOwned());
@@ -924,7 +925,8 @@ struct NodeEditorLiveScriptItem
         COMMAND_DESERIALISE,
         COMMAND_TOPO_SORT,
         COMMAND_ADD_PORT,
-        COMMAND_DELETE_PORT
+        COMMAND_DELETE_PORT,
+        COMMAND_SET_PORT_VALUE
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1071,6 +1073,12 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "port", &portId);
 
             break;
+        case COMMAND_SET_PORT_VALUE:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "port", &portId);
+            dagbase::ConfigurationElement::readConfig(config, "value", &portValue);
+
+            break;
         default:
             FAIL() << "Creating unknown command";
             break;
@@ -1206,10 +1214,10 @@ struct NodeEditorLiveScriptItem
                 case dag::NodeEditorLive::SERIALISE_OBJECT_GRAPH:
                 {
                     dagbase::Stream::ObjId id{~0U};
-                    auto ref = istr->readRef(&id);
+                    istr->readRef(&id);
                     if (id == 0)
                         FAIL() << "Expected a Graph, got null";
-                    else
+
                     {
                         restored = new dagbase::Graph(*istr, nodeLib, lua);
                     }
@@ -1282,6 +1290,12 @@ struct NodeEditorLiveScriptItem
         case COMMAND_DELETE_PORT:
         {
             actualStatus = sut.deletePort(portId);
+            break;
+        }
+        case COMMAND_SET_PORT_VALUE:
+        {
+            actualStatus = sut.setPortValue(portId, portValue.as<dagbase::Value>());
+
             break;
         }
         default:
@@ -1403,6 +1417,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_TOPO_SORT)
             ENUM_NAME(COMMAND_ADD_PORT)
             ENUM_NAME(COMMAND_DELETE_PORT)
+            ENUM_NAME(COMMAND_SET_PORT_VALUE)
         }
 
         return "<error>";
@@ -1432,6 +1447,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_TOPO_SORT, str);
         TEST_ENUM(COMMAND_ADD_PORT, str);
         TEST_ENUM(COMMAND_DELETE_PORT, str);
+        TEST_ENUM(COMMAND_SET_PORT_VALUE, str);
 
         return COMMAND_UNKNOWN;
     }
@@ -1719,8 +1735,7 @@ struct SignalPathScriptItem
         case COMMAND_ERASE_IF:
         {
             std::vector<dagbase::SignalPath*> toRemove;
-            auto r = sut.begin();
-            std::for_each(sut.begin(), sut.end(), [this, &toRemove](const dagbase::SignalPathTable::LookupTableId::value_type& p) {
+            std::for_each(sut.begin(), sut.end(), [this](const dagbase::SignalPathTable::LookupTableId::value_type& p) {
                 auto remove = std::find(idRange.begin(), idRange.end(), p.first) != idRange.end();
                 if (remove)
                     p.second->markRemoved();
@@ -1737,7 +1752,7 @@ struct SignalPathScriptItem
             dagbase::InputStream* istr = dagbase::createInputStream("TextFormat", *backingStore, filename.c_str());
             ASSERT_NE(nullptr, istr);
             dagbase::Stream::ObjId id{ ~0U };
-            auto ref = istr->readRef(&id);
+            istr->readRef(&id);
             if (id == 0)
                 FAIL() << "Got unexpected null Graph from stream";
 
@@ -1890,7 +1905,6 @@ TEST(BoundaryNode, testClone)
 {
     dag::MemoryNodeLibrary nodeLib;
     auto sut = new dag::Boundary(nodeLib, "sut", dagbase::NodeCategory::CAT_SOURCE);
-    auto metaPort = new dagbase::MetaPort();
     auto input = new dagbase::Port(dagbase::PortID(0), "input1", dagbase::PortDirection::DIR_IN,  dagbase::Port::OWN_META_PORT_BIT, dagbase::Value(1.0));
     ASSERT_NO_THROW(sut->addDynamicPort(input, dagbase::MetaPort::FLAGS_OWN_BIT));
     dagbase::CloningFacility facility;
@@ -2161,6 +2175,7 @@ TEST_P(GraphTest_fromLua, testFromString)
     EXPECT_EQ(numSignalPaths, sut->numSignalPaths());
     auto actualNode = sut->lastAddedNode();
     ASSERT_NE(nullptr, actualNode);
+    EXPECT_EQ(nodeId, actualNode->id());
     auto actualPort = actualNode->dynamicPort(portIndex);
     ASSERT_NE(nullptr, actualPort);
     dagbase::Value actualValue = actualPort->value();
@@ -2576,7 +2591,8 @@ TestLink::TestLink(const TestLink &other, dagbase::CloningFacility &facility)
 {
     std::uint64_t otherId = 0;
     bool shouldClone = facility.putOrig(const_cast<TestLink*>(&other), &otherId);
-    facility.addClone(otherId, this);
+    if (shouldClone)
+        facility.addClone(otherId, this);
     std::uint64_t prevId = 0;
     if (facility.putOrig(other.prev, &prevId))
     {
@@ -2601,13 +2617,12 @@ TestLink::TestLink(const TestLink &other, dagbase::CloningFacility &facility)
 TEST(CloningFacility, testLinkedList)
 {
     dagbase::CloningFacility sut;
-    TestLink* head = new TestLink();
+    auto* head = new TestLink();
     head->next = new TestLink();
     head->next->prev = head;
-    std::uint64_t id = std::uint64_t {~0U};
 
     {
-        TestLink* headClone = new TestLink(*head, sut);
+        auto* headClone = new TestLink(*head, sut);
         ASSERT_NE(nullptr, headClone->next);
         EXPECT_EQ(headClone, headClone->next->prev);
 
@@ -2634,7 +2649,7 @@ TEST(Class, testRaiseError)
 {
     auto metaClass = std::make_unique<dagbase::MetaClass>();
     auto sut = std::make_unique<TestClass>(metaClass.get());
-    auto& str = sut->raiseError(dagbase::Class::TypeNotFound) << "Test";
+    sut->raiseError(dagbase::Class::TypeNotFound) << "Test";
     EXPECT_EQ("TypeNotFound:Test",sut->errorMessage());
 }
 

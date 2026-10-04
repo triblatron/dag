@@ -122,6 +122,8 @@ namespace dag
 
         dagbase::Status deletePort(dagbase::PortID portId);
 
+        dagbase::Status setPortValue(dagbase::PortID portId, dagbase::Value value);
+
         dagbase::Variant find(std::string_view path) const;
 
         void debug();
