@@ -1085,7 +1085,7 @@ struct NodeEditorLiveScriptItem
         case COMMAND_COMMENT_NODE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
-            dagbase::ConfigurationElement::readConfig<dagbase::Node::Comment>(config, "commented", &dagbase::Node::parseComment, &commented);
+            dagbase::ConfigurationElement::readConfig<dagbase::Node::Active>(config, "commented", &dagbase::Node::parseComment, &commented);
 
             break;
         case COMMAND_EVALUATE_GRAPH:
@@ -1376,7 +1376,7 @@ struct NodeEditorLiveScriptItem
     dagbase::PortDirection::Direction portDirection{dagbase::PortDirection::DIR_UNKNOWN};
     dagbase::Port::PortFlags portFlags{dagbase::Port::FLAGS_NONE};
     dagbase::Variant portValue;
-    dagbase::Node::Comment commented{dagbase::Node::COMMENT_NONE};
+    dagbase::Node::Active commented{dagbase::Node::ACTIVE_ON};
 
     bool done{ false };
 
@@ -2694,7 +2694,7 @@ TEST(Class, testRaiseError)
     EXPECT_EQ("ERROR_TYPE_NOT_FOUND:Test",sut->errorMessage());
 }
 
-class Node_testComment : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Node::Comment, dagbase::Node::Comment, dagbase::Class::Severity, dagbase::Class::Error>>
+class Node_testComment : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Node::Active, dagbase::Node::Active, dagbase::Class::Severity, dagbase::Class::Error>>
 {
 
 };
@@ -2710,17 +2710,17 @@ TEST_P(Node_testComment, testExpectedValue)
     auto sut = nodeLib.instantiateNode(nodeLib, nodeClass, "test");
     ASSERT_NE(nullptr, sut);
     sut->setFlags(dagbase::Node::NODE_VISITED_BIT);
-    sut->setCommented(comment);
-    EXPECT_EQ(expected, sut->commented());
+    sut->setActive(comment);
+    EXPECT_EQ(expected, sut->active());
     EXPECT_TRUE(sut->isVisited());
     EXPECT_EQ(severity, sut->severity());
     EXPECT_EQ(error, sut->error());
 }
 
 INSTANTIATE_TEST_SUITE_P(Node, Node_testComment, ::testing::Values(
-    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_NONE, dagbase::Node::COMMENT_NONE, dagbase::Class::SEVERITY_NONE, dagbase::Class::ERROR_NONE),
-    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_OUT, dagbase::Node::COMMENT_OUT, dagbase::Class::SEVERITY_NONE, dagbase::Class::ERROR_NONE),
-    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_THROUGH, dagbase::Class::SEVERITY_NONE, dagbase::Class::ERROR_NONE),
-    std::make_tuple("FooTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_NONE, dagbase::Class::SEVERITY_WARNING, dagbase::Class::WARNING_MISMATCHED_IO),
-    std::make_tuple("BarTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_NONE, dagbase::Class::SEVERITY_WARNING, dagbase::Class::WARNING_MISMATCHED_IO)
+    std::make_tuple("GroupTyped", dagbase::Node::ACTIVE_ON, dagbase::Node::ACTIVE_ON, dagbase::Class::SEVERITY_NONE, dagbase::Class::ERROR_NONE),
+    std::make_tuple("GroupTyped", dagbase::Node::ACTIVE_OFF, dagbase::Node::ACTIVE_OFF, dagbase::Class::SEVERITY_NONE, dagbase::Class::ERROR_NONE),
+    std::make_tuple("GroupTyped", dagbase::Node::ACTIVE_PASS_THROUGH, dagbase::Node::ACTIVE_PASS_THROUGH, dagbase::Class::SEVERITY_NONE, dagbase::Class::ERROR_NONE),
+    std::make_tuple("FooTyped", dagbase::Node::ACTIVE_PASS_THROUGH, dagbase::Node::ACTIVE_ON, dagbase::Class::SEVERITY_WARNING, dagbase::Class::WARNING_MISMATCHED_IO),
+    std::make_tuple("BarTyped", dagbase::Node::ACTIVE_PASS_THROUGH, dagbase::Node::ACTIVE_ON, dagbase::Class::SEVERITY_WARNING, dagbase::Class::WARNING_MISMATCHED_IO)
     ));

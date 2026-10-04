@@ -804,7 +804,7 @@ namespace dag
         return status;
     }
 
-    dagbase::Status NodeEditorLive::setNodeCommented(dagbase::NodeID nodeId, dagbase::Node::Comment value)
+    dagbase::Status NodeEditorLive::setNodeCommented(dagbase::NodeID nodeId, dagbase::Node::Active value)
     {
         dagbase::Status status;
 
@@ -812,7 +812,7 @@ namespace dag
         {
             if (auto node = _activeGraph->node(nodeId); node)
             {
-                node->setCommented(value);
+                node->setActive(value);
                 status.status = dagbase::Status::STATUS_OK;
             }
             else

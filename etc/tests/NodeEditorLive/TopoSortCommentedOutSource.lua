@@ -93,7 +93,7 @@ root=
         {
 			cmd="COMMAND_COMMENT_NODE",
 			node=0,
-			commented="COMMENT_OUT",
+			commented="ACTIVE_OFF",
 			existing=
 			{
 			},

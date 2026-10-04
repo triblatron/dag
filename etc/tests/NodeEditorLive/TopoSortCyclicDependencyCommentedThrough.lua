@@ -130,7 +130,7 @@ root=
         {
 			cmd="COMMAND_COMMENT_NODE",
 			node=1,
-			commented="COMMENT_THROUGH",
+			commented="ACTIVE_PASS_THROUGH",
 			existing=
 			{
 			},

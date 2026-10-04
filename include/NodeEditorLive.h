@@ -124,7 +124,7 @@ namespace dag
 
         dagbase::Status setPortValue(dagbase::PortID portId, dagbase::Value value);
 
-        dagbase::Status setNodeCommented(dagbase::NodeID nodeId, dagbase::Node::Comment value);
+        dagbase::Status setNodeCommented(dagbase::NodeID nodeId, dagbase::Node::Active value);
 
         dagbase::Status evaluate(const dagbase::NodeArray& order);
 

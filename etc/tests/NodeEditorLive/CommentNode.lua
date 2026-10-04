@@ -29,7 +29,7 @@ root=
         {
 			cmd="COMMAND_COMMENT_NODE",
 			node=0,
-			commented="COMMENT_OUT",
+			commented="ACTIVE_OFF",
 			existing=
 			{
 			},
@@ -50,7 +50,7 @@ root=
         {
 			cmd="COMMAND_COMMENT_NODE",
 			node=0,
-			commented="COMMENT_THROUGH",
+			commented="ACTIVE_PASS_THROUGH",
 			existing=
 			{
 			},
@@ -71,7 +71,7 @@ root=
         {
 			cmd="COMMAND_COMMENT_NODE",
 			node=0,
-			commented="COMMENT_NONE",
+			commented="ACTIVE_ON",
 			existing=
 			{
 			},

@@ -86,7 +86,7 @@ root=
         {
 			cmd="COMMAND_COMMENT_NODE",
 			node=0,
-			commented="COMMENT_THROUGH",
+			commented="ACTIVE_PASS_THROUGH",
 			existing=
 			{
 			},
