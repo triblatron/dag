@@ -830,6 +830,22 @@ namespace dag
         return status;
     }
 
+    dagbase::Status NodeEditorLive::evaluate(const dagbase::NodeArray& order)
+    {
+        dagbase::Status status;
+
+        if (_activeGraph)
+        {
+            status = _activeGraph->evaluate(order);
+        }
+        else
+        {
+            status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
+        }
+
+        return status;
+    }
+
     void NodeEditorLive::debug()
     {
         if (_graph)

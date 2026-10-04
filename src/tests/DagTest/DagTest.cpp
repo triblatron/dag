@@ -928,6 +928,7 @@ struct NodeEditorLiveScriptItem
         COMMAND_DELETE_PORT,
         COMMAND_SET_PORT_VALUE,
         COMMAND_COMMENT_NODE,
+        COMMAND_EVALUATE_GRAPH
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1085,6 +1086,10 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
             dagbase::ConfigurationElement::readConfig<dagbase::Node::Comment>(config, "commented", &dagbase::Node::parseComment, &commented);
+
+            break;
+        case COMMAND_EVALUATE_GRAPH:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
 
             break;
         default:
@@ -1312,6 +1317,15 @@ struct NodeEditorLiveScriptItem
 
             break;
         }
+        case COMMAND_EVALUATE_GRAPH:
+        {
+            dagbase::NodeArray evalOrder, evalCycle;
+            actualStatus = sut.topologicalSort(&evalOrder, &evalCycle);
+            ASSERT_EQ(dagbase::Status{dagbase::Status::STATUS_OK}, actualStatus);
+            actualStatus = sut.evaluate(evalOrder);
+
+            break;
+        }
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1434,6 +1448,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_DELETE_PORT)
             ENUM_NAME(COMMAND_SET_PORT_VALUE)
             ENUM_NAME(COMMAND_COMMENT_NODE)
+            ENUM_NAME(COMMAND_EVALUATE_GRAPH)
         }
 
         return "<error>";
@@ -1465,6 +1480,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_DELETE_PORT, str)
         TEST_ENUM(COMMAND_SET_PORT_VALUE, str)
         TEST_ENUM(COMMAND_COMMENT_NODE, str)
+        TEST_ENUM(COMMAND_EVALUATE_GRAPH, str)
 
         return COMMAND_UNKNOWN;
     }
@@ -1576,6 +1592,9 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/EvaluateCommentedOutNode.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/Evaluate.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/EvaluateCommentedThroughNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/TopoSortCyclicDependencyCommentedThrough.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/TopoSortCommentedOutSource.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/TopoSortCommentedOutSink.lua"),

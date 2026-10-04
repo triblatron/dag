@@ -126,6 +126,8 @@ namespace dag
 
         dagbase::Status setNodeCommented(dagbase::NodeID nodeId, dagbase::Node::Comment value);
 
+        dagbase::Status evaluate(const dagbase::NodeArray& order);
+
         dagbase::Variant find(std::string_view path) const;
 
         void debug();
