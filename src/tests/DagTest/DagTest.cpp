@@ -926,7 +926,8 @@ struct NodeEditorLiveScriptItem
         COMMAND_TOPO_SORT,
         COMMAND_ADD_PORT,
         COMMAND_DELETE_PORT,
-        COMMAND_SET_PORT_VALUE
+        COMMAND_SET_PORT_VALUE,
+        COMMAND_COMMENT_NODE,
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1348,6 +1349,7 @@ struct NodeEditorLiveScriptItem
     dagbase::PortDirection::Direction portDirection{dagbase::PortDirection::DIR_UNKNOWN};
     dagbase::Port::PortFlags portFlags{dagbase::Port::FLAGS_NONE};
     dagbase::Variant portValue;
+    dagbase::Node::Comment comment{dagbase::Node::COMMENT_NONE};
 
     bool done{ false };
 
@@ -2654,3 +2656,25 @@ TEST(Class, testRaiseError)
     EXPECT_EQ("TypeNotFound:Test",sut->errorMessage());
 }
 
+class Node_testComment : public ::testing::TestWithParam<std::tuple<dagbase::Node::Comment>>
+{
+
+};
+
+TEST_P(Node_testComment, testExpectedValue)
+{
+    auto comment = std::get<0>(GetParam());
+    dag::MemoryNodeLibrary nodeLib;
+    auto sut = nodeLib.instantiateEmptyNode(nodeLib, "GroupTyped");
+    ASSERT_NE(nullptr, sut);
+    sut->setFlags(dagbase::Node::NODE_VISITED_BIT);
+    sut->setCommented(comment);
+    EXPECT_EQ(comment, sut->commented());
+    EXPECT_TRUE(sut->isVisited());
+}
+
+INSTANTIATE_TEST_SUITE_P(Node, Node_testComment, ::testing::Values(
+    std::make_tuple(dagbase::Node::COMMENT_NONE),
+    std::make_tuple(dagbase::Node::COMMENT_OUT),
+    std::make_tuple(dagbase::Node::COMMENT_THROUGH)
+    ));
