@@ -124,6 +124,8 @@ namespace dag
 
         dagbase::Status setPortValue(dagbase::PortID portId, dagbase::Value value);
 
+        dagbase::Status setNodeCommented(dagbase::NodeID nodeId, dagbase::Node::Comment value);
+
         dagbase::Variant find(std::string_view path) const;
 
         void debug();

@@ -805,6 +805,32 @@ namespace dag
         return status;
     }
 
+    dagbase::Status NodeEditorLive::setNodeCommented(dagbase::NodeID nodeId, dagbase::Node::Comment value)
+    {
+        dagbase::Status status;
+
+        if (_activeGraph)
+        {
+            if (auto node = _activeGraph->node(nodeId); node)
+            {
+                node->setCommented(value);
+                status.status = dagbase::Status::STATUS_OK;
+            }
+            else
+            {
+                status.status = dagbase::Status::STATUS_OBJECT_NOT_FOUND;
+                status.resultType = dagbase::Status::RESULT_NODE_ID;
+                status.result = nodeId;
+            }
+        }
+        else
+        {
+            status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
+        }
+
+        return status;
+    }
+
     void NodeEditorLive::debug()
     {
         if (_graph)

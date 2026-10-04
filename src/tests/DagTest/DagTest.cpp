@@ -1080,6 +1080,12 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "value", &portValue);
 
             break;
+        case COMMAND_COMMENT_NODE:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
+            dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
+            dagbase::ConfigurationElement::readConfig<dagbase::Node::Comment>(config, "commented", &dagbase::Node::parseComment, &commented);
+
+            break;
         default:
             FAIL() << "Creating unknown command";
             break;
@@ -1299,6 +1305,12 @@ struct NodeEditorLiveScriptItem
 
             break;
         }
+        case COMMAND_COMMENT_NODE:
+        {
+            actualStatus = sut.setNodeCommented(nodeId, commented);
+
+            break;
+        }
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1349,7 +1361,7 @@ struct NodeEditorLiveScriptItem
     dagbase::PortDirection::Direction portDirection{dagbase::PortDirection::DIR_UNKNOWN};
     dagbase::Port::PortFlags portFlags{dagbase::Port::FLAGS_NONE};
     dagbase::Variant portValue;
-    dagbase::Node::Comment comment{dagbase::Node::COMMENT_NONE};
+    dagbase::Node::Comment commented{dagbase::Node::COMMENT_NONE};
 
     bool done{ false };
 
@@ -1420,6 +1432,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_ADD_PORT)
             ENUM_NAME(COMMAND_DELETE_PORT)
             ENUM_NAME(COMMAND_SET_PORT_VALUE)
+            ENUM_NAME(COMMAND_COMMENT_NODE)
         }
 
         return "<error>";
@@ -1427,29 +1440,30 @@ struct NodeEditorLiveScriptItem
 
     static Command parseCommand(const char* str)
     {
-        TEST_ENUM(COMMAND_UNKNOWN, str);
-        TEST_ENUM(COMMAND_NOP, str);
-        TEST_ENUM(COMMAND_CREATE_NODE, str);
-        TEST_ENUM(COMMAND_CONNECT, str);
-        TEST_ENUM(COMMAND_DISCONNECT, str);
-        TEST_ENUM(COMMAND_SELECT, str);
-        TEST_ENUM(COMMAND_CREATE_CHILD, str);
-        TEST_ENUM(COMMAND_SET_ACTIVE_GRAPH, str);
-        TEST_ENUM(COMMAND_DELETE_NODE, str);
-        TEST_ENUM(COMMAND_COPY_NODE, str);
-        TEST_ENUM(COMMAND_COMPARE_NODES, str);
-        TEST_ENUM(COMMAND_CREATE_TEMPLATE, str);
-        TEST_ENUM(COMMAND_BROWSE_DOWN, str);
-        TEST_ENUM(COMMAND_BROWSE_UP, str);
-        TEST_ENUM(COMMAND_SET_POSITION, str);
-        TEST_ENUM(COMMAND_SAVE, str);
-        TEST_ENUM(COMMAND_LOAD, str);
-        TEST_ENUM(COMMAND_SERIALISE, str);
-        TEST_ENUM(COMMAND_DESERIALISE, str);
-        TEST_ENUM(COMMAND_TOPO_SORT, str);
-        TEST_ENUM(COMMAND_ADD_PORT, str);
-        TEST_ENUM(COMMAND_DELETE_PORT, str);
-        TEST_ENUM(COMMAND_SET_PORT_VALUE, str);
+        TEST_ENUM(COMMAND_UNKNOWN, str)
+        TEST_ENUM(COMMAND_NOP, str)
+        TEST_ENUM(COMMAND_CREATE_NODE, str)
+        TEST_ENUM(COMMAND_CONNECT, str)
+        TEST_ENUM(COMMAND_DISCONNECT, str)
+        TEST_ENUM(COMMAND_SELECT, str)
+        TEST_ENUM(COMMAND_CREATE_CHILD, str)
+        TEST_ENUM(COMMAND_SET_ACTIVE_GRAPH, str)
+        TEST_ENUM(COMMAND_DELETE_NODE, str)
+        TEST_ENUM(COMMAND_COPY_NODE, str)
+        TEST_ENUM(COMMAND_COMPARE_NODES, str)
+        TEST_ENUM(COMMAND_CREATE_TEMPLATE, str)
+        TEST_ENUM(COMMAND_BROWSE_DOWN, str)
+        TEST_ENUM(COMMAND_BROWSE_UP, str)
+        TEST_ENUM(COMMAND_SET_POSITION, str)
+        TEST_ENUM(COMMAND_SAVE, str)
+        TEST_ENUM(COMMAND_LOAD, str)
+        TEST_ENUM(COMMAND_SERIALISE, str)
+        TEST_ENUM(COMMAND_DESERIALISE, str)
+        TEST_ENUM(COMMAND_TOPO_SORT, str)
+        TEST_ENUM(COMMAND_ADD_PORT, str)
+        TEST_ENUM(COMMAND_DELETE_PORT, str)
+        TEST_ENUM(COMMAND_SET_PORT_VALUE, str)
+        TEST_ENUM(COMMAND_COMMENT_NODE, str)
 
         return COMMAND_UNKNOWN;
     }
@@ -1561,6 +1575,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/CommentNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SetValueOfNonExistentPort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/AddPortAfterDeletingFromMiddle.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/AddPortAfterDeletingFromEnd.lua"),
@@ -2653,7 +2668,7 @@ TEST(Class, testRaiseError)
     auto metaClass = std::make_unique<dagbase::MetaClass>();
     auto sut = std::make_unique<TestClass>(metaClass.get());
     sut->raiseError(dagbase::Class::ERROR_TYPE_NOT_FOUND) << "Test";
-    EXPECT_EQ("TypeNotFound:Test",sut->errorMessage());
+    EXPECT_EQ("ERROR_TYPE_NOT_FOUND:Test",sut->errorMessage());
 }
 
 class Node_testComment : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Node::Comment, dagbase::Node::Comment, dagbase::Class::Severity, dagbase::Class::Error>>
