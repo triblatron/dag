@@ -58,11 +58,11 @@ root=
 			{
 				{
 					path="activeGraph.numNodes",
-					value=0,
+					value=1,
 				},
                 {
 					path="graph.numPorts",
-					value=0,
+					value=2,
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
                 },

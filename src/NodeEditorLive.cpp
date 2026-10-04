@@ -720,12 +720,11 @@ namespace dag
         dagbase::Status status{dagbase::Status::STATUS_UNKNOWN};
         if (_graph)
         {
-            _graph->topologicalSort(order, cycle);
-            status.status = dagbase::Status::STATUS_OK;
+            status = _graph->topologicalSort(order, cycle);
         }
         else
         {
-            status.status = dagbase::Status::STATUS_SYNTAX_ERROR;
+            status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
         }
 
         return status;

@@ -494,7 +494,7 @@ bool before(const dagbase::NodeArray& a, dagbase::Node* first, dagbase::Node* la
     return false;
 }
 
-class TopologicalSort_testPersistent : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Graph::TopoSortResult, std::size_t, const char*, const char*>>
+class TopologicalSort_testPersistent : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Status, std::size_t, const char*, const char*>>
 {
 
 };
@@ -502,7 +502,7 @@ class TopologicalSort_testPersistent : public ::testing::TestWithParam<std::tupl
 TEST_P(TopologicalSort_testPersistent, testSort)
 {
     const char* graphFilename = std::get<0>(GetParam());
-    dagbase::Graph::TopoSortResult result = std::get<1>(GetParam());
+    auto result = std::get<1>(GetParam());
     std::size_t numNodesInResult = std::get<2>(GetParam());
     std::string lhsPath = std::get<3>(GetParam());
     std::string rhsPath = std::get<4>(GetParam());
@@ -512,7 +512,7 @@ TEST_P(TopologicalSort_testPersistent, testSort)
     ASSERT_NE(nullptr, sut);
     dagbase::NodeArray order;
     dagbase::NodeArray cycle;
-    dagbase::Graph::TopoSortResult actualResult = sut->topologicalSort(&order, &cycle);
+    auto actualResult = sut->topologicalSort(&order, &cycle);
     EXPECT_EQ(result, actualResult);
     EXPECT_EQ(numNodesInResult, order.size());
     if (lhsPath.empty()==false && rhsPath.empty()==false)
@@ -527,12 +527,12 @@ TEST_P(TopologicalSort_testPersistent, testSort)
 }
 
 INSTANTIATE_TEST_SUITE_P(TopologicalSort, TopologicalSort_testPersistent, ::testing::Values(
-        std::make_tuple("etc/tests/Graph/empty.lua", dagbase::Graph::OK, std::size_t{0}, "", ""),
-        std::make_tuple("etc/tests/Graph/onenode.lua", dagbase::Graph::OK, std::size_t{1}, "", ""),
-        std::make_tuple("etc/tests/Graph/connectednodes.lua", dagbase::Graph::OK, std::size_t{2}, "bar1", "foo1"),
-        std::make_tuple("etc/tests/Graph/withchildgraph.lua", dagbase::Graph::OK, std::size_t{2}, "", ""),
-        std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua", dagbase::Graph::OK, std::size_t{3}, "", ""),
-        std::make_tuple("etc/tests/Graph/connectednestedchildgraph.lua", dagbase::Graph::OK, std::size_t{3}, "child[0].bar1", "child[0].child[0].bound1")
+        std::make_tuple("etc/tests/Graph/empty.lua", dagbase::Status::STATUS_OK, std::size_t{0}, "", ""),
+        std::make_tuple("etc/tests/Graph/onenode.lua", dagbase::Status::STATUS_OK, std::size_t{1}, "", ""),
+        std::make_tuple("etc/tests/Graph/connectednodes.lua", dagbase::Status::STATUS_OK, std::size_t{2}, "bar1", "foo1"),
+        std::make_tuple("etc/tests/Graph/withchildgraph.lua", dagbase::Status::STATUS_OK, std::size_t{2}, "", ""),
+        std::make_tuple("etc/tests/Graph/withnestedchildgraph.lua", dagbase::Status::STATUS_OK, std::size_t{3}, "", ""),
+        std::make_tuple("etc/tests/Graph/connectednestedchildgraph.lua", dagbase::Status::STATUS_OK, std::size_t{3}, "child[0].bar1", "child[0].child[0].bound1")
         ));
 
 class Graph_testFindAllNodes : public ::testing::TestWithParam<std::tuple<const char*, std::size_t>>
@@ -1044,6 +1044,7 @@ struct NodeEditorLiveScriptItem
 
             break;
         case COMMAND_TOPO_SORT:
+            dagbase::ConfigurationElement::readConfig(config, "status", &status);
             if (auto element = config.findElement("order"); element)
             {
                 element->eachChild([this](dagbase::ConfigurationElement& child) {
@@ -1575,6 +1576,9 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/TopoSortCyclicDependencyCommentedThrough.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/TopoSortCommentedOutSource.lua"),
+    std::make_tuple("etc/tests/NodeEditorLive/TopoSortCommentedOutSink.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CommentNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/SetValueOfNonExistentPort.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/AddPortAfterDeletingFromMiddle.lua"),

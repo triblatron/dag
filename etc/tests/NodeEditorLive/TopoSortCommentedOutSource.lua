@@ -4,8 +4,8 @@ root=
 	{
 		{
 			cmd="COMMAND_CREATE_NODE",
-			nodeClass="GroupTyped",
-			nodeName="group1",
+			nodeClass="BarTyped",
+			nodeName="bar1",
 			status=
 			{
 				statusCode="STATUS_OK",
@@ -45,7 +45,7 @@ root=
 		{
 			cmd="COMMAND_CONNECT",
 			fromPort=0,
-			toPort=2,
+			toPort=1,
 			status=
 			{
 				statusCode="STATUS_OK",
@@ -61,7 +61,7 @@ root=
                     op="RELOP_EQ",
                 },
 			},
-			existing=
+			existing= 
 			{
 				{
 					class="Port",
@@ -81,7 +81,7 @@ root=
 					class="SignalPath",
 					from=
 					{
-						parentClass="GroupTyped",
+						parentClass="BarTyped",
 					},
 					to=
 					{
@@ -90,17 +90,66 @@ root=
 				},
 			},
 		},
+        {
+			cmd="COMMAND_COMMENT_NODE",
+			node=0,
+			commented="COMMENT_OUT",
+			existing=
+			{
+			},
+			assertions=
+			{
+				{
+					path="activeGraph.numNodes",
+					value=1,
+				},
+                {
+					path="graph.numPorts",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+                },
+			},
+			existing= 
+			{	
+				{
+					class="Port",
+					properties=
+					{
+						numOutgoingConnections=0,
+					},
+				},
+				{
+					class="Port",
+					properties=
+					{
+						numIncomingConnections=1,
+					},
+				},
+				{
+					class="SignalPath",
+					from=
+					{
+						parentClass="BarTyped",
+					},
+					to=
+					{
+						parentClass="FooTyped",
+					},
+				},
+			},
+        },
 		{
 			cmd="COMMAND_TOPO_SORT",
 			status=
 			{
-				statusCode="STATUS_OK",
+				statusCode="STATUS_NO_UPSTREAM_CONNECTION",
+				resultType="RESULT_NODE_ID",
+				nodeID=1,
 			},
 			order=
 			{
-				{0,1},
 			},
 		},
 	}
 }
-    

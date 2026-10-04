@@ -4,8 +4,8 @@ root=
 	{
 		{
 			cmd="COMMAND_CREATE_NODE",
-			nodeClass="GroupTyped",
-			nodeName="group1",
+			nodeClass="BarTyped",
+			nodeName="bar1",
 			status=
 			{
 				statusCode="STATUS_OK",
@@ -45,7 +45,7 @@ root=
 		{
 			cmd="COMMAND_CONNECT",
 			fromPort=0,
-			toPort=2,
+			toPort=1,
 			status=
 			{
 				statusCode="STATUS_OK",
@@ -81,7 +81,7 @@ root=
 					class="SignalPath",
 					from=
 					{
-						parentClass="GroupTyped",
+						parentClass="BarTyped",
 					},
 					to=
 					{
@@ -90,6 +90,27 @@ root=
 				},
 			},
 		},
+        {
+			cmd="COMMAND_COMMENT_NODE",
+			node=1,
+			commented="COMMENT_OUT",
+			existing=
+			{
+			},
+			assertions=
+			{
+				{
+					path="activeGraph.numNodes",
+					value=1,
+				},
+                {
+					path="graph.numPorts",
+					value=1,
+					typeIndex="TYPE_UINT",
+					op="RELOP_EQ",
+                },
+			},
+        },
 		{
 			cmd="COMMAND_TOPO_SORT",
 			status=
@@ -103,4 +124,3 @@ root=
 		},
 	}
 }
-    
