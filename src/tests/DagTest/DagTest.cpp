@@ -107,7 +107,10 @@ TEST_P(PortTypeTest, checkSetValue)
 {
     double value = std::get<0>(GetParam());
     double newValue = std::get<1>(GetParam());
+    dag::MemoryNodeLibrary nodeLib;
+    auto parent = nodeLib.instantiateEmptyNode(nodeLib, "Boundary");
     auto sut = new dagbase::Port(dagbase::PortID(0),"test1", dagbase::PortDirection::DIR_IN, dagbase::Port::FLAGS_NONE, dagbase::Value(value));
+    parent->addDynamicPort(sut, dagbase::MetaPort::FLAGS_OWN_BIT);
     EXPECT_EQ(value, double(sut->value()));
     sut->setValue(dagbase::Value(newValue));
     EXPECT_EQ(newValue, double(sut->value()));
@@ -872,7 +875,13 @@ struct Existing
                 });
             }
 
-            ASSERT_EQ(count, actualCount);
+            std::ostringstream propertyStr;
+            for (const auto& prop : properties)
+            {
+                propertyStr << prop.first << " = " << prop.second << '\n';
+            }
+            ASSERT_EQ(count, actualCount) << "Expected class " << className << " to have properties:\n" << propertyStr.str();
+
         }
         else
         {
