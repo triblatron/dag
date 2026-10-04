@@ -2652,11 +2652,11 @@ TEST(Class, testRaiseError)
 {
     auto metaClass = std::make_unique<dagbase::MetaClass>();
     auto sut = std::make_unique<TestClass>(metaClass.get());
-    sut->raiseError(dagbase::Class::TypeNotFound) << "Test";
+    sut->raiseError(dagbase::Class::ERROR_TYPE_NOT_FOUND) << "Test";
     EXPECT_EQ("TypeNotFound:Test",sut->errorMessage());
 }
 
-class Node_testComment : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Node::Comment, dagbase::Node::Comment>>
+class Node_testComment : public ::testing::TestWithParam<std::tuple<const char*, dagbase::Node::Comment, dagbase::Node::Comment, dagbase::Class::Severity, dagbase::Class::Error>>
 {
 
 };
@@ -2666,6 +2666,8 @@ TEST_P(Node_testComment, testExpectedValue)
     auto nodeClass = std::get<0>(GetParam());
     auto comment = std::get<1>(GetParam());
     auto expected = std::get<2>(GetParam());
+    auto severity = std::get<3>(GetParam());
+    auto error = std::get<4>(GetParam());
     dag::MemoryNodeLibrary nodeLib;
     auto sut = nodeLib.instantiateNode(nodeLib, nodeClass, "test");
     ASSERT_NE(nullptr, sut);
@@ -2673,12 +2675,14 @@ TEST_P(Node_testComment, testExpectedValue)
     sut->setCommented(comment);
     EXPECT_EQ(expected, sut->commented());
     EXPECT_TRUE(sut->isVisited());
+    EXPECT_EQ(severity, sut->severity());
+    EXPECT_EQ(error, sut->error());
 }
 
 INSTANTIATE_TEST_SUITE_P(Node, Node_testComment, ::testing::Values(
-    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_NONE, dagbase::Node::COMMENT_NONE),
-    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_OUT, dagbase::Node::COMMENT_OUT),
-    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_THROUGH),
-    std::make_tuple("FooTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_NONE),
-    std::make_tuple("BarTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_NONE)
+    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_NONE, dagbase::Node::COMMENT_NONE, dagbase::Class::SEVERITY_NONE, dagbase::Class::ERROR_NONE),
+    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_OUT, dagbase::Node::COMMENT_OUT, dagbase::Class::SEVERITY_NONE, dagbase::Class::ERROR_NONE),
+    std::make_tuple("GroupTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_THROUGH, dagbase::Class::SEVERITY_NONE, dagbase::Class::ERROR_NONE),
+    std::make_tuple("FooTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_NONE, dagbase::Class::SEVERITY_WARNING, dagbase::Class::WARNING_MISMATCHED_IO),
+    std::make_tuple("BarTyped", dagbase::Node::COMMENT_THROUGH, dagbase::Node::COMMENT_NONE, dagbase::Class::SEVERITY_WARNING, dagbase::Class::WARNING_MISMATCHED_IO)
     ));
