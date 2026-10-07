@@ -927,7 +927,7 @@ struct NodeEditorLiveScriptItem
         COMMAND_ADD_PORT,
         COMMAND_DELETE_PORT,
         COMMAND_SET_PORT_VALUE,
-        COMMAND_COMMENT_NODE,
+        COMMAND_SET_NODE_ACTIVE,
         COMMAND_EVALUATE_GRAPH
     };
 
@@ -1082,10 +1082,10 @@ struct NodeEditorLiveScriptItem
             dagbase::ConfigurationElement::readConfig(config, "value", &portValue);
 
             break;
-        case COMMAND_COMMENT_NODE:
+        case COMMAND_SET_NODE_ACTIVE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
-            dagbase::ConfigurationElement::readConfig<dagbase::Node::Active>(config, "commented", &dagbase::Node::parseActive, &commented);
+            dagbase::ConfigurationElement::readConfig<dagbase::Node::Active>(config, "commented", &dagbase::Node::parseActive, &active);
 
             break;
         case COMMAND_EVALUATE_GRAPH:
@@ -1311,9 +1311,9 @@ struct NodeEditorLiveScriptItem
 
             break;
         }
-        case COMMAND_COMMENT_NODE:
+        case COMMAND_SET_NODE_ACTIVE:
         {
-            actualStatus = sut.setNodeCommented(nodeId, commented);
+            actualStatus = sut.setNodeActive(nodeId, active);
 
             break;
         }
@@ -1376,7 +1376,7 @@ struct NodeEditorLiveScriptItem
     dagbase::PortDirection::Direction portDirection{dagbase::PortDirection::DIR_UNKNOWN};
     dagbase::Port::PortFlags portFlags{dagbase::Port::FLAGS_NONE};
     dagbase::Variant portValue;
-    dagbase::Node::Active commented{dagbase::Node::ACTIVE_ON};
+    dagbase::Node::Active active{dagbase::Node::ACTIVE_ON};
 
     bool done{ false };
 
@@ -1447,7 +1447,7 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_ADD_PORT)
             ENUM_NAME(COMMAND_DELETE_PORT)
             ENUM_NAME(COMMAND_SET_PORT_VALUE)
-            ENUM_NAME(COMMAND_COMMENT_NODE)
+            ENUM_NAME(COMMAND_SET_NODE_ACTIVE)
             ENUM_NAME(COMMAND_EVALUATE_GRAPH)
         }
 
@@ -1479,7 +1479,7 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_ADD_PORT, str)
         TEST_ENUM(COMMAND_DELETE_PORT, str)
         TEST_ENUM(COMMAND_SET_PORT_VALUE, str)
-        TEST_ENUM(COMMAND_COMMENT_NODE, str)
+        TEST_ENUM(COMMAND_SET_NODE_ACTIVE, str)
         TEST_ENUM(COMMAND_EVALUATE_GRAPH, str)
 
         return COMMAND_UNKNOWN;

@@ -804,7 +804,7 @@ namespace dag
         return status;
     }
 
-    dagbase::Status NodeEditorLive::setNodeCommented(dagbase::NodeID nodeId, dagbase::Node::Active value)
+    dagbase::Status NodeEditorLive::setNodeActive(dagbase::NodeID nodeId, dagbase::Node::Active value)
     {
         dagbase::Status status;
 

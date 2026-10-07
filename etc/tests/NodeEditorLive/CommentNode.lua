@@ -27,7 +27,7 @@ root=
             },
         },
         {
-			cmd="COMMAND_COMMENT_NODE",
+			cmd="COMMAND_SET_NODE_ACTIVE",
 			node=0,
 			commented="ACTIVE_OFF",
 			existing=
@@ -48,7 +48,7 @@ root=
 			},
         },
         {
-			cmd="COMMAND_COMMENT_NODE",
+			cmd="COMMAND_SET_NODE_ACTIVE",
 			node=0,
 			commented="ACTIVE_PASS_THROUGH",
 			existing=
@@ -69,7 +69,7 @@ root=
 			},
         },
         {
-			cmd="COMMAND_COMMENT_NODE",
+			cmd="COMMAND_SET_NODE_ACTIVE",
 			node=0,
 			commented="ACTIVE_ON",
 			existing=

@@ -128,7 +128,7 @@ root=
             },
 		},
         {
-			cmd="COMMAND_COMMENT_NODE",
+			cmd="COMMAND_SET_NODE_ACTIVE",
 			node=1,
 			commented="ACTIVE_PASS_THROUGH",
 			existing=
