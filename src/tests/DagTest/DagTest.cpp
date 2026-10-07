@@ -1085,7 +1085,7 @@ struct NodeEditorLiveScriptItem
         case COMMAND_COMMENT_NODE:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
             dagbase::ConfigurationElement::readConfig(config, "node", &nodeId);
-            dagbase::ConfigurationElement::readConfig<dagbase::Node::Active>(config, "commented", &dagbase::Node::parseComment, &commented);
+            dagbase::ConfigurationElement::readConfig<dagbase::Node::Active>(config, "commented", &dagbase::Node::parseActive, &commented);
 
             break;
         case COMMAND_EVALUATE_GRAPH:
