@@ -375,4 +375,53 @@ namespace dag
         static constexpr size_t firstPort = 0;
         static constexpr size_t numPorts = 2;
     };
+
+    class EnumTyped : public dagbase::Node
+    {
+    public:
+        EnumTyped() = default;
+
+        EnumTyped(dagbase::KeyGenerator& keyGen, const std::string& name, dagbase::NodeCategory::Category category)
+                :
+                Node(keyGen, name, category)
+        {
+            addDynamicPort(new dagbase::Port(keyGen.nextPortID(), "choice", dagbase::PortDirection::DIR_INTERNAL, dagbase::Port::FLAGS_NONE, dagbase::Value(dagbase::EnumValue(dagbase::TypeRegistry::getTypeRegistry().findType(dagbase::Atom::intern("TestEnumWrapper")), "TEST_FOO"))), dagbase::MetaPort::FLAGS_OWN_BIT);
+        }
+
+        EnumTyped(const EnumTyped& other,dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen)
+                :
+                Node(other,facility,copyOp,keyGen)
+        {
+            clonePorts(other, facility, copyOp, keyGen);
+            dynamicPort(0)->setParent(this);
+        }
+
+        explicit EnumTyped(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua);
+
+        ~EnumTyped() override;
+
+        [[nodiscard]]const char* className() const override
+        {
+            return "EnumTyped";
+        }
+
+        EnumTyped* clone(dagbase::CloningFacility& facility, dagbase::CopyOp copyOp, dagbase::KeyGenerator* keyGen) override
+        {
+            return new EnumTyped(*this, facility, copyOp, keyGen);
+        }
+
+        EnumTyped* instantiate() override
+        {
+            return new EnumTyped();
+        }
+
+        EnumTyped* create(dagbase::InputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) override;
+
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& str, dagbase::NodeLibrary& nodeLib, dagbase::Lua &lua) const override;
+
+        dagbase::Port& choice()
+        {
+            return *dynamicPort(0);
+        }
+    };
 }

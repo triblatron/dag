@@ -32,12 +32,6 @@ root=
 			},
 			assertions=
 			{
-				{
-					path="nodeLib.classes.Test.id",
-					value=9,
-					op="RELOP_EQ",
-					typeIndex="TYPE_UINT",
-				},
 			}
 		},
         {

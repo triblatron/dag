@@ -143,12 +143,39 @@ namespace dag
                     dagbase::MetaPort(dagbase::MetaPort::FLAGS_OWN_BIT)
             };
 
+    EnumTyped::EnumTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
+    {
+        std::string className;
+        std::string fieldName;
+        str.readHeader(&className);
+        Node::readFromStream(str, nodeLib, lua);
+        str.readFooter();
+    }
+
+    EnumTyped::~EnumTyped()
+    {
+        deleteDynamicPorts();
+    }
+
+    EnumTyped * EnumTyped::create(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
+    {
+        return new EnumTyped(str, nodeLib, lua);
+    }
+
+    dagbase::OutputStream & EnumTyped::writeToStream(dagbase::OutputStream &str, dagbase::NodeLibrary &nodeLib,
+        dagbase::Lua &lua) const
+    {
+        str.writeHeader("EnumTyped");
+        Node::writeToStream(str,  nodeLib, lua);
+        str.writeFooter();
+        return str;
+    }
+
     GroupTyped::GroupTyped(dagbase::InputStream &str, dagbase::NodeLibrary &nodeLib, dagbase::Lua &lua)
             :
             Node()
     {
         std::string className;
-
         std::string fieldName;
         str.readHeader(&className);
         Node::readFromStream(str, nodeLib, lua);
@@ -171,11 +198,6 @@ namespace dag
         Node::writeToStream(str,  nodeLib, lua);
         str.writeFooter();
         return str;
-        // Node::writeToStream(str, nodeLib, lua);
-        // _out1->writeToStream(str, nodeLib, lua);
-        // _in1->writeToStream(str, nodeLib, lua);
-
-        // return str;
     }
 
     bool GroupTyped::equals(const Node &other, dagbase::ComparisonFlags flags) const

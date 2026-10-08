@@ -31,6 +31,7 @@ namespace dag
         _classes.emplace("Boundary", new Boundary(*this, "b1", dagbase::NodeCategory::CAT_GROUP));
         _classes.emplace("MathsNode", new MathsNode(*this, "maths1", dagbase::NodeCategory::CAT_ACTION));
         _classes.emplace("GraphNode", new dagbase::GraphNode(*this, "graph1", dagbase::NodeCategory::CAT_GROUP));
+        _classes.emplace("EnumTyped", new EnumTyped(*this, "enum1", dagbase::NodeCategory::CAT_CONDITION));
     }
 
     MemoryNodeLibrary::~MemoryNodeLibrary()
