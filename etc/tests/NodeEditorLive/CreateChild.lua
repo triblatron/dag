@@ -423,6 +423,14 @@ root=
 					typeIndex="TYPE_UINT",
 					op="RELOP_EQ",
 				},
+				{
+					path="graph.service",
+					value=true,
+				},
+				{
+					path="graph.children[0].service",
+					value=true,
+				},
 			},
 		},
 	}

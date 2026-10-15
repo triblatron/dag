@@ -37,7 +37,16 @@ namespace dag
         delete _nodeLib;
         delete _graph;
         // The active graph is a reference to somewhere in the tree of Graph we just deleted.
+        _activeGraph = nullptr;
         delete _selection;
+    }
+
+    void NodeEditorLive::setService(void *service)
+    {
+        if (_graph)
+        {
+            _graph->setService(service);
+        }
     }
 
     const dagbase::Graph * NodeEditorLive::graph(const GraphChildPath &path) const
@@ -79,8 +88,10 @@ namespace dag
 
         if (g)
         {
+            void* service = _graph->service();
             delete _graph;
             _graph = g;
+            _graph->setService(service);
             _activeGraph = _graph;
         }
 
@@ -357,6 +368,7 @@ namespace dag
             {
                 const NodeArray& internals = _selection->internals();
                 auto child = new dagbase::Graph();
+
                 child->setNodeLibrary(_nodeLib);
                 // We create Nodes using the parent Graph for consistency of IDs.
                 auto boundaryInput = _graph->createNode("Boundary","boundaryInput");
@@ -693,18 +705,22 @@ namespace dag
                 if (id == 0)
                     return dagbase::Status{dagbase::Status::STATUS_FAILED_TO_CREATE_GRAPH};
 
+                void* service = _graph->service();
                 delete _graph;
                 _graph = new dagbase::Graph(str, *_nodeLib, lua);
-
+                _graph->service();
                 break;
             }
             case SERIALISE_FLAT:
+            {
+                void* service = _graph->service();
                 delete _graph;
                 _graph = new dagbase::Graph();
                 _graph->setNodeLibrary(_nodeLib);
                 _graph->readFlat(str, *_nodeLib, lua);
-
+                _graph->setService(service);
                 break;
+            }
             case SERIALISE_UNKNOWN:
                 return dagbase::Status{ dagbase::Status::STATUS_SYNTAX_ERROR};
         }

@@ -900,6 +900,18 @@ struct Existing
     std::uint32_t count{1};
 };
 
+class TestService
+{
+public:
+    void testCall()
+    {
+        ++_numTestCalls;
+    }
+
+private:
+    int _numTestCalls{0};
+};
+
 struct NodeEditorLiveScriptItem
 {
     enum Command : std::uint32_t
@@ -1498,6 +1510,7 @@ public:
     void setUp()
     {
         _sut = new dag::NodeEditorLive();
+        _sut->setService(&_service);
     }
 
     void tearDown()
@@ -1512,6 +1525,7 @@ private:
     using ItemArray = std::vector<NodeEditorLiveScriptItem>;
     ItemArray _items;
     dag::NodeEditorLive* _sut{nullptr};
+    TestService _service;
 };
 
 void NodeEditorLiveScript::makeItSo()
