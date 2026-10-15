@@ -2215,7 +2215,7 @@ TEST_P(GraphTest_fromLua, testFromString)
     ASSERT_NE(nullptr, sut);
     EXPECT_EQ(numNodes, sut->numNodes());
     EXPECT_EQ(numSignalPaths, sut->numSignalPaths());
-    auto actualNode = sut->lastAddedNode();
+    auto actualNode = sut->node(dagbase::NodeID(0));
     ASSERT_NE(nullptr, actualNode);
     EXPECT_EQ(nodeId, actualNode->id());
     auto actualPort = actualNode->dynamicPort(portIndex);
