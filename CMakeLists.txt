@@ -23,6 +23,8 @@ SET( ALL_PUBLIC_HEADERS include/Action.h include/Boundary.h include/Command.h in
 		include/MetaField.h
         include/PrimitivePort.h
         include/Nodes.h
+        include/LuaScript.h
+        include/Scripting.h
 )
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
@@ -63,7 +65,11 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/Menu.cpp
         src/Nodes.cpp
 		src/NodeEditorInterface.cpp
+        src/LuaScript.cpp
+        src/Scripting.cpp
 )
+
+add_subdirectory(src/luadag)
 
 set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "-o linker-signed")
 
@@ -156,3 +162,4 @@ IF (APPLE)
 TARGET_LINK_OPTIONS(NodePlugin PRIVATE -bundle_loader $<TARGET_FILE:DagTest>)
 ENDIF(APPLE)
 INSTALL( TARGETS NodePlugin LIBRARY DESTINATION lib/NodePlugins RUNTIME DESTINATION bin/NodePlugins )
+INSTALL(TARGETS luadag DESTINATION ${CMAKE_INSTALL_PREFIX})
