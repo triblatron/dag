@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace dagui
+namespace dag
 {
     enum Action : std::uint32_t
     {

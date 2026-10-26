@@ -93,6 +93,10 @@ namespace dag
         //! Disconnect two ports
         dagbase::Status disconnect(dagbase::SignalPathID id) override;
 
+        dagbase::Status loadScripts(const std::string& filename);
+
+        dagbase::Status attachScript(const std::string& funcName);
+
         static void meanPosition(const SelectionInterface::NodeArray & nodes, float pos[2]);
 
         //! Create a GraphNode from the selection
@@ -142,5 +146,8 @@ namespace dag
         dagbase::Graph* _graph{nullptr};
         dagbase::Graph* _activeGraph{nullptr};
         SelectionLive* _selection{nullptr};
+        using FunctionTable = dagbase::VectorMap<std::string, dagbase::Function*>;
+        FunctionTable _functions;
+        dagbase::Lua* _lua{nullptr};
     };
 }

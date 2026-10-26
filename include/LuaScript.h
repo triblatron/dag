@@ -16,6 +16,7 @@ namespace dagbase
 {
     class ConfigurationElement;
     class Coroutine;
+    class Function;
     class Lua;
     class ScriptProtocol;
 }
@@ -23,10 +24,7 @@ namespace dagbase
 namespace dag
 {
     class NodeEditorLive;
-}
 
-namespace dagui
-{
     class DAG_API LuaScript : public dagbase::Script
     {
     public:
@@ -40,6 +38,10 @@ namespace dagui
         };
     public:
         LuaScript(dagbase::Lua* lua, dagbase::ScriptProtocol* proto);
+
+        LuaScript(dagbase::Lua* lua, dagbase::Function* func, dagbase::ScriptProtocol* proto);
+
+        LuaScript(const LuaScript& other);
 
         ~LuaScript() override;
 
@@ -66,6 +68,8 @@ namespace dagui
 
         void reset() override;
 
+        LuaScript* clone() const override;
+
         dagbase::Variant find(std::string_view path) const override;
 
         static const char* stateName(State state);
@@ -73,6 +77,7 @@ namespace dagui
         static State parseState(const char* str);
     private:
         dagbase::Lua* _lua{nullptr};
+        dagbase::Function* _func{nullptr};
         dagbase::Coroutine* _thread{nullptr};
         dagbase::ScriptProtocol* _proto{nullptr};
         State _state{STATE_INITIAL};

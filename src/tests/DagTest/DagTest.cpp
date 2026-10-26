@@ -940,7 +940,9 @@ struct NodeEditorLiveScriptItem
         COMMAND_DELETE_PORT,
         COMMAND_SET_PORT_VALUE,
         COMMAND_SET_NODE_ACTIVE,
-        COMMAND_EVALUATE_GRAPH
+        COMMAND_EVALUATE_GRAPH,
+        COMMAND_LOAD_SCRIPTS,
+        COMMAND_ATTACH_SCRIPT
     };
 
     void configure(dagbase::ConfigurationElement& config)
@@ -1102,6 +1104,14 @@ struct NodeEditorLiveScriptItem
             break;
         case COMMAND_EVALUATE_GRAPH:
             dagbase::ConfigurationElement::readConfig(config, "status", &status);
+
+            break;
+        case COMMAND_LOAD_SCRIPTS:
+            dagbase::ConfigurationElement::readConfig(config, "filename", &filename);
+
+            break;
+        case COMMAND_ATTACH_SCRIPT:
+            dagbase::ConfigurationElement::readConfig(config, "funcName", &funcName);
 
             break;
         default:
@@ -1338,6 +1348,18 @@ struct NodeEditorLiveScriptItem
 
             break;
         }
+        case COMMAND_LOAD_SCRIPTS:
+        {
+            actualStatus = sut.loadScripts(filename);
+
+            break;
+        }
+        case COMMAND_ATTACH_SCRIPT:
+        {
+            actualStatus = sut.attachScript(funcName);
+
+            break;
+        }
         default:
             done = true;
             FAIL() << "Got into an unhandled command " << commandToString(cmd);
@@ -1389,6 +1411,7 @@ struct NodeEditorLiveScriptItem
     dagbase::Port::PortFlags portFlags{dagbase::Port::FLAGS_NONE};
     dagbase::Variant portValue;
     dagbase::Node::Active active{dagbase::Node::ACTIVE_ON};
+    std::string funcName;
 
     bool done{ false };
 
@@ -1461,6 +1484,8 @@ struct NodeEditorLiveScriptItem
             ENUM_NAME(COMMAND_SET_PORT_VALUE)
             ENUM_NAME(COMMAND_SET_NODE_ACTIVE)
             ENUM_NAME(COMMAND_EVALUATE_GRAPH)
+            ENUM_NAME(COMMAND_LOAD_SCRIPTS)
+            ENUM_NAME(COMMAND_ATTACH_SCRIPT)
         }
 
         return "<error>";
@@ -1493,6 +1518,8 @@ struct NodeEditorLiveScriptItem
         TEST_ENUM(COMMAND_SET_PORT_VALUE, str)
         TEST_ENUM(COMMAND_SET_NODE_ACTIVE, str)
         TEST_ENUM(COMMAND_EVALUATE_GRAPH, str)
+        TEST_ENUM(COMMAND_LOAD_SCRIPTS, str)
+        TEST_ENUM(COMMAND_ATTACH_SCRIPT, str)
 
         return COMMAND_UNKNOWN;
     }
@@ -1606,6 +1633,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/AttachScriptCreateTemplateThenInstantiate.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateEnumTyped.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/EvaluateCommentedOutNode.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/Evaluate.lua"),

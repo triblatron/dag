@@ -20,7 +20,7 @@
 #include <string>
 #include <array>
 
-namespace dagui
+namespace dag
 {
     LuaScript::LuaScript(dagbase::Lua *lua, dagbase::ScriptProtocol* proto)
         :
@@ -29,6 +29,29 @@ namespace dagui
     {
         // There will typically be one result, so pre-allocate it here.
         _results.reserve(1);
+    }
+
+    LuaScript::LuaScript(dagbase::Lua *lua, dagbase::Function *func, dagbase::ScriptProtocol *proto)
+        :
+    _lua(lua),
+    _func(func),
+    _proto(proto)
+    {
+        if (_func && _lua)
+        {
+            _func->push();
+            _thread = dagbase::Coroutine::fromFunction(_func->lua());
+            //assert(lua_isfunction(_thread->get(), -1));
+        }
+    }
+
+    LuaScript::LuaScript(const LuaScript &other)
+    {
+        _lua = new dagbase::Lua();
+        if (other._thread && _lua)
+        {
+            _thread = other._thread->clone(*_lua);
+        }
     }
 
     LuaScript::~LuaScript()
@@ -42,7 +65,7 @@ namespace dagui
         {
             if (auto func = element->asFunction(); func)
             {
-                func->push(*_lua);
+                func->push();
                 _thread = dagbase::Coroutine::fromFunction(_lua->get());
             }
             else if (auto name = element->asString(); !name.empty())
@@ -108,6 +131,11 @@ namespace dagui
                 case STATE_INITIAL:
                     if (_thread && _thread->ok())
                     {
+                        if (_func)
+                        {
+                            _func->push();
+                            lua_xmove(_func->lua(), _thread->get(), 1);
+                        }
                         auto type = SWIG_TypeQuery(_thread->get(), "_p_dagbase__Node");
                         if (type)
                         {
@@ -126,7 +154,7 @@ namespace dagui
                     break;
                 case STATE_THREAD_INITED:
                 {
-                    if (_thread)
+                    if (_thread && lua_isfunction(_thread->get(), -2))
                     {
                         int numResults = 0;
                         auto reason = _thread->resume(1, &numResults);
@@ -171,6 +199,10 @@ namespace dagui
                             }
                         }
                     }
+                    else
+                    {
+                        setState(STATE_THREAD_ERROR);
+                    }
 
                     break;
                 }
@@ -187,6 +219,14 @@ namespace dagui
                 _thread->pop(1);
             setState(STATE_INITIAL);
         }
+    }
+
+    LuaScript * LuaScript::clone() const
+    {
+        // Create a new thread
+        return new LuaScript(*this);
+
+        // Copy the function to its stack
     }
 
     dagbase::Variant LuaScript::find(std::string_view path) const
@@ -246,6 +286,11 @@ namespace dagui
                 else if (!_thread)
                 {
                     std::cerr << "LuaScript:An error occurred creating the Coroutine from \"" << _mainName << "\"\n";
+                }
+                if (_thread)
+                {
+                    std::cerr << "Lua stack:\n";
+                    dagbase::printStack(_thread->get());
                 }
                 break;
             }

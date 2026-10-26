@@ -12,6 +12,7 @@
 #include "core/Graph.h"
 #include "SelectionLive.h"
 #include "Boundary.h"
+#include "LuaScript.h"
 #include "SelectionInterface.h"
 #include "core/SignalPath.h"
 #include "core/Transfer.h"
@@ -20,6 +21,8 @@
 #include "io/OutputStream.h"
 #include "io/InputStream.h"
 #include "util/enums.h"
+#include "LuaScript.h"
+#include "../include/NodeEditorScriptProtocol.h"
 
 namespace dag
 {
@@ -30,6 +33,8 @@ namespace dag
         _graph->setNodeLibrary(_nodeLib);
         _activeGraph = _graph;
         _selection = new SelectionLive();
+        _lua = new dagbase::Lua();
+        _lua->eval("require \"luadag\"");
     }
 
     NodeEditorLive::~NodeEditorLive()
@@ -333,6 +338,63 @@ namespace dag
         }
 
         return dagbase::Status{dagbase::Status::STATUS_OBJECT_NOT_FOUND};
+    }
+
+    dagbase::Status NodeEditorLive::loadScripts(const std::string& filename)
+    {
+        dagbase::Status status{dagbase::Status::STATUS_OK};
+        if (filename.empty())
+        {
+            return dagbase::Status{dagbase::Status::STATUS_FILE_NOT_FOUND};
+        }
+        auto config = dagbase::ConfigurationElement::fromFile(*_lua, filename.c_str());
+        if (config)
+        {
+            config->eachChild([this, &status](dagbase::ConfigurationElement& child) {
+                std::string name = child.name();
+                auto func = child.value().asFunction(nullptr);
+                if (func)
+                {
+                    auto p = _functions.emplace(name, func);
+                    if (!p.second)
+                    {
+                        status = dagbase::Status{dagbase::Status::STATUS_DUPLICATE_FUNCTION};
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+        else
+        {
+            return dagbase::Status{dagbase::Status::STATUS_SYNTAX_ERROR};
+        }
+        return status;
+    }
+
+    dagbase::Status NodeEditorLive::attachScript(const std::string& funcName)
+    {
+        dagbase::Status status{dagbase::Status::STATUS_OK};
+
+        if (auto it = _functions.find(funcName); it != _functions.end())
+        {
+            auto func = it->second;
+            auto proto = new NodeEditorScriptProtocol(this);
+            auto script = new LuaScript(_lua, func, proto);
+            if (_selection->count() == 1)
+            {
+                for (auto node : _selection->internals())
+                {
+                    node->setScript(script);
+                }
+            }
+            else
+            {
+                return dagbase::Status{dagbase::Status::STATUS_INVALID_SELECTION};
+            }
+        }
+
+        return status;
     }
 
     void NodeEditorLive::meanPosition(const SelectionInterface::NodeArray &nodes, float pos[2])

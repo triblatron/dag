@@ -7,7 +7,7 @@
 #include "../include/Scripting.h"
 #include "util/enums.h"
 
-namespace dagui
+namespace dag
 {
     const char * actionToString(Action value)
     {
