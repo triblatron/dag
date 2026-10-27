@@ -46,8 +46,11 @@ namespace dag
     }
 
     LuaScript::LuaScript(const LuaScript &other)
+        :
+    _lua(other._lua),
+    _func(other._func),
+    _proto(other._proto)
     {
-        _lua = new dagbase::Lua();
         if (other._thread && _lua)
         {
             _thread = other._thread->clone(*_lua);
