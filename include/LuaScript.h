@@ -37,6 +37,8 @@ namespace dag
             STATE_THREAD_ERROR
         };
     public:
+        LuaScript() = default;
+
         LuaScript(dagbase::Lua* lua, dagbase::ScriptProtocol* proto);
 
         LuaScript(dagbase::Lua* lua, dagbase::Function* func, dagbase::ScriptProtocol* proto);
@@ -72,17 +74,21 @@ namespace dag
 
         dagbase::Variant find(std::string_view path) const override;
 
+        dagbase::OutputStream& writeToStream(dagbase::OutputStream& stream) const override;
+
+        dagbase::InputStream& readFromStream(dagbase::InputStream& stream, dagbase::Lua& lua) override;
+
         static const char* stateName(State state);
 
         static State parseState(const char* str);
     private:
+        std::string _mainName;
+        std::vector<dagbase::Variant> _results;
         dagbase::Lua* _lua{nullptr};
         dagbase::Function* _func{nullptr};
         dagbase::Coroutine* _thread{nullptr};
         dagbase::ScriptProtocol* _proto{nullptr};
         State _state{STATE_INITIAL};
-        std::string _mainName;
-        std::vector<dagbase::Variant> _results;
         void setState(State newState);
     };
 }

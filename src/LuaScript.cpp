@@ -4,13 +4,11 @@
 
 #include "config/config.h"
 
-#include "../include/LuaScript.h"
+#include "LuaScript.h"
 #include "core/ConfigurationElement.h"
 #include "core/LuaInterface.h"
-#include "Scripting.h"
 #include "lua_runtime.h"
 #include "util/enums.h"
-#include "MemoryNodeLibrary.h"
 #include "NodeEditorLive.h"
 #include "core/Node.h"
 #include "core/PortDirection.h"
@@ -241,6 +239,24 @@ namespace dag
             return retval;
 
         return {};
+    }
+
+    dagbase::OutputStream & LuaScript::writeToStream(dagbase::OutputStream &stream) const
+    {
+        if (_func)
+        {
+            _func->write(stream);
+        }
+
+        return stream;
+    }
+
+    dagbase::InputStream & LuaScript::readFromStream(dagbase::InputStream &stream, dagbase::Lua& lua)
+    {
+        _func = new dagbase::Function(stream, lua);
+        _thread = dagbase::Coroutine::fromExistingThread(lua.get());
+
+        return stream;
     }
 
     const char * LuaScript::stateName(State state)

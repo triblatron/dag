@@ -54,6 +54,8 @@ namespace dag
 
 		dagbase::Class* instantiate(const char* baseClassName, dagbase::InputStream& str, dagbase::Lua& lua) override;
 
+	    dagbase::Script* instantiateScript(dagbase::InputStream& str, dagbase::Lua& lua) override;
+
 	    dagbase::Variant find(std::string_view path) const override;
 
 		dagbase::NodeID nextNodeID() override

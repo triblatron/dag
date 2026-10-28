@@ -1633,6 +1633,7 @@ TEST_P(NodeEditorLive_testScripted, testExpectedValue)
 }
 
 INSTANTIATE_TEST_SUITE_P(NodeEditorLive, NodeEditorLive_testScripted, ::testing::Values(
+    std::make_tuple("etc/tests/NodeEditorLive/AttachScriptThenSerialise.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/AttachScriptCreateTemplateThenInstantiate.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/CreateEnumTyped.lua"),
     std::make_tuple("etc/tests/NodeEditorLive/EvaluateCommentedOutNode.lua"),

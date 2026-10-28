@@ -14,6 +14,7 @@
 
 #include <cstring>
 
+#include "LuaScript.h"
 #include "core/GraphNode.h"
 
 namespace dag
@@ -146,6 +147,15 @@ namespace dag
         }
 
         return nullptr;
+    }
+
+    dagbase::Script * MemoryNodeLibrary::instantiateScript(dagbase::InputStream &str, dagbase::Lua &lua)
+    {
+        auto luaScript = new LuaScript();
+
+        luaScript->readFromStream(str, lua);
+
+        return luaScript;
     }
 
     dagbase::Variant MemoryNodeLibrary::find(std::string_view path) const

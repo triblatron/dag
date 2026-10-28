@@ -740,7 +740,7 @@ namespace dag
 
                     break;
                 case SERIALISE_FLAT:
-                    _graph->writeFlat(str, *_nodeLib, lua);
+                    _graph->writeFlat(str, *_nodeLib, *_lua);
 
                     break;
                 default:
@@ -770,16 +770,19 @@ namespace dag
                 void* service = _graph->service();
                 delete _graph;
                 _graph = new dagbase::Graph(str, *_nodeLib, lua);
-                _graph->service();
+                _graph->setService(service);
                 break;
             }
             case SERIALISE_FLAT:
             {
                 void* service = _graph->service();
+                delete _lua;
+                _lua = new dagbase::Lua();
+                _lua->eval("require \"luadag\"");
                 delete _graph;
                 _graph = new dagbase::Graph();
                 _graph->setNodeLibrary(_nodeLib);
-                _graph->readFlat(str, *_nodeLib, lua);
+                _graph->readFlat(str, *_nodeLib, *_lua);
                 _graph->setService(service);
                 break;
             }
