@@ -12,6 +12,7 @@
 namespace dag
 {
     class NodeEditorLive;
+
     class DAG_API NodeEditorScriptProtocol : public dagbase::ScriptProtocol
     {
     public:

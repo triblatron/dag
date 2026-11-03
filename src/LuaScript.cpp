@@ -155,7 +155,7 @@ namespace dag
                     break;
                 case STATE_THREAD_INITED:
                 {
-                    if (_thread && lua_isfunction(_thread->get(), -2))
+                    if (_thread && _thread->ok())
                     {
                         int numResults = 0;
                         auto reason = _thread->resume(1, &numResults);
@@ -163,7 +163,8 @@ namespace dag
                         {
                             case LUA_OK:
                             {
-                                setPortValues(self, numResults);
+                                //setPortValues(self, numResults);
+                                _thread->pop(numResults);
                                 setState(STATE_THREAD_FINISHED);
                                 break;
                             }
@@ -183,13 +184,13 @@ namespace dag
                                         arg.fromLua(*_thread, i);
                                         args.emplace_back(arg);
                                     }
+                                    lua_pop(_thread->get(), numResults);
                                     _results.clear();
                                     _proto->request(self, action, args, &_results);
                                     for (auto result : _results)
                                     {
                                         result.toLua(*_thread);
                                     }
-                                    lua_pop(_thread->get(), numResults);
                                 }
                                 break;
                             }

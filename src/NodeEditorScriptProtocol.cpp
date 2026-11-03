@@ -45,6 +45,21 @@ namespace dag
                 }
                 break;
             }
+            case ACTION_SET_PORT_VALUE:
+            {
+                if (args.size() == 2)
+                {
+                    std::uint32_t portIndex = args[0].cast(dagbase::Variant::TYPE_UINT).asUint32();
+
+                    if (_nodeEditor && portIndex<self->totalPorts())
+                    {
+                        auto value = std::get<dagbase::Variant::TYPE_VALUE>(args[1].cast(dagbase::Variant::TYPE_VALUE).value().value());
+                        self->dynamicPort(portIndex)->setValue(value);
+                    }
+                }
+
+                break;
+            }
         }
 
     }

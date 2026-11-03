@@ -14,7 +14,8 @@ namespace dag
     {
         ACTION_UNKNOWN,
         ACTION_ADD_PORT,
-        ACTION_DELETE_PORT
+        ACTION_DELETE_PORT,
+        ACTION_SET_PORT_VALUE
     };
 
     const char DAG_API * actionToString(Action value);

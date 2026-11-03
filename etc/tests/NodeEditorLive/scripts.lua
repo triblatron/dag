@@ -1,9 +1,13 @@
+require "etc/commands"
+
 root=
 {
 	foo=function(self)
-		return 3.0
+		setPortValue(0, 3.0)
+		return 0
 	end,
 	bar=function(self)
-		return -1.0
+		setPortValue(0, -3.0)
+		return 0
 	end,
 }

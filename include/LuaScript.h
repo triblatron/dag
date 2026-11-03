@@ -54,6 +54,11 @@ namespace dag
             _mainName = name;
         }
 
+        void setScriptProtocol(dagbase::ScriptProtocol *proto) override
+        {
+            _proto = proto;
+        }
+
         void setPortValues(dagbase::Node* self, int numResults);
 
         dagbase::Coroutine* thread()

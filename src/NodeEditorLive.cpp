@@ -22,7 +22,7 @@
 #include "io/InputStream.h"
 #include "util/enums.h"
 #include "LuaScript.h"
-#include "../include/NodeEditorScriptProtocol.h"
+#include "NodeEditorScriptProtocol.h"
 
 namespace dag
 {
@@ -35,6 +35,7 @@ namespace dag
         _selection = new SelectionLive();
         _lua = new dagbase::Lua();
         _lua->eval("require \"luadag\"");
+        _lua->eval("require \"etc/commands\"");
     }
 
     NodeEditorLive::~NodeEditorLive()
@@ -779,11 +780,13 @@ namespace dag
                 delete _lua;
                 _lua = new dagbase::Lua();
                 _lua->eval("require \"luadag\"");
+                _lua->eval("require \"etc/commands\"");
                 delete _graph;
                 _graph = new dagbase::Graph();
                 _graph->setNodeLibrary(_nodeLib);
                 _graph->readFlat(str, *_nodeLib, *_lua);
                 _graph->setService(service);
+                _graph->setScriptProtocol(new NodeEditorScriptProtocol(this));
                 break;
             }
             case SERIALISE_UNKNOWN:
