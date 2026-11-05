@@ -9,11 +9,13 @@
 
 namespace dag
 {
-    void CreateNode::makeItSo()
+    void CreateNode::makeItSo(const std::pmr::vector<dagbase::Variant>& args, std::pmr::vector<dagbase::Variant>* results)
     {
         if (_graph!=nullptr)
         {
-            _node = _graph->createNode(_className, _name);
+            _node = _graph->createNode(args[0].asString(), args[1].asString());
+            _className = args[0].asString();
+            _name = args[1].asString();
             if (_node != nullptr)
             {
                 _graph->addNode(_node);
@@ -28,6 +30,11 @@ namespace dag
             _graph->deleteNode(_node);
             delete _node;
         }
+    }
+
+    void CreateNode::redo()
+    {
+        makeItSo(std::pmr::vector<dagbase::Variant>{_className, _name}, nullptr);
     }
 
     CreateNode *CreateNode::clone() const

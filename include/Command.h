@@ -29,6 +29,6 @@ namespace dag
         virtual void undo() = 0;
 
         //! Provides default implementation that just calls makeItSo().
-        virtual void redo();
+        virtual void redo() = 0;
     };
 }

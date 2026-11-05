@@ -26,12 +26,12 @@
 #include "test/TestUtils.h"
 #include "util/enums.h"
 #include "io/StreamFactory.h"
+#include "core/GraphNode.h"
 
 #include <iostream>
 #include <algorithm>
 #include <filesystem>
-
-#include "core/GraphNode.h"
+#include <memory_resource>
 
 class MemoryNodeLibraryTest : public ::testing::TestWithParam<std::tuple<const char*, const char*, size_t, const char*, dagbase::PortDirection::Direction, double>>
 {
@@ -2024,7 +2024,7 @@ TEST(CommandTest, testCreateNode)
     sut->setGraph(graph);
     sut->setClassName("FooTyped");
     sut->setName("foo1");
-    sut->makeItSo();
+    sut->makeItSo({"FooTyped", "foo1"}, nullptr);
     ASSERT_EQ(size_t{1}, graph->numNodes());
     sut->undo();
     ASSERT_EQ(size_t{0}, graph->numNodes());

@@ -44,9 +44,11 @@ namespace dag
             return _node;
         }
 
-        void makeItSo() override;
+        void makeItSo(const std::pmr::vector<dagbase::Variant>& args, std::pmr::vector<dagbase::Variant>* results) override;
 
         void undo() override;
+
+        void redo() override;
 
         [[nodiscard]]CreateNode* clone() const override;
     private:

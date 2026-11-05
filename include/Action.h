@@ -2,6 +2,10 @@
 
 #include "config/Export.h"
 
+#include "core/Variant.h"
+
+#include <vector>
+
 namespace dag
 {
     class DAG_API Action
@@ -19,7 +23,6 @@ namespace dag
 
         virtual ~Action() = default;
 
-
-        virtual void makeItSo() = 0;
+        virtual void makeItSo(const std::pmr::vector<dagbase::Variant>& args, std::pmr::vector<dagbase::Variant>* results) = 0;
     };
 }

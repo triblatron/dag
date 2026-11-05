@@ -4,8 +4,4 @@
 
 namespace dag
 {
-    void Command::redo()
-    {
-        makeItSo();
-    }
 }
