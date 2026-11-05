@@ -55,8 +55,10 @@ namespace dag
 
                         if (_nodeEditor && portIndex<self->totalPorts())
                         {
+                            auto port = self->dynamicPort(portIndex);
                             auto value = std::get<dagbase::Variant::TYPE_VALUE>(args[i+1].cast(dagbase::Variant::TYPE_VALUE).value().value());
-                            self->dynamicPort(portIndex)->setValue(value);
+                            _nodeEditor->setPortValue(port->id(), value);
+//                            self->dynamicPort(portIndex)->setValue(value);
                         }
                     }
                 }
