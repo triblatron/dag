@@ -11,7 +11,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 #FIND_PACKAGE(benchmark REQUIRED)
 FIND_PACKAGE(Lua 5.4)
 
-SET( ALL_PUBLIC_HEADERS thirdparty/dagbase/include/core/Action.h include/Boundary.h thirdparty/dagbase/include/core/Command.h include/CreateNode.h include/FileSystemTraverser.h include/MemoryNodeLibrary.h include/MetaCoroutine.h include/MetaOperation.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodePluginScanner.h include/Nodes.h include/SelectionInterface.h include/SelectionLive.h include/TypeTraits.h
+SET( ALL_PUBLIC_HEADERS include/Boundary.h include/CreateNode.h include/FileSystemTraverser.h include/MemoryNodeLibrary.h include/MetaCoroutine.h include/MetaOperation.h include/NodeEditorInterface.h include/NodeEditorLive.h include/NodePluginScanner.h include/Nodes.h include/SelectionInterface.h include/SelectionLive.h include/TypeTraits.h
         include/DynamicLibrary.h
 		include/MathNode.h
 		include/NodeEditorFrontEnd.h
@@ -46,7 +46,6 @@ SOURCE_GROUP(
 # Build the main inf library
 SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/Boundary.cpp
-        thirdparty/dagbase/src/core/Command.cpp
         src/CreateNode.cpp
         src/DynamicLibrary.cpp
         src/FileSystemTraverser.cpp
