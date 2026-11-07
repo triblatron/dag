@@ -6,7 +6,6 @@
 
 #include "NodeEditorScriptProtocol.h"
 #include "Scripting.h"
-#include "lua_runtime.h"
 
 namespace dag
 {

@@ -21,7 +21,6 @@
 #include "io/OutputStream.h"
 #include "io/InputStream.h"
 #include "util/enums.h"
-#include "LuaScript.h"
 #include "NodeEditorScriptProtocol.h"
 
 namespace dag
