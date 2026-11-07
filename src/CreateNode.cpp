@@ -4,45 +4,63 @@
 #include "config/config.h"
 
 #include "CreateNode.h"
-#include "core/Graph.h"
-#include "core/Node.h"
+#include "NodeEditorLive.h"
 
 namespace dag
 {
     void CreateNode::reset()
     {
         Command::reset();
-        _node = nullptr;
+        _nodeID = dagbase::NodeID::INVALID_ID;
         _className.clear();
         _name.clear();
     }
 
-    void CreateNode::makeItSo(const std::pmr::vector<dagbase::Variant>& args, std::pmr::vector<dagbase::Variant>* results)
+    dagbase::Status CreateNode::makeItSo(const std::pmr::vector<dagbase::Variant>& args, std::pmr::vector<dagbase::Variant>* results)
     {
-        if (_graph!=nullptr)
+        dagbase::Status status{dagbase::Status::STATUS_UNKNOWN};
+        if (_nodeEditor!=nullptr)
         {
-            _node = _graph->createNode(args[0].asString(), args[1].asString());
             _className = args[0].asString();
             _name = args[1].asString();
-            if (_node != nullptr)
+            if (_className.empty() || _name.empty())
+                return dagbase::Status{dagbase::Status::STATUS_SYNTAX_ERROR};
+
+            status = _nodeEditor->createNode(_className, _name);
+
+            if (status.status == dagbase::Status::STATUS_OK && status.resultType == dagbase::Status::RESULT_NODE_ID && status.result.has_value())
             {
-                _graph->addNode(_node);
+                _nodeID = std::get<dagbase::Status::RESULT_NODE_ID>(status.result.value());
+
+                status.status = dagbase::Status::STATUS_OK;
             }
         }
-    }
-
-    void CreateNode::undo()
-    {
-        if (_graph!=nullptr && _node!=nullptr)
+        else
         {
-            _graph->deleteNode(_node);
-            delete _node;
+            status.status = dagbase::Status::STATUS_INTERNAL_ERROR;
         }
+
+        return status;
     }
 
-    void CreateNode::redo()
+    dagbase::Status CreateNode::undo()
     {
-        makeItSo(std::pmr::vector<dagbase::Variant>{_className, _name}, nullptr);
+        dagbase::Status status{dagbase::Status::STATUS_UNKNOWN};
+        if (_nodeEditor!=nullptr && _nodeID!=dagbase::NodeID::INVALID_ID)
+        {
+            status = _nodeEditor->deleteNode(_nodeID);
+        }
+        else
+        {
+            status = dagbase::Status{dagbase::Status::STATUS_INTERNAL_ERROR};
+        }
+
+        return status;
+    }
+
+    dagbase::Status CreateNode::redo(std::pmr::vector<dagbase::Variant>* results)
+    {
+        return makeItSo(std::pmr::vector<dagbase::Variant>{_className, _name}, results);
     }
 
     CreateNode *CreateNode::clone() const

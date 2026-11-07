@@ -18,15 +18,16 @@ namespace dagbase
 
 namespace dag
 {
+    class NodeEditorLive;
 
     class DAG_API CreateNode : public dagbase::Command
     {
     public:
         CreateNode() = default;
 
-        void setGraph(dagbase::Graph* graph)
+        void setNodeEditor(dag::NodeEditorLive* nodeEditor)
         {
-            _graph = graph;
+            _nodeEditor = nodeEditor;
         }
 
         void setClassName(std::string const & className)
@@ -39,24 +40,24 @@ namespace dag
             _name = name;
         }
 
-        dagbase::Node* node()
+        dagbase::NodeID nodeID()
         {
-            return _node;
+            return _nodeID;
         }
 
         void reset() override;
 
-        void makeItSo(const std::pmr::vector<dagbase::Variant>& args, std::pmr::vector<dagbase::Variant>* results) override;
+        dagbase::Status makeItSo(const std::pmr::vector<dagbase::Variant>& args, std::pmr::vector<dagbase::Variant>* results) override;
 
-        void undo() override;
+        dagbase::Status undo() override;
 
-        void redo() override;
+        dagbase::Status redo(std::pmr::vector<dagbase::Variant>* results) override;
 
         [[nodiscard]]CreateNode* clone() const override;
     private:
-        dagbase::Graph* _graph{nullptr};
+        NodeEditorLive* _nodeEditor{nullptr};
         std::string _className;
         std::string _name;
-        dagbase::Node* _node{nullptr};
+        dagbase::NodeID _nodeID{dagbase::NodeID::INVALID_ID};
     };
 }

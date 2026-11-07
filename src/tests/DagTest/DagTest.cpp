@@ -2017,22 +2017,18 @@ TEST(GraphTest, testCreateNode)
 
 TEST(CommandTest, testCreateNode)
 {
-    auto graph = new dagbase::Graph();
-    auto nodeLib = new dag::MemoryNodeLibrary();
-    graph->setNodeLibrary(nodeLib);
+    auto nodeEditor = new dag::NodeEditorLive();
     auto sut = new dag::CreateNode();
-    sut->setGraph(graph);
-    sut->setClassName("FooTyped");
-    sut->setName("foo1");
-    sut->makeItSo({"FooTyped", "foo1"}, nullptr);
-    ASSERT_EQ(size_t{1}, graph->numNodes());
+    sut->setNodeEditor(nodeEditor);
+    auto status = sut->makeItSo({"FooTyped", "foo1"}, nullptr);
+    ASSERT_EQ(dagbase::Status::STATUS_OK, status.status);
+    ASSERT_EQ(size_t{1}, nodeEditor->find("activeGraph.numNodes").asUint32());
     sut->undo();
-    ASSERT_EQ(size_t{0}, graph->numNodes());
-    sut->redo();
-    ASSERT_EQ(size_t{1}, graph->numNodes());
+    ASSERT_EQ(size_t{0}, nodeEditor->activeGraph()->numNodes());
+    status = sut->redo(nullptr);
+    ASSERT_EQ(dagbase::Status::STATUS_OK, status.status);
+    ASSERT_EQ(size_t{1}, nodeEditor->activeGraph()->numNodes());
     delete sut;
-    delete nodeLib;
-    delete graph;
 }
 
 TEST(GraphTest, testSaveToMemento)
