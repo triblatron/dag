@@ -6,7 +6,7 @@
 
 #include "config/Export.h"
 
-#include "Command.h"
+#include "core/Command.h"
 
 #include <string>
 
@@ -19,7 +19,7 @@ namespace dagbase
 namespace dag
 {
 
-    class DAG_API CreateNode : public Command
+    class DAG_API CreateNode : public dagbase::Command
     {
     public:
         CreateNode() = default;
@@ -43,6 +43,8 @@ namespace dag
         {
             return _node;
         }
+
+        void reset() override;
 
         void makeItSo(const std::pmr::vector<dagbase::Variant>& args, std::pmr::vector<dagbase::Variant>* results) override;
 

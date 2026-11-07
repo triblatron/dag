@@ -4,11 +4,19 @@
 #include "config/config.h"
 
 #include "CreateNode.h"
-#include "../thirdparty/dagbase/include/core/Graph.h"
-#include "../thirdparty/dagbase/include/core/Node.h"
+#include "core/Graph.h"
+#include "core/Node.h"
 
 namespace dag
 {
+    void CreateNode::reset()
+    {
+        Command::reset();
+        _node = nullptr;
+        _className.clear();
+        _name.clear();
+    }
+
     void CreateNode::makeItSo(const std::pmr::vector<dagbase::Variant>& args, std::pmr::vector<dagbase::Variant>* results)
     {
         if (_graph!=nullptr)
