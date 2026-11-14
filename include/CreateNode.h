@@ -6,7 +6,7 @@
 
 #include "config/Export.h"
 
-#include "core/Command.h"
+#include "NodeEditorCommand.h"
 
 #include <string>
 
@@ -20,15 +20,10 @@ namespace dag
 {
     class NodeEditorLive;
 
-    class DAG_API CreateNode : public dagbase::Command
+    class DAG_API CreateNode : public dag::NodeEditorCommand
     {
     public:
-        CreateNode() = default;
-
-        void setNodeEditor(dag::NodeEditorLive* nodeEditor)
-        {
-            _nodeEditor = nodeEditor;
-        }
+        explicit CreateNode(NodeEditorLive* nodeEditor);
 
         void setClassName(std::string const & className)
         {
@@ -55,7 +50,6 @@ namespace dag
 
         [[nodiscard]]CreateNode* clone() const override;
     private:
-        NodeEditorLive* _nodeEditor{nullptr};
         std::string _className;
         std::string _name;
         dagbase::NodeID _nodeID{dagbase::NodeID::INVALID_ID};

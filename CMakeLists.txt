@@ -26,6 +26,7 @@ SET( ALL_PUBLIC_HEADERS include/Boundary.h include/CreateNode.h include/FileSyst
         include/LuaScript.h
         include/Scripting.h
         include/NodeEditorScriptProtocol.h
+        include/NodeEditorCommand.h
 )
 
 SET( DEP_ROOT CACHE PATH "Dependency root" )
@@ -67,6 +68,7 @@ SET( dag_SRC ${GENERATED_HEADERS} ${ALL_PUBLIC_HEADERS}
         src/LuaScript.cpp
         src/Scripting.cpp
         src/NodeEditorScriptProtocol.cpp
+        src/NodeEditorCommand.cpp
 )
 
 add_subdirectory(src/luadag)
