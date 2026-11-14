@@ -252,4 +252,13 @@ void VerificationNodeEditorLive::verify()
     ASSERT_EQ(status.status, actualStatus.status)  << _caseName << ':' << commandToString(cmd) << ":Expected a status of " << dagbase::Status::statusCodeToString(status.status) << ", got " << dagbase::Status::statusCodeToString(actualStatus.status);
     ASSERT_EQ(status.resultType, actualStatus.resultType) << _caseName << ':' << commandToString(cmd) << ":Expected a resultType of " << dagbase::Status::resultTypeToString(status.resultType) << ", got " << dagbase::Status::resultTypeToString(actualStatus.resultType);
     ASSERT_EQ(status.result, actualStatus.result) << _caseName << ':' << commandToString(cmd);
+
+    for (auto a : assertions)
+    {
+        a.makeItSo(*nodeEditor(), NodeEditorCommand::commandToString(cmd));
+    }
+    for (auto e : existing)
+    {
+        e.makeItSo(*nodeEditor());
+    }
 }
