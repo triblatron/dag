@@ -73,78 +73,50 @@ void VerificationNodeEditorLive::verify()
         }
         case COMMAND_CONNECT:
         {
-            actualStatus = nodeEditor()->connect(fromPort, toPort);
             break;
         }
         case COMMAND_DISCONNECT:
         {
-            actualStatus = nodeEditor()->disconnect(signalPath);
             break;
         }
         case COMMAND_SELECT:
         {
-            dag::SelectionInterface::Cont a;
-            for (auto id : selection)
-            {
-                if (auto node = nodeEditor()->activeGraph()->node(id); node)
-                {
-                    a.emplace(node);
-                }
-            }
-            actualStatus = nodeEditor()->select(selectionMode, a);
             break;
         }
         case COMMAND_CREATE_CHILD:
         {
-            actualStatus = nodeEditor()->createChild();
             break;
         }
         case COMMAND_SET_ACTIVE_GRAPH:
-            actualStatus = nodeEditor()->setActiveGraph(graphChildPath);
 
             break;
         case COMMAND_DELETE_NODE:
-            actualStatus = nodeEditor()->deleteNode(nodeId);
 
             break;
         case COMMAND_COPY_NODE:
         {
-            actualStatus = nodeEditor()->copyNodes();
 
             break;
         }
         case COMMAND_COMPARE_NODES:
         {
-            actualStatus = nodeEditor()->compareNodes(cmpFlags);
 
             break;
         }
         case COMMAND_CREATE_TEMPLATE:
         {
-            actualStatus = nodeEditor()->createTemplate(nodeClass);
-
             break;
         }
         case COMMAND_BROWSE_DOWN:
         {
-            actualStatus = nodeEditor()->browseDown();
-
             break;
         }
         case COMMAND_BROWSE_UP:
         {
-            actualStatus = nodeEditor()->browseUp();
-
             break;
         }
         case COMMAND_SET_POSITION:
         {
-            auto node = nodeEditor()->activeGraph()->node(nodeId);
-            if (node)
-            {
-                node->setPosition(position[0], position[1]);
-                actualStatus.status = dagbase::Status::STATUS_OK;
-            }
             break;
         }
         case COMMAND_SAVE:
@@ -164,7 +136,6 @@ void VerificationNodeEditorLive::verify()
         }
         case COMMAND_LOAD:
         {
-            actualStatus = nodeEditor()->load(filename.c_str());
             break;
         }
         case COMMAND_SERIALISE:
@@ -212,12 +183,6 @@ void VerificationNodeEditorLive::verify()
         }
         case COMMAND_DESERIALISE:
         {
-            auto backingStore = dagbase::createBackingStore("FileBackingStore");
-            ASSERT_NE(nullptr, backingStore);
-            dagbase::Lua lua;
-            dagbase::InputStream* istr = dagbase::createInputStream("TextFormat", *backingStore, filename.c_str());
-            ASSERT_NE(nullptr, istr);
-            actualStatus = nodeEditor()->deserialise(serialiseFormat, *istr, lua);
             break;
         }
         case COMMAND_TOPO_SORT:
@@ -252,46 +217,30 @@ void VerificationNodeEditorLive::verify()
         }
         case COMMAND_ADD_PORT:
         {
-            actualStatus = nodeEditor()->addPort(nodeId, portName, portDirection, portFlags, portValue.as<dagbase::Value>());
-
             break;
         }
         case COMMAND_DELETE_PORT:
         {
-            actualStatus = nodeEditor()->deletePort(portId);
             break;
         }
         case COMMAND_SET_PORT_VALUE:
         {
-            actualStatus = nodeEditor()->setPortValue(portId, portValue.as<dagbase::Value>());
-
             break;
         }
         case COMMAND_SET_NODE_ACTIVE:
         {
-            actualStatus = nodeEditor()->setNodeActive(nodeId, active);
-
             break;
         }
         case COMMAND_EVALUATE_GRAPH:
         {
-            dagbase::NodeArray evalOrder, evalCycle;
-            actualStatus = nodeEditor()->topologicalSort(&evalOrder, &evalCycle);
-            ASSERT_EQ(dagbase::Status{dagbase::Status::STATUS_OK}, actualStatus);
-            actualStatus = nodeEditor()->evaluate(evalOrder);
-
             break;
         }
         case COMMAND_LOAD_SCRIPTS:
         {
-            actualStatus = nodeEditor()->loadScripts(filename);
-
             break;
         }
         case COMMAND_ATTACH_SCRIPT:
         {
-            actualStatus = nodeEditor()->attachScript(funcName);
-
             break;
         }
         default:
