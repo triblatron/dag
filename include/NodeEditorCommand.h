@@ -198,8 +198,8 @@ namespace dag
     private:
         NodeEditorLive* _nodeEditor{nullptr};
         NodeEditorCommand* _decoratee{nullptr};
-        Command _cmd{COMMAND_UNKNOWN};
     public:
+        Command cmd{ COMMAND_UNKNOWN };
         using NodeIDArray = std::vector<dagbase::NodeID>;
         NodeIDArray selection;
         std::string nodeClass;

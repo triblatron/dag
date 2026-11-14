@@ -227,7 +227,6 @@ private:
     std::string _caseName;
     std::string _str;
 public:
-    Command cmd{COMMAND_UNKNOWN};
     dagbase::Status status{dagbase::Status::STATUS_OK};
     dagbase::Status actualStatus{dagbase::Status::STATUS_OK};
     using ExistingArray = std::vector<ExistingNodeEditorLive>;

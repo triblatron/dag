@@ -23,9 +23,9 @@ namespace dag
 
     void NodeEditorCommand::configure(dagbase::ConfigurationElement& config)
     {
-        dagbase::ConfigurationElement::readConfig<Command>(config, "cmd", &parseCommand, &_cmd);
+        dagbase::ConfigurationElement::readConfig<Command>(config, "cmd", &parseCommand, &cmd);
 
-        switch (_cmd)
+        switch (cmd)
         {
         case COMMAND_NOP:
             // No parameters.
@@ -185,7 +185,7 @@ namespace dag
     dagbase::Status NodeEditorCommand::makeItSo(const std::pmr::vector<dagbase::Variant> &args,
                                                 std::pmr::vector<dagbase::Variant> *results)
     {
-        switch (_cmd)
+        switch (cmd)
         {
         case COMMAND_NOP:
             return dagbase::Status{dagbase::Status::STATUS_OK};
