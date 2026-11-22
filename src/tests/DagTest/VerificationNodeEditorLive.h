@@ -95,7 +95,7 @@ struct ExistingNodeEditorLive
         return allTrue;
     }
 
-    void makeItSo(dag::NodeEditorLive& sut) const
+    void makeItSo(dag::NodeEditorLive& sut, std::string description) const
     {
         auto graph = sut.graph(path);
         ASSERT_NE(nullptr, graph);
@@ -187,7 +187,7 @@ struct ExistingNodeEditorLive
             {
                 propertyStr << prop.first << " = " << prop.second << '\n';
             }
-            ASSERT_EQ(count, actualCount) << "Expected class " << className << " to have properties:\n" << propertyStr.str();
+            ASSERT_EQ(count, actualCount) << description << ":Expected class " << className << " to have properties:\n" << propertyStr.str();
 
         }
         else
@@ -227,6 +227,7 @@ private:
     std::string _caseName;
     std::string _str;
 public:
+    std::string description;
     dagbase::Status status{dagbase::Status::STATUS_OK};
     dagbase::Status actualStatus{dagbase::Status::STATUS_OK};
     using ExistingArray = std::vector<ExistingNodeEditorLive>;

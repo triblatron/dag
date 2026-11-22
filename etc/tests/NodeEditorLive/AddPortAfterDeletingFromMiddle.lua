@@ -30,7 +30,7 @@ root=
         {
 			cmd="COMMAND_ADD_PORT",
 			node=0,
-			name="test",
+			name="test1",
 			status=
 			{
 				statusCode="STATUS_OK",
@@ -49,13 +49,14 @@ root=
 					value=1,
 				},
 			},
+            description="After adding the first Port",
 			existing=
 			{
 				{
 					class="Port",
 					properties=
 					{
-						name="test",
+						name="test1",
 						value=
 						{
 							typeIndex="TYPE_VALUE",
@@ -74,13 +75,14 @@ root=
 				typeIndex="TYPE_VALUE",
 				value=5.0,
 			},
+            description="After Setting the first Port value",
 			existing=
 			{
 				{
 					class="Port",
 					properties=
 					{
-						name="test",
+						name="test1",
 						value=
 						{
 							typeIndex="TYPE_VALUE",
@@ -93,7 +95,8 @@ root=
         {
 			cmd="COMMAND_ADD_PORT",
 			node=0,
-			name="test",
+			name="test2",
+            description="After adding the second Port",
 			status=
 			{
 				statusCode="STATUS_OK",
@@ -118,7 +121,7 @@ root=
 					class="Port",
 					properties=
 					{
-						name="test",
+						name="test2",
 						value=
 						{
 							typeIndex="TYPE_VALUE",
@@ -131,7 +134,7 @@ root=
         {
 			cmd="COMMAND_ADD_PORT",
 			node=0,
-			name="test",
+			name="test3",
 			status=
 			{
 				statusCode="STATUS_OK",
@@ -150,13 +153,14 @@ root=
 					value=3,
 				},
 			},
+            description="After adding a second Port",
 			existing=
 			{
 				{
 					class="Port",
 					properties=
 					{
-						name="test",
+						name="test3",
 						value=
 						{
 							typeIndex="TYPE_VALUE",
@@ -180,6 +184,7 @@ root=
 					value=2,
 				},
 			},
+            description="After deleting a Port from the middle of the array",
 			existing=
 			{
 				{
@@ -219,7 +224,7 @@ root=
         {
 			cmd="COMMAND_ADD_PORT",
 			node=0,
-			name="test",
+			name="test4",
 			status=
 			{
 				statusCode="STATUS_OK",
@@ -238,13 +243,14 @@ root=
 					value=3,
 				},
 			},
+            description="After adding a Port, the Value should re-use the middle slot that was deleted",
 			existing=
 			{
 				{
 					class="Port",
 					properties=
 					{
-						name="test",
+						name="test1",
 						value=
 						{
 							typeIndex="TYPE_VALUE",
@@ -256,7 +262,7 @@ root=
 					class="Port",
 					properties=
 					{
-						name="test",
+						name="test3",
 						value=
 						{
 							typeIndex="TYPE_VALUE",
@@ -268,7 +274,7 @@ root=
 					class="Port",
 					properties=
 					{
-						name="test",
+						name="test4",
 						value=
 						{
 							typeIndex="TYPE_VALUE",

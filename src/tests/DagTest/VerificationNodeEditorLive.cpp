@@ -22,6 +22,7 @@ void VerificationNodeEditorLive::configure(dagbase::ConfigurationElement &config
     if (decoratee())
         decoratee()->configure(config);
 
+    dagbase::ConfigurationElement::readConfig(config, "description", &description);
     dagbase::ConfigurationElement::readConfigVector(config, "existing", &existing);
     dagbase::ConfigurationElement::readConfigVector(config, "assertions", &assertions);
     dagbase::ConfigurationElement::readConfig(config, "status", &status);
@@ -48,7 +49,7 @@ dagbase::Status VerificationNodeEditorLive::makeItSo(const std::pmr::vector<dagb
 
     for (const auto& a : existing)
     {
-        a.makeItSo(*nodeEditor());
+        a.makeItSo(*nodeEditor(), _caseName + ':' + description);
     }
     for (const auto& a : assertions)
     {
@@ -256,6 +257,6 @@ void VerificationNodeEditorLive::verify()
     }
     for (auto e : existing)
     {
-        e.makeItSo(*nodeEditor());
+        e.makeItSo(*nodeEditor(), _caseName + ':' + description);
     }
 }

@@ -306,7 +306,7 @@ class TestNodeWithStringPort
 public:
     TestNodeWithStringPort()
 	    :
-    _str(dagbase::PortID(0), "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(new std::string("test")))
+    _str(dagbase::PortID(0), "out1", dagbase::PortDirection::DIR_OUT, dagbase::Port::FLAGS_NONE, dagbase::Value(std::make_shared<std::string>("test")))
     {
 	    // Do nothing.
     }
@@ -797,7 +797,7 @@ void NodeEditorLiveScript::makeItSo()
                 _items[assertion.commandIndex].cmd->assertions[assertion.assertionIndex].setValue(assertion.value);
             }
 
-            for (auto item : _items)
+            for (auto& item : _items)
             {
                 item.makeItSo(*_sut, currentCase.name);
             }
